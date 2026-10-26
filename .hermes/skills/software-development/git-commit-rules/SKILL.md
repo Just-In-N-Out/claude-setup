@@ -89,3 +89,4 @@ Hermes has no Claude Code worktree isolation, so run main-folder commands direct
 - `git log -1 --pretty=format:'%an <%ae>'` gives the identity for that folder (Leorna or personal).
 - `git ls-files | grep -i claude.md` prints nothing.
 - After a worktree merge, `git log --oneline main` shows the feature commits and nothing was pushed.
+<!-- sync test from desktop-wsl, 2026-10-26 -->
