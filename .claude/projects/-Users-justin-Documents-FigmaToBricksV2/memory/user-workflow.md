@@ -17,7 +17,9 @@ They answer short multiple-choice questions readily and write informally; explai
 When asking them to test something (2026-10-07 paste check), they got lost: they thought "test" meant running the
 plugin in Figma, and expected real photos where the paste file had stand-ins. Give one concrete action at a time
 (which tab, which button, what to look for), say up front what will look unfinished and why, and put files on their
-clipboard with `pbcopy` rather than asking them to copy. Remind them to save (Cmd+S) before reloading or previewing.
+clipboard with `pbcopy` rather than asking them to copy. On the Windows desktop (WSL): `powershell.exe -NoProfile -Command "Get-Content -Raw -Encoding UTF8
+'<wslpath -w file>' | Set-Clipboard"`; read it back with `[Console]::OutputEncoding=[Text.Encoding]::UTF8` first, or
+→ and … come back garbled though the clipboard is right (2026-10-26). Remind them to save (Cmd+S) before reloading or previewing.
 On 2026-10-19 they switched v2 from "no git" to git plus a private GitHub repo, to run several agents at once; see
 [[git-and-parallel-agents]]. See [[v2-rewrite]] for project decisions.
 
