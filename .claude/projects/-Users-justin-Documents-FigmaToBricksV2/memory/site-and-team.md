@@ -12,6 +12,8 @@ The user's site (2026-10-19): `darksalmon-badger-335429.hostingersite.com`.
 - **Host and plugins:** Hostinger, WordPress + Bricks. Plugins: LiteSpeed Cache, WP Mail SMTP (forces the From email),
   Yoast, WPForms Pro, AltText.ai, WPCode, Code Snippets.
 - **Pages:** the contact page and the services page ("Services Page Final", with the parts inventory list).
+- **Hostinger's CDN serves `.avif` uploads as `Content-Type: text/plain`** (2026-10-26); Chrome still shows them in
+  `<img>` (checked on the 38 Gallery AVIFs), so it's harmless unless a `nosniff` header is added.
 - **The team uses WPForms Pro** for forms. The contact page's "Need a Repair" form is WPForms form id **559**, placed with
   a Bricks Shortcode element and styled by `reference/wpforms/need-a-repair-559.css`, pasted in Bricks → Settings →
   Custom code → Custom CSS (it worked).

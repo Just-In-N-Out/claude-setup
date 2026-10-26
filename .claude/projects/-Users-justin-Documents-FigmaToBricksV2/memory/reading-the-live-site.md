@@ -25,4 +25,6 @@ The live site (see [[site-and-team]]) sits behind LiteSpeed: a plain `curl` of a
   the HTML it rebuilds the Figma structure well enough for generic fixtures when Justin can't send a debug file
   (2026-10-23, the Contact map).
 - Chrome over CDP (`test/browser/chrome.ts` `launchChrome`) can load the live URL at 390/600/900/1440 for
-  screenshots; a pasted header 73px tall hid behind the 88px fixed site header at 1440 but showed below it narrower.
+  screenshots. The Windows desktop (WSL) has no Chrome: `npx @puppeteer/browsers install chrome-headless-shell@stable`,
+  plus `apt-get download libnss3 libnspr4 libasound2t64` unpacked with `dpkg-deb -x` (no sudo) on `LD_LIBRARY_PATH`,
+  then `CHROME_PATH=<that binary>` (2026-10-26). A pasted header 73px tall hid behind the 88px fixed site header at 1440 but showed below it narrower.
