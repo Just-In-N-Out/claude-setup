@@ -4,8 +4,40 @@
 
 ## Start here: handoff of 2026-10-19 (the previous chat was cleared; read this first)
 
-**Current build `2026-10-23.3`.** Builds 21.13–22.9 were recorded only in `docs/HANDOFF.md` (their agents
+**Current build `2026-10-26.1`.** Builds 21.13–22.9 were recorded only in `docs/HANDOFF.md` (their agents
 couldn't write this file; their queued edits are in `~/.hermes/plans/figma-to-bricks/*-claude-md-pending.md`).
+- **Space under an open FAQ answer (26.1, faq-answer-space):**
+  - **Justin's ask** (screenshot of the live Home page): "Can we add more space under the FAQ when it's open? Under
+    the answer." The open answer's last line sat right on the divider above the next question.
+  - **The cause:** Home's answer is a website import: a box without auto layout fixed at 105px, its words (80px) at
+    its top, so Figma shows about 25px under them. The plugin wrote that height as a min height (`style/sizing.ts`),
+    which fills up once the words wrap more (0 at 1024 on main) and is set to 0 from 991px down (`size.unpin`).
+    Repairs is drawn the same way (79px boxes, 26px under the words).
+  - **What it does now** (`understand/accordion.ts` `spaceUnder`, `underAnswers`): an answer box Figma draws at a
+    fixed height with its words at its top hugs its words, and the space drawn under them becomes the item Content's
+    bottom padding, the same on every screen. Closed items' placeholder answers get the open answer's space. A box
+    that paints something of its own (a fill, an outline on any side, a shadow, a frosted backdrop) or holds a placed
+    layer keeps today's min height, as do a box centring its words, a wrapping grid and a column whose last layer is
+    pushed to the bottom.
+  - **The ⭐ answers 1A 2A 3A**, taken under Justin's auto-go (not yet confirmed): placeholders get the drawn open
+    answer's space, not its min height; only a box whose layers sit at its top counts; whole pixels, under 1px none.
+  - **Review:** fresh opus, approve with fixes; F1 (medium: a painted or outlined box's space moved outside its
+    paint), F2 (low: a badge pinned to the box's bottom rode up onto the words), F3 (low: no test for the box's own
+    padding or a row's offset), all fixed test-first.
+  - **Checks:** check 2314 + 6, 0 fail (55 + 5 corpus tests skip on the WSL desktop: Mac paths in `corpus.json`);
+    browser suite equal to main's by name (366: 353 pass, the same 12 failures and 1 Mac-only skip as main, this
+    machine's Chrome and fonts). AC1–AC6 proven by the verifier and the blind auditor; AC7 is the live paste.
+  - **Pastes:** Home's 5 answers lose `_heightMin` 105 (and its tablet 0) and their Content blocks get bottom padding
+    25px; Repairs the same with 79 / 26px. GRO, brainstorm and Services byte-identical; lint identical at 390–1728.
+  - **My rulings, not yet confirmed:** a row counts by lining its layers up at its top, a column's nudges are part of
+    the answer; a painted, outlined, shadowed or placed-layer answer box keeps its min height (exact at the design
+    width, its space gone from 991px down, as on main).
+  - **Paste check 3bl owed:** copy the 4 answers Justin typed in Bricks for Home's closed FAQ items first (they come
+    back as placeholders), then empty Home and re-paste "Home Page Final" (folds into 3bj), and re-paste "Hydraulic
+    Cylinder Repairs Final"; type the answers back, Regenerate code signatures, LiteSpeed Purge All.
+  - **Follow-ups** (HANDOFF "Not changed"): a badge pinned to the bottom of a fixed-height box lands on its words on
+    phones (on main too: `size.unpin` drops the min height from 991px down); the same frozen space exists outside
+    FAQs.
 - **A captured map with no words, and a map edge to edge (23.3, wordless-maps):**
   - **Justin's ask:** "for the contact page please make it so that the map is embedded and the user can scroll on
     it." The live Contact page's map was a flat picture: its capture kept Google's tiles and controls as pictures,
@@ -370,6 +402,10 @@ run Bricks → Settings → Custom code → **Regenerate code signatures**; afte
   - **Deferred minors:** the panel's empty list name, two lists with desktop + phone frames, the status after Remove,
     no large-CSV warning, tab-separated files.
 - **Zooming in (150%+):** contact cards are cramped and the menu breaks into a grid (it needs the Nav sample).
+- **Space frozen into a fixed-height box** (found in faq-answer-space, 26.1): a box drawn at a fixed height with its
+  words at its top loses the space under them once they wrap more, and from 991px down (`size.unpin` drops its min
+  height); FAQ answers are fixed, other boxes aren't yet. A badge pinned to the bottom of such a box lands on its
+  words on phones (on main too).
 
 **How the user works (see memory too):**
 - They answer with screenshots and short messages.
@@ -934,6 +970,17 @@ run Bricks → Settings → Custom code → **Regenerate code signatures**; afte
   - **Deferred:** a photo inside a masked group isn't seen (outline kept); a big transparent PNG counts as a photo
     (no pixel data); `itemReverseZIndex` ignored as everywhere.
   - Not yet pasted by the user (3bh).
+- **Space under an open FAQ answer** (build `2026-10-26.1`, branch `worktree-faq-answer-space`, Mini pipeline,
+  HANDOFF of the same name; plan and ledger `docs/plans/2026-10-26-faq-answer-space*`): see "Start here".
+  - **Code:** `understand/accordion.ts` `spaceUnder` (the space drawn under a fixed-height answer box's layers, 0 for a
+    box painting its own or holding a placed layer) and `underAnswers` (the item Content's bottom padding, the answer
+    box hugging its words). Tests `understand-answer-space`, `emit-accordion` (AC1, AC5), browser
+    `faq-answer-space` (AC2–AC4 and the painted / outlined / padded / pinned variants), `corpus-faq-answer-space`
+    (AC6); fixtures `paddedAnswer`, `pinnedAnswer` in `test/fixtures/faq.ts`.
+  - **Deferred:** an item frame drawn fixed-height with the space under its answer; a fixed-height text answer taller
+    than its lines; a painted or placed-layer answer box keeping its space on phones; the same frozen space outside
+    FAQs.
+  - Not yet pasted by the user (3bl).
 - **Paste checks:**
   - **WordPress pictures** (2026-10-07, build .19): the user's run worked; photos and icons show on the saved page.
     The descriptions list is not yet tried.

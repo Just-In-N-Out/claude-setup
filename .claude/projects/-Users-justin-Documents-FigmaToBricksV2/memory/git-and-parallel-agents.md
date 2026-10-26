@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 97ce3cf8-b36d-46da-a6b6-643b41ec8abd
-  modified: 2026-10-26T17:58:51.692Z
+  modified: 2026-10-26T19:22:42.127Z
 ---
 
 On 2026-10-19 the user asked to "push it to github on private just-in-n-out not justin leorna" and to run several
@@ -14,7 +14,8 @@ The full working rules are in CLAUDE.md "Working in this repo"; what was non-obv
 
 - The Mac's active `gh` account is Justin-Leorna (other projects), and its default SSH key is accepted by neither
   account. Pushes work through a repo-local credential helper that asks `gh auth token --user Just-In-N-Out`. Don't
-  switch the gh account or change the remote.
+  switch the gh account or change the remote. On the Windows desktop (WSL) origin is SSH with no repo helper; check
+  `ssh -o BatchMode=yes -T git@github.com` greets Just-In-N-Out before pushing (worked 2026-10-26, faq-answer-space).
 - Claude Code (2.1.304) does NOT load the main folder's CLAUDE.md inside a `claude -w` copy
   (`.claude/worktrees/<name>`), even though the copy sits under it; tested with a print-mode session. CLAUDE.md is kept
   out of git (global rule), so `.worktreeinclude` copies it in, with `node_modules/` and `corpus/out/v1/`.
