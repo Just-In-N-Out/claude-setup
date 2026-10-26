@@ -13,10 +13,10 @@ His standing instructions for such copies say, for animations:
 > into `main`, build that animation in the page's paste exactly as the plugin emits it.
 
 Four animations on that page are missing from the plugin; Justin chose (2026-10-26) "Plugin features first": he gets a
-paste now with them standing still, and a second paste once each feature is merged. The four features, each planned
-by its own planner in its own worktree at the same time: **slider-autoplay**, **headline-marker**, **flip-cards**,
-**photo-hotspots**. Say in `overlaps` which files you expect to share with the other three, so the orchestrator can
-order the builds.
+paste now with them standing still, and a second paste once each feature is merged. Justin then chose (2026-10-26, for usage reasons) to build only two of them now: **slider-autoplay** and
+**flip-cards**, each planned by its own planner in its own worktree at the same time. **headline-marker** (the "60
+Years" circle) and **photo-hotspots** come later. Say in `overlaps` which files you expect to share with the other
+feature now running, so the orchestrator can order the builds.
 
 **The feature is for any Figma file, not for bdryswi.com.** The plugin converts Figma designs; the Elementor page only
 shows the behaviour Justin wants. Design the Figma-side trigger (what a designer draws or sets up in Figma that the
