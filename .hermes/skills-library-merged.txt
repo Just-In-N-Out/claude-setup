@@ -1,0 +1,11 @@
+# Same-name skills where the library's text replaced Justin's copy (Justin, 2026-10-22: "theirs is written better").
+# These are LOCAL COPIES in ~/.hermes/skills (not links): library text + Justin's personal additions.
+# update-skills-library.sh reports when the library changes one of these; then re-merge it
+# (the additions to carry over are listed in the hermes-agent skill, "Leorna skills library").
+test-driven-development
+systematic-debugging
+subagent-driven-development
+claude-code
+hermes-agent-skill-authoring
+requesting-code-review      # + Justin's 3 pitfalls
+hermes-agent                # + Justin's setup notes

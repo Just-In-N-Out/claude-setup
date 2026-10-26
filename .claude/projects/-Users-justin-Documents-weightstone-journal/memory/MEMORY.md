@@ -1,0 +1,4 @@
+- [Expo Migration Status](project_expo_migration.md) -- MinimaLog RN migration at /Users/justin/Documents/minimalog-rn/, Phase 1 complete
+- [June 2026 Audit](project_audit_2026-06.md) -- audit fixes done locally; PENDING: push 2 security migrations to prod, rotate service-role/Gemini keys, fraud-audit query
+- [Resume Project Brief](project_resume_brief.md) -- project-brief.md + minimalog.pdf at repo root, verified metrics; brew broken (untrusted mongodb tap)
+- [No AI Mentions in Deliverables](feedback_no_ai_mentions_in_deliverables.md) -- shareable docs/PDFs must never mention Claude/Anthropic/AI

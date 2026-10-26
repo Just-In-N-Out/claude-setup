@@ -1,0 +1,1 @@
+- [Steady design constraints](steady-design-constraints.md) — never grade speech, never reward speed, never punish a missed day

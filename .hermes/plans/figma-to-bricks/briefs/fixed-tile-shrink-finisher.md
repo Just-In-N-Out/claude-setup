@@ -1,0 +1,11 @@
+# fixed-tile-shrink — FINISHER brief (2026-10-21 23:13 EDT)
+
+Opus medium. Worktree ~/Documents/FigmaToBricksV2/.claude/worktrees/fixed-tile-shrink at 86bef1a, on main 3f14a32 (.24). Plan ~/.hermes/plans/figma-to-bricks/fixed-tile-shrink.md (F3 ruling accepted under Justin's away rule — recorded there). Briefs: -builder, -fixpass, -fixpass2, -delta-reviewer. Evidence: evidence/fixed-tile-shrink/{reviewer-opus,rereviewer-opus,fixpass2,delta-reviewer}/.
+
+## Focused fresh Opus xhigh review: approve_with_minors, no blocking
+D1 (low): a row hugging its items still fixes a tile at its drawn width where its words render wider. Probe delta-reviewer/probe-walk.ts case hugWordy: 40x40 auto-layout 'NEW' tile beside 'Free estimates' in a hugging row; main 46.8 @1200, 44.5 @990–480, 42.1 @375–320; branch writes _width:tablet_portrait 40 → word spills 4.5px (2.1 on phones) past the painted edge. Not from fix pass 2; no real file affected.
+ DISPATCHER RULING (Justin away; take the safe recommended path without another review loop): RECORD it as a known limit of the hug-only ruling in HANDOFF, ledger and paste check 3ay; correct HANDOFF's fix-pass-2 F1 wording so it doesn't claim word-sized tiles are solved in hugging rows. No source change. Add it to found-else.md as an open low item.
+D2 (info, optional): add one unit case whose column-titles row is marked part 'head' with a fixed tile, to pin listLine's head branch — test-only, do it if quick (must pass on current source).
+
+## Do
+Load figma-to-bricks (FINISHER; read references/rules-summary.md), receiving-code-review, git-commit-rules, test-driven-development. Records + optional test, then Step 3 item 7 and Step 4: rebase on current main, npm run check + test:browser + corpus vs baseline (fonts loaded), merge lock (confirm COMPLETED exit 0), ff-only merge, BUILD bump, build, commit, push, verify main = origin, archive evidence with manifest, cleanup (leftover .superpowers → ~/.hermes/backups/figma-worktree-leftovers/). Paste check: next free on main at merge (3aw, 3ax taken; this holds provisional 3ay; GRO holds provisional 3az). CLAUDE.md: never retry/bypass denied writes; write fixed-tile-shrink-claude-md-pending.md "apply after the older ones, in build order". Paste check must not claim laptops (F5 deferred). Close found-else items this fixes. Always pass workdir.

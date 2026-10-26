@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Skill-lessons gate: every subagent's final report must carry skill_lessons.
+#
+# A report "has lessons" when it mentions skill_lessons (a field or a list) or
+# has a "Skill lessons" heading. A report without them is sent back once with
+# the instruction: restate the full report, add the lessons, never edit skills,
+# and end with a line telling the main session to save them. SubagentStop
+# can't write into the parent's context, so that last line is the main
+# session's reminder.
+#
+# Two ways an agent finishes, checked live 2026-10-23:
+# - Foreground: SubagentStop carries last_assistant_message. Block with
+#   decision=block; stop_hook_active=true means it was already sent back once.
+# - Background: the agent hands its report back with a SubagentHandback tool
+#   call, and its SubagentStop has no last_assistant_message. A block there
+#   comes after delivery and the agent never runs again, so the gate is
+#   PreToolUse on SubagentHandback: deny the call, once per agent.
+# Agents with no agent_type (Claude Code's internal helpers) and the types in
+# SUBAGENT_LESSONS_SKIP (space separated) are never gated.
+# Any bad input exits 0 silently: this hook must never trap an agent.
+# Tests: tests/subagent-lessons-gate.test.sh
+set -uo pipefail
+
+SKIP=${SUBAGENT_LESSONS_SKIP:-statusline-setup}
+STATE_DIR=${SUBAGENT_LESSONS_STATE_DIR:-$HOME/.claude/hooks/state/subagent-lessons-gate}
+
+input=$(cat) || exit 0
+# fields joined by the unit separator: a tab IFS would merge an empty field into the next one
+fields=$(jq -r '[.hook_event_name // "", (.stop_hook_active // false | tostring), .agent_type // "",
+                 (has("last_assistant_message") | tostring), .tool_name // "", .session_id // "", .agent_id // ""]
+                | map(tostring | gsub("\u001f"; "")) | join("\u001f")' <<<"$input" 2>/dev/null) || exit 0
+IFS=$'\x1f' read -r event active agent_type has_message tool session agent <<<"$fields"
+
+[[ -n $agent_type ]] || exit 0
+for t in $SKIP; do [[ $agent_type == "$t" ]] && exit 0; done
+
+has_lessons() { grep -qiE 'skill_lessons|skill lessons' <<<"$1"; }
+
+reason="Before you finish: your final report has no skill lessons. Restate your complete final report \
+in full (the parent keeps only your newest report), then add a 'Skill lessons' section listing \
+skill_lessons[{skill, lesson, evidence}]: reusable gotchas, an approach that worked after one failed, \
+or a skill step that was wrong, missing or stale, naming the skill it belongs in (or memory for a fact). \
+'skill_lessons: []' is the normal answer when you learned nothing new: list only what a future task would need \
+that the skill doesn't already say. Do not edit any SKILL.md, skill or memory file yourself. \
+End with this exact last line: MAIN SESSION: check and save these skill_lessons now."
+
+case $event in
+  SubagentStop)
+    [[ $active == false && $has_message == true ]] || exit 0
+    message=$(jq -r '.last_assistant_message // "" | tostring' <<<"$input" 2>/dev/null) || exit 0
+    [[ -n $message ]] && ! has_lessons "$message" || exit 0
+    jq -nc --arg reason "$reason" '{decision: "block", reason: $reason}'
+    ;;
+  PreToolUse)
+    [[ $tool == SubagentHandback ]] || exit 0
+    session=${session//[^A-Za-z0-9_-]/}; agent=${agent//[^A-Za-z0-9_-]/}
+    [[ -n $agent ]] || exit 0
+    message=$(jq -r '.tool_input.message // "" | tostring' <<<"$input" 2>/dev/null) || exit 0
+    has_lessons "$message" && exit 0
+    mkdir -p "$STATE_DIR" 2>/dev/null || exit 0
+    marker="$STATE_DIR/${session:-nosession}.$agent.denied"
+    [[ -e $marker ]] && exit 0 # sent back once already: let it hand back
+    find "$STATE_DIR" -type f -mtime +7 -delete 2>/dev/null
+    : >"$marker" 2>/dev/null || exit 0
+    jq -nc --arg reason "$reason Then call SubagentHandback again with that full message." \
+      '{hookSpecificOutput: {hookEventName: "PreToolUse", permissionDecision: "deny", permissionDecisionReason: $reason}}'
+    ;;
+esac
+exit 0

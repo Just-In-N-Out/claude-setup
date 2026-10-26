@@ -1,0 +1,9 @@
+# Brief: REVIEWER (review only) for figma-to-bricks feature "google-partial-fonts" (B8)
+
+- Worktree `~/Documents/FigmaToBricksV2/.claude/worktrees/google-partial-fonts`, branch `worktree-google-partial-fonts`, tip `ac97de0` (fix 3f1a8ce + records). Review `git diff $(git merge-base main HEAD)...HEAD`. Main is now build 2026-10-21.8.
+- Plan `~/.hermes/plans/figma-to-bricks/google-partial-fonts.md`. The bug: a Google Fonts HTTP-200 answer that omits a requested weight (real example: IBM Plex Mono 400+800 returns only 400) was counted complete. Fix: availability follows the returned family/weight/slant descriptors; no extra requests; CSS and payload unchanged.
+- Builder's claims to verify: check 1404; browser 136/139 (3 known stale panel tests); corpus pastes byte-identical; one Google GET and zero library POSTs; evidence `~/.hermes/plans/figma-to-bricks/evidence/google-partial-fonts/` (differential-proof.mjs, verification-summary.json); the real-response proof from the fonts-cleanup review `~/.hermes/cache/scratch/fonts-cleanup-review/real-response-proof.json`.
+- Load `skill_view('figma-to-bricks')` (REVIEWER; `references/rules-summary.md`, then only the CLAUDE.md font sections). Load `skill_view('requesting-code-review')` (report only, never auto-fix). Say you loaded both.
+- Check: the descriptor parser handles real Google CSS (unicode-range splits, several @font-face per weight, italic, variable ranges like `font-weight: 100 900`); stand-ins answer like Google; a weight range is never written into a paste; mutations on the new guards.
+- Change nothing: no commit, push or merge; restore anything you touch. Read-only GETs only. Other bugs: `found_else`. Be efficient: the ChatGPT window is shared.
+- Output: verdict, findings[{id, severity, introduced, claim, evidence}]. Plain words.

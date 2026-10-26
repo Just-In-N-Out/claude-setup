@@ -1,0 +1,13 @@
+# BUILDER: list-panel-followups — Opus5.5 medium
+
+Read approved plan ~/.hermes/plans/figma-to-bricks/list-panel-followups.md, away-auto-go Q1A2A3A4A5B6C7A recorded. Start only as builder slot frees(max3). Load figma-to-bricks BUILDER,TDD, systematic-debugging surprises. New worktree list-panel-followups branchworktree-list-panel-followups actuallatestmain.19+. No replan approved originalscope.
+
+TasksT0–T5 per plan: no-outputchange extraction Lists wiring only into new ui/list-box.ts; protect all genuine rowactionlabel from leftover CSV with existing structural rule and exact cost badge ruling documented; removal status honest for CSV/PDFsave/removal with perrequest ownership; PDFpicker updates on validatedconnection invalidates enabled state after editedform/failedtest; cooperative PDFCancel stops queuedfiles, currentrequest allowed finish cache only and not cancelledlist, freeConvert/picker, reselectedsamebytes awaitinflight rather than duplicatepost; TSVsmallcap approved3rdseparator/picker; largeCSVthreshold/multilistpolicy/mainfullsplitdeferred.
+
+No liveWPwrites; all upload/network via stubs. Preserve .16 data-cell-neveraction/drop, .18PDFnewTab/rel, existingcacheownership/root separation/no blindretry/sitechange safety, no saves from staleconversion. Cancel races incl justbeforePOST/settle/save,newrun/reconnect/editedsite, failureclear/busy counters/duplicatefiles/perlist ownership. Do not abort uncertainWPrequest or leak immutable auth/site context to newrun. Never force clear pendingrequest to resend.
+
+Coordinate media-rename-collision: it owns ui/site-media and maybeuploadsignature; inspect actualplanbeforeedit. Existing shareduploadMedia signature read-only unless conflictsresolved parent. Rendererproof owns render/browserfont/helpers; paneltest may use them but don't edithelper. Fontsrange own fonts/source only, should notmain.ts; verifyactualintersection. Pill/hero paint/adapt separate. Keep exact allowedfiles and no giant mainrewrite.
+
+TDD each fix red originalsource plus negative twins data cells/sample badges, CSV/TSVquotedfields, no arbitrary UI snapshot changes. All originaltests/performance/golden unaffected except explicitapprovedsemantics. Full check/browser/corpusfullsavedreports/pastes/HTML/familysets and requests; expected corpus/debugbyteidentical. Save real logs and matched-font/motion proof, no relaxed thresholds/skips/emptyartifact assertions.
+
+Plan copy/ledger/HANDOFF, noBUILD/mainCLAUDE/merge/push frombuilder. Stop cleancommittedreadyforreview parent freshOpusxhigh reviewer, report rulings/deferred/newbugs/evidence; no closure beforeverifiedmerge. Any prompt waitnotbypass, unexpectedscope stop. Finalinstructions note queuedbigCSV/multilist unresolved notfixed.

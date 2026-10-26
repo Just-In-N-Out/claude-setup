@@ -1,0 +1,12 @@
+- [User workflow](user-workflow.md) — Figma (desktop only) → own plugin → Bricks 2.3.9; plain explanations
+- [Git and parallel agents](git-and-parallel-agents.md) — private GitHub as Just-In-N-Out (not Justin-Leorna); claude -w per feature; CLAUDE.md copied via .worktreeinclude
+- [v2 rewrite](v2-rewrite.md) — status, ExampleBricks is the target output; M1 then M2, native execution
+- [Run without stopping](run-without-stopping.md) — 2026-10-07: build M3 rest then M4 straight through; checks at the end; keep notes current
+- [GRO phone pass](gro-phone-pass.md) — phones for free-floating designs: the user's 4 decoration choices (2026-10-07), rules must be general
+- [Site and team](site-and-team.md) — live site on Hostinger, WPForms Pro team; after a paste: regenerate code signatures, LiteSpeed Purge All
+- [Port v1 when it worked](port-v1-when-it-worked.md) — user said "just do what v1 did": port v1's approach, no new UI, no option questions
+- [Play back the problem first](play-back-the-problem.md) — after a bug report, restate it in plain numbered words before any choice question
+- [Figma sandbox globals](figma-sandbox-globals.md) — no URL/TextDecoder in the plugin sandbox; Node tests pass anyway; diff pbpaste with replay first
+- [Tool escape quirk](tool-escape-quirk.md) — the u-escape for a space in Write/Edit params lands as a literal space; use x-escapes in regexes
+- [Reading the live site](reading-the-live-site.md) — LiteSpeed cache-bust, page list, site-header-room marker, stacked pastes
+- [Old site gallery](old-site-gallery.md) — alltypehydrauliccylinder.com (Elementor); Gallery paste hotlinks its 38 photos, breaks if the old site goes

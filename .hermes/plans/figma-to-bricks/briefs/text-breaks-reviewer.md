@@ -1,0 +1,9 @@
+# Brief: REVIEWER (review only) for figma-to-bricks feature "text-breaks" (B3)
+
+- Worktree `~/Documents/FigmaToBricksV2/.claude/worktrees/text-breaks`, branch `worktree-text-breaks`, tip `e27ea41`. Review `git diff $(git merge-base main HEAD)...HEAD`. Main is build 2026-10-21.7 (`aa19bae`); others are merging around it.
+- Plan `~/.hermes/plans/figma-to-bricks/text-breaks.md` (Justin: T1A — let proven running text reflow even at a sentence end; T2A — keep a phone number whole when it fits, otherwise allow a wrap). Before/after pictures in `~/.hermes/plans/figma-to-bricks/shots/text-breaks/` (phone at 478/479, quote at 390/1728, address at 390/768, inspo silos).
+- Builder's claims to verify: check 1345; browser 135/138 (3 known stale panel tests); corpus no new regressions, same 17 items; 36 real-page and 84 changed-element/width checks. Its ruling: a phone range that partly crosses an existing anchor keeps the anchor and leaves the number ungrouped.
+- Load `skill_view('figma-to-bricks')` (REVIEWER; `references/rules-summary.md`, then only the CLAUDE.md sections on typed line breaks, rag, text HTML, frame-text-links' text `<a>` positions). Load `skill_view('requesting-code-review')` (report only, never auto-fix). Say you loaded both.
+- Check especially: general logic (no keying on words or the user's texts); the phone-number recogniser can't swallow non-phone digit runs (prices, years, IDs, postcodes); grouping never breaks frame-link `<a>` positions (page-addresses `runs.at`) or nests anchors; prose reflow doesn't remove a designer's own breaks (addresses, hours, headings, a sentence a line); escaping in text HTML. Run the gates yourself, measure in Chrome, try mutations on the new guards.
+- Change nothing: no commit, push or merge; restore anything you touch. Other bugs: `found_else`.
+- Output: verdict, findings[{id, severity, introduced, claim, evidence}]. Plain words.

@@ -1,0 +1,139 @@
+# Skills from LeornaAI/skills-library that Hermes uses (Justin: software-engineering skills only, 2026-10-22).
+# Format: <skill-name> <category in ~/.hermes/skills>. update-skills-library.sh links exactly these
+# and removes every other library link. Add a line, then run ~/.hermes/scripts/update-skills-library.sh
+# Same-name skills where theirs replaced Justin's copy are local copies, listed in skills-library-merged.txt.
+
+# --- Core engineering workflow (the library's hub and its method skills)
+engineering-best-practices                   software-development
+implementation-planning                      software-development
+plan                                         software-development
+code-review-practice                         codex-imports
+adversarial-verification-loop                software-development
+mutation-testing-discipline                  software-development
+fix-code-safely                              codex-imports
+patch-code-safely                            codex-imports
+code-quality-pr-workflow                     codex-imports
+repository-code-audit                        software-development
+reverse-engineer-architecture                codex-imports
+python-debugger                              codex-imports
+perf-regression-hunter                       codex-imports
+authorized-write-safety                      software-development
+installing-third-party-agent-skills          software-development
+multi-skill-orchestration                    codex-imports
+
+# --- Multi-agent work (feature-dispatch pipelines, parallel builders, merges)
+merge-reconciler                             autonomous-ai-agents
+multi-agent-collaboration-orchestrator       codex-imports
+multi-agent-engineering-loops                codex-imports
+workflow-orchestration-library               autonomous-ai-agents
+delegated-fanout-orchestration               autonomous-ai-agents
+concurrent-state-validation                  autonomous-ai-agents
+research-first-planning-orchestrator         codex-imports
+
+# --- Git, GitHub, CI and release
+github-auth                                  github
+github-code-review                           github
+github-issue-to-pr                           github
+github-issues                                github
+github-pr-workflow                           github
+github-repo-management                       github
+gh-fix-ci                                    codex-imports
+gh-address-comments                          codex-imports
+ci-failure-triage                            codex-imports
+cicd-staging-prod-agents                     codex-imports
+git-repo-branch-hygiene                      codex-imports
+release-readiness-cutover                    codex-imports
+incident-rollback-runbook                    codex-imports
+multi-repo-issue-first-execution             codex-imports
+spec-eval-task-planner                       codex-imports
+clickup-operations                           productivity
+
+# --- Backend, APIs, multi-tenant control plane
+build-validate-apis                          codex-imports
+api-contract-drift-guard                     codex-imports
+backend-api-stack-picker                     codex-imports
+backend-data-migrations                      codex-imports
+backend-eventing-workflows                   codex-imports
+backend-observability-otel                   codex-imports
+backend-service-architecture                 codex-imports
+build-baas-platform-apis                     codex-imports
+build-multi-tenant-microservices             codex-imports
+multi-tenant-auth-management                 codex-imports
+enterprise-identity-requirements             codex-imports
+microservices-devops-architecture            codex-imports
+tech-stack-architecture-planning             codex-imports
+technology-selection                         software-development
+multi-repo-research-architecture             codex-imports
+architecture-research                        research
+
+# --- AI-agent engineering (Leorna builds tooling for Claude Code and Codex)
+agentic-engineering                          codex-imports
+agentic-architecture-planning                codex-imports
+agentic-workflows                            codex-imports
+agent-workflow-pipelines                     codex-imports
+agent-output-validation                      codex-imports
+agent-prompt-engineering                     codex-imports
+agent-memory-communication                   codex-imports
+agent-memory-rag-engineering                 codex-imports
+agent-harness-research                       research
+ai-engineering-practice                      codex-imports
+ai-method-selection-engineering              codex-imports
+ai-model-discovery-implementation            codex-imports
+algorithmic-engineering-validation           codex-imports
+build-ai-agent                               codex-imports
+build-agent-chat-features                    codex-imports
+build-agent-platform-as-a-service            codex-imports
+build-ai-agent-builder-features              codex-imports
+build-cli-ai-chat-experience                 codex-imports
+build-deploy-mcp-server                      codex-imports
+mcp-builder                                  codex-imports
+claude-api                                   codex-imports
+claude-code-operator                         codex-imports
+openai-docs                                  codex-imports
+anthropic-skill-creator                      codex-imports
+create-agent-skills                          codex-imports
+
+# --- Security
+security-best-practices                      codex-imports
+security-threat-model                        codex-imports
+security-ownership-map                       codex-imports
+software-security-testing                    codex-imports
+ai-agent-security-testing                    codex-imports
+privacy-compliance-guard                     codex-imports
+infra-policy-security-gates                  codex-imports
+platform-devsecops-operations                security
+
+# --- Infrastructure and containers (leorna-infrastructure-iac, test Postgres container)
+infra-iac-stack-picker                       codex-imports
+infra-opentofu-module-patterns               codex-imports
+opentofu-microservice-ops                    codex-imports
+infra-gitops-argocd-helm                     codex-imports
+container-storage-reclamation                devops
+
+# --- Frontend and UI engineering (Leorna desktop app, Figma to Bricks)
+frontend-design                              codex-imports
+frontend-design-kits                         codex-imports
+frontend-design-system-architecture          codex-imports
+frontend-figma-devmode-handoff               codex-imports
+frontend-component-workbench                 codex-imports
+frontend-forms-validation-stack              codex-imports
+frontend-testing-workflow                    codex-imports
+frontend-ui-repair                           codex-imports
+frontend-visual-regression-gate              codex-imports
+frontend-cross-browser-matrix                codex-imports
+frontend-accessibility-audit                 codex-imports
+frontend-performance-budget                  codex-imports
+frontend-data-viz-dashboard-kit              codex-imports
+frontend-toolkit-picker                      codex-imports
+frontend-monorepo-build-tool-picker          codex-imports
+frontend-vite-scaffold                       codex-imports
+front-end-checklist                          frontend-design
+web-design-guidelines                        frontend-design
+site-styling-design-systems                  codex-imports
+design-cli-gui-flows                         codex-imports
+design-vision-gui-flows                      codex-imports
+ux-frontend-workbench                        software-development
+ux-visual-review                             software-development
+webapp-testing                               codex-imports
+playwright                                   codex-imports
+qa-testing-local-cloud                       codex-imports

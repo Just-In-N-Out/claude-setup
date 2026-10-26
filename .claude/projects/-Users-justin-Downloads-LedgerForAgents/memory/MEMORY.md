@@ -1,0 +1,2 @@
+- [Build style: parallel subagents](build-style-parallel-subagents.md) — Justin prefers parallel subagents for file-disjoint slices; controller commits per slice
+- [Ledger project notes](ledger-project-notes.md) — venv is now Python 3.13, PyCharm still points at 3.9; no git remote

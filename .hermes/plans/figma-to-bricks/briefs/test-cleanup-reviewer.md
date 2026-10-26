@@ -1,0 +1,15 @@
+# REVIEWER only: test-cleanup
+
+Load skill_view('figma-to-bricks') REVIEWER and skill_view('requesting-code-review') report-only, never auto-fix; state skills loaded. Worktree ~/Documents/FigmaToBricksV2/.claude/worktrees/test-cleanup, branch worktree-test-cleanup, tip e152749b646a03824380ac510803335dc261b1de. Plan ~/.hermes/plans/figma-to-bricks/test-cleanup.md including 3 addenda; permanent plan/ledger in worktree docs/plans. Review git diff $(git merge-base main HEAD)...HEAD against approved plan and project rules. Use rules-summary first then narrow CLAUDE.md sections. Never edit main, commit, merge, push, or write to live site. Restore any mutation changes; clean worktree on exit. Source-backed public read-only research allowed.
+
+Builder claims: stale panel expectations fixed, three card guards mutation-proved; picture styling extracted leaving style.ts 286 lines; snap section pairing/font stand-ins fixed; deterministic captures; source-backed WordPress fixtures; unchanged performance budgets isolated; three unused files removed. 1409 unit/rule, 6 performance and 145 browser tests pass. Five corpus pastes/HTML and complete per-width findings byte-identical, matched policy page/section scores agree exactly, same 17 v1 differences. Evidence ~/.hermes/plans/figma-to-bricks/evidence/test-cleanup/. No paste owed; no BUILD/CLAUDE.md changes.
+
+Verify independently, not just summaries. Pay special attention: check/test scripts must still execute every existing test/performance gate rather than hide failures; no widened budgets/tolerances; capture-policy finite at end and infinite at zero must be consistent and accurately documented; no animation regressions concealed. Verify generic snap matching/fallback, fonts and source-backed REST fixtures model actual WordPress rather than expected code. style extraction must preserve output/import dependencies; delete files only if unused. Run gates, selective mutations, inspect baseline report provenance and complete lint/font status comparisons. Do not run excessively redundant giant gates if equivalent evidence is independently verified.
+
+Builder rulings: finite animation capture at end, infinite at zero; F9 shared whitespace classes deferred (byte-identical acceptance); F7 drawn input-like boxes remain button ruling. Confirm scope, don't change these.
+
+Main advanced (.10 text-breaks), link-upload-fixes finisher running touches panel tests/fixtures; rebase is finisher's job, not yours. Record conflicts/merge risks in result. google-font-hardening planner owns ui/fonts.ts only; unrelated.
+
+New found_else to record/report but NOT fix: fontStatus may miss failed external stylesheet (Yellowtail absent from both loaded/failed arrays on network-dependent run); non-comparable original preserved, accepted reruns matching fonts. Check evidence honesty; do not broaden scope.
+
+Return verdict pass/request_changes, findings [{id,severity,introduced,claim,evidence}], found_else, gate results, evidence paths. Reviewer only. No self-review shortcut; fresh context required.

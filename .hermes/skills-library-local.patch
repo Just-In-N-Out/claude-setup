@@ -1,0 +1,229 @@
+diff --git a/skills/adversarial-verification-loop/SKILL.md b/skills/adversarial-verification-loop/SKILL.md
+index 7fc2b43..905e163 100644
+--- a/skills/adversarial-verification-loop/SKILL.md
++++ b/skills/adversarial-verification-loop/SKILL.md
+@@ -4,13 +4,13 @@ description: Ship code via context-free adversarial subagent review.
+ version: 0.1.0
+ author: Hermes Agent
+ license: MIT
+-platforms: [linux, mac, windows]
++platforms: [linux, macos, windows]
+ metadata:
+   hermes:
+     tags: [verification, delegation, review, tdd, quality-gates]
+     category: software-development
+     related_skills: [test-driven-development, subagent-driven-development, requesting-code-review, rust-engineering]
+-    requires_toolsets: [terminal, delegate_task]
++    requires_toolsets: [terminal, delegation]
+ ---
+ 
+ # Adversarial Verification Loop
+diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
+index d6a2493..0ea2f93 100644
+--- a/skills/code-review-practice/SKILL.md
++++ b/skills/code-review-practice/SKILL.md
+@@ -66,7 +66,7 @@ Use this as a scan order, not a rigid form:
+ - Security-sensitive logic: authn/authz, secrets, injection, deserialization, untrusted input, sensitive logging.
+ - Validate raw URL references before lossy parsing or joining. Python URL helpers can discard embedded controls and normalize dot segments before a resolved-URL validator sees them; check raw characters and raw/decoded path structure first, then retain resolved authority/host/path checks. Exercise the actual redirect caller with valid controls and malformed references, requiring no next request or body read, response closure and retained reservations. Direct-validator tests alone miss this normalization boundary.
+ - Reliability: timeouts, retries, cancellation, partial failure, observability.
+-- Trace deadlines through cleanup, not only the task body. A server statement timeout or outer process kill does not bound client I/O, pool/connection closes, teardown SQL or synchronous child waits. Require a separate finite cleanup budget, cancellation before potentially stalled release, owned handles retained through final signaling/reaping, and original-error plus explicit incomplete-cleanup reporting when absence cannot be established. Fault-inject a stuck early and late cleanup operation through the actual caller; an independently green timeout utility does not prove its callers are bounded.
++- Trace deadlines through cleanup, not only the task body. A server statement timeout or outer process kill does not bound client I/O, pool/connection closes, teardown SQL or synchronous child waits. Require a separate finite cleanup budget, cancellation before potentially stalled release, owned handles retained through final signaling/reaping, and original-error plus explicit incomplete-cleanup reporting when absence cannot be established. Fault-inject a stuck early and late cleanup operation through the actual caller; an independently green timeout utility does not prove its callers are bounded. Go: `exec.CommandContext` without `cmd.WaitDelay` leaves `Wait` blocked after the kill while a grandchild (e.g. `git-remote-https`) holds the stdout/stderr pipe; probe with a local TCP listener that accepts and never answers TLS (945u: 2 s deadline still blocked at 120 s; with `WaitDelay` it returned at 4 s).
+ - Resource-owner lifetime: require an armed owner from initial pool/handle creation through setup, registration, outer-body execution and finalization transfer. A guard created only by the cleanup helper leaves earlier error/drop paths uncovered. Cancel the actual outer caller and post-creation/pre-registration setup in tests; a direct test of the close/finalize utility does not cover those boundaries. Keep unknown backend identities explicit while retaining the real pool or handle; dropping a Tokio JoinHandle or standard Child is not abort/join or kill/reap.
+ - Audit every enclosing test/quality supervisor, not only the qualified inner runner. Fallible PID-record publication after Popen, wait interruption and timeout must not discard the actual CLI owner; PID/argv/wall-time files are diagnostics, not an acknowledged ownership transfer. Prefer an already-qualified external owner over adding another supervisor layer, and separately qualify its client/identity/result bindings.
+ - Process ownership: test cancellation between spawn and identity registration, and between reap and identity retirement, not only during a blocking wait. Use owned scheduling controls and harmless signal interception, never forced PID reuse. Require identity reservation through the last group signal; distinguish a joined leader from completed foreground descendants, because both missed cancellation and stale numeric signaling can survive ordinary happy-path/signal tests.
+@@ -78,6 +78,7 @@ Use this as a scan order, not a rigid form:
+ - Tests: meaningful assertions, regression cases, integration boundaries, fixtures, flaky timing.
+ - Test entrypoint compatibility: when adding ignore/opt-in markers or renaming fixture variables, audit existing CI, task-runner and shell callers. Execute their real selectors with an intentionally invalid prerequisite and require the intended test failure, not exit zero with all cases ignored. Keep new DB regressions explicitly selected in the provisioned DB job; successful manual commands using both old and new variables can mask a broken existing invocation.
+ - Trace renamed fixture environment variables into the unchanged CI invocation and rerun with only its documented inputs. A convenience wrapper that sets both old and new names can hide a broken compatibility seam; ensure newly ignored DB regression targets are explicitly selected in the real DB job, not merely compiled by general tests.
++- A git subprocess claimed to give byte-stable output is not isolated by `GIT_CONFIG_NOSYSTEM=1` + `GIT_CONFIG_GLOBAL=/dev/null`: `GIT_CONFIG_COUNT`/`KEY_n`/`VALUE_n` and `GIT_CONFIG_PARAMETERS` still add config, `GIT_DIFF_OPTS=-u0` overrides `--unified`, and a global attributes file (`$XDG_CONFIG_HOME/git/attributes` or `$HOME/.config/git/attributes`, `* -diff`) turns the diff into `Binary files … differ`. Rerun it with those set and expect an allowlisted environment (PATH, HOME=<empty scratch>, `GIT_CONFIG_NOSYSTEM=1`, `GIT_CONFIG_GLOBAL=/dev/null`, `GIT_ATTR_NOSYSTEM=1`, ceiling dir), not `os.Environ()` plus overrides (9019, 2026-10-25).
+ - Proof-helper integrity: treat opt-in evidence acceptance as executable product behavior, not a debug invariant. Use explicit failures instead of removable Python `assert` decisions, and pair valid controls with reason-specific failures under normal/-O/-OO. Validate a case before publishing it as accepted; distinguish a cumulative partial-case journal and raw diagnostic output from successful completion of the whole proof command.
+ - Replay representative real logs before allocating a database to validate a new log parser. Rust `--nocapture` can interleave CLI diagnostics or successful child-PID records between a named test header and its final `ok`; require the unique expected identities, final counts and process exit, rather than either summary-only acceptance or adjacent-line assumptions. When a raw log embeds nested negative-control suites, reconcile only the recorded outer qualified test IDs, associate each outer header with its completion status, and identify the outer final summary. Preserve nested failures as expected-control evidence instead of counting them as outer failures or inflating the outer test population.
+ - For owned Podman fixtures, force local mode and cached images, journal the create-time CID, and verify identity/labels before first start/client use as well as before deletion. Bind the data mount to the recorded volume name, creation metadata and mountpoint; a later status refusal cannot undo earlier use of a mismatched resource. Validate tmpfs through both `HostConfig.Tmpfs` and `Mounts`: an empty `Mounts` list alone does not disprove a configured tmpfs. Preserve receipts through setup/cleanup failures, use fresh evidence directories, and never retry cleanup after an ownership or approval block.
+@@ -95,6 +96,8 @@ Use this as a scan order, not a rigid form:
+ - Safety metadata: compare explicit canonical status/date/approval fields across human-readable docs and machine manifests. Keyword presence is not agreement; retain full-entrypoint negative fixtures where one field contradicts the manifest while unrelated caveats remain, and reject missing/duplicate/conflicting fields without treating the checker as release authorization.
+ - Execution provenance: require contemporaneous complete consumed-source hashes or a dirty patch before and after dirty-tree runs. HEAD plus a dirty flag or one wrapper hash does not bind every helper, test or workflow; inherit only demonstrated unchanged bytes/consumed fields rather than fabricating retrospective attestation.
+ - Scanner coverage: inspect the exact resolved packaged implementation and its actual revision-range, pagination and merge filtering. Full checkout depth only supplies history; it does not prove all relevant commits were scanned, and a mutable-tag source snapshot does not authenticate the future packaged runtime.
++- Evidence and receipt checkers (a script that decides "accepted"): attack them as a careless or dishonest agent would. Try a dirty worktree; a log from an older commit; an `EXIT=0` mid-log or a `LAST_EXIT=0` substring; a folder where a file is expected (`-s` is true for directories on macOS); a duplicate entry where the first one wins; the same report passed twice; receipts shared between two "independent" reports, including through a symlink; a tag regex that grabs every ID on its line; an "it fails on the old code" proof that is really a missing test file (exit 127, "no tests found"); a skipped test that exits 0 (`--- SKIP`); a failed test a `| tee` turns into exit 0. Feed it real runner output, made by running the project's documented recipe verbatim in a scratch repo, not hand-written logs: a real `go test -v ./...` prints `[no test files]` for other packages, which breaks naive "no tests ran" checks; a parent's pass hides skipped children (`    --- SKIP: TestX/sub`, an inner TAP `# SKIP`, Node 22 spec `﹣ … # <reason>`); a crash or a timeout prints no `--- FAIL` line. Before adopting a dirty-worktree rule, sample the project's real worktrees for untracked tool scratch. On 2026-10-23/24 these got false results out of `feature-dispatch/scripts/ac-check.sh` in two review rounds, with every unit test green.
++- Shell hooks and scripts on macOS may run under a minimal PATH with `/bin/bash` 3.2. Run their suites a second time as `PATH=/usr/bin:/bin /bin/bash <suite>` to catch bash 4+ syntax, GNU-only flags and missing tools.
+ - Scanner target containment: prove the exact Git repository root before history traversal. A nonrepository directory can discover an ancestor repository through `git -C`; use initialized, wholly owned synthetic repos for error controls and an explicit discovery ceiling for raw nonrepo probes. Preserve any escaped execution as an excluded scope incident, and do not infer no sensitive exposure merely from zero findings. Distinguish reachable graph size from patch-bearing scanner commit counts and verify expected canary commit identities.
+ 
+ ## Output Format
+diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
+index c509c64..66b4577 100644
+--- a/skills/implementation-planning/SKILL.md
++++ b/skills/implementation-planning/SKILL.md
+@@ -25,10 +25,11 @@ Produce a saved, finite software plan that a context-free implementer can follow
+ ## Standing preferences and boundaries
+ 
+ - Write for an implementer with zero codebase context: exact paths, complete code for executable tasks, exact commands, expected outcomes and explicit stop conditions.
++- Expect exit codes the wrapper can actually report. `make <target>; echo $?` gives 2 for any failed recipe, and `go run` turns any non-zero child exit into 1 (printing `exit status N`), so a command's own 0/1/2 contract is pinned by tests on the binary or `run()` function, not through make. (2026-10-23, 901u v2.)
+ - Use DRY, YAGNI, vertical TDD and frequent scoped commits; prefer improving existing owned components over parallel replacements.
+ - Honor the current plan-only boundary even when the task also says to work on everything. Inspect read-only context and write only the designated plan artifact; do not implement, run application tests, publish tracker changes or start coding delegates.
+ - Keep the chat response brief: saved path, coverage, genuine blockers and an offer to execute later. Put depth in the plan, not a pasted Discord implementation manual.
+-- Distinguish ready tasks from gated tasks. Missing provider, authority, runner or hosting agreements must not become guessed endpoints, fake authenticators, default limits or substitute safety gates.
++- Distinguish ready tasks from gated tasks. Missing provider, authority, runner or hosting agreements must not become guessed endpoints, fake authenticators, default limits or substitute safety gates. A credential the plan relies on is proven accepted by a read-only probe (`ssh -o BatchMode=yes -T git@github.com`, `github.com/<user>.keys`), not just found present or passphrase-free.
+ 
+ ## Procedure
+ 
+@@ -36,7 +37,9 @@ Produce a saved, finite software plan that a context-free implementer can follow
+ 
+ Extract the goal, included work, exclusions, acceptance and allowed side effects from the current request. Resolve an obvious interpretation autonomously; ask one brief question only when genuinely different interpretations change the plan.
+ 
+-**Done:** one-sentence goal and a finite scope; historical work is not silently resumed or called incomplete.
++Number the acceptance criteria and name each one's test. When the request or card states none, write proposed ones from it: observable Given/When/Then outcomes, marked **proposed** near the top of the plan so the user approves them with it. Never reword or replace stated criteria; a fact only the user or team can decide stays an open question, not a criterion.
++
++**Done:** one-sentence goal, a finite scope and numbered acceptance criteria (stated or proposed); historical work is not silently resumed or called incomplete.
+ 
+ ### 2. Refresh the baseline and ownership
+ 
+@@ -63,7 +66,7 @@ For code-ownership migrations, plan these preservation checks before the first e
+ - Preserve every independent assertion, parser, parameter, marker and contract/gap obligation. Change only measured owner fingerprints, intentional additive references and required-origin bindings; source counts are not behavioral preservation evidence.
+ - Trace inventory cardinality through the canonical caller and its independent success fixture. Add a complete stale-cardinality denial regression without relaxing closed-schema, exact-count or integer-type validation.
+ - Trace changed checker bytes into fixed trusted-grader digest consumers. Plan an explicit independently reviewed literal pin update bound to the measured code delta, never automatic repair or runtime-derived admission.
+-- Bind acceptance to the complete candidate, including new files. After a stale-base transplant or correction, preserve the earlier packet, prove unaffected paths unchanged, seal a new revision and require delta review plus complete exact-head canonical qualification. A peer source ACCEPT does not waive required local-first or native admission.
++- Bind acceptance to the complete candidate, including new files. After a stale-base transplant or correction, preserve the earlier packet, prove unaffected paths unchanged (for a JSON object file such as a lock, compare entries by value: appending after the old last entry rewrites its trailing comma, so a `git diff | grep '^-'` gate fails on correct data; 9019), seal a new revision and require delta review plus complete exact-head canonical qualification. A peer source ACCEPT does not waive required local-first or native admission.
+ 
+ Use `references/source-migration.md` for the concrete discovery, preservation, transplant and review recipe; include its relevant checks in the saved plan rather than treating the reference as execution authorization.
+ 
+@@ -98,7 +101,7 @@ Preserve already-passing regression tests as regression coverage. Do not fabrica
+ 
+ Use the actual selected workspace, not a stale session/profile path. Obtain the timestamp with a tool, then save `.hermes/plans/YYYY-MM-DD_HHMMSS-<slug>.md` there using `write_file`, unless an exact target was supplied. Let the file tool create parents; do not create unrelated scratch/project files in a plan-only turn.
+ 
+-Include Goal, Current context/assumptions, Architecture/proposed approach, ordered Tasks, Tests/validation, Risks/tradeoffs/open questions and a completion/reporting contract. Keep ordinary architecture prose concise; expand only consequential decisions and instructions the implementer needs.
++Include Goal, numbered Acceptance criteria, Current context/assumptions, Architecture/proposed approach, ordered Tasks, Tests/validation, Risks/tradeoffs/open questions and a completion/reporting contract. Keep ordinary architecture prose concise; expand only consequential decisions and instructions the implementer needs.
+ 
+ Check embedded code and command syntax without executing the planned work; use `references/plan-validation.md`. Fix failed snippets in the plan itself, and do not mistake the exit of a later status command for validator success.
+ 
+diff --git a/skills/implementation-planning/references/plan-validation.md b/skills/implementation-planning/references/plan-validation.md
+index 03d77c8..b2cd256 100644
+--- a/skills/implementation-planning/references/plan-validation.md
++++ b/skills/implementation-planning/references/plan-validation.md
+@@ -58,7 +58,7 @@ print(json.dumps({
+ 
+ Use `terminal` or `execute_code` for the static recipe only when allowed. Keep it in memory or in the permitted plan-validation context; the code here is reference material, not an instruction to write a new validator file during a restricted turn.
+ 
+-`ast.parse` proves parsing, not successful imports, names, authority, runtime compatibility or behavior. `bash -n` proves shell syntax, not valid flags, available binaries, correct credentials or safe side effects. Contextual Python fragments additionally need their declared enclosing function checked; do not call them standalone complete programs. This recipe matches only explicitly labeled Python and Bash fences; inspect the returned coverage and disclose other or unmatched fences instead of claiming all embedded code was checked.
++`ast.parse` proves parsing, not successful imports, names, authority, runtime compatibility or behavior. `bash -n` proves shell syntax, not valid flags, available binaries, correct credentials or safe side effects. Contextual Python fragments additionally need their declared enclosing function checked; do not call them standalone complete programs. This recipe matches only explicitly labeled Python and Bash fences; inspect the returned coverage and disclose other or unmatched fences instead of claiming all embedded code was checked. Go fences aren't covered: assemble the plan's Go blocks into a `git archive <base>` scratch copy and run `go vet` plus CI's golangci-lint (still static; no tests ran). Offline, call the cached toolchain binary (`~/go/pkg/mod/golang.org/toolchain@v0.0.1-go<ver>.<os>-<arch>/bin/go`) with `GOTOOLCHAIN=local GOPROXY=off`: `GOTOOLCHAIN=go<ver>` with `GOSUMDB=off` fails with "verifying module: checksum database disabled".
+ 
+ ## 4. Preserve the validator's outcome
+ 
+diff --git a/skills/multi-tenant-auth-management/SKILL.md b/skills/multi-tenant-auth-management/SKILL.md
+index df130e1..ea9d1f8 100644
+--- a/skills/multi-tenant-auth-management/SKILL.md
++++ b/skills/multi-tenant-auth-management/SKILL.md
+@@ -8,7 +8,7 @@ platforms: [linux, macos]
+ 
+ Use this skill when building or reviewing authentication and user-management systems for SaaS, B2B, internal platforms, marketplaces, or products where users can belong to one or more tenants, organizations, workspaces, accounts, or environments.
+ 
+-Pair with `$sovereign-identity-data-compliance` when tenants may operate in China, India, EU/UK, Singapore, Saudi Arabia, UAE, Vietnam, Russia, or any country/customer environment with residency, transfer, encryption, key-custody, or sovereign-cloud requirements.
++Raise data-residency rules as an open question for the user when tenants may operate in China, India, EU/UK, Singapore, Saudi Arabia, UAE, Vietnam, Russia, or any country/customer environment with residency, transfer, encryption, key-custody, or sovereign-cloud requirements.
+ 
+ ## Core Workflow
+ 
+diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
+index f2d882d..2773b08 100644
+--- a/skills/mutation-testing-discipline/SKILL.md
++++ b/skills/mutation-testing-discipline/SKILL.md
+@@ -102,7 +102,10 @@ itself prove that the entire test is worthless.
+    compilation, setup or an unrelated guard is not a killed mutation. Inspect
+    the catalogue's diagnostic field types before grading a batch: retain the
+    distinction between a shared string and a per-method mapping, and bind each
+-   expected diagnostic to its declared method's emitted exception. Match exact
++   expected diagnostic to its declared method's emitted exception. When the
++   mutation disables a guard, expect the test's failing assertion
++   (`error = <nil>, want …`), not the guard's own message, which a disabled
++   guard never prints. Match exact
+    test identities and require unaffected positive controls to remain green;
+    a matching message elsewhere in the combined log is not that method's kill.
+    Classify an unexpected survivor only after checking equivalent guards and
+@@ -155,7 +158,11 @@ transcripts in `references/blind-test-patterns.md`.
+  `assert result == []` passes trivially. The same masking happens inside a
+  single bad-input case: a non-loopback host given an out-of-range port is
+  rejected by the port check, so widening the host check survives. Make each
+- negative case violate exactly one rule. Also check test fakes for sentinel
++ negative case violate exactly one rule. A tool's own default masks too: a
++ `GIT_ALLOW_PROTOCOL` allowlist test stays green with the allowlist deleted,
++ because git already refuses `ext::`; turn the default off in the test
++ (`GIT_CONFIG_COUNT=1`, `GIT_CONFIG_KEY_0=protocol.allow`,
++ `GIT_CONFIG_VALUE_0=always`) so the guard under test is the only one. The test process's own environment masks too: a fixture's `t.Setenv("GIT_CONFIG_GLOBAL", os.DevNull)` keeps protecting the child after production stops setting it, so the case meant to kill that mutant must unset it first (9019). Also check test fakes for sentinel
+  collisions: a fake whose `None` argument means "use the valid default"
+  silently turns the `None` rejection case into a positive one — use a
+  private `object()` sentinel for "not provided".
+@@ -197,7 +204,10 @@ transcripts in `references/blind-test-patterns.md`.
+    hostile input — point the loader at a temp config that tries to *lower* the
+    floor, then assert the clamped value exactly — plus a separate
+    missing-config case asserting the defaults. Rule: a guard that normalizes a
+-   value must be tested with a value that actually needs normalizing.
++   value must be tested with a value that actually needs normalizing, and whose
++   un-normalized form gives a different result on the fixture (an untrimmed
++   `?q=+POSTMORTEM+` still matched a description containing " postmortem ").
++   Run a suggested killing case against the surviving mutant before adopting it.
+ 10. **The test never ran.** Dependency-gated tests that early-`return` when an
+     env var (a DB URL, a service endpoint, an API key) is unset report as
+     PASSES, so "N passed" can mean "N minus the important ones". The suite
+@@ -290,7 +300,38 @@ transcripts in `references/blind-test-patterns.md`.
+     another discovery test failing does not establish this method's sensitivity.
+     Preserve the old and strengthened oracles, apply the identical production
+     mutation to each, and report their distinct outcomes without retroactively
+-    crediting the new assertion with the old RED.
++    crediting the new assertion with the old RED. Go, test strengthened in place:
++    put `git show <rev>:<test file>` and the mutant in one `go test -overlay`
++    JSON, so both oracles run on the same bytes with no second checkout.
++    `-overlay` reaches only files the go command compiles: mutate a guard's
++    run-time input (a JSON record, a diff the test applies) in the real file,
++    restore the saved bytes in `finally`, and check hash and git status;
++    also remove folders a mutant created (a leftover empty item folder made
++    every later mutant fail for the wrong reason) and digest folders too.
++    An overlay can also add a file (a Replace entry for a path not on disk):
++    swap an unreachable call (e.g. `EvalSymlinks` on a fresh temp dir) for a
++    failing stub, apply the same swap to old (RED) and fixed (GREEN) code, and
++    run only the failure subtest; no test hook in production (9019).
++12. **A path-traversal test can be unable to fail.** When the guarded path is
++    `<dir>/<prefix>.<id>`, an `../../evil` id makes `<prefix>.` a missing
++    folder, so the OS refuses the path even with the sanitizer deleted. Create
++    the first component the hostile id names (`mkdir <dir>/<prefix>.x`, id
++    `x/../../evil`) and assert nothing lands outside `<dir>`; then delete the
++    sanitizer and watch the test fail. (2026-10-23: `~/.claude/hooks` gate
++    tests passed with sanitization removed.)
++13. **A mutant that doesn't build is not a kill.** Removing the only use of an
++    import (or a variable), or adding a call (`time.Sleep`) without its import,
++    makes the package fail to compile, so the "failing" test never ran; count
++    a kill only on the test's own `--- FAIL` line. Keep the import used (e.g. `OneLine(text) + html.EscapeString("")`),
++    keep the failed receipt as NOT A KILL and supersede it with a versioned
++    variant (`M13b-v2`) that builds. (2026-10-23, 901u v2 builder.)
++14. **A negative fixture that drops two fields hides the second guard.** If a
++    "missing id" case also drops the type, the earlier type guard answers and
++    deleting the id guard survives. Vary one field per negative case, and rebuild
++    fixture folders for every case: a hard link made in one case survives later
++    `>` writes and quietly couples the next case's "independent" files.
++    (2026-10-23: the empty-agent_id guard survived in both `~/.claude/hooks`
++    gate suites.)
+ 
+ ## Specialized harnesses
+ 
+diff --git a/skills/security-best-practices/SKILL.md b/skills/security-best-practices/SKILL.md
+index 6f12e3e..3bde429 100644
+--- a/skills/security-best-practices/SKILL.md
++++ b/skills/security-best-practices/SKILL.md
+@@ -87,3 +87,9 @@ When assigning an ID for some resource, which will then be used by exposed to th
+ ### A note on TLS
+ 
+ While TLS is important for production deployments, most development work will be with TLS disabled or provided by a separate TLS proxy. Due to this, be very careful about not reporting lack of TLS as a security issue. Also be very careful around use of "secure" cookies. They should only be set if the application will actually be over TLS. If they are set on non-TLS applications (such as when deployed for local dev or testing), it will break the application. You can provide a env or other flag to override setting secure as a way to keep it off until on a TLS production deployment. Additionally avoid recommending HSTS. It is dangerous to use without full understanding of the lasting impacts (can cause major outages and user lockout) and it is not generally recommended for the projects being reviewed by codex.
++
++### Scanning untrusted trees with gitleaks
++
++gitleaks 8.30.1 `dir` always loads `<scanned folder>/.gitleaksignore` (case-insensitively on macOS), even when `--gitleaks-ignore-path` points elsewhere, and an inline `gitleaks:allow` suppresses a finding unless `--ignore-gitleaks-allow` is set. When the scanned content is untrusted (a PR-controlled library, uploads), reject `.gitleaksignore`/`.gitleaks.toml` in the tree or scan a copy without them, and pass `--ignore-gitleaks-allow`. Probe (2026-10-23): 3 findings with no ignore file, 0 with a root `.gitleaksignore` or `.GitLeaksIgnore`. `dir` also skips any text file that `h2non/filetype` (first read, up to 100 KB) types as `application/*`: `%PDF-`, `{\rtf`, `%!PS` at the start, and `ustar` at byte 257, `DICM` at 128, `CD001` at 32769 even after a header line. A secret there is missed (exit 0) while `gitleaks git` finds it. Scan copies whose first line carries a token-shaped canary gitleaks must report on line 1; fail closed when it's missing, drop the canary finding and shift other lines by 1. `dir` also reads in 100,000-byte chunks (plus up to 25,000 bytes of peek to a newline), so a token across the cut is missed while the canary is still reported: fail closed on any copy over 100,000 bytes. Build the canary without vowels: the default global allowlist `(?i)^true|false|null$` is unanchored in the middle and drops any token containing "false" (read it with `strings "$(readlink -f "$(command -v gitleaks)")" | grep -F 'true|false|null'`); no `[extend]` key removes it (`useDefault` always appends the default allowlists), so catching such secrets needs a full rules file. `\uXXXX`-escaped tokens are not a bypass: decoding is on by default (tag `decoded:unicode`) unless `--max-decode-depth=0` (probes 2026-10-24). An explicit `--config` takes precedence over `GITLEAKS_CONFIG*` env, so a real-gitleaks test can't detect a dropped env scrub; pin the scrub with a recording fake scanner.
++
++In agent-facing content (skills, prompts), read `npx <pkg>` as `npx -y <pkg>@latest`: npm exec assumes `--yes` whenever stdin is not a TTY or CI is detected (npm 10.9.4 `npm-exec.md` lines 37-38), which is how coding agents run commands, so an unpinned line installs and runs the newest release. Look each bare name up (`npm view <name> description bin maintainers`), and read its latest bin script from the tarball (download into an empty folder, check `dist.shasum`, never run it; npm `tsc` 2.0.4 calls itself a deprecated TypeScript release but its bin only prints a warning and exits 1), before calling it safe: the name can belong to someone else (npm `lhci` is a third-party placeholder with an `lhci` bin; Lighthouse CI is `@lhci/cli`) (9019, 2026-10-25).
+diff --git a/skills/security-best-practices/references/golang-general-backend-security.md b/skills/security-best-practices/references/golang-general-backend-security.md
+index 0f0bc69..9d2222a 100644
+--- a/skills/security-best-practices/references/golang-general-backend-security.md
++++ b/skills/security-best-practices/references/golang-general-backend-security.md
+@@ -431,6 +431,7 @@ Detection hints:
+ Fix:
+ - Use `html/template` and pass untrusted data as data, not markup.
+ - If you must allow limited HTML, use a vetted HTML sanitizer and still be careful with attributes/URLs.
++- Rendered Markdown: goldmark's default safe mode (no `WithUnsafe`) drops raw HTML and `javascript:`/`vbscript:`/`file:`/`data:` URLs, but it **keeps `data:image/{png,gif,jpeg,webp,svg+xml}`** link/image URLs (`IsDangerousURL`, v1.7.17), and its table extension writes alignment as inline `style=` attributes that a nonce-only CSP blocks. State both in docs, and probe the real renderer with hostile input rather than trusting a summary. Its GFM table extension also pads every short row to the header's column count (`extension/table.go`), so output grows with columns × rows (a 16 KB table → 80 MB HTML, 1.8 GiB allocated): for untrusted Markdown, bound possible cells or fall back to an escaped code view before calling goldmark.
+ 
+ ---
+ 

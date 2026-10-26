@@ -1,0 +1,10 @@
+- [Figma sandbox rejects "import" text](figma-ses-import-rejection.md) — a comment ending in "import" before a `//` line stops the plugin from opening
+- [Phone slider: height auto, never Auto height](bricks-slider-auto-height-collapse.md) — Bricks' Auto height measures a hidden slider as 0px and never recovers; verified in headless Chrome
+- [Hostinger bot check hides builder elements](hostinger-bot-check-hides-builder-elements.md) — slider JSON is fine; a captcha/challenge reply to render_element makes Bricks skip the element on the canvas
+- [Check Bricks output in headless Chrome](headless-chrome-bricks-check.md) — render as #brxe HTML + Splide; iframe for <500px widths; animations only in real-time CDP with font links stripped
+- [Figma interactions → web](main-component-animations-stage2.md) — states, overlays, links, carousels, toggles, sticky/fixed, scroll-in Motion; stacking = keep Figma layer order; states = variant as designed + instance content (build 2026-10-01.1); Bricks tags/_cssId unverified
+- [AVIF encoder in Figma](avif-encoder-in-figma.md) — plugin panel has no WebCodecs/crypto.subtle (not a secure context); jSquash libaom WASM in classic blob workers, hash-pinned; test in a sandboxed data: iframe
+- [No silent format fallback](no-silent-format-fallback.md) — AVIF chosen: stop and explain, never quietly upload WebP/original; photos only
+- [User says "header" for the hero](user-says-header-for-hero.md) — "header" = top photo section; nav bar = "next to the header on top"
+- [Website rules (semantics + WCAG)](website-rules-semantics-a11y.md) — build 2026-10-02.1 done; lists/figure and popover phases wait for the Bricks check page
+- [User means rules, not laws](user-means-rules-not-laws.md) — "laws and regulations" for websites = technical rulebooks (HTML, WCAG, SEO), not legislation

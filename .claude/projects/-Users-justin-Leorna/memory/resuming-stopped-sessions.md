@@ -1,0 +1,20 @@
+---
+name: resuming-stopped-sessions
+description: "Where a stopped Claude Code session's pipeline state lives (subagent reports, models, typed messages) when writing a resume prompt"
+metadata:
+  node_type: memory
+  type: reference
+  originSessionId: 2c0f653f-8021-4c94-84cf-9276a410e30a
+  modified: 2026-10-25T16:54:50.465Z
+---
+
+Found on 2026-10-23 while writing restart prompts for three stopped Leorna sessions:
+
+- **Subagent transcripts** are in `~/.claude/projects/<project>/<session-id>/subagents/agent-<id>.jsonl`. `<project>` is the folder's absolute path with every non-alphanumeric character replaced by `-`, plus a hash suffix past 200 characters (binary 2.1.310). So `/Users/justin/.hermes` becomes `-Users-justin--hermes`, and WSL's `/home/justin/Leorna` becomes `-home-justin-Leorna`. A background agent's final report is in its `SubagentHandback` tool_use input, or in its last text block (Plan-type agents can end with plain text). Check both: the 901v planner's 120 KB plan was only in the last text block.
+- **Real model and effort** of an agent: `agent-<id>.meta.json` (`model`, `effort`). The agent itself can't see its effort.
+- **Messages Justin typed straight into a running subagent** appear only in that subagent's transcript, as `attachment.type == "queued_command"`.
+- **Plan mode** lets the session write only its plan file. Lessons or notes kept only in chat are lost when the session is stopped.
+- **A stopped agent can't be continued from a new session**: re-dispatch it from a saved brief. Hence the CLAUDE.md rule to save every brief under `~/.hermes/plans/<project>/briefs/` before dispatching.
+- The state of the three sessions stopped at 20:00 EDT, and their unsaved plan and brief, are in `~/.hermes/plans/leorna/restart-2026-10-23/`.
+
+Related: [[claude-md-loads-at-session-start]], [[concurrent-sessions-share-skill-files]]

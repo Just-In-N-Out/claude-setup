@@ -1,0 +1,24 @@
+# Setup sync excludes (gitignore syntax, anchored at $HOME). sync.sh copies this into
+# ~/.claude-setup.git/info/exclude on every run and adds one line per symlink it finds.
+/.hermes/plans/**/evidence/
+/.hermes/plans/**/private/
+/.hermes/skills/.hub/
+/.hermes/skills/.locks/
+/.hermes/skills/.curator_ledger.jsonl
+/.hermes/skills/.curator_state
+/.hermes/skills/.bundled_manifest
+/.hermes/skills/.usage.json
+/.hermes/skills/.usage.json.lock
+/.hermes/skills-library/
+/.claude/hooks/state/
+/.claude/skills/
+.DS_Store
+__pycache__/
+*.pyc
+*.lock
+.env
+.env.*
+auth.json
+config.yaml
+state.db
+state.db-*

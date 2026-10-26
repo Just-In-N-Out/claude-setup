@@ -1,0 +1,10 @@
+# gitleaks config for setup sync: sync.sh scans every file before it is committed.
+# Default rules, plus narrow allowlists for proven false positives only.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "git commit SHAs in plans are not Sourcegraph tokens (2 hits in figma-to-bricks plans, 2026-10-25)"
+targetRules = ["sourcegraph-access-token"]
+regexTarget = "secret"
+regexes = ['''^[0-9a-f]{7,40}$''']

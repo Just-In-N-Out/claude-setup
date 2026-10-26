@@ -1,0 +1,17 @@
+# Projects known to setup sync. Tab-separated: name, mac_path, desktop_path, memory, claude_md.
+# memory: the Mac memory folder under ~/.claude/projects this project uses ("-" for none);
+#   on the desktop, sync.sh links the desktop folder's memory to it, so both machines share notes.
+# claude_md: yes = the project's CLAUDE.md is copied to ~/.claude/project-docs/<name>/ and synced.
+# Edit desktop_path if a project lives somewhere else on the desktop, then run sync.sh links.
+leorna	/Users/justin/Leorna	/home/justin/Leorna	-Users-justin-Leorna	no
+leorna-client	/Users/justin/Leorna/leorna-client	/home/justin/Leorna/leorna-client	-Users-justin-Leorna-leorna-client	no
+leorna-control-plane	/Users/justin/Leorna/leorna-control-plane	/home/justin/Leorna/leorna-control-plane	-Users-justin-Leorna-leorna-client	no
+figma-to-bricks	/Users/justin/Documents/FigmaToBricksV2	/home/justin/Documents/FigmaToBricksV2	-Users-justin-Documents-FigmaToBricksV2	yes
+figma-plugin	/Users/justin/Desktop/FigmaPlugin	/home/justin/Desktop/FigmaPlugin	-Users-justin-Desktop-FigmaPlugin	yes
+rise	/Users/justin/Rise	/home/justin/Rise	-Users-justin-Rise	yes
+rise-backend	/Users/justin/Desktop/rise-backend	/home/justin/Desktop/rise-backend	-	yes
+minimalog	/Users/justin/Documents/weightstone-journal	/home/justin/Documents/weightstone-journal	-Users-justin-Documents-weightstone-journal	yes
+weightstone-journal	/Users/justin/weightstone-journal	/home/justin/weightstone-journal	-	yes
+3dsearch	/Users/justin/3DSearch	/home/justin/3DSearch	-Users-justin-3DSearch	yes
+appsec-project	/Users/justin/Desktop/APPSec-Project	/home/justin/Desktop/APPSec-Project	-Users-justin-Desktop-APPSec-Project	yes
+personal-website	/Users/justin/JustinPersonalWebsite	/home/justin/JustinPersonalWebsite	-	yes

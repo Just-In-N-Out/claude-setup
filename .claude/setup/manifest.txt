@@ -1,0 +1,24 @@
+# Setup sync manifest: git pathspecs relative to $HOME, one per line.
+# Only paths matched here are ever added. exclude.txt and sync.sh's built-in
+# denylist still win. The next sync uses your edits.
+.github/README.md
+.claude/CLAUDE.md
+.claude/settings.json
+:(glob).claude/hooks/*.sh
+:(glob).claude/hooks/tests/**
+:(glob).claude/setup/**
+:(glob).claude/projects/*/memory/**
+:(glob).claude/project-docs/*/CLAUDE.md
+:(glob).claude/plans/*.md
+:(glob).hermes/skills/**
+.hermes/skills-library-keep.txt
+.hermes/skills-library-claude.txt
+.hermes/skills-library-merged.txt
+.hermes/skills-library-local.patch
+:(glob).hermes/scripts/*.sh
+:(glob).hermes/scripts/*.py
+.hermes/SOUL.md
+.hermes/memories/MEMORY.md
+.hermes/memories/USER.md
+:(glob).hermes/plans/**/*.md
+:(glob).hermes/plans/**/briefs/**

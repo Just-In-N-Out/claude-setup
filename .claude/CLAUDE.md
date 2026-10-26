@@ -1,0 +1,101 @@
+# Global Instructions
+
+## Bugs and Stories: You Are the Orchestrator — Read First
+
+Every bug, story, feature, ClickUp card or "fix this" in any repo goes through the pipeline below. The exceptions: a question, a lookup, a one-line edit, or the user saying "do it here". The user often sends voice notes, so "big" may mean "bug".
+
+**The main session only orchestrates.** It sends work to subagents, shows the user plans and results, records the user's answers, and runs the loop. It does **not** plan, brainstorm, read code to work out a fix, write code or tests, or review. For a story, don't load `engineering-best-practices`, `implementation-planning`, `systematic-debugging` or `test-driven-development` in the main session (they go in the briefs), and don't use `superpowers:brainstorming`, `writing-plans`, `executing-plans` or `subagent-driven-development`: this pipeline replaces them. Light checks to route the work are fine: the card's text, git state, which agents are running. *Why: twice on 2026-10-23 the main session read "Planning: `implementation-planning`" as its own job, loaded it and started investigating the card and repos instead of dispatching a planner.*
+
+**Read at the start, as a guide** (not every file in full):
+- `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/SKILL.md`: the full dispatcher rulebook. It's a Hermes skill, so open it with Read; `delegate_task` there means the Agent tool here. Skip its board, WhatsApp and status-ping parts.
+- `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md`: how ACs are proven before the finish step (step 6).
+- Leorna work: load `leorna` for roles, plan approval, evidence and hand-over, but skip its Step 1 context load: the planner does it.
+- The role skills in the next section go into each agent's brief. The agent loads them, not you.
+
+**The pipeline.** Every role is a fresh `general-purpose` agent (never the built-in `Plan` type: it can't write files) with `model: "opus"` and `effort: "xhigh"`. Agents don't start other agents: the main session runs every step. Save each brief to `~/.hermes/plans/<project>/briefs/<name>-<role>.md` before dispatching it, so a stopped story can be resumed.
+1. **Play back and pick:** say in one line what was asked, recommend **Full** or **Mini** (`feature-dispatch/references/mini-pipeline.md`) with a reason, and ask with AskUserQuestion. Leorna: ask for the ClickUp card ID in the same question if you don't have it.
+2. **Planner:** first run `~/.claude/setup/sync.sh pull` (Setup Sync below; on `CONFLICT`, merge and rerun before dispatching), so the plan uses the newest skills from both machines. The planner writes `~/.hermes/plans/<project>/<name>.md` (Leorna: `~/.hermes/plans/leorna/<clickup-id>-<slug>.md`) with the playback, root cause with file:line evidence for a bug, **numbered acceptance criteria AC1, AC2…** with one test each, named, tasks, and questions at the top. When the request or card has no ACs, the planner writes proposed ones and marks them **proposed**. It tags `(live)` an AC only the user can check (a live publish, a native menu), right after the id: `- AC3 (live): …` or `- AC3 (proposed) (live): …`. Skills: the project skill, `engineering-best-practices`, `implementation-planning`, plus `systematic-debugging` for a bug.
+3. **Show the plan and stop until "go"** (a project's standing auto-go, like FigmaToBricksV2's, replaces the wait). Check first that it has numbered ACs; if not, send it back to the planner. Never write ACs yourself. List the ACs in your message, one line each, when the planner proposed them, and always list any `(live)` ACs: "go" approves the plan and those ACs. On "go", run `mkdir -p <evidence> && install -m 444 <plan> <evidence>/plan-approved.md`; `ac-check.sh` reads that copy.
+4. **Builder:** builds test-first on the story's branch or worktree, with one test and one screenshot per AC (a terminal capture of the run for an AC with nothing visual), and stops at `ready-for-review`. Skills: `engineering-best-practices`, `test-driven-development`, plus `mutation-testing-discipline` for guards.
+5. **Review → fix → review → fix** (`review-fix-cadence`): a fresh full reviewer (`requesting-code-review` + `code-review-practice`, report only), a fixer (`receiving-code-review`), a second fresh reviewer of the corrected code, then a fixer for its valid findings.
+6. **Verifier, then a blind check** (`ac-verification.md`). A fresh, read-only verifier that never saw the build re-runs the gates, runs every AC's check on the new code and on the old code, and writes `<evidence>/verifier/ac.json` plus `ac_status`. Not clean → fixer → verifier again. Clean → a fresh **AC auditor**, given only the approved plan, the worktree, the head SHA, the base commit and its own folder `<evidence>/auditor/` (never the verifier's report or folder), proves every AC itself and writes `<evidence>/auditor/ac.json`. Then run one command and read its last line (base = `git -C <worktree> merge-base HEAD <integration branch>`):
+   `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh --repo <worktree> --base <base> --plan <evidence>/plan-approved.md <evidence>/verifier/ac.json <evidence>/auditor/ac.json`
+   **`ALL ACCEPTED`** → finish. **`READY FOR THE USER`** → finish, naming the live ACs owed to the user. **`NOT ACCEPTED`** → a fixer gets those lines and both reports, then verifier → auditor → ac-check again. **Loop until `ALL ACCEPTED` or `READY FOR THE USER`, with no round cap.** Ask the user only for a decision that is theirs, or when the same AC fails for the same reason twice with no new fact. Don't open logs, rerun tests or judge ACs yourself: the agents and the script do that.
+7. **Finish:** Leorna → a finisher agent does the hand-over in `leorna` (never push or post unasked), naming any `(live)` AC as owed to the user. Other repos ("Worktrees from `claude -w`" below) → a finisher agent does its step 1 (commit, rebase on local `main`, conflicts, tests) and stops, reporting the new HEAD; if HEAD now differs from the head `ac-check.sh` accepted, you run verifier → auditor → `ac-check.sh` again on it. A finisher agent then does step 4 (after-merge steps); you do only steps 2, 3 and 5 (ExitWorktree, the `--ff-only` merge, the check).
+
+Every brief names the agent's role, the skills it loads, the ACs and the `skill_lessons` rule. Every reviewer, verifier and auditor returns a `verdict` and `ac_status`; the `subagent-ac-gate.sh` hook sends a report back once when it has a verdict but no `ac_status` (for background agents through `subagent-handback-gate.sh`, which also runs the lessons gate).
+
+## Git & GitHub Privacy
+
+- **Never** include `Co-Authored-By` lines referencing Claude, Anthropic, or any AI in commit messages
+- **Never** commit or push `CLAUDE.md` files to any project repository. The one exception is the private setup repo `Just-In-N-Out/claude-setup` (`~/.claude-setup.git`), which holds `~/.claude/CLAUDE.md` and copies of project `CLAUDE.md` files on purpose (Setup Sync below).
+- When a project has a `CLAUDE.md` file, add it to `.git/info/exclude` (the local-only gitignore inside `.git/` that is never committed or visible on GitHub) — **not** to the project's `.gitignore`
+- Before any commit, verify `CLAUDE.md` is not staged. If it is, unstage it (except in the setup repo).
+
+## Setup Sync — Mac ⇄ Windows Desktop
+
+This setup lives on both machines through the private repo `Just-In-N-Out/claude-setup`: a bare repo at `~/.claude-setup.git` whose work tree is `$HOME`. It holds this file, `settings.json`, hooks, memory notes, the Hermes skills, scripts and memory, plans and briefs, and project `CLAUDE.md` copies. Guide: `~/.github/README.md`, plus `~/.claude/setup/mac.md` on macOS or `~/.claude/setup/desktop.md` on Linux/WSL (the Windows desktop).
+- **Pull before planning:** `~/.claude/setup/sync.sh pull` at session start when work begins, and in pipeline step 2 before the planner.
+- **Push after edits:** after editing any synced file (a skill lesson, this file, a memory note, a plan or brief, a hook, `settings.json`), run `~/.claude/setup/sync.sh` before ending the turn. It scans for secrets (gitleaks), commits as the personal identity and pushes. Sync is manual until the automatic version is built (plan: `~/.hermes/plans/claude-setup/setup-sync.md`).
+- On `CONFLICT`, merge both versions keeping both meanings, never dropping the other machine's edit, then rerun. Leorna code repos are never auto-pulled; only setup files sync.
+
+## Git Commit Authorship — Read Every Time
+
+**Never override git commit author metadata.** Do NOT pass `-c user.email=...`, `-c user.name=...`, `--author=...`, or set `GIT_AUTHOR_EMAIL` / `GIT_COMMITTER_EMAIL`. Just run `git commit -m "..."` and let git use the repo's config (which inherits from `~/.gitconfig`).
+
+**The user has two GitHub identities, picked by folder:**
+- **Personal (default, every repo outside `~/Leorna/`):** GitHub `Just-In-N-Out`, `Justin <issajustin04@gmail.com>` (set globally via `git config --global user.email`).
+- **Leorna work (any repo under `~/Leorna/`):** GitHub `Justin-Leorna`, `Justin Issa <justin@leorna.com>`. `~/.gitconfig` sets it with `includeIf "gitdir:~/Leorna/"` → `~/.gitconfig-leorna`.
+
+**Pushing Leorna repos goes through the Leorna account, never the personal one:**
+- The remotes use the SSH alias `git@github-leorna:LeornaAI/<repo>.git`, which signs in with `~/.ssh/id_ed25519_leorna` (`~/.ssh/config`).
+- If that key is locked (it has a passphrase, so `Permission denied (publickey)`), push over HTTPS through `gh`, whose active account is `Justin-Leorna`: `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push https://github.com/LeornaAI/<repo>.git <refspec>`. Then fetch back the same way so `origin/<branch>` updates.
+- Never run `gh auth switch`, and never change a remote URL or credential helper. If a push would go as `Just-In-N-Out`, stop and tell the user.
+- Leorna's own rules still apply: push or open a PR only when the user says "push" or "make a PR", and never merge. The `leorna` and `git-commit-rules` skills hold the details.
+
+**Why this rule exists:** In a previous session I passed `--user.email=jovitaissa05@gmail.com` on the command line, pulled from session `userEmail` context. That email is linked to a *different* GitHub account (`Jovita-05`), so commits showed up authored by the wrong user even though the repo belongs to `Just-In-N-Out`. GitHub maps commit authorship strictly by email. It required a `git filter-branch` rewrite + `--force-with-lease` push to fix.
+
+**Rules:**
+- The system-reminder `userEmail` field is for addressing the user in conversation (greetings, messaging context), **never** for git metadata.
+- If a shell function or script uses `-c user.email=` or `--author=`, remove it.
+- If you ever need to verify authorship before committing: `git log -1 --pretty=format:'%an <%ae>'` — the committer shown must be `Justin Issa <justin@leorna.com>` under `~/Leorna/`, and `Justin <issajustin04@gmail.com>` everywhere else.
+- This applies to every repo on this machine (`RISE-OFFICIAL`, `rise-backend`, and any new ones).
+
+## Skills to Load While Coding — Every Project
+
+**Always use the Hermes skills.** Every skill linked into `~/.claude/skills` from `~/.hermes/skills` is one the user picked for Claude Code. When one of them fits the task, load it, even if the list below doesn't name it. When a Hermes skill and a `superpowers:`, plugin or built-in skill cover the same job, use the Hermes one (e.g. `code-review-practice`, not `/code-review`; `test-driven-development`, not `superpowers:test-driven-development`), unless the user names the other.
+
+The user wants these skills loaded every time code is planned, written, reviewed or merged, in every repo. They are the Leorna skills library's versions, the same files the user's Hermes agents use (linked into `~/.claude/skills`, so the names have no prefix). Use them instead of the `superpowers:` skills with the same names. Invoke each one with the Skill tool at the step named, and say so in one line when you do. Subagents you dispatch for these steps load them too. **For a bug or story, the planning, debugging, TDD, review and verification skills below are role skills of the pipeline in the first section:** they go into each agent's brief, and the main session, as orchestrator, doesn't load them for that work. It still uses `leorna` (routing rules only), `git-commit-rules` and `github`.
+
+- **Any coding task:** `engineering-best-practices` first, the library's primary workflow (for a bug or story: in every agent's brief, not in the main session). This file's rules and the project's `CLAUDE.md` win where they differ (merge and push policy, authorship, plan approval).
+- **Planning (the planner agent):** `implementation-planning`, a plan a fresh agent with no context could build from, with numbered acceptance criteria. When the user gave none, the planner writes proposed ones; the user approves them with "go".
+- **Hunting a bug:** `systematic-debugging` before proposing any fix. Prove the root cause with evidence.
+- **Writing code:** `test-driven-development`. Write a failing test before each change. If a test fails unexpectedly or a quality number gets worse, go back to `systematic-debugging` and don't patch around it. For permission, identity or data-integrity guards, add `mutation-testing-discipline`.
+- **Before merging or committing a feature:** `requesting-code-review` and `code-review-practice`. Get a fresh review from a separate subagent, report only, plus its security and quality checks.
+- **Acting on review findings:** `receiving-code-review`. Verify each finding before fixing it, fix the valid ones test first, and push back with evidence on the rest.
+- **Independent verification:** `adversarial-verification-loop` when a change is security- or correctness-critical: a subagent that never saw the work checks it and returns a verdict. If a skill you use ends with a "Mandatory Validation and Agent Defect Loop" section, run that loop with subagents (fixer, independent bug-finder, independent verifier) until no critical issue is left.
+- Run the project's whole test suite before a merge, browser or UI tests included, not just the quick check.
+- **Subagents report skill lessons, the main session saves them (2026-10-23).** Every brief tells the agent: list reusable lessons (a gotcha, an approach that worked after one failed, a skill step that was wrong or missing) in `skill_lessons[{skill, lesson, evidence}]` and never edit skills or memory itself. An empty list is the normal answer: agents list only what a future task needs that the skill doesn't already say. When the result comes back, check each lesson and save it only if it is **new** (search the skill first), **reusable** beyond this story (story facts go to the project notes) and **proven** by evidence from this session. **Keep skills lean (user, 2026-10-24: not adding for the sake of adding):** fold a lesson into an existing line, replace the line it makes outdated, or delete a line it proves wrong, before ever appending a new one; when a skill nears Hermes' 100,000-character limit, move a section into its `references/` folder. Say in one line what was saved and what was skipped, with why. The `skill-review-nudge.sh` hook reminds subagents every 15 tool calls. `subagent-lessons-gate.sh` enforces the lessons when an agent finishes: a report without them is sent back once, via SubagentStop for foreground agents and PreToolUse on `SubagentHandback` for background ones. The report must end with `MAIN SESSION: check and save these skill_lessons now.`, and when that line arrives, do it before dispatching the next agent.
+- **Agent models (2026-10-23): all-Opus by default.** Every pipeline role (planner, builder, reviewers, fixers, verifier, finisher) is a fresh Opus 5.5 agent at xhigh effort. Fixer → verifier rounds loop until every acceptance criterion is accepted on one head, with no round cap, and every AC gets a screenshot. Sol 6.1 is a substitute only when the user approves it at a Claude limit.
+- **Committing, merging or pushing in any repo:** `git-commit-rules`. For PRs and CI checks: `github`.
+- **Leorna work (`~/Leorna/leorna-client`, `~/Leorna/leorna-control-plane`):** `leorna` first, before `engineering-best-practices` (for a story, the main session loads only `leorna`). For control-plane code, add the specialists it names: `security-best-practices`, `multi-tenant-auth-management`, `api-contract-drift-guard`, `backend-data-migrations`. Don't invoke `feature-dispatch` as a skill (it isn't linked here); run the pipeline in the first section with Claude Code subagents, reading `feature-dispatch` for its rules.
+- These skills are links in `~/.claude/skills` to `~/.hermes/skills/software-development/` and `~/.hermes/skills/codex-imports/`. If a skill named here is missing, the link is broken: say so instead of skipping it.
+
+**Why:** the user's Hermes agents work this way (the same rules are in its `feature-dispatch` skill), and he finds the quality clearly higher. A skill only mentioned in passing got skipped, so these are explicit steps.
+
+## Worktrees from `claude -w` — Finishing a Feature
+
+**Not for Leorna repos:** under `~/Leorna/`, work stays on `feat/<clickup-id>-<desc>` and is never merged into `main`, local or remote. The user opens and merges the PRs (see the `leorna` skill).
+
+When the work is in a worktree on a local branch made with `claude -w <name>` (branch `worktree-<name>`), finishing it is done **locally, on this Mac only**: the feature is merged into the user's local `main` (the main folder), the one their app or plugin loads. Never GitHub's copy: don't fetch, pull or push for this, and don't compare with `origin/main`. Claude does the merge itself; never hand the user git commands to type unless every route below has failed.
+
+**Why it gave trouble before:** Claude Code isolates a worktree session. It refuses git commands aimed at the main folder (`git -C <main folder> …`) and edits to files there, whatever the user approves; no setting turns this off. So the merge must run from a session that is *in* the main folder: leave the worktree first.
+
+1. **In the worktree:** commit everything, then `git rebase main` (local `main` as it is now; other local sessions may have merged into it). Keep both sides' meaning on a conflict, and run the project's tests again on the rebased branch.
+2. **Leave the worktree:** call the ExitWorktree tool with action `"keep"`. The user gives standing permission for this; don't wait to be asked. The session moves back to the main folder; the worktree and its branch stay on disk.
+   - If ExitWorktree says there's no worktree session to leave, call EnterWorktree with `path` set to the main folder (the user approves the prompt).
+   - Only if both fail, tell the user why and give the one merge command with `!` in front.
+3. **In the main folder:** `git merge --ff-only worktree-<name>`, so local `main` ends with the feature's commits on top. Uncommitted changes there (a debug file the user re-saved) don't stop it when the merge doesn't touch those files: leave them as they are, never commit, stash or discard them. If git refuses because of them, stop and tell the user. Never force it; if it refuses because local `main` moved again, go back into the worktree (EnterWorktree with its `path`) and repeat from step 1.
+4. **Then the project's after-merge steps** in the main folder (build number, rebuild, notes, commit), as its CLAUDE.md says.
+5. **Check before saying it's merged:** `git log --oneline main` shows the feature's commits on top, and the main folder's files are the merged ones.
+6. **The feature branch stays on this Mac:** don't push it to GitHub. Push `main` only when the project's instructions or the user say so. Leave the worktree in place: Claude Code offers to delete it when the session ends.
