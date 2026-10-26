@@ -174,7 +174,8 @@ tracker, automatic publication or a competing agent lifecycle.
   `MODE=<mutation> node --import <hook.mjs> --test <focused-tests>`. In
   `load(url, context, nextLoad)`, transform only the exact target module's returned
   source; fail if the replacement did not match, and assert exactly one module
-  replacement per process. Run an unhooked green control afterward and verify
+  replacement per test-file child process (the `--test` parent loads no product
+  module; `NODE_OPTIONS='--import <hook.mjs>'` reaches every child). Run an unhooked green control afterward and verify
   status. Select focused tests that actually import the module: zero replacements
   is a harness failure, not a killed product mutation.
 - **Font-capture reviews:** separate requested names, registered face states and
