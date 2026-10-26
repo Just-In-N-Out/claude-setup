@@ -110,7 +110,7 @@ copy_out() {
   projects | while IFS=$'\t' read -r name path mem cm; do
     [ "$cm" = yes ] || continue
     src="$HOME/.claude/project-docs/$name/CLAUDE.md"
-    printf '%s\n' "$1" | grep -qxF ".claude/project-docs/$name/CLAUDE.md" || continue
+    printf '%s\n' "$1" | grep -xF ".claude/project-docs/$name/CLAUDE.md" >/dev/null || continue
     [ -f "$src" ] && [ -d "$path" ] || continue
     cmp -s "$src" "$path/CLAUDE.md" && continue
     cp "$src" "$path/CLAUDE.md" && say "updated $path/CLAUDE.md"
@@ -204,7 +204,7 @@ commit() {
   local n host
   n=$(g diff --cached --name-only | wc -l | tr -d ' ')
   host=$(hostname -s 2>/dev/null || hostname)
-  { echo "sync($host): $n file(s)"; echo; g diff --cached --name-status | head -40; } | g commit -q -F -
+  { echo "sync($host): $n file(s)"; echo; g diff --cached --name-status | sed -n "1,40p"; } | g commit -q -F -
   say "committed $n file(s)"
 }
 
@@ -233,8 +233,8 @@ do_sync() {
         say "pulled from GitHub:"
         printf '%s\n' "$changed" | sed 's/^/  /'
         copy_out "$changed"
-        if printf '%s\n' "$changed" | grep -qxF .hermes/skills-library-local.patch; then apply_lib_patch; fi
-        if printf '%s\n' "$changed" | grep -qE '^\.hermes/skills-library-(keep|claude)\.txt$'; then relink; fi
+        if printf '%s\n' "$changed" | grep -xF .hermes/skills-library-local.patch >/dev/null; then apply_lib_patch; fi
+        if printf '%s\n' "$changed" | grep -E '^\.hermes/skills-library-(keep|claude)\.txt$' >/dev/null; then relink; fi
       fi
     fi
   fi

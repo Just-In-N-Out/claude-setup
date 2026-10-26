@@ -51,6 +51,7 @@ This README is written for the AI agent (Claude Code) on either machine, and for
 | `sync.sh attach` | Run once on a new machine, after the bare clone (see `desktop.md`). It backs up files it would overwrite to `~/.claude-setup-backup/<time>/`. |
 | `sync.sh links` | Creates the desktop memory links and writes project `CLAUDE.md` files into projects cloned on this machine. Run it after cloning a project. |
 | `sync.sh init` | Mac only, already done. Creates `~/.claude-setup.git`. |
+| `bash ~/.claude/setup/sync.test.sh` | Tests `sync.sh` with two fake homes and a local remote: one-commit pushes, the secret gate, the 5 MB limit, the excluded paths, attach, memory links, both sync directions, conflicts, deletions. It never touches the real repo. Run it after changing `sync.sh`. |
 
 After a pull, `sync.sh` also does three things:
 - copies changed project `CLAUDE.md` files into the projects;

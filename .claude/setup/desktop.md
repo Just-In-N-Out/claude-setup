@@ -134,6 +134,7 @@ The **[Justin]** steps need admin rights, a reboot, a browser or a GUI. The agen
    - **[Justin]** in Claude, run `/plugin` and install **superpowers**, **frontend-design**, **context7** and **claude-md-management** (all from `claude-plugins-official`);
    - **[Justin]** add ClickUp: `claude mcp add --transport http --scope user clickup https://mcp.clickup.com/mcp`, then sign in through `/mcp`. The login stays on this machine.
 7. **Check:**
+   - `bash ~/.claude/setup/sync.test.sh` ends with `passed 28, failed 0`;
    - `bash ~/.claude/hooks/tests/subagent-ac-gate.test.sh` and the other hook tests pass;
    - `~/.claude/setup/sync.sh status` reports no errors;
    - in Claude, `/skills` lists engineering-best-practices, leorna, code-review-practice and the rest;
