@@ -11,4 +11,5 @@
 - [Reading the live site](reading-the-live-site.md) — LiteSpeed cache-bust, page list, site-header-room marker, stacked pastes
 - [Old site gallery](old-site-gallery.md) — Gallery paste: 38 photos rebuilt 2026-10-26 as Media AVIFs (ids 837–874) with alt text; hotlinked until pasted
 - [Checks on the desktop](corpus-paths-on-desktop.md) — Linux: npm run corpus finds nothing (Mac paths), no Chrome for snap/test:browser; measure corpus/files/*.json directly
-- [B-Dry home copy](bdry-home-copy.md) — bdryswi.com → bdry.staging.growithgro.com Home: AVIFs 132–148 + reused ids done; paste and 4 animation features still to do
+- [B-Dry home copy](bdry-home-copy.md) — bdryswi.com → bdry.staging.growithgro.com Home: first paste done 2026-10-26, AVIFs 132–148, icons 149–154; slider + flip features building
+- [WSL clipboard](wsl-clipboard.md) — read the clipboard back through a UTF-8 file, never stdout (non-ASCII gets mangled)

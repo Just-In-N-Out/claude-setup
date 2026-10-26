@@ -1,11 +1,11 @@
 ---
 name: bdry-home-copy
-description: "bdryswi.com home page → B-Dry Bricks site (bdry.staging.growithgro.com, Home id 14): photos done 2026-10-26, paste not built yet, 4 plugin animation features planned"
+description: "bdryswi.com home page → B-Dry Bricks site (bdry.staging.growithgro.com, Home id 14): first paste on the clipboard 2026-10-26; slider-autoplay and flip-cards features building, headline-marker and photo-hotspots later"
 metadata:
   node_type: memory
   type: project
   originSessionId: 3a0d874a-6f6c-4ea9-8614-1bbe2049f45f
-  modified: 2026-10-26T19:46:01.613Z
+  modified: 2026-10-26T20:46:40.412Z
 ---
 
 On 2026-10-26 Justin asked for bdryswi.com's home page (WordPress.com + Elementor) as a Bricks paste for the new
@@ -20,11 +20,15 @@ uploaded as `home-01…17-image.avif` (ids 132–148, each described "AVIF of <s
 on 132, 94, 92, 93, 98 and 105. alttext.ai wasn't needed. The capture of the source page is in
 `~/.hermes/plans/figma-to-bricks/evidence/bdry-source/`.
 
+**Icons:** the 6 flip-box line icons are SVG media 149–154 (`home-icon-01…06-image.svg`, white fill baked in); this site accepts SVG uploads over REST.
+
+**First paste (2026-10-26):** built by hand in the session scratchpad (`tools/build.cjs` + `build2.cjs`), 188 elements, classes `home-grow`, `home-text`, `home-fade-in(-up/-left)`, `home-bg-top`; copy at `C:\Users\Admin\Downloads\home-paste.json`. No Code element, so no code signatures; the site has no page cache. A slide's own custom CSS can't use its `#brxe-` id (Splide renames slide ids): use a class.
+
 **Justin's choices:** "Plugin features first". The slider autoplay, the "60 Years" circle drawing itself, the 6 flip
 boxes and the photo hotspots stay still in the first paste; each becomes a plugin feature (worktrees `slider-autoplay`,
-`headline-marker`, `flip-cards`, `photo-hotspots`; planner briefs in `~/.hermes/plans/figma-to-bricks/briefs/`). The
-planners were stopped at the usage limit before writing plans. For the hotspot dots: a card next to the dot on
+`headline-marker`, `flip-cards`, `photo-hotspots`; planner briefs in `~/.hermes/plans/figma-to-bricks/briefs/`). On 2026-10-26 Justin narrowed it to two now (slider + flip boxes, "for usage reasons"); the circle and the dots come later. The slider plan is approved (auto-go) and its builder waits on Justin's Bricks slider sample before its emit task. For the hotspot dots: a card next to the dot on
 hover/tap. For "Schedule Your Inspection Today!": Justin will make a Bricks popup and name it.
 
-**How to apply:** resume by building the paste: the scroll fade-ins as the plugin's motion CSS, the accordion as
-`accordion-nested`, and the buttons' hover grow. Then re-dispatch the 4 planners from their briefs.
+**How to apply:** after Justin pastes, read the live Home fresh and compare it with the source shots; once each
+feature merges, rebuild those parts of the paste exactly as the plugin emits them. The headline-marker and
+photo-hotspots planners re-dispatch from their briefs when Justin asks.
