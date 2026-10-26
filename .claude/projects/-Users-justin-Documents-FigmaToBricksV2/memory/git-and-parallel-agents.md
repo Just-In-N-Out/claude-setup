@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 97ce3cf8-b36d-46da-a6b6-643b41ec8abd
-  modified: 2026-10-20T01:08:44.695Z
+  modified: 2026-10-26T17:58:51.692Z
 ---
 
 On 2026-10-19 the user asked to "push it to github on private just-in-n-out not justin leorna" and to run several
@@ -30,7 +30,9 @@ The full working rules are in CLAUDE.md "Working in this repo"; what was non-obv
   at the main folder (`git -C /Users/justin/Documents/FigmaToBricksV2 …`, or any shell line it can't prove stays in
   the copy, even read-only ones). So the finish steps 3–5 (ff-merge, BUILD bump, build, push, CLAUDE.md) run from a
   session opened in the main folder, or the user types them with `!`. Keep shell commands simple (no `&&` chains with
-  `cd`, heredocs or `$(…)`) inside a copy; write scripts with the Write tool instead.
+  `cd`, heredocs, `$(…)`, loops, `source`/`.` of an env file, or a `$VAR` as a path or command) inside a copy: env
+  vars inline with literal paths, multi-step logic in a script written with the Write tool (refused ~7 times in the
+  faq-answer-space session, 2026-10-26, orchestrator and builder alike, for non-git commands too).
 - The user's OK doesn't lift the block (fixvideo, 2026-10-19: "just merge it i gave you persmission"), and no
   setting does (Claude Code docs, worktrees page). Edits to main-folder files are refused too. The user disliked typing
   the commands themselves ("i want it so that if i did it on my local like it just merged into my local main"), so
