@@ -10,3 +10,4 @@
 - [Tool escape quirk](tool-escape-quirk.md) — the u-escape for a space in Write/Edit params lands as a literal space; use x-escapes in regexes
 - [Reading the live site](reading-the-live-site.md) — LiteSpeed cache-bust, page list, site-header-room marker, stacked pastes
 - [Old site gallery](old-site-gallery.md) — Gallery paste: 38 photos rebuilt 2026-10-26 as Media AVIFs (ids 837–874) with alt text; hotlinked until pasted
+- [Corpus paths on the desktop](corpus-paths-on-desktop.md) — corpus.json has Mac paths; npm run corpus finds nothing on Linux; measure corpus/files/*.json directly
