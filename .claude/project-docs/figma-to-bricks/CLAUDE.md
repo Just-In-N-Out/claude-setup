@@ -333,9 +333,9 @@ WP Mail SMTP, Yoast, WPForms Pro, AltText.ai plugins). After a paste that holds 
 run Bricks → Settings → Custom code → **Regenerate code signatures**; after any CSS change, **LiteSpeed → Purge All**.
 
 **Files the user works with:**
-- `figma-to-bricks-debug-page-1.json` (repo root): **on disk it now holds "Hydraulic Cylinder Repairs Final" (build
-  2026-10-20.6, 1728 wide, not committed)**. Git's copy (`git show HEAD:figma-to-bricks-debug-page-1.json`, build .4) is the
-  user's **"Services Page Final"** (1728 wide). It holds
+- `figma-to-bricks-debug-page-1.json` (repo root): **holds "Hydraulic Cylinder Repairs Final" (build 2026-10-20.6, 1728
+  wide), committed and pushed 2026-10-26 (`cd9c1c9`)**. The earlier copy (`git show 2199895:figma-to-bricks-debug-page-1.json`,
+  build .4) is the user's **"Services Page Final"** (1728 wide). It holds
   the parts inventory ("PART INVENTORY DASHBOARD": 78 rows drawn, search, 6 pills, a 560px scroll box). Earlier saves of
   that name (the contact page "Contact Page Final", one stat card) were overwritten; ask for a new save if needed.
 - `corpus/…/page-1` (v1's file on the Desktop) is an older save of the same page; it now converts with the list too.
