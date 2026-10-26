@@ -38,6 +38,7 @@ This setup lives on both machines through the private repo `Just-In-N-Out/claude
 - **Pull before planning:** `~/.claude/setup/sync.sh pull` at session start when work begins, and in pipeline step 2 before the planner.
 - **Push after edits:** after editing any synced file (a skill lesson, this file, a memory note, a plan or brief, a hook, `settings.json`), run `~/.claude/setup/sync.sh` before ending the turn. It scans for secrets (gitleaks), commits as the personal identity and pushes. Sync is manual until the automatic version is built (plan: `~/.hermes/plans/claude-setup/setup-sync.md`).
 - On `CONFLICT`, merge both versions keeping both meanings, never dropping the other machine's edit, then rerun. Leorna code repos are never auto-pulled; only setup files sync.
+- **On the Windows desktop, every project lives inside Ubuntu under `/home/justin`, never under `/mnt/c` (Windows drives).** Clone or create new projects there (at the `desktop_path` in `projects.tsv` when it lists one, then `sync.sh links`). If asked to work in a folder under `/mnt/c`, say so and offer to clone it into `/home/justin` first. *Why: hooks, skill links and sync need Linux paths, and `/mnt/c` is slow with the wrong permissions (`desktop.md`).*
 
 ## Git Commit Authorship — Read Every Time
 
