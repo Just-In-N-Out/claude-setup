@@ -6,20 +6,21 @@ commit nothing, write only into `~/.hermes/plans/figma-to-bricks/evidence/headli
 - Worktree: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/headline-marker`, branch `worktree-headline-marker`,
   head `bb86429`, base `main` (`f46f8a2`). The diff to review: `git diff main...HEAD`.
 - Approved plan (read-only copy): `~/.hermes/plans/figma-to-bricks/evidence/headline-marker/plan-approved.md`
-  (the plan says paste check 3bm; it was renumbered 3bn on purpose).
-- Builder's rulings to judge (not yet confirmed by Justin): a card takes Tab focus itself whenever its back holds no
-  link (even with an unlinked Button, which Bricks renders as a span); the turned selector is
-  `:is(:hover, :focus, :has(> .flip-back:focus-within))` instead of the plan's `:has(> .flip-back :focus)`; AC6's
-  "taller on phones" proven with two backs; a mark on a non-card layer (Button, text, picture, a whole section) is named
-  and converts as without it, and a form on either face can't flip; showcase counting leaves flip cards out before the
-  "two or more" count; recognise.ts judges hasText/hasFlowText by the front too.
+  (paste check 3bo).
+- Builder's rulings to judge (not yet confirmed by Justin): a path counts as a loop when closed, ending within 25% of
+  its box's diagonal from its start, OR winding at least 270 degrees around its middle (the plan had only the 25% test);
+  a stroke loosely over a plain word beside the styled ones marks only the styled words; text lines are placed one line
+  pitch apart from the first baseline; the drawing's box carries the stroke's reach plus its weight on every side; a
+  half-arc ellipse or a multi-piece path is not a drawing stroke (stays still with the trim note); a dashed stroke stays
+  still. Also judge the live-only risk the builder raised: WordPress/Bricks unslashing the escaped @property syntax
+  (backslash 3C number backslash 3E) in custom CSS on save.
 
 ## Skills
 Load, in order: the project skill (Read `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md` and
 `references/rules-summary.md`; it isn't linked into ~/.claude/skills), `engineering-best-practices`,
 `requesting-code-review` (its security scan and quality gates; skip its "independent reviewer subagent" and auto-fix
 steps: you ARE the fresh reviewer, and you can't spawn agents), `code-review-practice`, `mutation-testing-discipline`
-for the mark and recognition guards. Read only the main-folder CLAUDE.md sections you need.
+for the recognition and anchoring guards. Read only the main-folder CLAUDE.md sections you need.
 
 ## What to check
 - Correctness against the plan and every AC (AC1–AC12; AC13 is Justin's live check): does each test really prove its AC,
@@ -32,7 +33,7 @@ for the mark and recognition guards. Read only the main-folder CLAUDE.md section
 - Bricks facts: `_alignSelf: stretch` never written; layout keys only on layout elements; Bricks caps every element at
   its parent's width (`[class*=brxe-]{max-width:100%}`); `.brxe-block` defaults to align-items:flex-start on the live
   site (the renderer lacks it).
-- Phones (tap), Tab, reduced motion, links on the back, Safari backface risk, nested anchors.
+- Reduced motion, the scroll and clock versions (M4b), Firefox without scroll timelines, links or phone numbers inside a marked span, the mark staying on its words at every width, and SVG/CSS that Bricks or WordPress might strip.
 - Machine: Linux/WSL. `export CHROME_PATH=$HOME/.cache/chrome-for-testing/chrome-f2b`. `npm run corpus` finds no files
   here (memory note `~/.claude/projects/-home-justin-Documents-FigmaToBricksV2/memory/corpus-paths-on-desktop.md`).
   Run gates in the foreground (a session restart kills background runs).
