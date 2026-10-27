@@ -44,10 +44,16 @@ His standing instructions for such copies say, for animations:
 > into `main`, build that animation in the page's paste exactly as the plugin emits it.
 
 Four animations on that page are missing from the plugin; Justin chose (2026-10-26) "Plugin features first": he gets a
-paste now with them standing still, and a second paste once each feature is merged. The four features, each planned
-by its own planner in its own worktree at the same time: **slider-autoplay**, **headline-marker**, **flip-cards**,
-**photo-hotspots**. Say in `overlaps` which files you expect to share with the other three, so the orchestrator can
-order the builds.
+paste now with them standing still, and a second paste once each feature is merged. Status on 2026-10-27: **slider-autoplay** and **flip-cards** are planned and being built in their own worktrees
+(plans: `.claude/worktrees/slider-autoplay/docs/plans/2026-10-26-slider-autoplay.md` and
+`.claude/worktrees/flip-cards/docs/plans/2026-10-26-flip-cards.md`; their branches are `worktree-slider-autoplay` and
+`worktree-flip-cards`). **headline-marker** and **photo-hotspots** are planned now, at the same time. Read the two
+building plans' Touches sections and their branches' diffs (`git diff main...worktree-<name> --stat`), and say in
+`overlaps` which files you share with each of the other three, so the orchestrator can order the builds. Reuse what
+they already settled (e.g. flip-cards' Figma annotation mark and its Chrome touch helper in `test/browser/chrome.ts`)
+rather than inventing a second way. An earlier planner for this feature was stopped before writing a plan: its partial
+notes are in `~/.hermes/plans/figma-to-bricks/evidence/<feature>/planner/`; reuse them. Paste-check ids: main is at
+3bl, slider took 3bm, flip-cards 3bn; take the next free one.
 
 **The feature is for any Figma file, not for bdryswi.com.** The plugin converts Figma designs; the Elementor page only
 shows the behaviour Justin wants. Design the Figma-side trigger (what a designer draws or sets up in Figma that the

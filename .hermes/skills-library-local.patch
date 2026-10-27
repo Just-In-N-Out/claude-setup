@@ -19,10 +19,17 @@ index 7fc2b43..905e163 100644
  
  # Adversarial Verification Loop
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..0ea2f93 100644
+index d6a2493..5c3b36b 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
-@@ -66,7 +66,7 @@ Use this as a scan order, not a rigid form:
+@@ -60,13 +60,13 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
+ Use this as a scan order, not a rigid form:
+ 
+ - Scope: change matches request, no unrelated churn, no generated junk.
+-- Behavior: happy path, edge cases, invalid input, empty state, failure state.
++- Behavior: happy path, edge cases, invalid input, empty state, failure state. When a fix defers a decision up a chain (an inner element passes its need to its parent), probe the parents the decider rejects: the deferral needs a fallback when no ancestor decides, or it trades a safe fallback for an unchecked overflow.
+ - Contracts: API, schema, CLI, config, events, storage, migrations, compatibility.
+ - Data and state: consistency, transactions, idempotency, rollback, retention.
  - Security-sensitive logic: authn/authz, secrets, injection, deserialization, untrusted input, sensitive logging.
  - Validate raw URL references before lossy parsing or joining. Python URL helpers can discard embedded controls and normalize dot segments before a resolved-URL validator sees them; check raw characters and raw/decoded path structure first, then retain resolved authority/host/path checks. Exercise the actual redirect caller with valid controls and malformed references, requiring no next request or body read, response closure and retained reservations. Direct-validator tests alone miss this normalization boundary.
  - Reliability: timeouts, retries, cancellation, partial failure, observability.
