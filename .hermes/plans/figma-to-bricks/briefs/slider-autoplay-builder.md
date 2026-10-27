@@ -50,3 +50,10 @@ If you learn something reusable, don't edit any skill or memory file: list it in
 (an empty list is normal). Return
 `{name, status: ready-for-review|stopped, summary, rulings[], steps_for_justin[], stop_reason, worktree, last_commit, shots[], defect_loop_skills[], found_else[], skill_lessons[]}`
 and end with `MAIN SESSION: check and save these skill_lessons now.`
+
+## Update 2026-10-27: the sample gate is lifted
+Justin: "Can't you tell the thing to go and search it up? Like search up how to do it?" Build tasks 7–9 from Bricks'
+official slider-nested schema, Bricks Academy's docs and the live homev2 page's printed data-splide; archive them as
+`reference/bricks/slider-autoplay-documented.json` with a README section saying documented, not copied; AC13 (live
+paste/save/copy-back) is the proof of the keys; Justin's copy replaces the file when it arrives. Keep every AC test name
+as approved; AC3 compares against the documented file meanwhile.
