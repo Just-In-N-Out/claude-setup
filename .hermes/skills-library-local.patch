@@ -128,10 +128,18 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..81c0921 100644
+index f2d882d..bc3130a 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
-@@ -90,7 +90,7 @@ itself prove that the entire test is worthless.
+@@ -86,11 +86,14 @@ itself prove that the entire test is worthless.
+    deliberate defense-in-depth guard is an equivalent mutant that no black-box
+    test can kill. Mutate all sites (or the shared helper) together, and record
+    the single-site variants as documented equivalents. Give an unexpected
+-   survivor this trace before calling it a blind test. Keep its receipt and
++   survivor this trace before calling it a blind test. To show a branch never
++   changes the outcome, count its visits from an instrumented scratch copy with
++   `appendFileSync` to a file: under `node --test`, `process.stderr` writes from
++   the code under test never reach the run's output. Keep its receipt and
     supersede it with a versioned all-sites variant; do not edit the test. When
     the duplication is unintended, blind-test pattern 6 applies instead.
  3. **Apply → run → restore, one at a time.** Derive concrete mutation hunks and paths from the preserved proposal and actual source, and require a unique complete match before any edit; do not reconstruct variable/function names or guard boilerplate from a design summary. Preserve a pre-launch hunk/reader mismatch as setup evidence, not a mutation kill. Save the exact candidate bytes
@@ -140,7 +148,7 @@ index f2d882d..81c0921 100644
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -102,7 +102,10 @@ itself prove that the entire test is worthless.
+@@ -102,7 +105,10 @@ itself prove that the entire test is worthless.
     compilation, setup or an unrelated guard is not a killed mutation. Inspect
     the catalogue's diagnostic field types before grading a batch: retain the
     distinction between a shared string and a per-method mapping, and bind each
@@ -152,7 +160,7 @@ index f2d882d..81c0921 100644
     test identities and require unaffected positive controls to remain green;
     a matching message elsewhere in the combined log is not that method's kill.
     Classify an unexpected survivor only after checking equivalent guards and
-@@ -155,7 +158,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,7 +161,11 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -165,7 +173,7 @@ index f2d882d..81c0921 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -197,7 +204,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +207,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -177,7 +185,7 @@ index f2d882d..81c0921 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -290,7 +300,38 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +303,38 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
