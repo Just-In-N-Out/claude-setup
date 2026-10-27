@@ -46,8 +46,7 @@ under ~300 lines. Update HANDOFF, the ledger and the plan copy for any changed r
 
 ## Rules
 Commit to the branch (plain `git commit -m`, no AI lines, no author override, no CLAUDE.md staged). Never push, never bump
-BUILD, never edit the main folder, never bare `git stash`. photo-hotspots is being built on a branch based on your
-bb86429; don't touch its worktree.
+BUILD, never edit the main folder, never bare `git stash`. Other features are building or in review in their own worktrees; don't touch them.
 
 ## Report
 Return `{name, status: ready-for-review|stopped, summary, findings[{id, verdict: fixed|pushed-back, evidence, commit}],
