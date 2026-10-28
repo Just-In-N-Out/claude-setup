@@ -144,7 +144,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..9de9d44 100644
+index f2d882d..864304c 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,18 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -238,7 +238,19 @@ index f2d882d..9de9d44 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -290,7 +321,42 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +271,10 @@ transcripts in `references/blind-test-patterns.md`.
+    check" is the obvious mutation; "accept MORE than intended" is the one that
+    finds authorization and identity bugs — e.g. matching a shared parent ID
+    instead of the specific resource binds an arbitrary sibling, and accepting
+-   any host honors attacker-supplied links.
++   any host honors attacker-supplied links. A guard over a set (a
++   `ContainsAny` of CR and LF, a denylist) needs one mutant per member: a test
++   usually pins one member, so dropping another survives (901b review 2:
++   dropping CR from a description's one-line check survived 24 tests).
+ 5. **A long-failing test may be stale, not a real defect.** Before "fixing"
+    code to satisfy it, check whether the test seeds state the code stopped
+    reading: `git log -S'<key>'` on the key the fixture writes. A test can
+@@ -290,7 +324,42 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively

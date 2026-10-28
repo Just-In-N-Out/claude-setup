@@ -12,6 +12,8 @@ ClickUp [Curate the reusable prompts collection](https://app.clickup.com/t/86bcm
 
 **Review 1 F4 (main-session ruling under the away grant, 2026-10-28):** reviewer 1 found that `prompt/ship`'s review note and `items/prompt/ship/example.md` (D4's wording) claim more about `/ship`'s fallback than the prompt body says, and that changing `example.md` changes plan text. Its recommended fix is taken: both say only what the body says (the fallback covers a CLI without subagents; what Claude Code does with `/ship` is not verified by this story). This supersedes D4's `ship/example.md` wording on that point only.
 
+**Review 2 R2-2 (main-session ruling under the away grant, 2026-10-28):** the same class applies to `/constraints`: its review note says that in Cursor "the no-argument default applies", while `items/prompt/constraints/example.md` (D4's wording) promises `/constraints check, guard and ratchet` in Claude Code or Cursor; neither is verified. The F4 rule now covers every prompt: each review note and `example.md` says only what the prompt body supports and what this story verified, and says plainly when tool behaviour (such as how Cursor passes a sub-command) is not verified. This supersedes D4's example wording wherever it claims more.
+
 ## Open questions (answered 2026-10-28: every ⭐; the plan is written as if every ⭐ was chosen)
 
 **Q1. AC3: the pack builder (86bcm901w) is only being planned now and starter packs (86bcm901r) don't exist. How does each prompt flag the skills it needs?**
