@@ -4,7 +4,7 @@
 # Each other file here is a wrapper: githook.sh <hook name> <git's args>.
 #   pre-commit        no staged CLAUDE.md (any folder; vendor/ and node_modules/ ignored; setup repo excepted;
 #                     one a conflicted merge, cherry-pick or revert brings in unchanged is not new), then author
-#                     and committer email by folder
+#                     and committer email by folder (a conflicted cherry-pick may keep the picked commit's author)
 #   pre-merge-commit  author and committer email by folder
 #   commit-msg        no Co-authored-by trailer naming an AI
 # Then it hands over to the repo's own <git common dir>/hooks/<name> when that is executable
@@ -32,12 +32,16 @@ stop() { printf 'githooks (%s): %s\n' "$name" "$*" >&2; exit 1; }
 scratch() { case "$top/" in /tmp/* | /private/tmp/* | /var/tmp/* | /var/folders/* | /private/var/folders/*) return 0 ;; esac; return 1; }
 setup_repo() { [ -n "$common" ] && [ "$common" = "$(cd "$home/.claude-setup.git" 2>/dev/null && pwd -P)" ]; }
 email_of() { git var "GIT_$1_IDENT" 2>/dev/null | sed -n 's/.*<\([^>]*\)>.*/\1/p'; }
-check_identity() {
-  local want who got
+check_identity() { # check_identity AUTHOR and/or COMMITTER
+  local want who got pick picked=""
   case "$common/" in "$home/Leorna/"* | "$leorna/"*) want=$LEORNA_EMAIL ;; *) want=$PERSONAL_EMAIL ;; esac
-  for who in AUTHOR COMMITTER; do
+  # a conflicted cherry-pick, concluded with --continue or commit, keeps the picked commit's (a teammate's) author
+  pick=$(git rev-parse -q --verify CHERRY_PICK_HEAD 2>/dev/null) && picked=$(git log -1 --format=%ae "$pick" 2>/dev/null)
+  for who in "$@"; do
     got=$(email_of "$who")
-    [ "$got" = "$want" ] || stop "$(echo "$who" | tr A-Z a-z) email is '$got'; this folder needs $want (CLAUDE.md, Git Commit Authorship). Don't override it: fix git config, or tell Justin (an amended commit keeps its old author)."
+    [ "$got" = "$want" ] && continue
+    [ "$who" = AUTHOR ] && [ -n "$picked" ] && [ "$got" = "$picked" ] && continue
+    stop "$(echo "$who" | tr A-Z a-z) email is '$got'; this folder needs $want (CLAUDE.md, Git Commit Authorship). Don't override it: fix git config, or tell Justin (an amended commit keeps its old author)."
   done
 }
 # the commits whose files a conflicted merge, cherry-pick or revert brings in (a revert brings back its parent's)
@@ -83,8 +87,8 @@ check_trailer() {
 
 if ! scratch; then
   case $name in
-    pre-commit) check_claude_md; check_identity ;;
-    pre-merge-commit) check_identity ;;
+    pre-commit) check_claude_md; check_identity AUTHOR COMMITTER ;;
+    pre-merge-commit) check_identity AUTHOR COMMITTER ;;
     commit-msg) check_trailer "${1:-}" ;;
   esac
 fi

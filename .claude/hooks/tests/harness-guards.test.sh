@@ -555,6 +555,22 @@ ac9_precommit_blocks_wrong_email_by_folder() {
   ing git -C "$p" merge --abort 2>/dev/null; ing git -C "$p" reset -q --hard "$base"
   out=$(cd "$p" && ing git merge -q --no-ff -m merge side 2>&1 </dev/null); rc=$?
   passed "personal repo: merge with $PERSONAL" || return 1
+  # a cherry-pick keeps the picked commit's author: a conflicted pick of a teammate's commit concludes, with the
+  # committer still checked, and another author given while concluding it is still refused
+  local r="$H/code/pick"
+  gitrepo "$r" && nohooks -C "$r" checkout -q -b mate && echo mate >"$r/m.txt" && ing git -C "$r" add m.txt \
+    && nohooks -C "$r" commit -q --author="Mate <mate@example.test>" -m "mate (fixture)" && nohooks -C "$r" checkout -q main \
+    && echo main >"$r/m.txt" && ing git -C "$r" add m.txt && nohooks -C "$r" commit -q -m main || fail "pick fixture" || return 1
+  ing git -C "$r" cherry-pick mate >/dev/null 2>&1; echo resolved >"$r/m.txt"; ing git -C "$r" add m.txt
+  [ -f "$r/.git/CHERRY_PICK_HEAD" ] || fail "the cherry-pick fixture did not stop on a conflict" || return 1
+  out=$(cd "$r" && GIT_EDITOR=true ing git -c user.email="$LEORNA" cherry-pick --continue 2>&1 </dev/null); rc=$?
+  refused pre-commit "committer email is '$LEORNA'" "conflicted cherry-pick of a teammate's commit, committer $LEORNA" || return 1
+  commit_in "$r" --no-edit --author="Other <other@example.test>"
+  refused pre-commit "author email is 'other@example\.test'" "conflicted cherry-pick concluded with another author" || return 1
+  out=$(cd "$r" && GIT_EDITOR=true ing git cherry-pick --continue 2>&1 </dev/null); rc=$?
+  passed "conflicted cherry-pick of a teammate's commit, concluded with --continue" || return 1
+  [ "$(ing git -C "$r" log -1 --format='%ae %ce')" = "mate@example.test $PERSONAL" ] \
+    || fail "the concluded pick is not mate's commit committed as $PERSONAL: $(ing git -C "$r" log -1 --format='%ae %ce')" || return 1
   # ~/Leorna may be a link to the real folder (git's includeIf "gitdir:~/Leorna/" still matches): so does the hook
   rm -rf "$S"; newroot; mkdir -p "$S/data/Leorna"; ln -s "$S/data/Leorna" "$H/Leorna"; l="$H/Leorna/client"
   gitrepo "$l" || fail "linked ~/Leorna repo setup" || return 1
