@@ -156,9 +156,17 @@ ac1_guard_denies_identity_override() {
     "git config --global --remove-s user" "git config --global --unset-a user.email"; do
     expect deny 'commit identity' "$c" || return 1
   done
+  # declare -x, typeset -x, local -x and readonly set a variable as export does
+  for c in "typeset -x GIT_AUTHOR_EMAIL=x@example.test; git commit -m x" "declare -x GIT_COMMITTER_EMAIL=x@example.test" \
+    "f() { local -x GIT_AUTHOR_NAME=X; git commit -m x; }; f" "declare -gx FOO=1 GIT_COMMITTER_NAME=X && git commit -m x" \
+    "readonly GIT_AUTHOR_EMAIL=x@example.test; git commit -m x" \
+    "typeset -x GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=user.email GIT_CONFIG_VALUE_0=x@example.test; git commit -m x"; do
+    expect deny 'commit identity' "$c" || return 1
+  done
   expect deny 'commit identity' "git -c user.email=x@example.test commit -m x" "$H/work" agent-1 || return 1
   for c in "git log --author=x" "git shortlog -se" "git config user.email" "git config --global --get user.email" \
     "git commit --amend --no-edit" "git commit --all -m x" "git commit --mess '--author=x' -q" \
+    "declare -x FOO=1; git commit -m x" "declare -p GIT_AUTHOR_EMAIL" "typeset -x GIT_TRACE=1 && git log -1" \
     "git config --get-a user.email" "git config --global --get-r '^user'" "git config --fil x.cfg --get user.email" \
     "git config --global --un user.email" "git config --global --fi x.cfg user.email x@example.test" \
     "git config --global --uns core.hooksPath" "git config --global --e" \
@@ -244,7 +252,11 @@ ac4_guard_denies_hook_bypass() {
     "env GIT_CONFIG_PARAMETERS=\"'core.hooksPath'=''\" sh -c \"git commit -m x\"" \
     "export GIT_CONFIG_PARAMETERS=\"'core.hooksPath'=''\"; git commit -m x" \
     "export GIT_CONFIG_COUNT=1; export GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=; git commit -m x" \
-    "export GIT_CONFIG_COUNT=1; bash -c 'GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x'"; do
+    "export GIT_CONFIG_COUNT=1; bash -c 'GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x'" \
+    "declare -x GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/dev/null; git commit -m x" \
+    "typeset -x GIT_CONFIG_COUNT=1; declare -x GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=; git commit -m x" \
+    "f() { local -x GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x; git commit -m x; }; f" \
+    "declare -rx GIT_CONFIG_PARAMETERS=\"'core.hooksPath'=''\"; bash -c 'git commit -m x'"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
   # bash's $'…' (with its escapes) and $"…" quoting is read the way bash reads it

@@ -404,8 +404,9 @@ def canon(a, names):
 
 
 def split_prefix(w):
-    """The leading assignments (NAME=value, also after env and export) and wrappers (env, command, exec,
-    nohup, builtin, time, timeout) of a segment: (assignments, index of the command word)."""
+    """The leading assignments (NAME=value, also after env, export, declare, typeset, local and readonly) and
+    wrappers (env, command, exec, nohup, builtin, time, timeout) of a segment: (assignments, index of the command
+    word)."""
     env = {}
     i = 0
     while i < len(w):
@@ -443,7 +444,7 @@ def split_prefix(w):
             while i < len(w) and w[i].startswith("-"):
                 i += 2 if w[i] in ("-s", "--signal", "-k", "--kill-after") else 1
             i += 1  # the duration
-        elif t == "export":
+        elif t in ("export", "declare", "typeset", "local", "readonly"):  # their -x and other flags are skipped
             i += 1
             for x in w[i:]:
                 if ASSIGN_RE.match(x):
