@@ -20,8 +20,9 @@
 # Tests: tests/harness-guards.test.sh (ac1-ac7, ac20)
 input=
 IFS= read -r -d '' input || true
-re='(^|[^A-Za-z0-9_])(git|gh)([^A-Za-z0-9_]|$)|GIT_'
-[[ $input =~ $re ]] || exit 0
+# cheap pre-filter on the raw JSON: a plain substring test, because a word-boundary test would miss
+# "git" right after a JSON escape such as \n (the command's newline)
+case $input in *git* | *gh* | *GIT_*) ;; *) exit 0 ;; esac
 if ! command -v python3 >/dev/null 2>&1; then
   printf '%s\n' '{"systemMessage":"git-guard: python3 not found; git commands are not checked"}'
   exit 0
@@ -58,11 +59,82 @@ ASSIGN_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 KEYWORDS = {"if", "then", "else", "elif", "do", "while", "until", "{", "!", "fi", "done", "}"}
 
 
+HEREDOC_RE = re.compile(r"<<(-?)[ \t]*(?:'([^'\n]*)'|\"([^\"\n]*)\"|\\?([^\s;&|()<>'\"]+))")
+
+
+def normalize(cmd):
+    """One quote-aware pass, so shlex sees one line: unquoted newlines become ';', backslash-newline
+    joins lines, unquoted '#' comments are dropped, and each heredoc body line becomes its own segment
+    with its quote characters blanked (an apostrophe in a body must not open a quote)."""
+    out, q, i, n, pending, prev = [], None, 0, len(cmd), [], " "
+    while i < n:
+        c = cmd[i]
+        if q:
+            if q == '"' and c == "\\" and i + 1 < n:
+                out.append(cmd[i:i + 2])
+                i += 2
+                continue
+            if c == q:
+                q = None
+            out.append(c)
+            prev = c
+            i += 1
+            continue
+        if c == "\\":
+            if cmd.startswith("\\\n", i):
+                i += 2
+                continue
+            out.append(cmd[i:i + 2])
+            prev = "x"
+            i += 2
+            continue
+        if c in "'\"":
+            q = c
+        elif c == "#" and prev in " \t\n;&|()":
+            j = cmd.find("\n", i)
+            i = n if j < 0 else j
+            continue
+        elif c == "<" and cmd.startswith("<<", i) and not cmd.startswith("<<<", i):
+            m = HEREDOC_RE.match(cmd, i)
+            if m:
+                delim = next(g for g in m.groups()[1:] if g is not None)
+                pending.append((delim, m.group(1) == "-"))
+                out.append(" ")
+                prev = " "
+                i = m.end()
+                continue
+        elif c == "\n":
+            out.append(" ; ")
+            prev = ";"
+            i += 1
+            for delim, dash in pending:
+                while i < n:
+                    j = cmd.find("\n", i)
+                    line = cmd[i:n if j < 0 else j]
+                    i = n if j < 0 else j + 1
+                    if (line.lstrip("\t") if dash else line) == delim:
+                        break
+                    out.append(" " + re.sub(r"[\\'\"`]", " ", line) + " ; ")
+            pending = []
+            continue
+        out.append(c)
+        prev = c
+        i += 1
+    return "".join(out)
+
+
 def lex(s):
     lx = shlex.shlex(s, posix=True, punctuation_chars=True)
     lx.whitespace_split = True
     lx.commenters = ""
     return list(lx)
+
+
+def tokens(cmd):
+    try:
+        return lex(normalize(cmd))
+    except ValueError:  # an unbalanced quote: drop the quote characters and read it again
+        return lex(normalize(re.sub(r"[\\'\"]", "", cmd)))
 
 
 def op_kind(tok):
@@ -111,6 +183,27 @@ def lower(s):
     return s.lower()
 
 
+def shell_c(args):
+    """The command string of `bash -c '<string>'` (also -lc, -ec, -o x -c …), or None."""
+    has_c = False
+    i = 0
+    while i < len(args):
+        a = args[i]
+        if a in ("-o", "+o", "-O", "+O"):
+            i += 2
+            continue
+        if a == "--":
+            i += 1
+            break
+        if len(a) > 1 and a[0] in "-+":
+            if a[0] == "-" and not a.startswith("--") and "c" in a[1:]:
+                has_c = True
+            i += 1
+            continue
+        break
+    return args[i] if has_c and i < len(args) else None
+
+
 def no_verify(a):
     """--no-verify, or an abbreviation git accepts for it (--no-veri, --no-verif)."""
     return len(a) >= 9 and "--no-verify".startswith(a)
@@ -142,7 +235,7 @@ class Guard:
 
     # ---- shell ----
     def scan(self, cmd, cwd, depth):
-        for seg in segments(lex(cmd)):
+        for seg in segments(tokens(cmd)):
             cwd = self.segment(seg, cwd, depth)
         return cwd
 
@@ -179,6 +272,11 @@ class Guard:
                 i += 1
                 while i < len(w) and w[i].startswith("-"):
                     i += 1
+            elif os.path.basename(t) == "timeout":
+                i += 1
+                while i < len(w) and w[i].startswith("-"):
+                    i += 2 if w[i] in ("-s", "--signal", "-k", "--kill-after") else 1
+                i += 1  # the duration
             elif t == "export":
                 i += 1
                 for x in w[i:]:
@@ -204,6 +302,12 @@ class Guard:
             self.git(cmd[1:], cwd, env)
         elif name == "gh":
             self.gh(cmd[1:])
+        elif depth < 3 and name in ("bash", "sh", "zsh", "dash", "ksh"):
+            script = shell_c(cmd[1:])
+            if script is not None:
+                self.scan(script, cwd, depth + 1)
+        elif depth < 3 and name == "eval":
+            self.scan(" ".join(cmd[1:]), cwd, depth + 1)
         return cwd
 
     # ---- gh ----
