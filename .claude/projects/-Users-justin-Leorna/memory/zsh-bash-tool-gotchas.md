@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 2c0f653f-8021-4c94-84cf-9276a410e30a
-  modified: 2026-10-28T18:51:02.333Z
+  modified: 2026-10-28T18:55:55.321Z
 ---
 
 The Bash tool runs zsh, with GNU coreutils ahead of the macOS tools in PATH (seen 2026-10-23):
@@ -21,6 +21,7 @@ The Bash tool runs zsh, with GNU coreutils ahead of the macOS tools in PATH (see
 - In a gate script under `set -o pipefail`, `<cmd> | grep -q <pattern>` can exit 141 (SIGPIPE): `grep -q` stops at the first match and the producer dies writing to the closed pipe, so a passing test reads as a failed gate. Write the output to a file, then grep the file (901u v3 verifier 5). `| head -N` does the same, and under `set -e` the script quits silently on that line: setup sync committed 941 files and never pushed (2026-10-26). Use `sed -n '1,Np'`, or `grep … >/dev/null`, which read all their input. It only shows once the output passes the ~64 KB pipe buffer, so a test needs a big fixture (1500 long paths reproduced it; 60 didn't). An EXIT trap that reads a `local` variable (`local lock; trap 'rm -rf "$lock"' EXIT`) leaves the lock behind: the trap runs after the function returned and the local is gone. Keep paths an EXIT trap reads global (codex-parity planner smoke run, 2026-10-28).
 
 - **On both machines `grep` in the Bash tool is a shell function, not GNU or BSD grep:** it runs Claude Code's bundled ugrep with `-G --ignore-files --hidden -I`, so it skips gitignored and binary files (unless `-a`), and a bounded repeat such as `.\{0,200\}` (even `.\{0,20\}`, or `[^"]\{0,80\}` under `LC_ALL=C`) fails with "exceeds complexity limits", exit 2. Use `grep -P '.{0,200}X'`, or `command grep` (GNU grep 3.12 on the WSL desktop) for those and whenever gitignored files must be searched (`type grep` shows it; reproduced 2026-10-28, 901b planner + main session).
+- A backslash followed by `u` and four hex digits, typed in any tool-call argument (Edit, Write, a Bash heredoc, even a raw Python string), arrives decoded as the character itself, so a note meant to show Go's JSON escape for `<` gets a bare `<`. Build it at run time instead, e.g. Python `chr(92) + "u003c"`, and check the bytes with `od -c` (2026-10-28, main session; happened twice).
 - BSD `grep -E` rejects an empty alternative (`a|b|`) with "empty (sub)expression" and prints nothing, so a `grep -v` filter built that way passes everything (codex-parity builder, 2026-10-28).
 - A background checker running `git status` takes git's optional index lock and can break a concurrent `git add`: use `git --no-optional-locks status`.
 
