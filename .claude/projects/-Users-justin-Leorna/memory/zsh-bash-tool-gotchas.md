@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 2c0f653f-8021-4c94-84cf-9276a410e30a
-  modified: 2026-10-28T18:55:55.321Z
+  modified: 2026-10-28T23:32:18.000Z
 ---
 
 The Bash tool runs zsh, with GNU coreutils ahead of the macOS tools in PATH (seen 2026-10-23):
@@ -25,5 +25,7 @@ The Bash tool runs zsh, with GNU coreutils ahead of the macOS tools in PATH (see
 - BSD `grep -E` rejects an empty alternative (`a|b|`) with "empty (sub)expression" and prints nothing, so a `grep -v` filter built that way passes everything (codex-parity builder, 2026-10-28).
 - In a Monitor or background command, `tail -f F | grep … & … kill $!` kills only grep (`$!` is the pipeline's last process), so `tail` keeps running once F stops growing: use `tail --pid=<watched pid> -f`, or kill the tail itself (901j fixer 3, 2026-10-28; two stray tails had to be stopped by PID).
 - A background checker running `git status` takes git's optional index lock and can break a concurrent `git add`: use `git --no-optional-locks status`.
+
+- Never edit a gate script while a background run of it is going: bash reads the file from disk in blocks, so an edit that shifts byte offsets makes it resume mid-line ("syntax error near unexpected token" on a line `bash -n` accepts) and the remaining steps never run. Run a copy, or fix the script after the run ends and rerun only the missed steps (901b PR finisher, 2026-10-28).
 
 Related: [[claude-code-hook-internals]]
