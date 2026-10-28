@@ -344,7 +344,67 @@ ac7_claude_hooks_unchanged() {
   [ "$(ls "$SRC"/.claude/hooks/tests/*.test.sh | wc -l | tr -d ' ')" = 5 ] || fail "expected five Claude hook test files" || return 1
   done_ok
 }
-ac8_commit_guard_blocks_ai_trailer() { fail "not written"; }
+bash_payload() { # bash_payload <fixture> <command> [cwd] [tool name]
+  payload "$1" "${3:-$H}" | jq -c --arg c "$2" --arg t "${4:-Bash}" '.tool_name = $t | .tool_input = {command: $c}'
+}
+decision() { # decision <hook output>: deny, block or nothing
+  jq -r '.hookSpecificOutput.permissionDecision // .decision // empty' <<<"$1" 2>/dev/null
+}
+ac8_commit_guard_blocks_ai_trailer() {
+  local c out d i name repo q
+  need "$SRC/.codex/hooks/codex-hooks.sh" || return 1
+  grep -q 'pre-tool)' "$SRC/.codex/hooks/codex-hooks.sh" || fail "codex-hooks.sh has no pre-tool mode (not built yet)" || return 1
+  newroot; echo "# test folder: $S"; install_setup; hooks_env
+  repo="$H/proj/repo"; mkdir -p "$repo"; inhome git -C "$repo" init -q -b main
+  printf 'fix: x\n\nCo-authored-by: Codex <noreply@openai.com>\n' >"$repo/ai-msg.txt"
+  printf 'fix: x\n\nCo-authored-by: Jane Doe <jane@example.test>\n' >"$repo/human-msg.txt"
+  # pre-tool: deny each AI name, any case, inline or in a -F/--file file
+  i=0
+  for name in Codex OpenAI ChatGPT GPT-6.1 Claude Anthropic Copilot Gemini; do
+    for q in "Co-authored-by: $name <noreply@example.test>" "CO-AUTHORED-BY: $(tr '[:upper:]' '[:lower:]' <<<"$name") <x@example.test>"; do
+      i=$((i + 1))
+      out=$(bash_payload PreToolUse-Bash.json "git commit -m \"fix: x\" -m \"$q\"" "$repo" | codex_hook pre-tool)
+      [ "$(decision "$out")" = deny ] || fail "pre-tool allowed: $q" || return 1
+      schema_ok PreToolUse "$out" || fail "deny output fails the PreToolUse schema" || return 1
+    done
+  done
+  for c in "git -C $repo commit -F $repo/ai-msg.txt" "cd $repo && git commit --file=ai-msg.txt" "git commit -F ai-msg.txt -q" \
+           "git -c user.name=x commit -m 'a' -m 'co-authored-by: claude <noreply@anthropic.com>'" \
+           $'git commit -F - <<\'EOF\'\nfix: y\n\nCo-authored-by: Codex <noreply@openai.com>\nEOF'; do
+    out=$(bash_payload PreToolUse-Bash.json "$c" "$repo" | codex_hook pre-tool)
+    [ "$(decision "$out")" = deny ] || fail "pre-tool allowed: $c" || return 1
+  done
+  echo "# pre-tool: denied $i inline trailers and 5 file/flag/heredoc forms"
+  # ... and allows other commits and other commands
+  for c in "git commit -m 'fix: thing'" "git commit -F $repo/human-msg.txt" "git commit -m 'x' -m 'Co-authored-by: Jane Doe <jane@example.test>'" \
+           "echo 'Co-authored-by: Codex <noreply@openai.com>'" "git log --grep 'Co-authored-by: Claude'" "git status"; do
+    out=$(bash_payload PreToolUse-Bash.json "$c" "$repo" | codex_hook pre-tool)
+    [ -z "$(decision "$out")" ] || fail "pre-tool blocked: $c" || return 1
+  done
+  out=$(bash_payload PreToolUse-Bash.json "git commit -m 'x' -m 'Co-authored-by: Codex <n@x>'" "$repo" apply_patch | codex_hook pre-tool)
+  [ -z "$(decision "$out")" ] || fail "pre-tool blocked a non-Bash tool" || return 1
+  # post-tool: a fresh HEAD with an AI trailer is blocked with "amend"; clean, old or foreign HEADs are not
+  echo a >"$repo/a"; inhome git -C "$repo" add a; inhome git -C "$repo" commit -q -F "$repo/ai-msg.txt"
+  out=$(bash_payload PostToolUse-Bash.json "git commit -F ai-msg.txt" "$repo" | codex_hook post-tool)
+  [ "$(decision "$out")" = block ] && jq -r .reason <<<"$out" | grep -qi amend || fail "post-tool did not block an AI-trailer HEAD: $out" || return 1
+  schema_ok PostToolUse "$out" || fail "block output fails the PostToolUse schema" || return 1
+  out=$(bash_payload PostToolUse-Bash.json "git -C $repo commit -m x" "$H" | codex_hook post-tool)
+  [ "$(decision "$out")" = block ] || fail "post-tool missed git -C <repo> commit" || return 1
+  echo b >"$repo/b"; inhome git -C "$repo" add b; inhome git -C "$repo" commit -q -m "fix: clean"
+  out=$(bash_payload PostToolUse-Bash.json "git commit -m 'fix: clean'" "$repo" | codex_hook post-tool)
+  [ -z "$(decision "$out")" ] || fail "post-tool blocked a clean HEAD" || return 1
+  echo c >"$repo/c"; inhome git -C "$repo" add c
+  GIT_COMMITTER_DATE="$(date -v-1H '+%s %z' 2>/dev/null || date -d '1 hour ago' '+%s %z')" inhome git -C "$repo" commit -q -F "$repo/ai-msg.txt"
+  out=$(bash_payload PostToolUse-Bash.json "git commit -m x" "$repo" | codex_hook post-tool)
+  [ -z "$(decision "$out")" ] || fail "post-tool blocked an old HEAD" || return 1
+  echo d >"$repo/d"; inhome git -C "$repo" add d
+  GIT_COMMITTER_EMAIL=someone-else@example.test inhome git -C "$repo" commit -q -F "$repo/ai-msg.txt"
+  out=$(bash_payload PostToolUse-Bash.json "git commit -m x" "$repo" | codex_hook post-tool)
+  [ -z "$(decision "$out")" ] || fail "post-tool blocked another committer's HEAD" || return 1
+  out=$(bash_payload PostToolUse-Bash.json "git status" "$repo" | codex_hook post-tool)
+  [ -z "$(decision "$out")" ] || fail "post-tool blocked a non-commit command" || return 1
+  done_ok
+}
 ac9_codex_commit_identity_no_trailer() { fail "not written"; }
 ac10_sandbox_profile_and_rules() { fail "not written"; }
 ac11_codex_runs_sync_outside_sandbox() { fail "not written"; }
