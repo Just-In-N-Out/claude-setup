@@ -1,5 +1,9 @@
 # Photo-hotspots orchestration continuation
 
+## Latest routing
+
+Verifier7 has completed with a clean qualified verdict on d005003/base5e2f98b, AC1–AC11 accepted and AC12live3bp owed. All fresh runners settled and only own scratch removed. Root read the full formal report and processed empty skill_lessons. Fresh blind `/root/auditor_5` is now active from `briefs/photo-hotspots-auditor-5.md`; evidence `auditor/round-5/`. It has no verifier report access. No source change, merge or release yet. After clean audit run real cross-report ac-check; only its qualifying final line authorizes release. Finisher-main brief now contains current verifier7 qualifications, with final gate/head/lock append still required.
+
 ## Resume update
 
 Justin explicitly said continue after asking for status following eight hours of work. `/root/verifier_7` was restored with followup_task (same role, no replacement). The old browser controller93540 is now unavailable after the interrupted session, with no complete footer/observed exit; it is preserved and not credited. Verifier7 is running the brief's approved complete-file sequential fallback over frozen head/base package sets, retaining completed unit/check/replay work without repeating it. New tracked handle75906. Its status forecast was20–35min for remaining browser ACs/corpus/receipts; this is not a release estimate. Fresh sync first reported another sync running; after that lock cleared, the required escalated retry again failed with read-only filesystem. No lock or config was changed. Main5e2f98b and featured005003 remain clean. No question is pending for Justin.
