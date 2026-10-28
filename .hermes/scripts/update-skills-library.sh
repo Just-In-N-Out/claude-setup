@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Keep Hermes in sync with Justin's picks from the Leorna skills library.
 #
-#   ~/.hermes/scripts/update-skills-library.sh [--dry-run]
+#   ~/.hermes/scripts/update-skills-library.sh [--dry-run] [--links-only]
 #
 # 1. Pull the clone at $HERMES_HOME/skills-library, keeping local fixes:
 #    uncommitted edits are saved to skills-library-local.patch and re-applied.
@@ -9,6 +9,9 @@
 #    named there (never over a skill of Justin's own with the same name).
 # 3. Remove every other link into the library (unlisted or deleted upstream).
 # 4. Report skills that are new upstream; they are NOT installed automatically.
+# 6. Link the skills in skills-library-claude.txt into ~/.claude/skills (Claude Code) and
+#    ~/.agents/skills (Codex), so both tools see the same set. --links-only runs only this step
+#    (setup-codex.sh, tests); it needs no library clone.
 set -euo pipefail
 
 HH="${HERMES_HOME:-$HOME/.hermes}"
@@ -16,13 +19,24 @@ LIB="$HH/skills-library"
 SKILLS="$HH/skills"
 KEEP="$HH/skills-library-keep.txt"
 PATCH="$HH/skills-library-local.patch"
-DRY=0
-[[ "${1:-}" == "--dry-run" ]] && DRY=1
+DRY=0; LINKS_ONLY=0
+for a in "$@"; do
+  case "$a" in
+    --dry-run) DRY=1 ;;
+    --links-only) LINKS_ONLY=1 ;;
+    *) echo "usage: update-skills-library.sh [--dry-run] [--links-only]" >&2; exit 2 ;;
+  esac
+done
 run() { if [[ $DRY -eq 1 ]]; then echo "  would: $*"; else "$@"; fi; }
 
-[[ -d "$LIB/.git" ]] || { echo "error: no clone at $LIB" >&2; exit 1; }
-[[ -f "$KEEP" ]] || { echo "error: no keep list at $KEEP" >&2; exit 1; }
-LIB_REAL=$(cd "$LIB" && pwd -P)
+if [[ $LINKS_ONLY -eq 0 ]]; then
+  [[ -d "$LIB/.git" ]] || { echo "error: no clone at $LIB" >&2; exit 1; }
+  [[ -f "$KEEP" ]] || { echo "error: no keep list at $KEEP" >&2; exit 1; }
+fi
+LIB_REAL=$(cd "$LIB" 2>/dev/null && pwd -P || echo "$LIB")
+added=0; removed=0; before=""; after=""; new=""; changed=""; gone=""
+
+if [[ $LINKS_ONLY -eq 0 ]]; then
 
 # 1. pull, keeping local fixes
 before=$(git -C "$LIB" rev-parse HEAD)
@@ -100,34 +114,59 @@ if [[ "$before" != "$after" && -f "$MERGED" ]]; then
   done < <(grep -vE '^[[:space:]]*(#|$)' "$MERGED")
 fi
 
-# 6. Claude Code links: ~/.claude/skills/<name> -> the Hermes skill folder
+fi # LINKS_ONLY
+
+# 6. Links for Claude Code (~/.claude/skills/<name>) and Codex (~/.agents/skills/<name>), both to the
+#    same Hermes skill folder, for exactly the names in skills-library-claude.txt.
 CLAUDE_LIST="$HH/skills-library-claude.txt"
-CLAUDE_DIR="$HOME/.claude/skills"
-cadded=0; cremoved=0
-if [[ -f "$CLAUDE_LIST" ]]; then
-  want=$(grep -vE '^[[:space:]]*(#|$)' "$CLAUDE_LIST" | awk '{print $1}')
-  if [[ -d "$CLAUDE_DIR" ]]; then
+SYSTEM_SKILLS="${CODEX_HOME:-$HOME/.codex}/skills/.system"
+want=""
+[[ -f "$CLAUDE_LIST" ]] && want=$(grep -vE '^[[:space:]]*(#|$)' "$CLAUDE_LIST" | awk '{print $1}')
+# link_dir <dir> <label>: sets ladded/lremoved. Removes links it made (into ~/.hermes/skills or the
+# library) that are broken or no longer wanted; never touches folders or links pointing elsewhere.
+# Codex only: a name Codex already ships in .system is skipped, so no skill is listed twice.
+link_dir() {
+  local dir=$1 label=$2 link n src dest wanted=$want
+  ladded=0; lremoved=0
+  if [[ $label == codex ]]; then
+    wanted=$(for n in $want; do [[ -f "$SYSTEM_SKILLS/$n/SKILL.md" ]] || echo "$n"; done)
+  fi
+  if [[ -d "$dir" ]]; then
     while IFS= read -r link; do
       [[ -n "$link" ]] || continue
-      if [[ -e "$link" ]] && grep -qx "$(basename "$link")" <<< "$want"; then continue; fi
+      if [[ -e "$link" ]] && grep -qx "$(basename "$link")" <<< "$wanted"; then continue; fi
       run rm -f -- "$link"
-      cremoved=$((cremoved + 1))
-    done < <(find "$CLAUDE_DIR" -maxdepth 1 -type l \( -lname "$SKILLS/*" -o -lname "$LIB/*" -o -lname "$LIB_REAL/*" \))
+      lremoved=$((lremoved + 1))
+    done < <(find "$dir" -maxdepth 1 -type l \( -lname "$SKILLS/*" -o -lname "$LIB/*" -o -lname "$LIB_REAL/*" \))
   fi
   for n in $want; do
+    if [[ $label == codex && -f "$SYSTEM_SKILLS/$n/SKILL.md" ]]; then
+      echo "  codex: skip $n (Codex ships its own in $SYSTEM_SKILLS)"; continue
+    fi
     src=$(find "$SKILLS" -mindepth 2 -maxdepth 2 -name "$n" | head -1)
-    if [[ -z "$src" ]]; then echo "  claude: $n is not a Hermes skill, skipped"; continue; fi
-    dest="$CLAUDE_DIR/$n"
+    if [[ -z "$src" ]]; then echo "  $label: $n is not a Hermes skill, skipped"; continue; fi
+    dest="$dir/$n"
     if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then continue; fi
-    if [[ -e "$dest" && ! -L "$dest" ]]; then echo "  claude: skip $n (Claude Code has its own)"; continue; fi
-    run mkdir -p "$CLAUDE_DIR"
+    if [[ -e "$dest" && ! -L "$dest" ]]; then
+      if [[ $label == claude ]]; then echo "  claude: skip $n (Claude Code has its own)"
+      else echo "  codex: skip $n (a skill of your own is there)"; fi
+      continue
+    fi
+    run mkdir -p "$dir"
     run ln -sfn "$src" "$dest"
-    cadded=$((cadded + 1))
+    ladded=$((ladded + 1))
   done
+}
+cadded=0; cremoved=0; xadded=0; xremoved=0
+if [[ -f "$CLAUDE_LIST" ]]; then
+  link_dir "$HOME/.claude/skills" claude; cadded=$ladded; cremoved=$lremoved
+  link_dir "$HOME/.agents/skills" codex; xadded=$ladded; xremoved=$lremoved
 fi
+links="claude links: +$cadded -$cremoved   codex links: +$xadded -$xremoved"
+if [[ $LINKS_ONLY -eq 1 ]]; then echo "links only   $links"; exit 0; fi
 
 linked=$(find "$SKILLS" -type l \( -lname "$LIB/*" -o -lname "$LIB_REAL/*" \) | wc -l | tr -d ' ')
-echo "library: ${before:0:7} -> ${after:0:7}   linked: $linked   added: $added   removed: $removed   claude links: +$cadded -$cremoved"
+echo "library: ${before:0:7} -> ${after:0:7}   linked: $linked   added: $added   removed: $removed   $links"
 [[ -z "$gone" ]] || echo "on your keep list but gone upstream:$gone"
 [[ -z "$new" ]] || echo "new upstream (not installed; add to $KEEP if wanted): $new"
 [[ -z "$changed" ]] || echo "library changed merged skills (ask Hermes to re-merge):$changed"

@@ -116,7 +116,76 @@ PY
 }
 ac2_first_turn_knows_rules() { fail "not written"; }
 ac3_session_start_rules_fresh() { fail "not written"; }
-ac4_codex_sees_claude_skills() { fail "not written"; }
+LIBSKILLS="engineering-best-practices implementation-planning mutation-testing-discipline code-review-practice
+adversarial-verification-loop security-best-practices multi-tenant-auth-management api-contract-drift-guard backend-data-migrations"
+hermes_home() { # hermes_home: own skills from the checkout, a fake library (clone of $S/upstream), the lists
+  local n
+  mkdir -p "$H/.hermes" "$S/upstream/skills"
+  cp -R "$SRC/.hermes/skills" "$H/.hermes/skills"
+  cp "$SRC/.hermes/skills-library-claude.txt" "$H/.hermes/"
+  printf 'name\tcategory\torigin\tplatforms\tdescription\n' >"$S/upstream/catalog.tsv"
+  : >"$H/.hermes/skills-library-keep.txt"
+  for n in $LIBSKILLS; do
+    mkdir -p "$S/upstream/skills/$n"
+    printf -- '---\nname: %s\ndescription: Fake library copy of %s for the codex-parity tests.\n---\n# %s\n' "$n" "$n" "$n" >"$S/upstream/skills/$n/SKILL.md"
+    printf '%s\tx\tlocal\tmac\tfake\n' "$n" >>"$S/upstream/catalog.tsv"
+    grep -E "^$n[[:space:]]" "$SRC/.hermes/skills-library-keep.txt" >>"$H/.hermes/skills-library-keep.txt"
+  done
+  git -C "$S/upstream" init -q -b main && git -C "$S/upstream" add -A && inhome git -C "$S/upstream" commit -qm lib
+  git clone -q "$S/upstream" "$H/.hermes/skills-library"
+}
+agents_prestate() { # stale, broken and foreign links plus a folder of Justin's own in ~/.agents/skills
+  mkdir -p "$H/.agents/skills/mine" "$S/elsewhere/elsewhere-skill"
+  printf -- '---\nname: mine\ndescription: a Codex skill of my own\n---\nx\n' >"$H/.agents/skills/mine/SKILL.md"
+  printf -- '---\nname: elsewhere-skill\ndescription: linked by hand from elsewhere\n---\nx\n' >"$S/elsewhere/elsewhere-skill/SKILL.md"
+  ln -sfn "$H/.hermes/skills/autonomous-ai-agents/feature-dispatch" "$H/.agents/skills/feature-dispatch"   # stale
+  ln -sfn "$H/.hermes/skills/software-development/gone-skill" "$H/.agents/skills/gone-skill"               # broken
+  ln -sfn "$S/elsewhere/elsewhere-skill" "$H/.agents/skills/elsewhere-skill"                               # not ours
+}
+links_of() { # links_of <dir>: "<name> <target>" for each link into the fake ~/.hermes
+  local l; for l in "$1"/*; do [ -L "$l" ] || continue
+    case $(readlink "$l") in "$H/.hermes/"*) echo "$(basename "$l") $(readlink "$l")" ;; esac; done | sort
+}
+skill_names() { # skill_names <prompt-input json>: the name of every skill Codex lists, one per line
+  jq -r '.[] | .content[]? | .text // empty' "$1" | sed -n 's/^- \([^:]*\): .*(file: r[0-9]*\/.*/\1/p'
+}
+ac4_codex_sees_claude_skills() {
+  local U="$SRC/.hermes/scripts/update-skills-library.sh" CLASH=review-fix-cadence want n out
+  need "$U" && grep -q -- '--links-only' "$U" || fail "update-skills-library.sh has no --links-only (not built yet)" || return 1
+  newroot; echo "# test folder: $S"; install_setup; hermes_home
+  prompt_input "$S/pi0.json" || return 1                     # Codex installs its .system skills first
+  mkdir -p "$H/.codex/skills/.system/$CLASH"                 # then a Hermes name also in .system
+  printf -- '---\nname: %s\ndescription: system copy\n---\nx\n' "$CLASH" >"$H/.codex/skills/.system/$CLASH/SKILL.md"
+  agents_prestate
+  want=$(grep -vE '^[[:space:]]*(#|$)' "$H/.hermes/skills-library-claude.txt" | awk '{print $1}' | sort)
+  [ "$(wc -l <<<"$want" | tr -d ' ')" = 17 ] || fail "expected 17 Claude-linked names" || return 1
+  for mode in default --links-only; do
+    if [ $mode = --links-only ]; then rm -rf "$H/.agents/skills"; agents_prestate; fi
+    out=$(HERMES_HOME="$H/.hermes" inhome bash "$H/.hermes/scripts/update-skills-library.sh" ${mode#default} 2>&1) \
+      || { echo "$out"; fail "update-skills-library.sh $mode failed"; return 1; }
+    echo "# $mode: $(tail -n 3 <<<"$out" | tr '\n' ' ')"
+    # exactly the Claude-linked names, same targets, minus the .system clash
+    [ "$(links_of "$H/.claude/skills" | awk '{print $1}')" = "$want" ] || fail "$mode: ~/.claude/skills is not the 17 names" || return 1
+    [ "$(links_of "$H/.agents/skills")" = "$(links_of "$H/.claude/skills" | grep -v "^$CLASH ")" ] \
+      || { diff <(links_of "$H/.claude/skills") <(links_of "$H/.agents/skills") | sed 's/^/# /'; fail "$mode: ~/.agents/skills differs from ~/.claude/skills"; return 1; }
+    grep -q "codex: skip $CLASH" <<<"$out" || fail "$mode: no message for the .system clash" || return 1
+    grep -q "codex links: +16 -2" <<<"$out" || fail "$mode: summary is not 'codex links: +16 -2'" || return 1
+    [ ! -e "$H/.agents/skills/feature-dispatch" ] && [ ! -L "$H/.agents/skills/gone-skill" ] || fail "$mode: stale or broken link left" || return 1
+    [ -f "$H/.agents/skills/mine/SKILL.md" ] && [ ! -L "$H/.agents/skills/mine" ] || fail "$mode: own folder touched" || return 1
+    [ "$(readlink "$H/.agents/skills/elsewhere-skill")" = "$S/elsewhere/elsewhere-skill" ] || fail "$mode: foreign link touched" || return 1
+  done
+  # a second run changes nothing
+  before=$(ls -l "$H/.agents/skills" "$H/.claude/skills")
+  out=$(HERMES_HOME="$H/.hermes" inhome bash "$H/.hermes/scripts/update-skills-library.sh" --links-only 2>&1)
+  grep -q "claude links: +0 -0   codex links: +0 -0" <<<"$out" && [ "$(ls -l "$H/.agents/skills" "$H/.claude/skills")" = "$before" ] \
+    || { echo "$out"; fail "second run changed something"; return 1; }
+  # Codex lists each of the 17 exactly once, and no name twice across all roots
+  prompt_input "$S/pi.json" || return 1
+  skill_names "$S/pi.json" | sort >"$S/names.txt"
+  for n in $want; do [ "$(grep -cx "$n" "$S/names.txt")" = 1 ] || fail "$n listed $(grep -cx "$n" "$S/names.txt") times" || return 1; done
+  [ -z "$(uniq -d "$S/names.txt")" ] || fail "listed twice: $(uniq -d "$S/names.txt" | tr '\n' ' ')" || return 1
+  done_ok
+}
 ROLES="planner builder reviewer fixer verifier auditor finisher"
 doctor_json() { # doctor_json <out>: codex doctor --json in the fake home (its exit is 1 without a sign-in)
   (mkdir -p "$H/work" && cd "$H/work" && inhome codex doctor --json >"$1" 2>"$1.err"); jq -e .checks "$1" >/dev/null
