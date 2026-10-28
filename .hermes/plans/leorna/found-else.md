@@ -177,3 +177,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 
 ## 2026-10-28: 86bcm901j fixer 3
 - Low: a template with a NUL in an env value passes the gate and counts as verified for Claude Code, but real Claude Code 2.1.312 refuses to start that server (`ERR_INVALID_ARG_VALUE`); breaks the template, not a security hole. Possible follow-up: refuse NUL in values or treat it as not verified in rule V.
+
+## 2026-10-28: 86bcm901a finisher
+- Info for 86bcm901w: `loadLibraryItems` (`internal/store/postgres/pack_builder.go`) loads library rows by ID, so on installs that loaded library 0.5.0 the retired demo rows `agent/code-reviewer@1.0.0` and `agent/test-writer@1.0.0` stay selectable unless 901w's picker lists only the newest version per kind and name.
+- Nit (901a branch, doc only): `cmd/library-upstream/main.go:6` package comment omits `[--version V]` on its import line; the usage text at `:52` has it. Left out to keep the accepted head `9c13e02`; fold into the 901b merge or a later fix round.
