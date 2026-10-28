@@ -4,11 +4,13 @@ You are a fresh, independent, source-read-only verifier. You never saw the build
 
 ## Source pins and acceptance
 
-- Worktree: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/photo-hotspots`, branch `worktree-photo-hotspots`. The orchestrator will append the exact candidate HEAD before dispatch. Confirm that HEAD and a clean `git status --porcelain --untracked-files=all` before starting.
+- Worktree: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/photo-hotspots`, branch `worktree-photo-hotspots`, candidate HEAD **`55f265aab4befefe9600dafc5c74a69adb25aab2`**. Confirm that HEAD and a clean `git status --porcelain --untracked-files=all` before starting.
 - Base: `git -C <worktree> merge-base HEAD main`; the branch's pre-integration base is `388191d0a00c5cb6d1885b3b734db91acd3b49a7`. Record the actual base and report any movement before relying on it.
 - Immutable approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/photo-hotspots/plan-approved.md`. It has **AC1–AC12**, not seventeen; AC12 is the only live AC.
 - Worktree plan: `docs/plans/2026-10-26-photo-hotspots.md`, especially "Justin's answers", "Rulings", "Rulings added or changed at review round 1" and any later review-ruling sections. Judge the approved ACs against those recorded changes too; do not alter the immutable approved plan, add ACs or reclassify ACs as live. AC12's live check was renumbered from 3bo in the approved copy to **3bp** because headline-marker took 3bo.
 - Review closure context: reviewer 1 F1–F10, fixer 1, reviewer 2 F1–F4 and fixer 2. Read their records in this feature's evidence tree and the worktree HANDOFF/ledger. Independently confirm closure and regressions rather than accepting their result claims.
+
+Fixer 2's final report is `evidence/photo-hotspots/fixer-2/codex-resume/report.json`. It reports F1 retained at `fde5f46`, F2 crop preservation at `eb09df3`, F4 overlay link guards at `6905be6`, F3 guards and nested media selection at `5798b0a`, and records at candidate `55f265a`. Review 2's changed rulings are in the plan's "Review round 2 rulings" section. Reported gates: zero check/unit failures; hotspot browser 5/5 with zero skips; full browser candidate 363/376 versus base 358/371, identical twelve failures and one skip by name; four page payload/warnings/full HTML replays byte-identical. Three unavailable v1 files remain a qualified environment gap, not measured corpus success. Re-run rather than inheriting these claims.
 
 ## Skills
 

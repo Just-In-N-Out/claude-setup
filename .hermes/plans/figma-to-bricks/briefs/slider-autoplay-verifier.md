@@ -71,3 +71,7 @@ ac_status[{ac,accepted,test,screenshot,evidence}], gates, rulings[], found_else[
 skill_lessons[{skill,lesson,evidence}]}`. Clean requires all runnable ACs accepted and no introduced gate failure;
 AC13–AC14 may remain live/not_run. Never edit skills or memory. Empty skill_lessons is normal.
 End with `MAIN SESSION: check and save these skill_lessons now.`
+
+## Dispatched revision (2026-10-28)
+HEAD: `d355109ce1850930e926a6d17ad9bafcfe4d2cf6`; expected base `f46f8a2` (resolve the full merge-base yourself).
+Fixer 2 returned ready-for-verify with no skill lessons. Confirm all results independently.
