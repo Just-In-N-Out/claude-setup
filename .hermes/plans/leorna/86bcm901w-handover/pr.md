@@ -69,7 +69,7 @@ Everything below ran on head `8a50486`, the pushed head, on 2026-10-28. The gate
   - the blind auditor: 15 mutants, all killed.
   - Two builder mutants are documented equivalents: M2 (the tenant key on one lock query, also enforced by the composite FK) and M6 (an ignored audit error, also caught because Postgres aborts the transaction).
 - [x] Admin console in dev mode on a throwaway database, with a binary built at `8a50486` (auditor): tick 4 items and Create pack gives "version 1" with those 4 ticked; untick one and tick another gives "version 2 … from version 1"; the change history for the pack shows `pack.create` and `pack.version.create` with actor and diff; the same name in other case gives the inline 409 alert.
-- [ ] Hosted CI "Go quality gates": pending (filled in below when the run finishes).
+- [x] Hosted CI on `8a50486` (run 40787263343, `pull_request`): "Go quality gates" success; "Publish control-plane image" success (build and Trivy scan; the push steps are skipped on a PR); "Package admin-portal distribution" success.
 
 ## Security, migration, rollback
 
@@ -106,7 +106,7 @@ Everything below ran on head `8a50486`, the pushed head, on 2026-10-28. The gate
 - The client keeps its own copy of the OpenAPI spec. Refreshing it (`leorna-client/api/`, `make generate`) is optional: it adds unused types only.
 - **Sibling stories from the same base:**
   - PR #94 (86bcm9021) conflicts in one place, `internal/web/handler.go`: both add a field after `packVersions`. Keep both. `main.go`, the pack README and `stories.json` merge cleanly (`git merge-tree` against #94's head `fd63455`, rechecked when this PR was opened). A trial merge built, vetted and passed the non-database tests.
-  - PR #95 (86bcm901b) conflicts only in `delivery/stories.json` (`git merge-tree` against its head `63afe55`): take main's file and append this entry last. The unpushed 86bcm901a and 86bcm901j branches conflict only there too. None of them adds a migration, so 23 stays free.
+  - PR #95 (86bcm901b) conflicts only in `delivery/stories.json` (`git merge-tree` against its head `63afe55`): take main's file and append this entry last. PR #97 (86bcm901a, head `9c13e02`) and the unpushed 86bcm901j branch conflict only there too. None of them adds a migration, so 23 stays free.
   - Whichever merges second reruns its gates on the merged code.
 - **Follow-ups** (not in this PR):
   1. 86bcm901b's `requires`: when an admin ticks a prompt, add or warn about its required library items (`Library.Required`). The plug-in point is after `ApplyChange` in `CreatePack`/`SavePackVersion`.
@@ -122,5 +122,5 @@ Everything below ran on head `8a50486`, the pushed head, on 2026-10-28. The gate
 
 - Head: `8a5048694d40ee975c7b3c276ca1b8af521cae5d` (base `1ee7157`, GitHub `main` when this PR was opened)
 - Required check: "Go quality gates"
-- Actions run: pending
+- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40787263343 (CI, `pull_request` on `8a50486`, conclusion success: "Go quality gates", "Publish control-plane image" and "Package admin-portal distribution" all success)
 - Local gates on this head (2026-10-28): `make check`, `test-module-add.sh`, the Postgres `go test -json` stream read per test, the story gate, gitleaks and the scope checks, each exit 0 (one log per gate plus a `SUMMARY.txt`, kept with the story's evidence).

@@ -29,3 +29,4 @@ The Bash tool runs zsh, with GNU coreutils ahead of the macOS tools in PATH (see
 - Never edit a gate script while a background run of it is going: bash reads the file from disk in blocks, so an edit that shifts byte offsets makes it resume mid-line ("syntax error near unexpected token" on a line `bash -n` accepts) and the remaining steps never run. Run a copy, or fix the script after the run ends and rerun only the missed steps (901b PR finisher, 2026-10-28).
 
 Related: [[claude-code-hook-internals]]
+- In a subagent, a foreground Bash call is moved to the background after 180 s whatever `timeout` says, and an agent that then ends its turn counts as finished. Briefs that say "wait in the foreground" must also say to split long waits into polls under 170 s each (a bounded `node -e` loop re-reading the run state or the output file) (86bcm901a PR finisher, 2026-10-28).
