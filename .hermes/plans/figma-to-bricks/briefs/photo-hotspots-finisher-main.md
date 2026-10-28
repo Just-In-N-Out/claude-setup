@@ -23,3 +23,15 @@ Use a fresh owned scratch parent (`mktemp -d` and `mkdir` without `-p` for `phot
 ## Report
 
 Return `{status: released|stopped, build, head, origin_main, push, gates, docs, ledger, rulings, live_acs, limits, proposed_rules_summary_edit, skill_lessons[{skill, lesson, evidence}]}`. Empty skill_lessons is normal; never edit skills or memory yourself. End with `MAIN SESSION: check and save these skill_lessons now.`
+
+## Verified SSH transport for this environment
+
+Release preflight `/home/justin/.hermes/plans/figma-to-bricks/evidence/photo-hotspots/release-preflight/ssh-identity.txt` records the root session's read-only identity check. Default SSH, including its escalated retry, fails before authentication on `/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf` permissions. The existing user SSH config is owned by Justin with mode 600. This succeeds and greets **Just-In-N-Out** (exit 1 is GitHub's normal no-shell greeting):
+
+`ssh -F /home/justin/.ssh/config -o BatchMode=yes -o ConnectTimeout=10 -T git@github.com`
+
+Reconfirm the same account before the authorized push. Preserve this existing transport for the command only:
+
+`GIT_SSH_COMMAND='ssh -F /home/justin/.ssh/config -o BatchMode=yes -o ConnectTimeout=10' git push origin main`
+
+Do not change any SSH config, remote, credential helper, account or author metadata. This is a configuration-permission workaround using the same existing key route; actual authentication failure still must be reported, with no alternate account/token workaround. Record the actual push exit and origin/main equality rather than assuming the identity check itself published anything.
