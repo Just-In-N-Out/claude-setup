@@ -1,1101 +1,75 @@
 # Figma to Bricks v2: instructions for every agent
 
-**Status and what's next:** `docs/HANDOFF.md` (milestones, how work is done, what the user must provide).
+**Status and history:** `docs/HANDOFF.md` (newest first: every feature's section with its rulings, paste check and
+follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file keeps only the current status and the
+standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
+line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Start here: handoff of 2026-10-19 (the previous chat was cleared; read this first)
+## Status (2026-10-28)
 
-**Current build `2026-10-28.2`.** Builds 21.13–22.9 were recorded only in `docs/HANDOFF.md` (their agents
-couldn't write this file; their queued edits are in `~/.hermes/plans/figma-to-bricks/*-claude-md-pending.md`).
-- **Bigger words in pills and Learn more links (28.2, label-floor):**
-  - Justin's rule (2026-10-26): pill words at least **13px**, linked Learn-more-style words at least **15px**, on
-    every screen. Already-large words and other text stay drawn. The element carries the minimum; its Figma style
-    class is unchanged, so re-pasting creates no label-class import conflict (`understand/min-font.ts`).
-  - Menus, footer link lists and current menu items keep their size. A chosen tab stays drawn only with at least two
-    other clickable options (Justin's "Clickable = tabs"); a blog-card category beside plain meta words grows.
-    Matching two-option switches stay drawn; remaining unconfirmed rulings are in HANDOFF.
-  - **Space gives way:** an exactly filled row gives up gaps equally, at most half each screen's step, then widens
-    into column room (through hugging rows to an ancestor that can decide); without room its words stay drawn and
-    the panel names it. The plan counts grown words and planned widths/gaps (`understand/give-way.ts`).
-  - Integrated with flip-cards: a front keeps its label/link minimums when its card link moves to the back
-    (`linksHere`); hover copies keep minimum/give-way fields and flip variant keys. Button styling lives in
-    `style/button.ts`; `style.ts` is 293 lines.
-  - Both independent AC reports and ac-check accept the 14 automated ACs; **AC9 / paste check 3bm is owed**. Copy
-    typed FAQ answers before emptying Home; convert Home Page Final with header/footer ticks as on the site,
-    paste/save, restore answers/save; regenerate code signatures and Purge All. Check tags 13px / LEARN MORE 15px
-    and no Import-classes dialog. GRO links outside tight rows remain open. Details: HANDOFF and label-floor's
-    plan/ledger; evidence `~/.hermes/plans/figma-to-bricks/evidence/label-floor/`.
-- **Flip cards (28.1, flip-cards):**
-  - **Justin's ask** (bdryswi.com's home page, "Our Services"): six photo cards in a 3-column grid that turn over like
-    a playing card under the mouse, showing a back with the title, a sentence and a button to the service's page; a
-    general plugin feature for any Figma file. Figma has no flip animation, so the designer marks the card.
-  - **In Figma (Q1A):** the card is a component with two variants, front and back; the front has While hovering (or
-    Mouse enter) → Change to the back; a Figma **annotation** `flip` sits on the component set, the main component or
-    one instance (Dev Mode → Annotate). `flip left` / `up` / `down` choose the way (`flip` alone turns right); the
-    Change to's time and easing are the turn's (Instant: 0.6s ease-in-out). **Without the mark nothing changes.** A
-    mark that can't flip (no hover Change to; a Button, text, picture or section; a form on a face; an instance holding
-    a layer its main doesn't) is one panel note and converts as unmarked. No extract or debug-file change.
-  - **What the paste holds** (`understand/flip.ts`, `style/flip.ts`, `style/classes.ts` `flipClass`): the card
-    (`flip-card`, the instance's Div or Block: its size and place only, a one-cell grid) holding a "Front"
-    (`flip-front`: the instance's layers, paint and padding) and a live "Back" (`flip-back`: the hover variant, paired
-    as hover layers pair it, its Button keeping its link). One class holds the turn (`perspective: 1000px`, `backface-visibility:
-    hidden`). The card is as tall as its taller face on every screen, as wide as unmarked, and never grows on hover.
-  - **How it behaves:** the mouse turns it; Tab onto a link on the back turns it (a card whose back holds no link takes
-    the focus itself, `tabindex="0"`); phones (Q2A, CSS only): a tap turns it without opening the link, the next tap
-    opens it, a tap elsewhere turns it back; less motion (Q4A): the faces swap after 50ms without turning; the back
-    takes the pointer 50ms after the turn (`transition-behavior: allow-discrete`), so a tap's own click never lands on
-    its link; a card that is a link (Q3A) puts the link on its back; each card's back words as drawn (Q5A).
-  - **Phones and tablets:** laid out as the same card unmarked (`ir.ts` `faceOf`: recognise and the layout plan judge
-    a flip card by its front); a photo card's phone slider holds copies that flip too. Never a product card, a hover
-    layer or a CTA (its back's Buttons are CTAs); unmarked photo cards beside it keep their zoom.
-  - **Nested links** (review 2, F1): a link inside another is a test-only invariant (`emit-nested-links`, every
-    fixture and corpus page), not a paste refusal: review 1's refusal broke pastes main made. A list's PDF wins over a
-    link around its row, card or footer (one note per address); the hero's phone band copy finds links at every depth.
-  - **The ⭐ answers Q1A–Q5A**, taken under Justin's auto-go (not yet confirmed).
-  - **Rulings, not yet confirmed:**
-    - planner R1–R10: drawn heights are minimums; perspective 1000px, right unless named; Instant → 0.6s ease-in-out;
-      Tab focuses the card only when its back has nothing to tab to; "Front" / "Back" labels; no zoom or fade-in on
-      the card; one note per component, one per mark that can't flip; the back's title takes its front twin's level;
-      the back's words aren't searched for numbers or page names; up/down turns clip sideways;
-    - builder: the card takes the focus when its back holds no link, even with an unlinked Button (Bricks renders it a
-      `span`); the turned look reads `:has(> .flip-back:focus-within)`;
-    - fixer 1: a card inside a link takes no `tabindex`; a back drawn wider than its card wraps its words from the
-      design width; the 50ms swap counts as "at once"; a pill-shaped flip card is no CTA;
-    - fixer 2: a nested link never refuses the paste; a list's PDF wins over a link around it; the back's pointer waits
-      50ms in both motion modes (at once where `transition-behavior` is missing, Safari before 17.4); the layout plan
-      reads a flip card by its front everywhere, its back adds nothing.
-  - **Review:** two fresh opus reviews, all findings fixed test-first: review 1 F1–F7 (less motion's first tap opened
-    the link; a hugging card widened by its back; a nested link; CTA marks; mutants; element type; a short instance),
-    review 2 F1–F6 (high: the nested-link guard refused main's own pastes; high: the layout plan gave a flip card no
-    room, so its row never stacked; the site check lost its links; Safari's pointer; test gaps; a linked card's front).
-  - **Checks:** check 2351 + 6, 0 fail (60 corpus skips on the WSL desktop: Mac paths); browser 373: 360 pass, the same
-    12 font failures and 1 Mac-only skip as main; corpus-backed tests in `git archive` trees 0 fail; hydraulics, GRO,
-    debug-page-1, brainstorm and Services replays byte-identical (none has an annotation). AC1–AC12 proven by the
-    verifier and the blind auditor; AC13 is the live paste. Owed on a Mac: v1's three files' corpus tests and replays.
-  - **Paste check 3bn owed** (HANDOFF steps, one action at a time): make a card a component with a back variant,
-    While hovering → Change to, annotate `flip`, convert, paste, LiteSpeed Purge All (no code: no signatures); point,
-    click, Tab; on the iPhone tap where the button will be (turns, opens nothing), again (opens), elsewhere (turns
-    back), then the same with Reduce Motion; save a debug file of the page.
-  - **Limits** (HANDOFF "Limits"): Safari may show a turned-away face's composited children (a `will-change` picture, a
-    video, a CTA's fade-in) through `backface-visibility` (a fix hides the back from screen readers: a question for
-    Justin after 3bn); Chrome never hit-tests a turned-away face, so the faces' `pointer-events: none` is pinned by the
-    CSS test only; a divided row of flip cards keeps its lines on phones; the near edge grows mid-turn (a clipping
-    parent cuts it); the Bricks editor shows the back only under the pointer; Figma text properties aren't read; every
-    card carries its back. Not in scope: a flip on click, push/slide/zoom flips. The bdry paste comes next.
-- **Space under an open FAQ answer (26.1, faq-answer-space):**
-  - **Justin's ask** (screenshot of the live Home page): "Can we add more space under the FAQ when it's open? Under
-    the answer." The open answer's last line sat right on the divider above the next question.
-  - **The cause:** Home's answer is a website import: a box without auto layout fixed at 105px, its words (80px) at
-    its top, so Figma shows about 25px under them. The plugin wrote that height as a min height (`style/sizing.ts`),
-    which fills up once the words wrap more (0 at 1024 on main) and is set to 0 from 991px down (`size.unpin`).
-    Repairs is drawn the same way (79px boxes, 26px under the words).
-  - **What it does now** (`understand/accordion.ts` `spaceUnder`, `underAnswers`): an answer box Figma draws at a
-    fixed height with its words at its top hugs its words, and the space drawn under them becomes the item Content's
-    bottom padding, the same on every screen. Closed items' placeholder answers get the open answer's space. A box
-    that paints something of its own (a fill, an outline on any side, a shadow, a frosted backdrop) or holds a placed
-    layer keeps today's min height, as do a box centring its words, a wrapping grid and a column whose last layer is
-    pushed to the bottom.
-  - **The ⭐ answers 1A 2A 3A**, taken under Justin's auto-go (not yet confirmed): placeholders get the drawn open
-    answer's space, not its min height; only a box whose layers sit at its top counts; whole pixels, under 1px none.
-  - **Review:** fresh opus, approve with fixes; F1 (medium: a painted or outlined box's space moved outside its
-    paint), F2 (low: a badge pinned to the box's bottom rode up onto the words), F3 (low: no test for the box's own
-    padding or a row's offset), all fixed test-first.
-  - **Checks:** check 2314 + 6, 0 fail (55 + 5 corpus tests skip on the WSL desktop: Mac paths in `corpus.json`);
-    browser suite equal to main's by name (366: 353 pass, the same 12 failures and 1 Mac-only skip as main, this
-    machine's Chrome and fonts). AC1–AC6 proven by the verifier and the blind auditor; AC7 is the live paste.
-  - **Pastes:** Home's 5 answers lose `_heightMin` 105 (and its tablet 0) and their Content blocks get bottom padding
-    25px; Repairs the same with 79 / 26px. GRO, brainstorm and Services byte-identical; lint identical at 390–1728.
-  - **My rulings, not yet confirmed:** a row counts by lining its layers up at its top, a column's nudges are part of
-    the answer; a painted, outlined, shadowed or placed-layer answer box keeps its min height (exact at the design
-    width, its space gone from 991px down, as on main).
-  - **Paste check 3bl owed:** copy the 4 answers Justin typed in Bricks for Home's closed FAQ items first (they come
-    back as placeholders), then empty Home and re-paste "Home Page Final" (folds into 3bj), and re-paste "Hydraulic
-    Cylinder Repairs Final"; type the answers back, Regenerate code signatures, LiteSpeed Purge All.
-  - **Follow-ups** (HANDOFF "Not changed"): a badge pinned to the bottom of a fixed-height box lands on its words on
-    phones (on main too: `size.unpin` drops the min height from 991px down); the same frozen space exists outside
-    FAQs.
-- **A captured map with no words, and a map edge to edge (23.3, wordless-maps):**
-  - **Justin's ask:** "for the contact page please make it so that the map is embedded and the user can scroll on
-    it." The live Contact page's map was a flat picture: its capture kept Google's tiles and controls as pictures,
-    no words, and the address sat in the next section.
-  - **What it does now:**
-    - **Recognition** (`normalise/maps.ts` `controlled`, `cornerOf`): a mosaic is a map when its own controls sit in
-      two corners of its tiles or more. A control is painted, never words, more than 2px, at most half the tiles each
-      way, near one side and one end only (within 32px).
-    - **Address:** `nearestAddress` searches up to the whole page, so the map's own section still wins.
-    - **Edge to edge** (`understand/section.ts` `mapAcross`, `aroundMap`, `mapPart`): a map across its section goes
-      straight in the section; one across a painted band goes in the band; one inside a single unlinked wrapper
-      makes that wrapper a band.
-  - **Justin chose "Edge to edge"**, which answers "Should a full-width map leave the 1440 Container?". Scroll: the
-    keyless embed is unchanged, so the wheel zooms only with Ctrl/⌘; plain wheel zoom needs an API key.
-  - **Review:** fresh opus, approve with fixes; F1 (high: the space above a map in a free section was lost) to F6,
-    all fixed test-first.
-  - **Checks:** check 2297 + 6, browser 362/362; corpus pastes byte-identical.
-  - **Paste check 3bk owed:** re-paste Contact with the header tick on (its spacer is gone on the live page).
-  - **Also found:** Home's "Home Page Final" frame itself holds a whole Services page (not two pastes stacked). Waiting
-    on Justin's Layers screenshot.
-- **The header tick follows the site (23.2, site-ticks):**
-  - **Justin's report:** with "My site already has its header" ticked, a second header still showed on phones and
-    tablets, and Home was "all over the place".
-  - **What the live site showed** (read past LiteSpeed with `?f2b=<random>`): 7 pages were right. Home and
-    Hydraulic Cylinder Repairs Final were pasted from a Convert with the tick off: no `section.site-header-room`,
-    the Figma header kept. At 1440 it hid behind the taller fixed site header; narrower, it grew and showed. Home
-    also holds a whole Services page in its second section: the "Home Page Final" frame itself holds it (a fresh paste
-    into an emptied page kept it), not an older paste.
-  - **The cause:** the core's leaving-out works when ticked. The tick lives per Figma file, and nothing said a paste
-    still held a header.
-  - **What it does now:**
-    - every Convert says where the header and footer went: `DesignLeft.shown`, `includedNote`, `partsFate` →
-      `ResultData.parts`, and one line under the ticks (`ui/site.ts` `partsText`, red when the paste may double the
-      site's);
-    - the panel remembers the ticks by WordPress site (`Stored.siteParts`). A file that never saved ticks
-      (`init.siteKept`) takes the connected site's and saves them into the file;
-    - the ticks box now lives in `ui/site-box.ts`.
-  - **Pastes are byte-identical** for the same ticks.
-  - **Review:** fresh opus, approve with fixes. F1 (the footer ticked alone with an unticked header changed the
-    paste) and F2 (a stale red line) were fixed test-first. Check 2277 + 6, browser 360/360.
-  - **Justin's next step:** HANDOFF "The header tick follows your site"; paste check **3bj** owed: empty Home and
-    re-paste "Home Page Final", re-paste Repairs, both with the ticks on.
-- **Web addresses read without the URL class (23.1, sandbox-urls):** Justin's Services "Download Full Inventory
-  (PDF)" button opened the PDF in the same tab, even from a fresh 22.10 paste. Figma's plugin sandbox has no `URL`
-  (only built-ins, `figma`, `console`, timers and `fetch`). Four `new URL` checks inside `try` always said no in
-  Figma, though every Node test passed. So PDF links never got their new tab or `download` (21.18 and 22.7), picture
-  links were never dropped (20.14), CSV document columns never linked (21.16) and map links never named their place
-  (20.10). Now `src/core/model/url.ts` (`parseAddress`, `queryValues`) reads addresses without it.
-  - Guards: `test/unit/sandbox-convert.test.ts` runs the bundled core in a `node:vm` context like Figma's (fixtures
-    plus all corpus pages must equal Node); `test/unit/model-url.test.ts` compares the reader with URL;
-    `npm run typecheck` checks Figma-run code against `tsconfig.sandbox.json`.
-  - Fresh opus review: approve; its two reader fixes were made test-first. Corpus pastes are byte-identical. Check
-    2262 + 6, browser 352/352.
-  - A first diagnosis blamed a stale Figma panel; that was wrong.
-  - Follow-up: `localeCompare` may sort fonts differently under Figma's SES.
-  - HANDOFF "Web addresses read without the URL class"; paste check **3be** owed again.
-- **A picture frame's faint outline over a photo (22.10, photo-frame-outline):** Justin's Repairs hero showed "a
-  subtle white border outline" around the cylinder's box. It is in the design (`div.prod`: 1px white stroke at 10%,
-  radial glow), drawn on the truck photo. **Justin chose "Only over a photo":** `normalise/photo-frames.ts`
-  `leaveFaintFrames` (after `build()`, before `inferLayouts`, in Figma's paint order) drops the stroke of a
-  see-through box (fills ≤ 20%, no background blur) outlined by a faint hairline on every side (≤ 20%, ≤ 2px), holding
-  a photo-sized picture (≥ 80px, no words), on a photo (the topmost layer covering ≥ 90% is a photo or video; no
-  opaque layer over more than 10% of the box), with no hover. Paste = as if deleted in Figma; one note. Boxes on plain
-  colours keep theirs. Fresh opus review F1–F7 fixed test first (dividers, icon rings, partial panels, videos waiting
-  for their address); 36/36 mutants killed. Check 2246 + 6, browser 352/352; corpus pastes/HTML byte-identical (same
-  18 items as main). Repairs: only "Prod" changes. HANDOFF "A picture frame's faint outline over a photo"; paste check
-  **3bh** owed.
-- **Checks (as of 21.12):** `npm run check` 1479/1479 unit/rule plus 6/6 serial performance; browser (`npm run test:browser`)
-  154/154, no skips/failures. The three stale panel upload-name expectations are fixed; all newer B2 tests remain.
-  Five .11/main versus .12 pastes and full HTML byte-identical; full findings/heights/fonts equal at 29 widths.
-  Separately labelled matched-policy recapture gives exactly equal complete reports, same 17 existing v1
-  differences. Legacy moving-animation scores remain non-comparable; budgets/tolerances unchanged.
-- **Test cleanup (21.12, test-cleanup):** the three stale upload-name panel tests are green; list/marquee/map
-  guards have independent mutation tests; picture/shape styling is split out without changing pastes. Snap pairs
-  wrapped sections top-to-bottom with corpus fonts. Tool captures use finite-end/infinite-zero; interactive tests
-  remain live. WordPress Font Library stand-ins are source-backed; timing gates are serial, not relaxed. Fresh
-  review passed; integrated check 1479 unit/rule + 6 performance, browser 154/154, no skips, all B2 tests retained.
-  Five pastes/HTML unchanged from .11; complete matched-font/motion reports equal at 29 widths, same 17 existing
-  v1 differences. F7/F9/fontStatus remain open. HANDOFF "Test cleanup"; **no paste check or user action owed**.
-- **Text breaks (21.10, text-breaks):** phone numbers move together when they fit; an impossibly narrow box may wrap
-  digits without overflow or a lone closing period. Proven fixed-width flowing prose reflows through an isolated
-  sentence-ending wrap; sentence-a-line items and addresses retain their deliberate separators. Fresh review F1/F2
-  fixed test-first. Services review 10 → 8 lines at 390; same five at 1728. Check 1446; browser 142/145 with only the
-  three pre-existing panel failures; matched corpus no worse, same 17 known v1 comparison items. HANDOFF "Text breaks";
-  paste check **3ak** owed.
-- **Google partial fonts (21.9, google-partial-fonts):** a successful Google answer confirms only faces covered by
-  its returned family/weight/slant descriptors. Omitted weights say missing unless usable exact site coverage wins;
-  accepted CSS, Figma requests and request counts stay unchanged. Fresh review passed; check 1430; browser 137/140
-  (the same three stale tests); five corpus pastes/HTML and full per-width lint/heights/fonts identical to main .8.
-  Conversion/panel check **3aj**; **paste check: none owed**. Double loading and the header-template setting remain
-  separate. HANDOFF "Google partial fonts".
-- **CTA label wrap (21.8, cta-label-wrap):** a button's words stay on one line as Figma draws them: the layout plan
-  keeps items side by side only while each holds its buttons (alike cards stack rather than squeeze a pill), a kept
-  row gives a button its one-line width where CSS holds it, `white-space: nowrap` on its words. Hydraulics Info
-  cards' "Call Us Now" one line at 768–480. Laptop pills (design at 1200) still wrap: pill-clip batch. Paste check
-  **3ai** owed. HANDOFF "Button words that wrapped in narrow cards".
-- **Equal card fixes (21.7, equal-card-fixes):** the recheck of 20.15's equal cards. A card's frozen bottom space is
-  trimmed only where the freed space falls under its words: row cards centred or at the bottom, wrapping row cards and
-  cards a min height holds open keep their drawn bottom (and their centring), so nothing moves at the design width; a
-  small photo in a stretched card stays square on tablets (flex-grow 0 once stacked). Justin's pages byte-identical:
-  no paste check owed. check 1376; HANDOFF "Equal card fixes (recheck R1–R7)".
-- **Fonts cleanup, stage 1 (21.6, fonts-cleanup):** a usable same-family/slant variable face already on the site
-  covers a dropped static weight in its range, so it says "Already on your site" without another upload. A known
-  missing face's note names the weights this paste actually supplies, or says no replacement is confirmed; it never
-  picks a replacement or promises the physical font. Fresh pastes already keep Figma's text weights through their
-  typography classes; regression tests now hold that against a body weight of 800. The header template still needs
-  its own 600 by hand (3af). Item 1 (fonts loaded twice) deferred: needs a live paste proof; F1 (an HTTP-200 Google
-  answer missing a weight counted as complete) still open. check 1358 at its merge; HANDOFF "Fonts cleanup, stage 1";
-  paste check 3ah owed.
-- **Words linked to another frame (21.5, frame-text-links):** words a designer links to another frame in Figma (Cmd+K
-  → a frame's link) link to that frame's page, a part of a frame to its frame's page, and with WordPress connected
-  the panel sends them to the site's page named like it (or takes them off where only a picture is at the address);
-  a deleted frame's words stay plain, named. Behaviour change for Justin to confirm: such words, like typed-address
-  ones, keep their card from becoming a whole-card link and a pill from being a Button. check 1330; HANDOFF "Words
-  linked to another frame"; paste check 3ag owed.
-- **Phone side padding (21.4, phone-side-padding):** upright phones get a box's own (space.ramp) side padding back in
-  writing after a sideways phone's squeeze (Justin's P1A; P2B: a tablet's squeeze still carries on to sideways
-  phones). A row split by its items' own one-sided outlines (stats with a line between each) evens out once it
-  breaks: the lines go, sides even to the row's smallest, the space they made becomes the gap, a wrapping row's items
-  share each line (`adapt/divided.ts`). check 1309; HANDOFF "Phone side padding"; paste check 3ae owed.
-- **Font weights (21.3, font-weight-gaps):** the user: the header's "SCHEDULE NOW" shows in Times; Saira Condensed
-  Thin / ExtraLight went up as 250 / 275.
-  - **The cause:** the paste's site `@font-face` lines wrote a variable face as `font-weight: 100 900`; Bricks copies
-    every weight beside a Google font into its one Google Fonts link, and Google answers a link holding a range with
-    400, so every Google font Bricks loads on the page (header, footer, Theme Style) was lost. `sfnt.ts` took a
-    file's OS/2 250 / 275 as they are.
-  - **What it does (panel only, `src/core` untouched, corpus pastes byte-identical):** a variable face gets one
-    single-weight rule per design weight; weights uploaded or read from the site are whole hundreds (an in-between
-    weight takes its style name's, else the nearest hundred, a tie toward 400; a site face stored so with no weight
-    word in its file name is left out, and Google fills it).
-  - Self-reviewed by the finisher (8 mutations, two tests added). Re-paste the 8 pages (covers 21.1 too) after the
-    header button's weight is set to 600 in Bricks. HANDOFF "Weight ranges broke Bricks' Google Fonts link"; paste
-    check 3af owed.
-- **Line breaks that only copy Figma's wrap (21.2, early-line-breaks):**
-  - **The user:** in the hydraulics homepage's Info cards the words broke too early at full width ("…hurry? Give" /
-    "us a call…", "Copco in" alone).
-  - **The cause:** a website import left a typed `\n` where each line wrapped. It went out as `<br>`, hidden only
-    below the design width (1728), but at 1728 the card is 363px in the 1440 Container (Figma 432), so the browser
-    wrapped early and the `<br>` added a short line.
-  - **The user chose (L1A L2A):** in a fixed-width text box such breaks become spaces, so the words wrap by the box on
-    every screen; a text hugging its words keeps today's rule.
-  - **What it does** (`style/rag.ts`): soft only for prose (`.!?` somewhere) whose breaks copy Figma's wrap, counted
-    in letters (≤ 1 to spare on the longest line, which Figma's ink measures; ≤ a tenth of the guessed letters on a
-    shorter line). Addresses, hours, headings and a designer's own break keep their `<br>`.
-  - Reviewed on opus and fixed (letter count and prose only: my rulings under Justin's auto-go; leading spaces; FAQ
-    placeholders). Corpus lint unchanged, hydraulics 0.5211 → 0.6039; design/final-design/GRO pastes byte-identical.
-    HANDOFF "Line breaks that only copy Figma's wrap"; paste check 3ad owed (after 3ac's re-paste).
-- **Site fonts kept per family (21.1, emergency-cta-width):**
-  - **The user:** on the pasted hydraulics homepage the outlined "Emergency Call 24/7" pill looks too long and loose
-    next to Figma, on a computer (phones are full width by his CTA rule, unchanged).
-  - **The cause:** the pill is Figma's width, but its words were drawn in **Saira Condensed** (142px against 196).
-    WordPress answers `font-families/<id>/font-faces` with every face on the site, so the paste's `@font-face` lines
-    (fonts, 20.11) listed the same 13 site files under Archivo, Saira and Saira Condensed, and the last one won.
-  - **The user chose (E1A desktop only, E2A, E3A):** fix the fonts; buttons keep Figma's width; he converts and
-    pastes the 8 affected pages again (Home, Hydraulic Cylinder Repairs Final, Remanufactured, Contact, Core
-    Exchanges, Rods, Services, About; Gallery is clean). A Convert alone repairs nothing on those pages.
-  - **What it does:** `src/ui/site-fonts.ts` keeps a family's faces by their `parent` (by their own font family name
-    when the answer has none) and reads the list 100 at a time. The panel's "on your site" rows and "Already on your
-    site" are right again. `src/core` untouched, corpus pastes byte-identical.
-  - Self-reviewed (no separate reviewer, to save plan usage): checked against WordPress trunk and 7 mutations; one
-    test added. HANDOFF "Fonts from the site's library mixed between families"; paste check 3ac owed.
-- **Cards drawn the same height (20.15, equal-card-heights):**
-  - **The user:** the hydraulics homepage's three cards under the logo marquee line up in Figma; in Bricks "the
-    first slot does not match up properly and is a bit shorter in length".
-  - **The cause:** the row went out as Align items: start and each Hug card shrank to its own words (v2 stretched a
-    row only when every item is Fill height). The cards looked equal in Figma only because a website import froze the
-    site's stretch into their bottom paddings (30 / 39 / 63), which evens them at Figma's width alone.
-  - **The user chose (1A 2A 3B 4A):** rows whose boxes Figma draws the same height stay one height; a stretched
-    card's words stay at its top; the frozen extra bottom space goes (alike boxes share the smallest bottom padding),
-    in the footer's link columns too.
-  - **Also:** a grid's lines are found by overlap, so on the Repairs page the words beside the product photo sit in
-    its middle again, as drawn.
-  - Reviewed on opus and fixed (the layout plan counts a card's outline; a round box never stretches, in place of a
-    96px cap; tests for each guard). HANDOFF "Cards drawn the same height in a row"; paste check 3ab owed.
-- **Links that opened a picture (20.14, link-hrefs):**
-  - **The user:** the bottom-left service card "downloaded a photo and didn't take me to the page … make it so that
-    the plugin first does not take hyperlink as photos … and … accurate with hyperlinks".
-  - **The cause** (live site read over HTTP): on the Hydraulic, Remanufactured and Core Exchanges pages the Rods card
-    links to `/rods-1-15-rechroming-rods/`, the address WordPress lent media 647 (the Rods page's hero PNG, uploaded
-    after those pages were pasted). Since WP 6.4 an unattached upload's `/<name>/` redirects to its file. Every card's
-    link was on its own card.
-  - **The user chose (1A–5A):** uploads always end in `-image` / `-video`; a link to a page not made yet keeps its
-    address; the plugin moves **its own** pictures (ids in the upload cache) off a link's address; a Figma link typed
-    to a picture or video file is dropped and named; text links to frames came in 21.5 (frame-text-links).
-  - **What it does:** every Convert with WordPress connected reads the media on every link's address and sends `POST
-    wp/v2/media/<id> {slug: "<slug>-image"}` for the plugin's own. That repairs the pages already pasted, with no
-    re-paste: WordPress then forwards the old address to the page named like it.
-  - Reviewed on opus and fixed (a picture attached to a page never counts, a video named a video, one change per
-    media item at a time). Corpus pastes byte-identical. HANDOFF "Links that opened a picture, and links kept
-    right"; paste check 3aa owed.
-- **Header and footer the site already has (20.13, site-parts):**
-  - **The user:** "I already have the footer and the header … When I delete the footer and the header that I
-    copy-pasted, the page gets hidden"; then "it is just at the top".
-  - **The cause:** their Bricks header template's section is `position: fixed` (Bricks' own Sticky header is fixed
-    too), so it takes no room and the page slid under it.
-  - **The user chose:** two ticks in the panel, "My site already has its header / footer", remembered in the Figma
-    file (`f2b-site`), and "Measure my header".
-  - **What it does:** the header (a bar at the top with a logo and a menu) and the footer (a © line with columns of
-    links) are left out of the paste. With the header ticked, the paste starts with a spacer whose script measures the
-    site's header on every screen.
-  - **After the paste:** Regenerate code signatures, then LiteSpeed Purge All.
-  - Reviewed on opus and fixed (false-positive bands, a table above a © bar, the phone footer, a header fading in, a
-    header shrinking on scroll). HANDOFF "Header and footer the site already has"; paste check 3z owed.
-- **Corpus: 17 results worse than v1** (18 until 20.15 evened final-design's tiles at 768), from Bricks' cap of every
-  element at its parent's width, which the renderer copies since .9 (live-site looks, not regressions; HANDOFF "Bricks
-  caps every element at its parent's width"). Its word-wrapping kinds are fixed since .12. The rest are layers wider
-  than their box (map pin, phone columns, design's banner row) and the overlaps .12 uncovered.
-- **One-line words (20.12, one-line):** the user's Services tags "SEALS & PACKING" / "UP TO 10,000 PSI" sat on two
-  lines in Bricks. The user: "If you notice that it goes to a new line for some reason when it should be all on a
-  single line".
-  - **The cause:** a letter-spaced text's `margin-right: -<spacing>em` (`style/tracking.ts`) plus Bricks'
-    `max-width:100%` in a box hugging it.
-  - **The fix:** every width taken from Figma's box grows by the trailing spacing (`calc(100% + <em>)` caps and
-    shares, floors). A Scale-constrained text drawn past its box keeps that share, and an auto-width one takes its
-    words' room plus 3%. `size.unpin` brings the share inside where the box changes width.
-  - **New tool:** `npm run wraps -- <debug.json> [widths]` lists one-line Figma texts that wrap on the page.
-  - **Results:** on the user's files, the texts wrapping at the design width went Services 7 → 0, Repairs 4 → 1,
-    hydraulics 6 → 0.
-  - **Other causes, not changed:** content squeezed narrower than drawn, a text a hair past a fixed box below the
-    design width, turned labels.
-  - Reviewed on opus and fixed. Paste check 3y owed (HANDOFF "One-line words that wrapped in Bricks").
-- **Fonts dropped on the panel (20.11, fonts):** the user: "I have the UI designer send me all of the fonts … all the
-  fonts will be put on WordPress automatically like a drag them". The user chose **WordPress's own Font Library**
-  over Bricks Custom Fonts + a helper plugin. Bricks makes Custom Fonts only through admin-ajax in its builder, and its
-  post type isn't in REST.
-  - **What it does:** files, a folder or a .zip dropped anywhere on the plugin (or "Choose font files" in the new
-    Fonts box) go to `wp/v2/font-families` + `font-faces`. Every paste then carries `@font-face` rules for the
-    design's families, after Google's, so the site's copy wins.
-  - **Needs an Administrator's** Application Password (`edit_theme_options`).
-  - TTF/OTF go up as WOFF. WOFF2's names come from a sibling file or the file name (Chrome has no Brotli).
-  - `src/core` is untouched: the corpus pastes are byte-identical.
-  - Reviewed on opus and fixed: same-named files in folders, names in other scripts, a firewall's 403.
-  - Not yet tried by the user (HANDOFF "Fonts dropped on the panel", check 3x); whether Figma desktop passes a
-    Finder drop into the panel is unverified.
-- **Live maps (20.10, maps):** the user: "the google maps … you can like click it and move it while being on the page
-  and the open in maps on the top left hyperlink works". A map captured from a web page (tiles + Google's own words)
-  pastes as Google's live embed of its address in a Code element: it drags, zooms, and its "Open in Maps" opens Google
-  Maps. Verified in Chrome against Google. After the paste: **Regenerate code signatures**, then LiteSpeed Purge All
-  (HANDOFF "Live maps", check 3w). Reviewed on opus and fixed.
-- **Marquee loop (20.9):** the user's live marquee "stutters and then restarts". Bricks' `[class*=brxe-]{max-width:
-  100%}` capped the moving row at the window's width, so each loop moved a sixth of it, not one round. The
-  `marquee-track`/`marquee-round` classes write `max-width: none`; verified on the live page at 390/1440/1920. The
-  user must **Accept** both classes in Bricks' "Import classes" dialog on the next paste (HANDOFF check 3v).
-The details of every item below are in `docs/HANDOFF.md` (search its heading) and in the ledgers in `docs/plans/`.
+- **Current build `2026-10-28.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+  features, each with its HANDOFF section:
+  - **28.3 slider-autoplay:** a component whose variants loop After delay becomes a Slider (Nestable) that plays by
+    itself. Paste check **3bo** owed (AC13/AC14: Bricks round trip and Figma's real timings).
+  - **28.2 label-floor:** pill words at least 13px, Learn-more-style links at least 15px; tight rows give way. Paste
+    check **3bm** owed.
+  - **28.1 flip-cards:** a hover component marked `flip` turns over. Paste check **3bn** owed (mouse, Tab, iPhone taps,
+    Reduce Motion).
+  - **26.1 faq-answer-space:** space under an open FAQ answer. Paste check **3bl** owed.
+- **Paste checks owed:** HANDOFF "End-of-run check list" (3c onward); each feature's HANDOFF heading names its check.
+  3bj, 3bl and 3bm all empty Home and re-paste "Home Page Final" with the header/footer ticks as on the site: copy the
+  FAQ answers Justin typed in Bricks first and type them back after. Several older pages need a re-paste too (3ac).
+- **Milestones:** M0–M4b of the design (`docs/specs/2026-10-06-v2-design.md`) are done. Next: the user's end-of-run
+  check, then the sample-bound parts (M2d phone menu, Tabs, Dropdown, Offcanvas, pop-ups).
+- **Corpus:** 17 results are worse than v1, all from Bricks' cap of every element at its parent's width (live-site
+  looks, not regressions; HANDOFF "Bricks caps every element at its parent's width").
+- **Queued CLAUDE.md edits:** `~/.hermes/plans/figma-to-bricks/*-claude-md-pending.md` hold edits finishers couldn't
+  write here (builds 21.13 onward). Their history is already in HANDOFF; only standing rules from them belong here.
 
-**What was built on 2026-10-16 → 19 (all in "Where things stand" below):**
-- **Builds .1–.6 of 2026-10-16:** buttons, FAQ, maps, contact cards, contact form on phones, map heights.
-- **Real forms (16.7):** with the 19.1 label fix.
-- **WPForms snippet:** done by hand for the user.
-- **Photos on wider screens (19.2 → 19.3):** a photo keeps its drawn size and fades at its edges.
-- **Searchable lists (19.4 → 19.6):**
-  - search, pills and count;
-  - CSV in the panel;
-  - deep, website-imported tables;
-  - boxes that scroll down;
-  - no empty space after filtering.
-- **Call and email links (19.7):** "Call" buttons dial the page's number; every number and email shown is a link.
-- **CTA buttons (19.8):** no Figma hover; every CTA lifts 3px on hover and fades in on load (the user's Bricks
-  sample).
-- **Product and team cards (19.9 → 19.10):** their photo zooms and glares on hover, the card fades in (the user's Staff
-  card). 19.10 fixed the opus review's findings (CTA wrappers and recognition, panels, nested hovers, pictures drawn
-  once); the user kept "any row of photo cards". 19.11: rows listing services or products (zigzag photo/text rows)
-  zoom and glare their media under the pointer.
-- **No "Import classes" dialog on later pastes (19.12, feature-2):** an empty class is written as Bricks keeps one
-  (`settings: []`); Bricks compared `{}` with the site's `[]` (HANDOFF "Bricks asked about the list classes").
-- **Listing media with the number above the photo (19.13, Media):** Services rows 004 and 005 had no zoom, because
-  their "00N" number sat above the photo, not over it. One short flowing line in a photo box is now a label
-  (HANDOFF "Listing media with the number above the photo").
-- **Logo marquees (19.14, marquee):** a row of logos or short words running past the box that clips it moves toward
-  the right at 60px a second, in one line on every screen (HANDOFF "Logo marquee"; plan and ledger
-  `docs/plans/2026-10-19-marquee*`). Reviewed on opus and fixed. Paste check 3o owed.
-- **Lists and tables on tablets and phones (19.15, fix-mobile-layout):** one line per record below the design width,
-  each title over its column; a compact card per record on phones; the pills under the search from the left (HANDOFF
-  "Lists and tables on tablets and phones"; ledger `docs/plans/2026-10-19-mobile-layout-ledger.md`). Reviewed on opus
-  and fixed. Paste check 3p owed.
-- **Hero video (19.16, fixvideo):** a Figma video fill (or v1's "video"-named picture) with an address in its name or
-  an Open link becomes Bricks' Video, playing by itself (muted, looping, covering its box on every screen) where it is
-  a background behind words. HANDOFF "Hero video".
-- **Videos found in the WordPress Media library (20.2, fixvideo):** Figma never gives a plugin the video file, so with
-  pictures going to WordPress the panel finds a video without an address on the site by its exact name. It saves the
-  address in the file (`f2b-videos`) and converts the same frames again by itself; saved addresses are re-checked
-  every run. The user's hero needs no rename: their Media has the same file (id 76, SHA-1 = Figma's `videoHash`). The
-  site sends no CORS header on uploads, so matching is by name, not fingerprint (HANDOFF "Videos found in the
-  WordPress Media library"). Reviewed on opus and fixed. Paste check 3q owed.
-- **Choose a video file in the panel (20.5, video-upload):** each video the site doesn't have gets a row in the panel's
-  Videos box with "Choose video file". The panel uploads the file to the Media library (its own name, web formats
-  only, a 10-minute limit). It saves the address in the file and converts the same frames again. A video too big for
-  the host says so with its size and where to raise PHP's upload limits (HANDOFF "Choose a video file in the panel";
-  plan `docs/plans/2026-10-20-video-upload.md`). Reviewed on opus and fixed. Not yet tried by the user.
-- **Links to pages (19.17, hyperlink):** a card or row with an arrow (→ ↗ ↘ ›, read from the icon's drawing) links
-  whole to its title's page; an arrow button or "Learn more" to the page its words name (HANDOFF "Links to pages from
-  arrows and Learn more"; plan and ledger `docs/plans/2026-10-19-page-links*`). Reviewed on opus and fixed. Paste check
-  3r owed; the user's rulings and my own are below ("Links to pages").
-- **Links checked against the site (20.7, hyperlink):** with WordPress connected, after Convert the panel reads the
-  site's pages (drafts too) and points every page link (Figma's Navigate links and the plugin's own) at the real page
-  whose name matches, "Final"/"Page"/"Our"/"Us" left out; it names drafts, missing pages and ties (HANDOFF "Links
-  checked against the site's pages"; plan and ledger `docs/plans/2026-10-20-site-pages*`). Reviewed on opus and fixed.
-  Paste check 3u owed. **The user's Remanufactured page on the live site was pasted from an old conversion** (its rows
-  and Call buttons have no links at all, read 2026-10-20): it needs a fresh Convert and paste.
-  **20.8:** singular and plural are one name ("Hydraulic" / "Hydraulics"); a link never ends on a picture (the user:
-  "it always has to be a website"): with no page, a link whose address is a picture's own is taken off and named, and
-  uploads are never named like an address the paste links to (HANDOFF "A link that downloaded a picture").
-- **List columns on the live page (19.18):** build .15's records were each as wide as their words, centred, on the
-  user's site. Bricks writes Flex basis (a text control) as given, so `_flexBasis: "323"` became CSS the browser drops.
-  Flex basis numbers now go out in px, `payloadProblems` refuses a bare one, and the renderer writes it as Bricks does
-  (`reference/bricks/README.md` "Text controls"). Paste check 3p owed.
-- **Three reviews on one tablet row (20.1, reviews-tablet):** a row of 3, 5… alike cards stays one row on tablets
-  instead of leaving one alone (as grids did since 16.5); a badge ≤ 96px (an avatar's initials) keeps its size when its
-  row stacks (HANDOFF "Three reviews on one tablet row"). 20.3: on phones held sideways they stay one row too (rows
-  and grids), upright phones stack them. Paste check 3s owed.
-- **Rows on phones held sideways (20.4, fix-list-landscape):** Bricks wraps every Section, Container and Block from
-  767px down (its front-end CSS). On the user's site, the parts list's cells each fell onto a line of their own at 766.
-  - **The renderer** now copies that default.
-  - **`row.reflow`:** a row the layout plan keeps on one line at mobile landscape writes `_flexWrap: "nowrap"` there
-    (`Style.wrap: false`). This also fixes FAQ questions beside their icon on phones, and 20.3's three cards on one row.
-  - **The list toolbar's search and pills** get a row gap once stacked, and the pills' lines one too.
-  - HANDOFF "Lists and tables on tablets and phones". Paste check 3p owed.
-- **Hover layers and FAQ looks after a paste (20.6, hover-ids):** the user's hovered "Not sure what you need?" card
-  "runs black": its hover layer named the card by an id Bricks renames on paste. Looks that follow another element now
-  name it by a marker class in its CSS classes (`trigger-…`), never its id (HANDOFF "Hover layers and FAQ looks after
-  a paste"). Fixes the FAQ "+" icon too. Paste check 3t owed.
-
-**The user's live site:** `darksalmon-badger-335429.hostingersite.com` (Hostinger, WordPress, Bricks; LiteSpeed Cache,
-WP Mail SMTP, Yoast, WPForms Pro, AltText.ai plugins). After a paste that holds code (lists, card arrows) the user must
-run Bricks → Settings → Custom code → **Regenerate code signatures**; after any CSS change, **LiteSpeed → Purge All**.
+**The user's live site:** `darksalmon-badger-335429.hostingersite.com` (Hostinger, WordPress, Bricks 2.3.9; LiteSpeed
+Cache, WP Mail SMTP, Yoast, WPForms Pro, AltText.ai). After a paste that holds code (lists, card arrows, maps, the
+header spacer) the user runs Bricks → Settings → Custom code → **Regenerate code signatures**; after any CSS change,
+**LiteSpeed → Purge All**. Read it past the cache with `?f2b=<random>`.
 
 **Files the user works with:**
-- `figma-to-bricks-debug-page-1.json` (repo root): **holds "Hydraulic Cylinder Repairs Final" (build 2026-10-20.6, 1728
-  wide), committed and pushed 2026-10-26 (`cd9c1c9`)**. The earlier copy (`git show 2199895:figma-to-bricks-debug-page-1.json`,
-  build .4) is the user's **"Services Page Final"** (1728 wide). It holds
-  the parts inventory ("PART INVENTORY DASHBOARD": 78 rows drawn, search, 6 pills, a 560px scroll box). Earlier saves of
-  that name (the contact page "Contact Page Final", one stat card) were overwritten; ask for a new save if needed.
-- `corpus/…/page-1` (v1's file on the Desktop) is an older save of the same page; it now converts with the list too.
-- `docs/data/reman-cylinders.csv` (also in `~/Downloads`): the 78 cylinders, matching the designer's table row for
-  row.
+- `figma-to-bricks-debug-page-1.json` (repo root): "Hydraulic Cylinder Repairs Final" (build 2026-10-20.6, 1728
+  wide). `git show 2199895:figma-to-bricks-debug-page-1.json` is "Services Page Final" (the parts inventory: 78 rows,
+  search, 6 pills, a 560px scroll box). Ask for a new save when you need another page.
+- `docs/data/reman-cylinders.csv`: the 78 cylinders, matching the designer's table row for row.
 - `reference/wpforms/`: the WPForms notes and `need-a-repair-559.css`.
-- The scratchpad (backups, review scripts, screenshots) belonged to the old chat and is gone or stale; never rely on
-  it.
-
-**Git and several agents (2026-10-19):** the project is in git, with a private copy on GitHub
-(`Just-In-N-Out/FigmaToBricksV2`). Several agents can each build a feature in their own copy (`claude -w <name>`). Read
-"Working in this repo" before committing or merging.
+- The scratchpad of an older chat is gone or stale; never rely on it.
 
 **Waiting on the user (don't guess these):**
-- **The inventory's "Download full inventory (PDF)" button:** they upload the PDF to WordPress Media and link it
-  (Figma "Open link" on click, or in Bricks). The plugin needs no change. They were given the steps.
-- **Answers:**
-  - ~~**Should a full-width map leave the 1440 Container?**~~ Answered 2026-10-23 (wordless-maps): yes, a map drawn
-    across its section runs edge to edge on every screen.
-  - **Should headings keep Figma's case** when the site theme uppercases them?
-  - **WPForms:** whether the plugin should get a "Forms become: Bricks form / WPForms" option, and which starts
-    selected. It needs their WPForms export file.
-  - **Rulings to confirm:** the list rules in HANDOFF "Searchable lists", and the form rulings.
-- **Samples still owed:** Nav (Nestable) for the phone menu, Tabs, Dropdown, Offcanvas + Toggle, a working Interaction,
-  a `popover` Div. Never write those emitters from memory.
-- **Paste checks owed:** HANDOFF "End-of-run check list" 3c–3k. The user has pasted the photo (19.3) and list (19.5)
-  builds; the list was confirmed working apart from the two things 19.6 fixed.
+- **Should headings keep Figma's case** when the site theme uppercases them?
+- **WPForms:** whether the plugin gets a "Forms become: Bricks form / WPForms" option, and which starts selected. It
+  needs their WPForms export file.
+- **Rulings to confirm:** the list rules (HANDOFF "Searchable lists"), the form rulings, and every "not yet
+  confirmed" ruling in each feature's HANDOFF section.
+- **Bricks samples:** Nav (Nestable) for the phone menu (the right copy contains `nav-nested`), Tabs, Dropdown,
+  Offcanvas + Toggle, a working Interaction, a `popover` Div. Never write those emitters from memory.
+- **M4b** (Figma Motion as CSS keyframes) is built against Figma's typings only: it needs the user's Motion test file.
+- **"Home Page Final"** holds a whole Services page inside its own frame: waiting on Justin's Layers screenshot.
 
-**Known open bugs and limits:**
-- **Lists:**
-  - **Card grids** (cards in columns, with pills) aren't recognised as lists yet.
-  - **Deferred minors:** the panel's empty list name, two lists with desktop + phone frames, the status after Remove,
-    no large-CSV warning, tab-separated files.
-- **Zooming in (150%+):** contact cards are cramped and the menu breaks into a grid (it needs the Nav sample).
-- **Space frozen into a fixed-height box** (found in faq-answer-space, 26.1): a box drawn at a fixed height with its
-  words at its top loses the space under them once they wrap more, and from 991px down (`size.unpin` drops its min
-  height); FAQ answers are fixed, other boxes aren't yet. A badge pinned to the bottom of such a box lands on its
-  words on phones (on main too).
-- **Flip cards** (28.1): Safari may show a turned-away face's composited children (a `will-change` picture, a video, a
-  CTA's fade-in) through `backface-visibility` (iPhone check 3bn); a divided row of flip cards keeps its lines on
-  tablets and phones.
+**Known open bugs and limits** (details in HANDOFF):
+- **Lists:** card grids (cards in columns, with pills) aren't recognised as lists; deferred minors (the panel's empty
+  list name, two lists with desktop + phone frames, the status after Remove, no large-CSV warning, tab-separated
+  files).
+- **Zooming in (150%+):** contact cards are cramped (at 768 too) and the menu breaks into a grid (needs the Nav
+  sample).
+- **Space frozen into a fixed-height box:** outside FAQs, a box drawn at a fixed height loses the space under its words
+  once they wrap more and from 991px down; a badge pinned to the bottom of such a box lands on its words on phones.
+- **Flip cards:** Safari may show a turned-away face's composited children (a `will-change` picture, a video, a CTA's
+  fade-in); a divided row of flip cards keeps its lines on tablets and phones.
+- **Header tick:** GRO's and brainstorm's nav drawn inside the hero stays in the paste.
+- **Fonts:** fonts may load twice (needs a live paste proof); `localeCompare` may sort fonts differently under Figma's
+  SES.
 
 **How the user works (see memory too):**
 - They answer with screenshots and short messages.
 - They want plain, numbered steps naming exactly what is on their screen, one action at a time.
 - They expect general fixes. Ask before a design decision with trade-offs (AskUserQuestion with previews worked well).
-- They said "build straight through": run each milestone (plan → test-first → corpus → opus review → fix pass) without
-  stopping. Report rulings and deferred minors in plain words at the end.
-
-**Where things stand (2026-10-19; the entries run in date order):**
-
-- **M0, M1, M2a–M2e, M3a, M3b, M4a and M4b are done, reviewed and fixed** (build `2026-10-07.15`).
-- **GRO desktop** (build `2026-10-07.17`, HANDOFF "GRO desktop"): designs drawn **without auto layout** now come out
-  1:1 at the design width. The user reported it on their GRO homepage (`corpus/files/gro-home.json`, now a corpus file).
-  - Thirteen rules: paint order, Container-box measuring, full-width parts, band spacing, bleeding art, aligned text
-    boxes, trailing letter-spacing, no wrap where Figma draws one line, transparent text, the shape pin.
-  - M3a: hover styles and FAQ accordions. M3b: hover layers for what CSS can't draw. How they work: HANDOFF "M3a" and
-    "M3b".
-  - Their own choices, not yet the user's: a hover target shows the hand (`_cursor`); closed FAQ items without an
-    answer get a placeholder.
-  - **The user said (2026-10-07): build straight through, they check everything at the end.** So paste checks pile
-    up in HANDOFF instead of stopping the run.
-- **WordPress pictures** (build `2026-10-07.18`, HANDOFF "WordPress pictures"): every picture sent to WordPress
-  pasted as Bricks' grey placeholder.
-  - The cause: Bricks swaps id'd images when the paste's `sourceUrl` isn't the site's address. The paste now names
-    the site.
-  - Also new: the panel's "Picture descriptions" list (saved in the Figma file, sent to WordPress), and reused
-    uploads get changed alt text.
-  - Build `.19`: the Convert click puts a note on the clipboard, so an older copy can't be pasted after the browser
-    refuses the late automatic copy. Bricks' editor draws pasted pictures one server request each, so on the user's
-    host some stay blank until the page is saved and viewed.
-- **GRO phones** (build `2026-10-07.20`, reviewed and fixed, HANDOFF "GRO phones"): designs drawn **without auto layout** now read well
-  on tablets and phones, following the user's decoration choices (below, "Free-floating designs on phones").
-  - New passes: repeated cards read column by column (`normalise/columns.ts`), overlapping heading pieces as one
-    picture (art groups), a big drawing on a photo paired with it (`normalise/pairs.ts`), the next card past a
-    section's edge as one group (`normalise/past-edge.ts`), narrow-screen plans (`understand/compose.ts`).
-  - New rules: `compose.stack`, `art.edge`, `picture.band`, `turn.upright`. Column offsets slide, picture floors let
-    go in rows, paragraph cards stack instead of going two per row.
-  - GRO lint errors 390 7→2, 768 18→4; every section exact at 1024/1440/1920. The other corpus files are no worse
-    anywhere (design and final-design a little better).
-- **Drawn phone design** (build `2026-10-08.2`, reviewed and fixed, HANDOFF "Drawn phone design"): when the desktop
-  frame and a phone frame (320–767 wide) are selected together, one paste holds both.
-  - The phone copy shows at 767 and below, as drawn at its width; the desktop copy shows above it.
-  - Free-drawn compositions on the phone (`drawn.scale`) shrink as one below the drawn width and keep it above.
-  - Detection lives in `snapshot/designs.ts`, the per-design sections in `understand/designs.ts`.
-  - One frame selected is byte-identical to before.
-  - Build `2026-10-08.3` (HANDOFF "Carousels on the drawn phone"): a drawn phone row running past the screen's edge
-    is a Slider (Nestable) (`understand/tracks.ts`). Text ink cut by a clipping frame no longer sizes the text
-    (`normalise/text.ts`). The user's pair debug file is `figma-to-bricks-debug-design-inspo-brainstorm.json`.
-- **Sideways scroll strips and outline text** (build `2026-10-08.4`, HANDOFF "Sideways scroll strips"):
-  - A frame Figma's prototype scrolls sideways becomes a strip that scrolls sideways (`understand/strips.ts`,
-    `style/strips.ts`), with its layers drawn down to tablets (adapt engine).
-  - A text drawn as an outline shows as one (`outlineStyle`).
-- **Found 2026-10-08, fixed in build `2026-10-20.6`:** Bricks gives pasted elements new ids, rewriting each id only
-  inside its own element (`reference/bricks/README.md` "Ids on paste").
-  - `emit/states.ts` wrote a look that follows another element's hover or an accordion item's open state as
-    `#brxe-TRIGGER:hover #brxe-SELF`, stale after a paste (the user's hover card "ran black", 2026-10-20).
-  - Now TRIGGER carries `_cssClasses: "trigger-<hash of its key>"` and the look is `.trigger-…:hover #brxe-SELF`.
-    Test `emit-paste-ids`: no element's custom CSS names another element's id, on every corpus file.
-  - Never name another element's id in custom CSS or a script.
-- **Typed spaces** (2026-10-08): spaces a designer types to indent a line or to space words out show as typed
-  (`&nbsp;`, `style/typography.ts` `keptSpaces`).
-- **Desktop sizing fixes** (build `2026-10-08.7`, HANDOFF "Desktop sizing fixes"), from the user's "Final homepage"
-  file:
-  - a fill layer no longer widens a hugging column whose width another layer sets (`sizing.ts` `addsNoWidth`);
-  - a fixed one-line text in a wrapping row keeps its box;
-  - a box drawn wider than an auto-layout column hangs past it (`hangs()`);
-  - Figma's small capitals show (`font-variant-caps`).
-  - Not yet reviewed on opus.
-- **Typed lines and wide photos** (build `2026-10-08.8`, HANDOFF "Typed lines and wide photos"):
-  - a text broken only at typed breaks keeps its box as its room, and holds its lines where tight (`typedLines`);
-  - `wide.ts` reaches photos behind the content through full-width wrappers; a cover fills `100vw`.
-  - Aswatama (a paid font) reached the user on 2026-10-09. With it every heading has Figma's lines from 1280 up;
-    at 1024–1100 four headings wrap more (HANDOFF "Aswatama check").
-- **AI picture descriptions** (build `2026-10-14.1`, HANDOFF "AI picture descriptions"): photos going to WordPress
-  are described by alttext.ai with the user's key.
-  - **Code:** `src/ui/describe.ts`. Each photo is sent once, as a ≤1024px WebP; the words go up as `alt_text` and are
-    auto-saved in `f2b-alts` (`ai`).
-  - Reviewed on opus and fixed: rendered photos count, describing halts when uploads stop, words stored once.
-  - **Key:** in the panel's "alttext.ai" box, kept in `clientStorage`.
-  - **Not yet tried with the user's key.**
-- **Figma colours → Style Manager → Colors** (build `2026-10-14.2`, HANDOFF "Figma colours"): after Convert, the panel
-  offers a palette file the user imports in Bricks (Style Manager → Colors → Import).
-  - **What goes in:** the file's colour variables and colour styles, named as in Figma, or in a file without them the
-    opaque colours its design paints (`color-<hex>`).
-  - **Pasted colours** point at the palette colour they are bound to (variable or style), else at one of the same value
-    (`{id, raw: "var(--name, #HEX)", light}`).
-  - **Second pages:** the panel keeps every colour a file's palette has had (`keepPalette`), so re-importing never drops
-    earlier pages' colours.
-  - **Code:**
-    - extract `src/plugin/extract/colors.ts` → `Snapshot.colors`;
-    - normalise `normalise/colors.ts` and `used-colors.ts` → `Scene.palette`;
-    - `model/palette.ts` (the ink used by the style stage);
-    - `emit/palette.ts` (settings and the file).
-  - **Older debug files** (no `colors`) convert as before.
-  - **Reviewed on opus and fixed** (bindings honoured, palettes kept across pages, corpus invariant test).
-  - **Not yet tried in Bricks** (HANDOFF check 3b).
-- **Buttons as wide as their column** (build `2026-10-16.1`, HANDOFF "Buttons as wide as their column"): the user's
-  hero buttons came out as wide as their column in Bricks. Bricks' "Align self: stretch" also writes `width: 100%`.
-  - **The fix:**
-    - a row whose items all fill its height uses "Align items: stretch";
-    - any other stretch is custom CSS;
-    - `payloadProblems` refuses `_alignSelf: stretch`;
-    - the renderer draws Bricks' extra width.
-  - Not yet pasted by the user. Their second example ("tall and long") never arrived.
-- **FAQ questions side by side** (build `2026-10-16.2`, HANDOFF "FAQ questions side by side"): Bricks dropped the FAQ
-  list's `_direction` and lined its questions up in a row. Bricks reads `_direction`, `_rowGap`, `_columnGap`,
-  `_flexWrap` and the grid keys only on section, container, block and div.
-  - **The fix:**
-    - an FAQ list whose items touch sets no layout;
-    - other elements get `_flexDirection` and `_gap`;
-    - `payloadProblems` refuses the rest;
-    - the renderer follows.
-  - Not yet pasted by the user. The same screenshot showed the open icon wrong (the known id issue) and headings in
-    capitals (the site's theme).
-- **Map and grid cards** (build `2026-10-16.3`, HANDOFF "A map that didn't show, and grid cards stretched"):
-  - **The map:** a page-captured map made of picture tiles is one picture (`normalise/mosaic.ts`).
-  - **The cards:** a Figma grid's items sit at the top of their cells (`_alignItemsGrid`), filling or centred where
-    Figma says.
-  - **Open question for the user:** should a full-width map leave the 1440 Container? Not yet pasted by the user.
-- **Contact form on phones** (build `2026-10-16.4`, HANDOFF "Radio options and paired fields on phones"):
-  - **The layout plan** no longer shares out a section's width twice when the section and its box are one layer (a
-    section drawn as a grid).
-  - **Fixed boxes that fill their row** edge to edge grow with it (`style/shares.ts`).
-  - Not yet pasted by the user.
-- **Contact cards three across on tablets** (build `2026-10-16.5`, HANDOFF "Contact cards three across on tablets"):
-  - a grid doesn't leave one card alone on a tablet row;
-  - Figma grid columns are `minmax(0, Nfr)`;
-  - narrow boxes give up side padding;
-  - long emails and links break.
-  - **Open for the user:** at 768 the cards are cramped.
-- **Maps keep their height** (build `2026-10-16.6`, HANDOFF "Maps keep their height on tablets and phones"): a box a
-  map shows behind, holding no words, keeps its drawn height on every screen (`adapt/map-box.ts`).
-  - The lint's hole check now counts background pictures.
-  - Not yet pasted by the user.
-- **Real forms** (build `2026-10-16.7`, HANDOFF "Real forms"): a drawn contact form (labels over boxes, Yes/No marks,
-  a send button) becomes Bricks' Form, typed in and sent by email.
-  - **Code:** `understand/form.ts` (recognition, from shapes only), `style/form.ts` (the look), `emit/form.ts`
-    (settings + custom CSS), `adapt/rules/form.ts` (phones). Samples: `reference/bricks/form-basic.json`, Bricks'
-    schema `form-schema.json`.
-  - The option drawn chosen shows when a visitor picks it; nothing is pre-picked.
-  - Reviewed on opus and fixed. Paste check 3i (send a message) not yet done; the field `width` key is unverified.
-  - Build `2026-10-19.1`: the user's paste showed no labels. Bricks prints labels only with `showLabels` and its star
-    only with `requiredAsterisk` (both off by default); its button Width setting didn't reach the page, so the button
-    spans the form by custom CSS too.
-- **Photos on wider screens** (build `2026-10-19.3`, HANDOFF "Photos on wider screens and browser zoom"): zooming out
-  (or a wide monitor) cut the top and bottom off a hero's photo. From the design width up, a photo behind a section,
-  band or full-width box keeps its drawn size in the middle, its edges fading into the colour under it
-  (`style/photo-width.ts`). Build .2's taller hero was replaced at the user's request. Zooming in found cramped contact
-  cards and the missing phone menu (not yet fixed; a question to the user).
-- **Searchable lists** (build `2026-10-19.4`, HANDOFF "Searchable lists from a spreadsheet"): rows drawn in Figma with
-  filter pills or a search box become a working list (search, pills, count) filled from a CSV given in the panel,
-  saved in the Figma file (`f2b-lists`).
-  - **Code:** `understand/lists.ts` + `list-rows.ts`, `style/lists.ts`, `emit/lists.ts` (a Code element found by
-    class), `ui/lists.ts`, `plugin/lists.ts`.
-  - The client's data: `docs/data/reman-cylinders.csv` (78 rows).
-  - Reviewed on opus and fixed (footers/pricing tables never lists, painted headers, partial binding, badges, counts).
-  - Build `2026-10-19.5`, from the user's real page (imported from a website):
-    - lists find their pills up to the section;
-    - rows need two cells;
-    - the longest rows claim a list first;
-    - search words may sit in wrappers;
-    - a box Figma scrolls down scrolls on the site (`scrollsY`).
-    - Verified in Chrome on their file (78 rows, every pill's count right).
-  - Build `2026-10-19.6`: a box Figma scrolls down lets its layers flow past its bottom (`infer.ts`) and is at most its
-    drawn height, so a filtered list leaves no empty space; thin grey scrollbar.
-- **Call and email links** (build `2026-10-19.7`, HANDOFF "Call and email links"): a "Call" button gets a `tel:` link
-  to the page's number, and every phone number and email address shown becomes a link.
-  - **Code:**
-    - `normalise/contacts.ts` (finding numbers, addresses and call/email words);
-    - `normalise/contact-links.ts` (a pass at the end of normalise);
-    - `normalise/label-box.ts` (button shapes, shared with `understand/widgets.ts`).
-  - **Buttons** get `SceneNode.contact` (apart from the designer's `link`, which always wins); understand reads
-    `n.link ?? n.contact`. Numbers in words are linked pieces of the text (`Run.link`).
-  - **Inline links** keep the drawn colour and underline (`color:inherit;text-decoration:inherit`).
-  - **Reviewed on opus and fixed:**
-    - an FAQ question is no button;
-    - the designer's text links win;
-    - one label per button, never a section;
-    - narrower words;
-    - placeholders and hidden layers don't count;
-    - one number written two ways is one.
-  - Paste check 3l not yet done.
-- **Listing media with the number above the photo** (build `2026-10-19.13`, branch `worktree-Media`, HANDOFF of the
-  same name): the user's Services rows 004 and 005 got no zoom and glare (their screenshot of "Service 004").
-  - **The cause:** their Media boxes have no auto layout. The photo sits wholly below the big "00N" number, so the
-    layout pass lines both up in a column. The number then counted as words (`hasFlowText`), and the row as no
-    photo/text row.
-  - **The fix:** `recognise.ts` `hasFlowText` treats one short flowing line (one line, `LABEL_MAX` characters at most)
-    as a label. Two texts, or a sentence, are still words.
-  - **Effects:** rows 004 and 005 zoom and glare, and row 005 stacks photo first on phones (the zigzag rule; my
-    ruling, told to the user). No other corpus file's paste changed.
-  - Not yet pasted by the user.
-- **Logo marquees** (build `2026-10-19.14`, branch `worktree-marquee`, HANDOFF "Logo marquee"): the user's hydraulics
-  homepage logo band was static ("the logo needs to be going from left to right"); v1 had it working.
-  - **Code:**
-    - `understand/marquee.ts` (recognition, one round, the loop copies `copy:marquee<i>:…`);
-    - `style/marquee.ts` and `classes.ts` (`marquee`, `marquee-track`, `marquee-round`, `@keyframes marquee-right`);
-    - `adapt/rules/marquee.ts` (`marquee.gap`; `Rule.moves`, the engine's shield of the moving row);
-    - `emit/elements.ts` (`_attributes`: tabindex, role, aria-label, aria-hidden on copies, tabindex -1 on their
-      links).
-  - **The drawn row stays put** (a Container keeps its class); a moving row the plugin adds in it holds the rounds.
-    Drawn across a box spanning its section, the logos run to the window's edges (the section clips sideways);
-    otherwise the row clips them itself.
-  - **Not marquees:** photos (120px+ each way), cards, linked words, Figma's sideways strips, sliders. A band of SVG
-    logos alone (no dots or pictures) is one drawing to normalise, so it stays still (deferred).
-  - **The layout lint** reads one round (it skips loop copies and the moving row's clipping).
-  - **My rulings and the deferred minors:** in the ledger and HANDOFF. Not yet pasted by the user (3o: `_attributes`
-    round trip).
-- **Lists and tables on tablets and phones** (build `2026-10-19.15`, branch `worktree-fix-mobile-layout`, HANDOFF
-  "Lists and tables on tablets and phones"): the user's parts inventory "just doesn't look clean" at 990, 766 and 477
-  (records and titles wrapped, the last column held by a 465px minimum).
-  - **Code:**
-    - `understand/lists.ts`: the title row (`headOf`, the nearest row above the records lined up with them, its words
-      of one look) and each record's column parts (`lead`, `end`, `more`, `dot`);
-    - `adapt/layout.ts` `decideRow`: a record keeps its line down to phones held sideways, stacks on phones;
-    - `adapt/rules/list.ts` (`list.layout`).
-    - **Shared classes** for the phone card: `list-row`, `list-lead`, `list-end`, `list-more`, `list-dot`.
-    - **The `_order` setting** (`Style.order`).
-  - **Below the design width:** each column's basis is its drawn width, shrinking, never held by a minimum.
-    - Photos, badges and Buttons keep their size.
-    - Pills drawn at the toolbar's end go under the search from the left once they don't fit.
-  - **Phones:** the titles hide; each record is a card. Its first column and its last share the first line, the
-    others go under them with a dot between. Cells carrying the padding and rule give them to the card.
-  - **Deferred:**
-    - an empty value leaves a dangling dot;
-    - the paste is bigger (corpus page-1 764 → 1055 KB; per-column classes would cut it);
-    - the narrow-column lint warning counts the cards' values (31 → 62 on page-1's phones).
-  - **Build `2026-10-19.18`:** the user's paste of .15 showed each record as wide as its words. The cause was Bricks
-    writing Flex basis as given (`flex-basis: 323` on the page). It now goes out in px.
-  - **Build `2026-10-20.4`:** the user's Bricks editor at 766 showed each record's cells on lines of their own (Bricks
-    wraps every Block from 767px down) and the pills touching the search. Kept rows now say `nowrap` at mobile
-    landscape (`adapt/rules/rows.ts`), the renderer copies Bricks' wrap, and the toolbar gets row gaps.
-  - The .20.4 build is not yet pasted by the user.
-- **Links to pages** (build `2026-10-19.17`, branch `worktree-hyperlink`, HANDOFF "Links to pages from arrows and
-  Learn more"): the user's "Service 03 | Core Exchanges | ↗" row should open `/core-exchanges/`.
-  - **Code:**
-    - `normalise/svg-paths.ts` + `arrow-shape.ts`: which way an icon's exported SVG points (a head at the drawing's far
-      end, mostly head and shaft; backdrops dropped; Figma bakes turns and flips into the export);
-    - `normalise/page-words.ts` (what a label names; actions, other sites, pagination never), `card-title.ts` (the
-      card's biggest, standing-out short name), `page-links.ts` (the pass, after `linkContacts`, on
-      `SceneNode.pageLink`), `faq-shape.ts` (FAQ shape shared with `understand/accordion.ts`);
-    - `understand/node.ts` reads `n.link ?? n.contact ?? n.pageLink?.url`; `understand/page-links.ts` writes one panel
-      note per link; `headings.ts` keeps a linked card's (or a heading row's) heading.
-  - **On the user's files:** Services Page Final "Browse Inventory ↗" ×2 → `/inventory/`; hydraulics' 5 service cards
-    whole → their titles, "View Our Gallery ↗" → `/gallery/`; GRO's ten "Link · …"; brainstorm's arrow buttons.
-    Headings and element counts unchanged on every corpus file; lint errors unchanged.
-  - Not yet pasted by the user (3r: `tag: "a"` with a relative address, a linked text, the iPhone tap on a hover card).
-- **Links checked against the site's pages** (build `2026-10-20.7`, branch `worktree-hyperlink`, HANDOFF of the same
-  name): the rows went to `/core-exchanges/` while the site's page is the draft "Core Exchanges Final", and the menu's
-  `/gallery-page-final/` while the site's is `/gallery/`.
-  - **Code:** core `emit/page-addresses.ts` (`ConvertResult.pageLinks`: each address, its name, its elements' ids;
-    `SceneNode.linkFrame` marks Navigate links); panel `ui/site-read.ts` (pages over REST, edit context, past exactly
-    100, archives and posts asked before a draft takes a link) and `ui/site-pages.ts` (`pageKey`, ranking, relink by
-    element, notes), run from `run.ts` `startRun`.
-  - **Pastes** are byte-identical to before; only the panel rewrites, only the listed elements.
-- **Three reviews on one tablet row** (build `2026-10-20.1`, branch `worktree-reviews-tablet`, HANDOFF of the same
-  name): the Services page's three reviews went two plus one at 990.
-  - **The cause:** `decideRow` chose "two per row" on tablets for a row of cards that don't fit 200px each with their
-    labels whole; only grids (`gridColumns`) had the "never leave one alone" exception.
-  - **The fix:** `layout.ts` `alikeCards` + `ALONE_MIN`: on a tablet, 3, 5… alike cards (boxes within 80% of each
-    other's width) stay one row while each gets 160px. `rows.ts` `widens`: a box ≤ 96px each way (an avatar, a number
-    badge) keeps its size when its row stacks (it became a pill; phones too). `unpin.ts`: the words beside an icon
-    are `row.icons`' alone (a collision once the hydraulics info cards stayed three across).
-  - **Phones (build `2026-10-20.3`, user: "if on mobile make them stack. for mobile landscape put all 3 in the same
-    row"):** held sideways, alike cards and a grid's cells stay one row while each gets 120px (`ALONE_MIN`; at 480 a
-    review is 135px); upright they stack. A grid too narrow for 120px each stacks.
-  - **Effects:** the hydraulics homepage's info cards stay three across on tablets; corpus "design"'s contact row
-    (address, hours, phone) too, its hours wrapping to 18 lines at 768 (accepted: the user chose three across).
-  - Not yet pasted by the user (3s).
-- **Hero video** (builds `2026-10-19.16` and `2026-10-20.2`, branch `worktree-fixvideo`, HANDOFF "Hero video" and
-  "Videos found in the WordPress Media library"): the user's hero video pasted as an empty black Div. `paintsOf`
-  dropped Figma's `VIDEO` paints.
-  - **Figma's limits:** plugins get only `videoHash` (the file's SHA-1), never the file, and Figma's PNG export draws
-    no frame of a video. So a video fill has no poster.
-  - **v1's way, ported** (the user: "just do what v1 did"): an address in the layer name (`Video: https://…`) or an
-    Open link to a video makes Bricks' Video (keys from `reference/bricks/video-schema.json`, Bricks' official schema).
-  - **Plays by itself** (muted, looping, inline, no controls) where it covers the boxes around it up to one holding
-    other layers (`understand/video.ts`). It covers wider screens, and phones keep it covering the hero
-    (`media.shape` skips it).
-  - **Frames painted with a video** keep their layers, with a video layer under them; tints over a video are drawn on
-    it.
-  - **The Media lookup** (`src/ui/videos.ts`, user: "go"): finds a video without an address on the WordPress site by
-    exact name, saves it in the file (`f2b-videos`), and converts the same frames again (`again`). Details are in
-    "Start here".
-  - **Paste check 3q** is not done yet.
-- **Live maps** (build `2026-10-20.10`, branch `worktree-maps`, HANDOFF "Live maps"; ledger
-  `docs/plans/2026-10-20-live-maps-ledger.md`): the "Visit the Shop" map was a picture of Google's tiles.
-  - **Code:**
-    - `normalise/maps.ts` `findMaps` → `SceneNode.map`. A map is tiles (`tiled`) plus a map's own word (`SIGNS`:
-      "Open in Maps", "Map data…") or a maps link, holding only its own words (controls, Google's place card);
-    - `normalise/address.ts` `addressIn` (a street word or a postcode, a house number; contacts cut out);
-    - `understand/node.ts` `mapIR` (a Code element, `IRNode.map`; never inside a link); `section.ts` never makes a
-      map a wrapper or band; `understand/maps.ts` notes each map, and each one left a picture;
-    - `emit/maps.ts` (Google's keyless `maps?q=…&z=15&output=embed` iframe covering the element; the live site prints
-      a Code element inside `div.brxe-code`); `style.ts` `liveMap`; `adapt/map-box.ts` keeps its height.
-  - **On the user's files:** hydraulics, page-1 and the current debug file each get a live map of "12836 Hwy 57,
-    Evansville, IN 47725", 220px tall; the other corpus pastes are byte-identical.
-  - **My rulings, not yet confirmed:** the Code element; zoom 15; a maps link, then the place card's address, then the
-    nearest address in the map's section; a map inside a linked card stays a picture (noted); "Get Directions" stays
-    as it was.
-  - **Deferred:** an address in another section; a map that is itself a section; a hover layer drawn from a variant's
-    own tiles; addresses ranked by distance only.
-  - Not yet pasted by the user (3w).
-- **Fonts dropped on the panel** (build `2026-10-20.11`, branch `worktree-fonts`, HANDOFF "Fonts dropped on the
-  panel"; plan and ledger `docs/plans/2026-10-20-font-drop*`): fonts not on Google Fonts (GRO's Aswatama) no longer
-  wait for a hand upload to Bricks → Custom Fonts. Without them the browser shows a wider stand-in, so lines wrap where
-  Figma doesn't.
-  - **Code:**
-    - `src/ui/sfnt.ts`, `inflate.ts`, `unzip.ts`, `drop.ts`: reading fonts, zips and folders;
-    - `font-files.ts` `pickFonts`: pairs each file with the design's family by Unicode key, the design's spelling
-      kept; one file per face; checked by `env.fontLoads`;
-    - `woff.ts`: TTF/OTF to WOFF;
-    - `site-fonts.ts`: Font Library REST, one face at a time; errors worded for fonts;
-    - `font-sources.ts`: the CSS, the rows and the notes;
-    - `run.ts`: reads the site's fonts while the pictures go, whenever WordPress is connected;
-    - `main.ts`: the Fonts box and the window-wide drop.
-  - **Paste:** `@font-face` on the first element's custom CSS, after Google's. The paste's `font-family` stays
-    Figma's name.
-  - **My rulings, not yet confirmed:**
-    - the site's copy beats Google's;
-    - every static face of a used family goes in the CSS; a variable face once per design weight of its slant
-      (21.3: never a weight range);
-    - oblique is written as italic;
-    - woff2 > woff > ttf > otf, and a variable font beats its statics;
-    - a face the site has is skipped;
-    - the page converts again only when the last conversion uses an added family.
-  - **Deferred minors** (ledger): .ttc named "not a font", zips in zips, legacy per-weight family names, the site's
-    fontWeight unchecked in the CSS, nearby weights shown missing, wording.
-  - **Font weights** (build `2026-10-21.3`, branch `worktree-font-weight-gaps`, HANDOFF "Weight ranges broke Bricks'
-    Google Fonts link; font weights read as standard"; plan and ledger `docs/plans/2026-10-21-font-weight-gaps*`):
-    - `src/ui/font-weight.ts` (new) `standardWeight` / `namedWeight`; `sfnt.ts` `readFontInfo` returns the standard
-      weight; `site-fonts.ts` `faceOf` reads a stored in-between weight from the file name (`font-files.ts`
-      `nameParts`, WordPress's `-<n>` ignored unless a weight) or leaves the face out; `normal`/`bold` → 400/700;
-      `font-sources.ts` `siteFaceCss` never writes a range.
-    - **My rulings, not yet confirmed:** a round OS/2 hundred wins over the style name; an in-between weight with no
-      weight word → nearest hundred on upload (tie toward 400), left out when read from the site; OS/2 above 900 →
-      900; "Regular"/"Normal"/"Book"/"Roman" say 400, "Italic" alone none; a weight Google lacks keeps today's note.
-    - Paste check 3af owed (needs the header button's weight set to 600 in Bricks first).
-  - Not yet tried by the user (3x).
-- **One-line words** (build `2026-10-20.12`, branch `worktree-one-line`, HANDOFF "One-line words that wrapped in
-  Bricks"; plan and ledger `docs/plans/2026-10-20-one-line-text*`):
-  - **The report:** the user's live Services page showed its two-colour tags on two lines. The live page was read over
-    HTTP: 43px tall at every width and zoom.
-  - **The cause:** two runs make no Button label, so a tag is a Div pill hugging a Text. The Text's trailing-spacing
-    margin made the pill 0.56px narrower than its words, and Bricks' `[class*=brxe-]{max-width:100%}` held it there.
-  - **Code:**
-    - `style/tracking.ts` `tracked`/`fullWidth`/`grow`: a cap, a share and a floor taken from Figma's box all grow by
-      the trailing spacing. A px cap beats Bricks' cap and grows by px; keywords stay.
-    - `style/place.ts` SCALE: `scaledWidth`/`drawnRoom`; `drawnRoom` is shared with `lineCap`.
-    - `adapt/rules/unpin.ts`: the hanging cap and the Scale share at tiers.
-    - `tools/wraps.ts`.
-  - **Tests:** `style.test.ts`, `content-box.test.ts`, `test/browser/one-line.test.ts` (proved failing without the
-    fix), fixture `test/fixtures/tags.ts`.
-  - **Corpus:**
-    - page-1 pixel 0.71 → 0.76, hydraulics 0.40 → 0.50, final-design 0.894 → 0.905 (structure 0.74 → 0.69, its
-      content moving toward Figma's places);
-    - three new lint overlaps: final-design's heading over its giant word, as drawn; the 0px "Services" menu item at
-      1024 on page-1 and hydraulics, a menu bug on main too, noted.
-  - **My rulings, not yet confirmed:** a Scaled auto-width text may sit up to a few px wider than drawn (its words'
-    room); the share comes inside its box wherever the layout plan gives the box another width.
-  - Not yet pasted by the user (3y: the tags on one line; a calc in Bricks' Max. width round trip).
-- **Header and footer the site already has** (build `2026-10-20.13`, branch `worktree-site-parts`, HANDOFF of the
-  same name; plan and ledger `docs/plans/2026-10-20-site-parts*`):
-  - **The ticks:**
-    - `normalise/site.ts`, `Snapshot.site`, `plugin/site.ts`;
-    - the panel's `#siteHeader` / `#siteFooter`;
-    - tools `--site[=header,footer]`, and snap's `--header=<px>[,<phone px>]` (a fixed stand-in header).
-  - **Recognition** (understand, from structure):
-    - `bars.ts` (shared with `heroOf`);
-    - `site-header.ts`: the header's own bar has a logo at its left and a menu; bars above it go, and under it only a
-      row of links;
-    - `site-footer.ts`: a © line with columns or a menu; a thin © bar with the columns above it unless they hold a
-      heading or a scrolling box; never a form;
-    - `leave-out.ts`: `designOf` builds every section, leaves the parts out, then spaces the rest. `DesignIR.left`.
-  - **The spacer:**
-    - `understand/room.ts` (made last, role `spacer`), `style/room.ts`, `emit/room.ts`;
-    - a Section `site-header-room` (+ `site-header-under`) holding a hidden Code element;
-    - its script measures `#brx-header`'s fixed or absolute boxes as at the top of the page;
-    - push (drawn above), or under (less the first section's own top padding);
-    - `planLayout` never counts it, and marks no footer when the footer was left out.
-  - **Ticks off:** every paste is byte-identical.
-  - **On the user's files:** their 73px "Frame" header and 966–988px footer go. GRO's and brainstorm's nav drawn
-    inside the hero stays (noted; a follow-up).
-  - **My rulings and the deferred minors:** in HANDOFF. Paste check 3z owed.
-- **Links that opened a picture** (build `2026-10-20.14`, branch `worktree-link-hrefs`, HANDOFF "Links that opened a
-  picture, and links kept right"; plan and ledger `docs/plans/2026-10-20-link-hrefs*`):
-  - **Core:** `normalise/links.ts` `fileAddress` (a path ending in a picture or video type), `fileNote`, `notWebNote`;
-    `normalise.ts` `build` and `text.ts` `hyperlinkOf` (text links through `safeUrl` too) leave such links off;
-    `emit/payload.ts` `payloadProblems` refuses a link or `<a href>` to one.
-  - **Panel:** `files.ts` `safeFilename` (always `-image`; `fileStem` for embed), `videos.ts` `videoUploadName`
-    (`-video`; the lookup still finds those names); `site-read.ts` `heldAddresses`/`opensAt` (media on a link's
-    address only where WordPress serves it: attached to no page, or its own `link`) and `wordpress.ts`
-    `setMediaSlug` + `oneAtATime`; `site-pages.ts` `Held`, `Match.freed`, the notes; `run.ts` passes the upload
-    cache's ids.
-  - **On the user's file:** the grid's cards keep their hrefs (`/remanufactured-hydraulic-cylinders/`,
-    `/core-exchanges/`, `/rods-1-15-rechroming-rods/`, `/assembly-test-paint-delivery/`); the site check sends them
-    to the "… Final" pages, and with 647 in the upload cache frees `/rods-1-15-rechroming-rods/`.
-  - **My rulings and the deferred minors:** in HANDOFF. Not yet tried by the user (3aa).
-- **Cards drawn the same height** (build `2026-10-20.15`, branch `worktree-equal-card-heights`, HANDOFF "Cards drawn
-  the same height in a row"; plan and ledger `docs/plans/2026-10-20-equal-card-heights*`):
-  - **Code:**
-    - `style/shares.ts`: `drawnLines` / `evenLines` (items share a line when their drawn boxes overlap up and down; a
-      row that doesn't wrap is one line; even within 2px; `gridStretches` uses it), `rowEven` (a row of boxes holding
-      layers, each line even; never texts, pictures, Buttons, button-like or round boxes, turned layers, art groups,
-      a baseline row, a list's or a marquee's rows), `stretchesItems` (at `style.ts`'s three call sites);
-    - `style/bottoms.ts` `sharedBottoms`: in a stretched line, hugging laid-out boxes alike in direction, top and side
-      padding (1px) and paint share the smallest bottom padding, written in `Style.padding` so `space.ramp` steps it;
-    - `style/layout.ts`: `flowStyle(…, fromTop)` drops a stretched hugging column's centre or bottom alignment;
-      `innerPadding` moved here;
-    - `adapt/layout.ts` `sidesAt`: the written padding plus the written outline (a CSS border inside the box), so
-      the room it plans is the CSS content box.
-  - **Tests:** `style-shares` (16), `style-bottoms` (7), `convert-equal-cards` (3), `adapt-layout` (2 new),
-    `style-layout` (1 new), browser `equal-cards` (2); fixture `test/fixtures/equal-cards.ts` (26 variants).
-  - **On the user's files:** hydraulics' Info cards one height at 1728, 1440, 990 and 700 (352.7px each at 1728; main
-    312 / 362 / 337), bottom padding 30 on all three; stats strip, footer pair, Services' reviews and the Repairs
-    footer pair even too; footer link columns share bottom 14 (0 on Repairs); the Repairs product words centred.
-  - **Corpus:** lint errors no worse anywhere (final-design 18 → 17), hydraulics 0.4968 → 0.5177, the rest within
-    noise; worse than v1 18 → 17. GRO byte-identical.
-  - **My rulings, not yet confirmed:** a button-like box and a round box never stretch with their row; a stretched
-    column keeps space-between; a stretched row-direction box keeps its centring; any row of boxes stretches, header
-    bars included (final-design's logo group 1px taller); the Repairs product photo is its own height, centred, below
-    1440.
-  - **Follow-ups:** link-hrefs' three panel tests (above); ~~`space.ramp` writes no side where a phone's padding goes
-    back to the drawn one~~ (fixed for upright phones in 21.4, phone side padding); `style.ts` is 353 lines; the
-    footer's Opening Hours card keeps its 115px bottom.
-  - Not yet pasted by the user (3ab).
-  - **Equal card fixes** (build `2026-10-21.7`, branch `worktree-equal-card-fixes`, HANDOFF "Equal card fixes (recheck
-    R1–R7)"; plan and ledger `docs/plans/2026-10-21-equal-card-fixes*`; Justin's Q1A, Q2A): `bottoms.ts`
-    `spaceFallsBelow` trims a box only where the freed space falls under its content (a column unless space-between;
-    a row only with its items at the top and not wrapping: CSS shares a wrapping row's extra height between its
-    lines, review F1); `contentSetsHeight` (hug, no min height holding it open past 1px) gates the trim and `style.ts`
-    `fromTop`; `adapt/rules/rows.ts` `row.reflow` sets `flexGrow: 0` on a stacked row's item that keeps its size at the
-    first stacked tier (a 64×64 photo stayed 64×116); every untested guard tested, dead guards deleted. Justin's pages
-    and the corpus pastes byte-identical except design's one Button `_flexGrow:tablet_portrait 0`; no paste check owed.
-    R5 (the layout plan's room for an outlined 0-padding box) and the reviewer's twoShare / reflow flex-grow items are
-    layout-floors'.
-  - **CTA label wrap** (build `2026-10-21.8`, branch `worktree-cta-label-wrap`, HANDOFF "Button words that wrapped in
-    narrow cards"; plan and ledger `docs/plans/2026-10-21-cta-label-wrap*`; W1A confirmed by Justin, W2A W3A):
-    `adapt/least.ts` (`buttonLike`, the one-line width a layer needs per tier, `floored`: CSS holds a button only with
-    a stepped min-width or no clipping / min-width-0 box around it); `layout.ts` keeps a row only while each item holds
-    its buttons (alike cards stack, never one left alone; "two" stacks where a half can't hold its button; a held button
-    leaves the others their 200px; alike pills wrap, never the cards stack); `rules/label.ts` `label.oneLine` writes
-    `white-space: nowrap` per element (`_cssCustom`); `unpin` lets a button's floor go only to its line. Hydraulics
-    "Call Us Now" one line at 768–480. **Still broken (handed to pill-clip):** the design's service pills wrap on
-    laptops (1200). Rulings not yet confirmed: drawn fields still count as buttons (F7); per-element custom CSS kept
-    (F9). Paste check **3ai** owed.
-- **Fonts cleanup, stage 1** (build `2026-10-21.6`, branch `worktree-fonts-cleanup`, HANDOFF "Fonts cleanup, stage 1";
-  plan and ledger `docs/plans/2026-10-21-fonts-cleanup*`):
-  - **Scope:** Justin's 1B/2A, then "As for the font stuff tell it to move on": items 2/3/4 only; item 1 (fonts loaded
-    twice) deferred, needs a live paste proof. The plugin's Google loader stays.
-  - **Code:** `ui/font-coverage.ts` shares usable-source/weight-range/slant coverage; `site-fonts.ts` `addFonts` skips
-    covered drops; `font-sources.ts` uses the same coverage for the rows and CSS, and names only alternatives the
-    selected site CSS or confirmed Google faces supply. `fonts.ts` returns deduplicated family/weight/slant/source
-    metadata; `run.ts` carries it to the notes. No `src/core` change, no new availability probes, no substitution, no
-    site writes or deletions.
-  - **Coverage:** a static inside a usable same-family/slant variable range (inclusive) is skipped; a dropped variable
-    needs one existing usable variable covering its whole range. Isolated statics or partial overlap never cover a
-    variable. POSTs 1→0 for a static 500 under a 100–900 variable.
-  - **Notes:** e.g. "This paste supplies 400 and 700 in that style; the browser chooses a substitute. Your site's font
-    settings may add other weights." Unknown: "No replacement weight is confirmed; the browser may use another font."
-    **My ruling, not yet confirmed:** Google off keeps its explicit "not checked" rows.
-  - **Weights protected:** an element's own or imported-class Figma weight wins over body 800; generic tests cover
-    400/600/700, local overrides, Button, text link, mixed runs; Chrome 360/700/960/1360. Repairs (106) and
-    Hydraulics (202) text elements: none without an effective own or class weight.
-  - **Review:** fresh Sol reviewer's R1 (medium, test-only) fixed test first: the normal Google stand-in answers HTTP
-    200 without the missing weight; a forced HTTP 400 is labelled failure injection. Corpus pastes byte-identical.
-  - **Still open:** F1 (HTTP-200 partial Google answers counted complete); item 1; stale panel tests (test-cleanup).
-  - Not yet pasted by the user (3ah).
-- **Words linked to another frame** (build `2026-10-21.5`, branch `worktree-frame-text-links`, HANDOFF of the same
-  name; plan and ledger `docs/plans/2026-10-21-frame-text-links*`):
-  - **The ask:** in Figma, words can link to a web address or to another frame; frame links were dropped, so the
-    words came out plain in Bricks. Justin chose F1A (no page yet: the guessed address, noted by the site check), F2A
-    (a part of a frame: its top frame's page), F3A (a deleted frame: plain words, named).
-  - **Code:** extract `plugin/extract/link-frames.ts` (snapshot `linkFrames: { <id>: { frame, inside } }`, the layer
-    under the Figma page, the file or a canvas section); `normalise/text.ts` `hyperlinkOf`/`frameLink` (`Run.linkFrame`;
-    notes `goneFrameNote`, `unnamedFrameNote`, `partFrameNote` in `normalise/links.ts`, the part note naming no
-    address); `emit/page-addresses.ts` `runLinks` (`PageAddress.runs: [{ id, at }]`, the link's place among its
-    text's `<a>`s; the front page and typed addresses never listed); panel `ui/site-pages.ts` `relink` (a text's
-    listed links, last first) and `ui/text-links.ts` `relinkText` (changes a link only while its href is still the
-    conversion's; a function replacement, so a `$` in an address is written as it is).
-  - **Rule:** every link kind (an element's link or a text run's) goes through `emit/page-addresses.ts` and
-    `ui/site-pages.ts` `relink`; addresses typed in Figma are never changed.
-  - **Behaviour change, not yet confirmed by Justin (review F4):** frame-linked words count as the designer's link,
-    as typed-address words already did: a card whose title or "Learn more" carries one gets no whole-card link, a
-    painted pill whose label carries one is a Div with a linked text (not a Button), and a Call/Email button whose
-    label carries one keeps it instead of the nearest number. Kept; reversing it for both kinds is its own fix.
-  - **My rulings, not yet confirmed:** the new `linkFrames` key (not `targets`); the part note names the part and the
-    frame, no address; a canvas section counts as a page holder; frame links in text are `from: "figma"` (no
-    "make sure that page exists" note without WordPress, as Navigate links); a text's link found by its place.
-  - **Checks:** check 1330, browser 131 of 134 (the 3 known stale panel tests); corpus pastes byte-identical to main
-    (no corpus file has a text hyperlink), lint and the 17 items unchanged. Reviewed on opus (approve, 5 low), all
-    fixed test first or recorded.
-  - Not yet pasted by the user (3ag).
-- **Phone side padding (2026-10-21, build .4, phone-side-padding):**
-  - **The report:** the hydraulics homepage's three Info cards under the logo marquee had 17px sides on an upright
-    phone; Figma has 30.
-  - **The cause:** `space.ts` wrote nothing at a tier where a box's side goes back to its designed value, and Bricks
-    cascades tablet → sideways phones → upright phones, so the sideways phone's squeeze (cards three across,
-    `sideCap` 17) stayed once they stacked.
-  - **Justin chose:** P1A, upright phones get Figma's padding on the space ramp, written; P2B, upright phones only
-    (a tablet's squeeze carrying on to sideways phones stays: GRO's "Let's talk →" keeps 22 there, the only case in
-    the corpus). His point: "padding must look clean on any layout".
-  - **Divided rows (the review's F1, Justin's standing ruling: do it if small and general):** a row of unpainted boxes
-    split by their own one-sided outlines (no line on the row's ends, none above or below; `adapt/divided.ts`), from
-    the tier where it breaks: the lines go (row.reflow), each item's sides even out to the row's smallest on every
-    narrower tier (space.ramp), the space the padding and lines made between two items' words becomes the row's gap
-    both ways on the gap ramp, and in a row that wraps each item grows to share its line. v1 did this (research §6).
-    final-design's stats: 2 + 1 with the third centred at 360–478, one centred column 479–768, no lines; hydraulics'
-    4 stats under the hero lose their lines on tablets.
-  - **Rule:** a tier that goes back to the designed value writes it explicitly (Bricks cascades landscape → portrait);
-    space.ramp's margin and gap steps decide upright phones against tablets only, guarded by a test that nothing
-    writes a landscape-only one.
-  - **My rulings, not yet confirmed:** a wrapping divided row shares each line (its lone last item sits centred); its
-    gap is the space its padding and lines made, stepped (48 tablets / sideways phones, 32 upright for final-design).
-  - **Checks:** corpus lint and the 17 "worse than v1" items unchanged; pastes change only in 14 upright-phone paddings
-    (each its own Figma sides) and the two divided stat rows. check 1309, browser 131 of 134.
-  - **Follow-ups:** the layout plan still counts a divided item's drawn sides after its row breaks (safe, low); a phone
-    number in running text wraps at its inner space (hydraulics' "Call Us Now" card at 452–478).
-  - Not yet pasted by the user (3ae).
-- **Line breaks that only copy Figma's wrap** (build `2026-10-21.2`, branch `worktree-early-line-breaks`, HANDOFF of
-  the same name; plan and ledger `docs/plans/2026-10-21-early-line-breaks*`):
-  - **Code:** `style/rag.ts`: `ragBreaks` (the old `text.breaks` test: body ≤ 24px, no heading, no blank line, v1's
-    rag), `softBreaks` (not hugging its words + prose + `copiesWrap`, the letters to spare: ≤ `FONT_SLACK` 1 on the
-    longest line, ≤ `GUESS_ERROR` 0.1 × guessed letters on a shorter one); `typography.ts` `textHtml(…, soft)` writes
-    a space and drops the next line's typed spaces; `style.ts` never holds a soft text as typed lines;
-    `adapt/rules/breaks.ts` runs only for hug texts whose words aren't replaced.
-  - **Tests:** `adapt-breaks.test.ts` (13, the boundaries pinned by mutation); `pages.ts` `pairPage`'s paragraph hugs
-    its words; `faq.ts` takes an `answer`.
-  - **On the user's files:** hydraulics' Info cards 3 lines at 1728 (main 4 with `hurry? Give` and `Copco in` alone),
-    the same as main at 1440 and 390; design's footer address and the inspo file's "…growth⏎shouldn't live…" keep
-    their breaks as on main.
-  - **My rulings, not yet confirmed (under Justin's auto-go):** the letter count; prose only (an address with "St."
-    counts as prose); a Truncate box counts as fixed width; a soft text gets Figma's line length.
-  - **Follow-ups:** `style.ts` 356 lines (test-cleanup's split).
-  - Not yet pasted by the user (3ad).
-- **Site fonts kept per family** (build `2026-10-21.1`, branch `worktree-emergency-cta-width`, HANDOFF "Fonts from
-  the site's library mixed between families"; plan and ledger `docs/plans/2026-10-21-emergency-cta-width*`):
-  - **Code:** `src/ui/site-fonts.ts` `readAll` (any WordPress list, 100 at a time, ending at a short page or
-    `rest_post_invalid_page_number`; families and faces share it), `isOwn`/`facesOf` (`_fields:
-    id,parent,font_face_settings`; a face is the family's when its `parent` is the family's id, or, answered without
-    `parent`, when its own `fontFamily` names the family).
-  - **Stand-ins:** `test/fixtures/panel.ts` `siteFaces` and the browser `panel.test.ts` `fontLibrary` answer as
-    WordPress does: every face of the site under any family, newest first, each with its `parent`, `per_page`/`page`/
-    `_fields` honoured; `noParent` drops `parent`; a face keeps its own posted `fontFamily`.
-  - **Tests:** `ui-site-fonts` (own faces only; the parent wins over a face's own font family name; no `parent`; more
-    than 100 faces; a drop only another family has goes up), `ui-font-sources` (`siteFaceCss`, `fontPlan`), `ui-run`
-    (a connected Convert with two site families). All fail with main's `site-fonts.ts` or under a mutation.
-  - **Proof** (stand-in rebuilt from the live `post-10.min.css`): Archivo 13 mixed files → its 3 own; Archivo 500 and
-    800 come from Google, as Figma draws them.
-  - **My rulings, not yet confirmed:** a face without `parent` is matched by its `fontFamily` name; faces are read per
-    family, so it stays right on a WordPress that does filter by parent.
-  - **Follow-ups resolved:** covered static uploads are skipped by shared usable-source/family/slant/range coverage
-    in 21.6 (fonts-cleanup); Saira Condensed Thin/ExtraLight 250/275 was fixed in 21.3.
-  - Not yet pasted by the user (3ac: the 8 pages again).
-- **A picture frame's faint outline over a photo** (build `2026-10-22.10`, branch `worktree-photo-frame-outline`,
-  HANDOFF of the same name; plan and ledger `docs/plans/2026-10-22-photo-frame-outline*`): see "Start here".
-  - **Code:** `normalise/photo-frames.ts` (`leaveFaintFrames`, wired in `normalise.ts` with a per-layer set of videos
-    the panel looks up); `photoPaint` moved to `normalise/paints.ts`. Fixture `test/fixtures/photo-frames.ts`, test
-    `normalise-photo-frames` (the paste equals the one with the stroke deleted, every guard's boundary).
-  - **My rulings, not yet confirmed:** the 20% / 2px / 90% / 10% / 80px limits; a video counts as a photo; a framed
-    photo that is a link still loses it; one note per box.
-  - **Deferred:** a photo inside a masked group isn't seen (outline kept); a big transparent PNG counts as a photo
-    (no pixel data); `itemReverseZIndex` ignored as everywhere.
-  - Not yet pasted by the user (3bh).
-- **Space under an open FAQ answer** (build `2026-10-26.1`, branch `worktree-faq-answer-space`, Mini pipeline,
-  HANDOFF of the same name; plan and ledger `docs/plans/2026-10-26-faq-answer-space*`): see "Start here".
-  - **Code:** `understand/accordion.ts` `spaceUnder` (the space drawn under a fixed-height answer box's layers, 0 for a
-    box painting its own or holding a placed layer) and `underAnswers` (the item Content's bottom padding, the answer
-    box hugging its words). Tests `understand-answer-space`, `emit-accordion` (AC1, AC5), browser
-    `faq-answer-space` (AC2–AC4 and the painted / outlined / padded / pinned variants), `corpus-faq-answer-space`
-    (AC6); fixtures `paddedAnswer`, `pinnedAnswer` in `test/fixtures/faq.ts`.
-  - **Deferred:** an item frame drawn fixed-height with the space under its answer; a fixed-height text answer taller
-    than its lines; a painted or placed-layer answer box keeping its space on phones; the same frozen space outside
-    FAQs.
-  - Not yet pasted by the user (3bl).
-- **Flip cards** (build `2026-10-28.1`, branch `worktree-flip-cards`, full pipeline, HANDOFF of the same name; plan
-  and ledger `docs/plans/2026-10-26-flip-cards*`): see "Start here".
-  - **Code:** new `understand/flip.ts`, `style/flip.ts`; the mark in `normalise/{scene,notes,hover,normalise}.ts`;
-    `understand/overlay.ts` `variantCopy` (shared by hover layers and backs); `ir.ts` `faceOf`, `linksHere`,
-    `linkFrom`; `adapt/least.ts`, `adapt/hero-pair.ts`; `emit/elements.ts` (`tabindex`), `emit/page-addresses.ts` (a
-    back's link listed for the site check), `emit/payload.ts` (no nested-link refusal);
-    `understand/{phone,lists,list-links,list-rows,showcase,recognise}.ts`.
-  - **Tests:** `normalise-flip`, `understand-flip`, `emit-flip`, `flip-guards`, `emit-nested-links` (helper
-    `test/fixtures/nested-links.ts`), browser `flip-cards`; fixture `test/fixtures/flip-cards.ts`. `chrome.ts`
-    `Page.touch` / `Page.tap` drive a touch screen and a finger's tap: never `Input.synthesizeTapGesture`, which sends
-    no mouse events headless.
-  - **Deferred:** a divided row of flip cards; Safari's composited children; Figma text properties; a flip on click.
-  - Not yet pasted by the user (3bn).
-- **Label minimums and tight-row space** (build `2026-10-28.2`, label-floor, Full pipeline): see "Start here" and
-  HANDOFF "Bigger words in pills and Learn more links"; plan/ledger `docs/plans/2026-10-26-label-floor*`.
-  - `understand/min-font.ts` marks 13px pill words / 15px linked go-words or arrow labels, with menu/current-item and
-    clickable-tab controls; `give-way.ts` plans gap giving, widening and the drawn-size fallback with notes.
-  - `style/min-font.ts` and `style/button.ts` apply element sizes; `adapt/{least,layout,shapes,hero-pair}.ts` and
-    `adapt/rules/space.ts` share planned grown widths/gaps. `overlay.ts` retains marks; flip fronts use `linksHere`.
-  - Verifier and blind auditor proved the 14 automated ACs; ac-check passed with **AC9 / paste check 3bm** owed.
-    Existing GRO links outside tight rows, the wrapped-row gap approximation and fixture-file splits remain in HANDOFF.
-- **Paste checks:**
-  - **WordPress pictures** (2026-10-07, build .19): the user's run worked; photos and icons show on the saved page.
-    The descriptions list is not yet tried.
-  - **M1b desktop** (2026-10-07): final-design matched at desktop.
-  - **M2a–M2c on the user's phone** (hydraulics): "nothing looks wrong. Slider work and look great."
-- **Open:**
-  - **M2d, the phone menu,** waits for the user's **Nav (Nestable)** sample. The first time, the user pasted the
-    card/slider sample by mistake; the right copy contains `nav-nested`.
-- **M4a** (HANDOFF "M4a"): headings with one h1 and no skipped levels, stacked title pieces as one heading, alt text
-  sent with each WordPress upload, focus ring, reduced motion.
-- **M4b** (HANDOFF "M4b"): Figma Motion as CSS keyframes. It is built against Figma's typings (no corpus file has
-  Motion), so it needs the user's Motion test file.
-- **Next:** the user's end-of-run check (HANDOFF "End-of-run check list", now with GRO on a phone). After that come
-  the sample-bound parts: M2d phone menu, Tabs, Dropdown, Offcanvas and pop-ups.
-- **Waiting for the user's Bricks samples:** Tabs, Dropdown, Offcanvas + Toggle, Nav (Nestable) for the phone menu,
-  a working Interaction, and a `popover` Div. Never write those emitters from memory.
+- They said "build straight through": run each milestone without stopping, and report rulings and deferred minors in
+  plain words at the end.
 
 v2 is a clean rewrite of v1 (`~/Desktop/figmaplugin`, read-only reference). The approved design is
 `docs/specs/2026-10-06-v2-design.md`; read it before changing the architecture. v1 is the reference for **rules it
@@ -1141,6 +115,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - A rule writes only what changes at a breakpoint, never the desktop value. The one exception is the `fluid` tier
     (below the design width, above tablets): emit folds its values into the desktop value as a `clamp()` exact at
     the design width, and puts its custom CSS in `@media (max-width: W−1px)`.
+  - A tier that goes back to the designed value writes it explicitly: Bricks cascades tablet → sideways phones →
+    upright phones, so writing nothing keeps the narrower tier's squeeze.
   - Widths at a tier come from the layout plan (`ctx.layout`, `src/core/adapt/layout.ts`): each layer's room and
     width, each row's shape and each grid's columns. Rules read it; they never estimate widths themselves.
   - A flip card is judged by its front (`ir.ts` `faceOf`, shared by `recognise.ts`, the layout plan, `adapt/least.ts`
@@ -1174,48 +150,44 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     don't change the remote or the helper.
   - **Not in git (rebuilt by tools):** `node_modules/`, `dist/`, `corpus/out|paste|compare/`, `corpus/report-v2.json`.
 - **Every bug or feature runs the orchestrated pipeline** in the first section of the global `~/.claude/CLAUDE.md`
-  (user, 2026-10-23). The session only orchestrates: fresh Opus 5.5 xhigh `general-purpose` agents plan, build,
-  review, fix, verify and audit, and `ac-check.sh` decides when every AC is accepted. Never plan, build or review in
-  the session itself. This repo's specifics:
-  - **Start:** in a terminal in the main folder, `claude -w <feature-name>`. Claude Code makes
-    `.claude/worktrees/<feature-name>` on branch `worktree-<feature-name>` and copies in what `.worktreeinclude` lists:
-    this file, `node_modules/` and v1's corpus output. That session is the feature's orchestrator, and its agents work
-    in the copy. Several features at once (user, 2026-10-19: "run multiple agents to do multiple features") means
-    several such sessions, one feature each, so no agent sees another's half-done work.
-  - **Plan approval: the user's standing auto-go for this repo** ("no stop between plan and run"): show the plan
-    message (questions with ⭐ answers, proposed and `(live)` ACs) and dispatch the builder at once, taking the ⭐
-    answers, unless the user replies **stop** or changes something. Make the plan's read-only copy first, as the
-    global step 3 says: `mkdir -p <evidence> && install -m 444 <plan> <evidence>/plan-approved.md`.
+  (user, 2026-10-23): the session only orchestrates; fresh Opus agents plan, build, review, fix, verify and audit,
+  and `ac-check.sh` decides when every AC is accepted. Never plan, build or review in the session itself. This repo's
+  specifics:
+  - **Start:** in a terminal in the main folder, `claude -w <feature-name>` (`.claude/worktrees/<feature-name>` on
+    branch `worktree-<feature-name>`, with what `.worktreeinclude` lists: this file, `node_modules/` and v1's corpus
+    output). One session per feature, so no agent sees another's half-done work; two or three features at a time,
+    touching different stages or rules, or merges get harder.
+  - **Plan:** `docs/plans/<date>-<name>.md` (in git, not `~/.hermes/plans`), numbered ACs with one test each.
+    **Standing auto-go** ("no stop between plan and run"): show the plan message (questions with ⭐ answers, proposed
+    and `(live)` ACs) and dispatch the builder at once, taking the ⭐ answers, unless the user replies **stop** or
+    changes something. Make the read-only copy first: `mkdir -p <evidence> && install -m 444 <plan>
+    <evidence>/plan-approved.md`. Evidence goes in `~/.hermes/plans/figma-to-bricks/evidence/<name>/`.
+  - **Build and review:** the builder keeps a ledger in `.superpowers/sdd/<plan>/progress.md` and runs `npm run
+    corpus` before Task 1 and at the close. The review diff is `git diff main...HEAD` in the copy.
   - **Rules for every agent in a copy:**
     - Run `npm run check` and `npm run corpus` there.
-    - Commit to the branch after each passing task. The branch stays on the Mac: don't push it to GitHub (user,
-      2026-10-19: merges are local).
+    - Commit to the branch after each passing task. The branch stays on the Mac: don't push it (merges are local).
     - Don't bump `BUILD`, and don't edit the main folder.
     - Don't edit the copy's CLAUDE.md: it's a snapshot from the start, deleted with the copy. Status notes go in
       `docs/HANDOFF.md` and the ledger, which are in git.
     - Never use bare `git stash`: the stash list is shared by every copy.
-  - **Finish, once `ac-check.sh` says ALL ACCEPTED or READY FOR THE USER** (no need to wait for the user):
-    1. **Finisher agent, in the copy:** commit everything, then `git rebase main`. On a conflict keep both sides'
-       meaning; HANDOFF sections usually both stay. Run `npm run check` and `npm run corpus` again on the rebased
-       branch: two features that pass alone can break together. It stops and reports the new HEAD. If HEAD now
-       differs from the head `ac-check.sh` accepted, the AC receipts no longer match: the session runs verifier → auditor →
-       `ac-check.sh` again on the new head before step 2 (agents don't start agents).
-    2. **Session: leave the copy.** Call the ExitWorktree tool with action `"keep"` (the user's standing permission).
-       Claude Code refuses git commands and edits aimed at the main folder from inside a copy (`git -C …`
-       included), so the merge runs from the main folder. If ExitWorktree finds no worktree session, EnterWorktree
-       with `path` set to the main folder; only if both fail, give the user the one `!` merge command and say why
-       (global CLAUDE.md "Worktrees from `claude -w`").
-    3. **Session, in the main folder:** `git merge --ff-only worktree-<feature-name>`. If it refuses, main moved (go
-       back into the copy with EnterWorktree and its `path`, repeat from 1) or the main folder has uncommitted
-       changes (stop and tell the user). Never force it.
-    4. **Finisher agent, in the main folder:** bump `BUILD` (read it first), `npm run build` (Figma loads that
-       `dist/`), commit "Build <BUILD>: <feature>" and `git push` (`main` only). Update the main folder's CLAUDE.md
-       ("Start here" and "Where things stand"), since it isn't in git.
-    5. **Session:** check that `git log --oneline main` shows the feature's commits, then tell the user it's merged,
-       naming any `(live)` ACs owed to them. When they close the session, Claude Code offers to delete the copy; the
-       branch goes with `git branch -d`.
-  - **Choose features that touch different parts** (different stages or rules). Two or three at a time; more makes
-    merges harder.
+  - **Finish, once `ac-check.sh` says ALL ACCEPTED or READY FOR THE USER** (no need to wait for the user), as the
+    global "Worktrees from `claude -w`" says:
+    1. **Finisher, in the copy:** move the ledger to `docs/plans/<plan>-ledger.md`, commit everything, `git rebase
+       main` (on a conflict keep both sides' meaning; HANDOFF sections usually both stay), run `npm run check` and
+       `npm run corpus` again (two features that pass alone can break together) and report the new HEAD. If it
+       differs from the head `ac-check.sh` accepted, the session runs verifier → auditor → `ac-check.sh` on it first.
+    2. **Session:** ExitWorktree with `"keep"`, then in the main folder `git merge --ff-only worktree-<feature-name>`.
+       If it refuses, main moved (go back into the copy and repeat from 1) or the main folder has uncommitted changes
+       (stop and tell the user). Never force it.
+    3. **Finisher, in the main folder:** bump `BUILD` (read it first), `npm run build` (Figma loads that `dist/`),
+       commit "Build <BUILD>: <feature>" and `git push` (`main` only). Then update this file's **Status** (the build
+       line, one line for the feature with its paste check) and add any new standing rule or user decision to the
+       sections below; everything else goes in HANDOFF. If writing this file is refused, leave exactly those lines in
+       `~/.hermes/plans/figma-to-bricks/<name>-claude-md-pending.md`.
+    4. **Session:** check that `git log --oneline main` shows the feature's commits, then tell the user it's merged,
+       with every ruling and deferred minor in plain words and any `(live)` ACs owed. When they close the session,
+       Claude Code offers to delete the copy; the branch goes with `git branch -d`.
   - **A quick fix the user asks to do right here** (no pipeline, a session started without `-w`) is committed
     straight to `main`, by file, before the next merge.
 - **Setup:** TypeScript + esbuild. Dev dependencies only: `typescript`, `esbuild`, and the type packages
@@ -1232,7 +204,7 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   properties.
 - **Build number:** bump `BUILD` in `src/shared/build.ts` (`YYYY-MM-DD.N`) for every change the user will load in
   Figma. Read the current value first, because another session may have bumped it. In an agent's copy, leave it: the
-  merge into `main` bumps it ("Several agents at once", step 4).
+  merge into `main` bumps it ("Finish", step 3).
 - **Code Figma runs (`src/core`, `src/plugin`, `src/shared`) uses only the language's built-ins.** Figma's plugin
   sandbox has no `URL`, `URLSearchParams`, `TextDecoder`, `TextEncoder` or DOM. A web class inside a `try` fails
   quietly in Figma while Node tests pass (sandbox-urls). Use the pure stand-ins: `model/url.ts` for addresses,
@@ -1275,6 +247,24 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **The user never tested v1's WordPress mode** (2026-10-07): v1 is no reference for uploads or the paste's media.
 - **Bricks gives every Block `width: 100%`.** A layer that should size from `left` and `right` needs `_width: "auto"`;
   deleting `_width` isn't enough.
+- **Bricks gives pasted elements new ids,** rewriting each id only inside its own element (`reference/bricks/README.md`
+  "Ids on paste"). Never name another element's id in custom CSS or a script: a look that follows another element
+  names it by a marker class (`trigger-<hash>`), and scripts find elements by class (test `emit-paste-ids`).
+- **Bricks caps every element at its parent's width** (`[class*=brxe-]{max-width:100%}`): a moving row needs
+  `max-width: none`, and every width taken from Figma's box grows by a text's trailing letter-spacing
+  (`style/tracking.ts`).
+- **Bricks wraps every Section, Container and Block from 767px down** (its front-end CSS): a row the layout plan keeps
+  on one line there writes `_flexWrap: "nowrap"` (`row.reflow`); the renderer copies the wrap.
+- **Bricks writes text controls as given:** Flex basis numbers go out in px (`flex-basis: 323` is CSS the browser
+  drops); `payloadProblems` refuses a bare one (`reference/bricks/README.md` "Text controls").
+- **An empty global class is `settings: []`,** as Bricks keeps it; `{}` makes Bricks ask "Import classes" on every
+  paste.
+- **Bricks' Form prints labels only with `showLabels`** and the star only with `requiredAsterisk` (both off by
+  default); its button Width setting doesn't reach the page, so custom CSS spans it.
+- **Figma gives a plugin only a video's `videoHash`** (its SHA-1), never the file, and its PNG export draws no video
+  frame, so a video fill has no poster. The site sends no CORS header on uploads, so videos are matched by name.
+- **Every link kind** (an element's link or a text run's) goes through `emit/page-addresses.ts` and the panel's
+  `ui/site-pages.ts` `relink`; addresses typed in Figma are never changed.
 - **Layout keys depend on the element.** `_direction`, `_rowGap`, `_columnGap`, `_flexWrap` and the grid keys work only
   on section, container, block and div (`LAYOUT_ELEMENTS` in `emit/payload.ts`). Any other element's are
   `_flexDirection` and `_gap` (`reference/bricks/README.md` "Layout keys by element"). `payloadProblems` fails on the
@@ -1288,20 +278,6 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **Bricks element shapes come from `reference/bricks/*.json`,** canonical samples the user copied out of their Bricks
   install. Write native-element emitters against those samples, never from memory. Re-capture them when Bricks is
   upgraded.
-- **How each milestone runs** (2026-10-23: the orchestrated pipeline above replaces the single-session
-  `superpowers:writing-plans` flow):
-  1. The planner agent writes the plan in `docs/plans/<date>-<name>.md` (in git; this repo's plans don't go to
-     `~/.hermes/plans`), with numbered AC1, AC2… and one test each (`implementation-planning`).
-  2. The user wants no stop between plan and run: the builder starts right after the plan message (auto-go above).
-     It builds test first, with a ledger in `.superpowers/sdd/<plan>/progress.md`.
-  3. The builder runs `npm run corpus` before Task 1, and again at the close.
-  4. Two fresh Opus reviews with a fix pass after each (each fix test first), then the verifier, the blind AC auditor
-     and `ac-check.sh`, looping until every AC is accepted (global CLAUDE.md step 5–6). Evidence goes in
-     `~/.hermes/plans/figma-to-bricks/evidence/<name>/`.
-  5. The finisher moves the ledger to `docs/plans/<plan>-ledger.md`.
-  6. The session reports every ruling and deferred minor to the user in plain words.
-- **The review diff comes from git:** `git diff main...HEAD` in an agent's copy, or `git diff <commit before the
-  milestone>` on `main`.
 - **Test fixtures built from one column inside a section can surprise you.** A section's only child that spans it
   becomes the section's Container (or a band when painted), and its label disappears. Give such fixtures a sibling
   (a text above) when a test looks the box up by label. An auto-layout `column`/`row` fixture hugs its flowing
@@ -1322,7 +298,12 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   payload the way the user pastes it (pictures inside, vectors as their own SVG, photos as stand-ins). For each width
   (390, 768, 1024, 1440 and the design width) it prints each section's height against its Figma frame and the lint,
   and writes a shot. `--sides` writes Figma-vs-built pictures of every section at the design width.
-  - It drives the system Chrome over CDP (`test/browser/chrome.ts`), so viewports are exact at any width.
+  - It drives the system Chrome over CDP (`test/browser/chrome.ts`), so viewports are exact at any width. Browser
+    tests drive a touch screen with `Page.touch` / `Page.tap`, never `Input.synthesizeTapGesture` (headless, it sends
+    no mouse events).
+  - `--site[=header,footer]` converts with the panel's ticks; `--header=<px>[,<phone px>]` adds a fixed stand-in site
+    header.
+- **Wrapped one-liners:** `npm run wraps -- <debug.json> [widths]` lists one-line Figma texts that wrap on the page.
   - The layout lint (`test/browser/lint.ts`) reports overflow, clipped or overlapping text, tiny type, distorted
     pictures and content missing on phones.
 - **Corpus:** v1's three real debug files plus the hydraulics page and the GRO homepage (v2 files in `corpus/files/`;

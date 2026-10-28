@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 2fe303d7-90b7-4c97-a578-b1d2535f94fa
-  modified: 2026-10-25T15:40:00Z
+  modified: 2026-10-28T17:45:00Z
 ---
 
 **This folder serves both repos.** `~/.claude/projects/-Users-justin-Leorna-leorna-control-plane/memory` is a symlink to the client project's memory folder, so a session in either repo reads and writes the same files. It lives under `~/.claude` on Justin's Mac, outside both git repos, and is never committed or pushed. Control-plane testing details are in [[leorna-control-plane-workflow]]. Hermes Agent (Justin's WhatsApp assistant on this Mac) also reads and edits this folder through its `leorna` skill, with Justin's standing OK (2026-10-20). `~/Leorna` has no workspace AGENTS.md, although the client AGENTS.md says "See workspace AGENTS.md".
@@ -137,7 +137,9 @@ metadata:
 
 ## PI-2: Content, Packs & Insights v0.2 (ClickUp)
 
-**Status 2026-10-23 18:05 EDT (Claude Code live check via the `clickup` MCP; newest):** tag `pi-2`, include_closed=true, page 0, has_more=false: **39 cards**. Statuses: to do **30**, in progress **1** (927v), in verification **4** (9030, 901v, 901u, 9016), complete **4** (902n, 902k, 902h, 9018). Justin's 5: `86bcm9016` prompt kind, `86bcm901u` quality gate and `86bcm901v` catalog browser are **in verification**; (901v's status comes from the superseded old attempt; v2 restarted 2026-10-23) `86bcm945u` upstream sync and `86bcm9019` skills collection are **to do**. Dependencies not rechecked in this lookup.
+**Status 2026-10-28 13:45 EDT (Claude Code, Linux desktop, live `clickup` MCP; newest):** assignee 240157212 (justin@leorna.com), include_closed=true, has_more=false: 23 cards, 9 open. All five earlier PI-2 cards (9016, 901u, 901v, 945u, 9019) are now **complete** in ClickUp. Justin was newly assigned **9 to-do PI-2 cards** (~2026-10-27). Dependencies read live (edges where task_id = the card): **Ready:** `86bcm901w` create pack by picking items (CP, M, high; 901v complete; blocks 901y, 902a, 9026, 902d), `86bcm901r` role starter packs (content, M, high; 9018+9019 complete), `86bcm901z` company variant (CP, L, high; 901v), `86bcm901j` MCP templates (content, M; 9018), `86bcm901b` prompts collection (content, M; 9016/901u/945u), `86bcm901a` agent definitions (content, M; 9018/901u/945u), `86bcm902w` usage analytics (both, M; 902h complete; spike first). **Waiting:** `86bcm901y` remove/reorder (CP, S) on 901w; `86bcm902a` one-click quick start (CP, M, high) on 901r + 901w (both Justin's). Whether 9019 PR #92 is merged was not rechecked (ClickUp closed it 2026-10-26).
+
+**Status 2026-10-23 18:05 EDT (Claude Code live check via the `clickup` MCP):** tag `pi-2`, include_closed=true, page 0, has_more=false: **39 cards**. Statuses: to do **30**, in progress **1** (927v), in verification **4** (9030, 901v, 901u, 9016), complete **4** (902n, 902k, 902h, 9018). Justin's 5: `86bcm9016` prompt kind, `86bcm901u` quality gate and `86bcm901v` catalog browser are **in verification**; (901v's status comes from the superseded old attempt; v2 restarted 2026-10-23) `86bcm945u` upstream sync and `86bcm9019` skills collection are **to do**. Dependencies not rechecked in this lookup.
 
 **Status 2026-10-22 13:22–13:24 EDT (Hermes live check):** resolved `justin@leorna.com` afresh to member `240157212`, workspace `90141510532`. Queried tag `pi-2` with `include_closed: true` and subtasks enabled; both whole-PI and assignee-filtered page 0 returned `has_more: false`. Read all five assigned cards with descriptions and full dependencies, plus loader and multi-file blocker tasks. Counts programmatically reconciled: **39 total**; E10 **10**, E11 **9**, E12 **8**, E13 **5**, E14 **7**; Justin **5**, Yan **6**, Christian **5**, unassigned **23**. Statuses: to do **34**, in progress **1**, in verification **1**, complete **3**.
 
