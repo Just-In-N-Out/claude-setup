@@ -38,7 +38,7 @@ mkdir -p <evidence> && install -m 444 <plan> <evidence>/plan-approved.md
   # one AC at a time: repeat these four lines for each AC
   git -C <scratch>/base-<base7> reset -q --hard && git -C <scratch>/base-<base7> clean -fdq
   git -C <scratch>/base-<base7> checkout <head sha> -- <this AC's test files>
-  ln -s <worktree>/node_modules <scratch>/base-<base7>/node_modules    # JS repos only; clean -fd removes the link, so re-link each time
+  ln -sfn <worktree>/node_modules <scratch>/base-<base7>/node_modules    # JS repos only; -sfn because clean -fd keeps the link when node_modules is gitignored
   ( set -o pipefail; cd <scratch>/base-<base7> && echo "HEAD=$(git rev-parse HEAD)"; <command>; echo "EXIT=$?" ) > <folder>/ac<n>-base-<base7>.log 2>&1
   git -C <worktree> worktree remove --force <scratch>/base-<base7>
   ```
