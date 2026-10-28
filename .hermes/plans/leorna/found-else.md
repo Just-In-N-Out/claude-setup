@@ -142,3 +142,5 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - P3 (environment): the desktop also lacked `make` and a C compiler (`go: -race requires cgo`); fixed locally under `~/.local/leorna-tools` (make via dpkg-deb, Zig as `CC`).
 - P3 (Codex): `history.persistence = "none"` covers only `history.jsonl`; Codex 0.165 also writes `rollout-*.jsonl` session files, so a pasted secret can likely still reach disk (not confirmed with a signed-in run).
 - P3 (docs): `internal/library/README.md`'s older gate paragraph says "Failure reasons quote the offending text"; the new policy reasons never repeat a value.
+- 2026-10-28 (86bcm901b builder, low, environment): on the WSL desktop a headless Chrome capture that times out leaves its `--type=gpu-process` child running indefinitely (the builder killed its own 9). Another session's Chrome under `/tmp/f2b-chrome-*` had been running ~12 h; not this story's, left untouched.
+- 2026-10-28 (86bcm901b builder, info, pre-existing on base `1ee7157`): govulncheck reports 1 vulnerability in a required module the code does not call; the gate passes.
