@@ -19,7 +19,7 @@ index 7fc2b43..905e163 100644
  
  # Adversarial Verification Loop
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..5c3b36b 100644
+index d6a2493..1338623 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,13 +60,13 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -38,7 +38,7 @@ index d6a2493..5c3b36b 100644
  - Resource-owner lifetime: require an armed owner from initial pool/handle creation through setup, registration, outer-body execution and finalization transfer. A guard created only by the cleanup helper leaves earlier error/drop paths uncovered. Cancel the actual outer caller and post-creation/pre-registration setup in tests; a direct test of the close/finalize utility does not cover those boundaries. Keep unknown backend identities explicit while retaining the real pool or handle; dropping a Tokio JoinHandle or standard Child is not abort/join or kill/reap.
  - Audit every enclosing test/quality supervisor, not only the qualified inner runner. Fallible PID-record publication after Popen, wait interruption and timeout must not discard the actual CLI owner; PID/argv/wall-time files are diagnostics, not an acknowledged ownership transfer. Prefer an already-qualified external owner over adding another supervisor layer, and separately qualify its client/identity/result bindings.
  - Process ownership: test cancellation between spawn and identity registration, and between reap and identity retirement, not only during a blocking wait. Use owned scheduling controls and harmless signal interception, never forced PID reuse. Require identity reservation through the last group signal; distinguish a joined leader from completed foreground descendants, because both missed cancellation and stale numeric signaling can survive ordinary happy-path/signal tests.
-@@ -78,6 +78,7 @@ Use this as a scan order, not a rigid form:
+@@ -78,12 +78,14 @@ Use this as a scan order, not a rigid form:
  - Tests: meaningful assertions, regression cases, integration boundaries, fixtures, flaky timing.
  - Test entrypoint compatibility: when adding ignore/opt-in markers or renaming fixture variables, audit existing CI, task-runner and shell callers. Execute their real selectors with an intentionally invalid prerequisite and require the intended test failure, not exit zero with all cases ignored. Keep new DB regressions explicitly selected in the provisioned DB job; successful manual commands using both old and new variables can mask a broken existing invocation.
  - Trace renamed fixture environment variables into the unchanged CI invocation and rerun with only its documented inputs. A convenience wrapper that sets both old and new names can hide a broken compatibility seam; ensure newly ignored DB regression targets are explicitly selected in the real DB job, not merely compiled by general tests.
@@ -46,7 +46,14 @@ index d6a2493..5c3b36b 100644
  - Proof-helper integrity: treat opt-in evidence acceptance as executable product behavior, not a debug invariant. Use explicit failures instead of removable Python `assert` decisions, and pair valid controls with reason-specific failures under normal/-O/-OO. Validate a case before publishing it as accepted; distinguish a cumulative partial-case journal and raw diagnostic output from successful completion of the whole proof command.
  - Replay representative real logs before allocating a database to validate a new log parser. Rust `--nocapture` can interleave CLI diagnostics or successful child-PID records between a named test header and its final `ok`; require the unique expected identities, final counts and process exit, rather than either summary-only acceptance or adjacent-line assumptions. When a raw log embeds nested negative-control suites, reconcile only the recorded outer qualified test IDs, associate each outer header with its completion status, and identify the outer final summary. Preserve nested failures as expected-control evidence instead of counting them as outer failures or inflating the outer test population.
  - For owned Podman fixtures, force local mode and cached images, journal the create-time CID, and verify identity/labels before first start/client use as well as before deletion. Bind the data mount to the recorded volume name, creation metadata and mountpoint; a later status refusal cannot undo earlier use of a mismatched resource. Validate tmpfs through both `HostConfig.Tmpfs` and `Mounts`: an empty `Mounts` list alone does not disprove a configured tmpfs. Preserve receipts through setup/cleanup failures, use fresh evidence directories, and never retry cleanup after an ownership or approval block.
-@@ -95,6 +96,8 @@ Use this as a scan order, not a rigid form:
+ - Fixture credential disposal: after verified exact resource absence, require the generated owner/runtime credential maps to be absent too; private permissions alone do not establish disposal. On incomplete/refused cleanup retain necessary recoverable credentials with an explicit reason. Reconcile historical remnants additively without rewriting sealed resource receipts.
+ - Keep ownership authority distinct from resource-policy acceptance where the frozen fixture contract permits exact-ID cleanup of a proved-owned but policy-invalid resource. Compare new retirement requirements with inherited wrong-image/resource-policy assertions before accepting a design; otherwise adding image agreement at cleanup can contradict the positive recovery contract. Require a prospective, explicitly reviewed oracle supersession if the authority contract truly changes, not both incompatible expectations.
+ - Ownership refusal classification: validate required response envelopes, mappings and identity fields before dereference, and classify missing/malformed proof as explicit refusal rather than a generic exception eligible for cleanup retry. Audit every consuming call path: a guarded pre-start observation does not validate a fresh raw post-start response. Inject malformed evidence at each meaningful lifecycle point, allow later responses to be healthy, and require no subsequent client use, retry or deletion after refusal. Pair genuine nonzero transport failure and proved-resource-absence controls so the repair neither masks errors nor silently disables safe recovery.
++- Guard vs consumer parsing: when a policy check and the tool it protects read the same document, probe a case-variant duplicate of a guarded key (`APPROVAL_POLICY` beside `approval_policy`) and a case-variant key of the wrong type that breaks only the guard's decode. Go `encoding/json` and BurntSushi/toml match struct fields case-insensitively (toml in random map order) while renderers and real tools read exact keys; a guard that returns "no failures" when its decode fails is a bypass. Require exact-key decoding, an allowlist of known keys, and fail-closed decode errors (86bcm901j review 1: one extra `"ARGS":1` passed the gate; real Codex ran `danger-full-access` in 154 of 200 gate passes).
+ - Readiness budgets: reject nonfinite and negative numeric timeouts before resource or persistent-state claims, including direct API callers. Preserve zero only when it is the documented immediate-timeout control; use bounded fake-clock regressions rather than launching an infinite wait.
+ - Maintainability: simple design, local conventions, names, duplication, abstraction fit.
+ - Docs and rollout: README, changelog, feature flags, migration notes, operator impact.
+@@ -95,6 +97,8 @@ Use this as a scan order, not a rigid form:
  - Safety metadata: compare explicit canonical status/date/approval fields across human-readable docs and machine manifests. Keyword presence is not agreement; retain full-entrypoint negative fixtures where one field contradicts the manifest while unrelated caveats remain, and reject missing/duplicate/conflicting fields without treating the checker as release authorization.
  - Execution provenance: require contemporaneous complete consumed-source hashes or a dirty patch before and after dirty-tree runs. HEAD plus a dirty flag or one wrapper hash does not bind every helper, test or workflow; inherit only demonstrated unchanged bytes/consumed fields rather than fabricating retrospective attestation.
  - Scanner coverage: inspect the exact resolved packaged implementation and its actual revision-range, pagination and merge filtering. Full checkout depth only supplies history; it does not prove all relevant commits were scanned, and a mutable-tag source snapshot does not authenticate the future packaged runtime.
@@ -56,7 +63,7 @@ index d6a2493..5c3b36b 100644
  
  ## Output Format
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..7becc98 100644
+index c509c64..b3c48ba 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,11 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -97,7 +104,7 @@ index c509c64..7becc98 100644
  Inspect whether the real test runner binds immutable tracked HEAD before proposing dirty-worktree test commands. Specify a verified owner-supported way to admit both candidate identities or block execution; do not loosen provenance or present an untested checkpoint recipe as established practice.
  
 -Preserve already-passing regression tests as regression coverage. Do not fabricate a RED observation or alter correct behavior merely to force failure; distinguish new-feature RED from later adversarial/falsification checks. Avoid planning future behaviors into the first implementation before their own vertical tests.
-+Preserve already-passing regression tests as regression coverage, but keep story-time pins (a file "unchanged since base", an exact file count) out of a suite's default run: make them run only when named, like live tests, because after the merge they fail the next story that touches those files. Do not fabricate a RED observation or alter correct behavior merely to force failure; distinguish new-feature RED from later adversarial/falsification checks. Avoid planning future behaviors into the first implementation before their own vertical tests.
++Preserve already-passing regression tests as regression coverage, but keep story-time pins (a file "unchanged since base", an exact file count) out of a suite's default run: make them run only when named, like live tests, because after the merge they fail the next story that touches those files. Before a regression AC ("existing suites pass"), run those suites on the base and record the tally in the plan, because an older pin can already fail there. Do not fabricate a RED observation or alter correct behavior merely to force failure; distinguish new-feature RED from later adversarial/falsification checks. Avoid planning future behaviors into the first implementation before their own vertical tests.
  
  **Done:** every ready task is executable without guessed paths, code omissions, undefined approval-dependent values or hidden host/container assumptions.
  
@@ -137,10 +144,10 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..fb80617 100644
+index f2d882d..f9cd0c0 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
-@@ -31,7 +31,9 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
+@@ -31,12 +31,18 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
  
  - A critical permission/identity/data-integrity guard needs targeted sensitivity proof.
  - A changed caller/refactor may bypass an assertion, or a supposed regression test
@@ -151,7 +158,16 @@ index f2d882d..fb80617 100644
  - Later-added coverage has not demonstrated the relevant failure, or project policy
    explicitly requires mutation. Do not automatically duplicate an adequate observed
    RED/GREEN or run an exhaustive campaign on every small fix.
-@@ -86,11 +88,17 @@ itself prove that the entire test is worthless.
+ - Select claim → mutation → expected diagnostic/controls before executing, within
+   the primary workflow's remaining allowance. Missing required proof stays blocked.
++  A mutant that can loop or fork (a hook that execs itself) sends output to a file,
++  not `$(…)`, because an orphan holding the pipe hangs the run. Kill strays with a
++  `pkill -f` pattern that can't match its own command line (`[g]h-copy/`), because
++  Claude Code runs each command inside `bash -c '<command>'`.
+ 
+ ## The Core Rule
+ 
+@@ -86,11 +92,17 @@ itself prove that the entire test is worthless.
     deliberate defense-in-depth guard is an equivalent mutant that no black-box
     test can kill. Mutate all sites (or the shared helper) together, and record
     the single-site variants as documented equivalents. Give an unexpected
@@ -172,7 +188,7 @@ index f2d882d..fb80617 100644
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -99,10 +107,15 @@ itself prove that the entire test is worthless.
+@@ -99,10 +111,15 @@ itself prove that the entire test is worthless.
     leave mutated source behind. After a mid-cycle crash, compare the working
     file with the saved green bytes and restore before launching another probe.
  4. **Require the intended failure for every mutation.** A nonzero exit from
@@ -190,7 +206,7 @@ index f2d882d..fb80617 100644
     test identities and require unaffected positive controls to remain green;
     a matching message elsewhere in the combined log is not that method's kill.
     Classify an unexpected survivor only after checking equivalent guards and
-@@ -155,7 +168,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,7 +172,11 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -203,7 +219,7 @@ index f2d882d..fb80617 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -197,7 +214,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +218,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -215,7 +231,7 @@ index f2d882d..fb80617 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -290,7 +310,42 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +314,42 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
