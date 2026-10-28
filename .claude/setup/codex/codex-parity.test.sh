@@ -970,6 +970,9 @@ ac9_codex_commit_identity_no_trailer() {
   need "$SRC/.codex/hooks/codex-hooks.sh" && need "$SRC/.claude/setup/codex/config.managed.toml" || return 1
   probe_ready || return 1
   probe_home_setup || return 1
+  # Justin's two real identities (as CLAUDE.md names them): git-commit-rules makes Codex stop on any other
+  printf '[user]\n\tname = Justin\n\temail = issajustin04@gmail.com\n[includeIf "gitdir:~/Leorna/"]\n\tpath = ~/.gitconfig-leorna\n' >"$H/.gitconfig"
+  printf '[user]\n\tname = Justin Issa\n\temail = justin@leorna.com\n' >"$H/.gitconfig-leorna"
   r1="$H/Leorna/repo1"; r2="$H/proj/repo2"; mkdir -p "$r1" "$r2"
   inhome git -C "$r1" init -q -b main; inhome git -C "$r2" init -q -b main
   probe_begin "$H" || return 1; trap probe_end EXIT
@@ -977,8 +980,8 @@ ac9_codex_commit_identity_no_trailer() {
     --add-dir "$r2" -c 'approval_policy="never"' || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
   l1=$(inhome git -C "$r1" log -1 --format='%an <%ae>%n%B' 2>/dev/null); l2=$(inhome git -C "$r2" log -1 --format='%an <%ae>%n%B' 2>/dev/null)
   echo "# repo1: $(head -1 <<<"$l1")   repo2: $(head -1 <<<"$l2")"
-  [ "$(head -1 <<<"$l1")" = "Test Leorna <leorna@example.test>" ] || fail "repo1 not authored by the Leorna identity" || return 1
-  [ "$(head -1 <<<"$l2")" = "Test Personal <personal@example.test>" ] || fail "repo2 not authored by the personal identity" || return 1
+  [ "$(head -1 <<<"$l1")" = "Justin Issa <justin@leorna.com>" ] || { cat "$S/run/last.txt"; fail "repo1 not authored by the Leorna identity"; return 1; }
+  [ "$(head -1 <<<"$l2")" = "Justin <issajustin04@gmail.com>" ] || { cat "$S/run/last.txt"; fail "repo2 not authored by the personal identity"; return 1; }
   ! grep -qi 'co-authored-by' <<<"$l1$l2" || fail "a commit carries a Co-authored-by line" || return 1
   done_ok
 }
