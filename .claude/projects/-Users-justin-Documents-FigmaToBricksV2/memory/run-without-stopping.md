@@ -1,6 +1,6 @@
 ---
 name: run-without-stopping
-description: "Build straight through without check-ins (2026-10-07); when away (2026-10-27) take the recommended options, tell lost agents to research, resume limit-stopped agents, full report on return"
+description: "Build straight through without check-ins (2026-10-07); when away take the recommended options, tell lost agents to research, resume limit-stopped agents, full report on return; one agent at a time (2026-10-28)"
 metadata:
   type: feedback
 ---
@@ -16,3 +16,5 @@ pile up what each one needs in HANDOFF and hand it over at the end. Still never 
 memory (CLAUDE.md): work that needs a sample the user hasn't sent is listed as waiting, not guessed. See [[user-workflow]].
 
 On 2026-10-27, going to sleep mid-pipeline (label-floor), he said: keep it running whatever happens, "go with the recommended stuff" for anything the agents ask, and if an agent is lost, "tell it to go do research and try to implement its best"; resume anything a usage limit stopped; "When I'm back, I want a full report on everything that happened." So while he's away: take every ⭐/recommended option without asking, tell stuck agents to research and implement their best (recorded as rulings), resume rate-limited agents with SendMessage, run the pipeline through to the merge, and keep a running log for the full report.
+
+On 2026-10-28, after the usage limit kept stopping four parallel agents, he said: "I only need you to run one agent at a time, okay? Just run one agent." So run the pipeline one agent at a time (queue the rest), until he says otherwise; this replaces the 2026-10-27 "run all four".
