@@ -8,6 +8,7 @@ Role: fresh pipeline finisher. Justin authorized continuation through merge, one
 - Expected original HEAD `d6fff71aa4b131f113285d3748a079ccc7ce7c5e`; original base `f46f8a20dec5558ce85b246db48ef83c13ca72d2`.
 - Main folder `/home/justin/Documents/FigmaToBricksV2`; last known main `70d54085ea034190909846de77ce9e4e57587b1e`. Read-only main access in this assignment.
 - Acceptance: AC1–AC13 from `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/plan-approved.md`, amended by the worktree plan's `Changed by review fix pass 1` and `Changed by review fix pass 2`. AC13 is live paste check 3bo.
+- Original-head verifier and blind auditor both returned clean. The orchestrator ran ac-check: `READY FOR THE USER: 12 of 13 ACs proven on d6fff71; live ACs owed to the user: AC13`. This accepts only that original head; it does not cover your rebased commit.
 - Current plan `docs/plans/2026-10-26-headline-marker.md`; ledger `.superpowers/sdd/2026-10-26-headline-marker/progress.md`; feature section of `docs/HANDOFF.md`.
 - Your evidence only: `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/finisher-rebase/`. Create fresh task-owned scratch with `mktemp -d` and `mkdir` without `-p`; never reuse another role's scratch.
 - You are not alone in the codebase. Other chats own slider-autoplay and photo-hotspots. Do not touch their worktrees, evidence, processes or edits, and never revert anyone else's changes. Preserve both sides' meaning during integration.

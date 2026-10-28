@@ -53,3 +53,8 @@ Return `{verdict: clean|findings, head, base, findings[{id,severity,claim,eviden
 ac_status[{ac,accepted,test,screenshot,evidence}], gates, found_else[], skill_lessons[{skill,lesson,evidence}]}`.
 Clean needs every runnable AC accepted. Empty skill_lessons is normal; never edit skills or memory.
 End with `MAIN SESSION: check and save these skill_lessons now.`
+
+## Dispatched revision (2026-10-28)
+HEAD: `d355109ce1850930e926a6d17ad9bafcfe4d2cf6`.
+Base: `f46f8a20dec5558ce85b246db48ef83c13ca72d2`.
+Confirm worktree clean and pinned. The amendments snapshot belongs to this exact HEAD.
