@@ -31,5 +31,5 @@ probe_exec() { # probe_exec <fake home> <cwd> <out dir> <prompt> [extra codex ar
   local h=$1 cwd=$2 out=$3 prompt=$4; shift 4
   HOME="$h" CODEX_HOME="$PROBE" TMPDIR="$(dirname "$h")/tmp" codex exec --ephemeral --skip-git-repo-check \
     --dangerously-bypass-hook-trust -m "$PROBE_MODEL" -c "model_reasoning_effort=\"$PROBE_EFFORT\"" \
-    -C "$cwd" --json -o "$out/last.txt" "$@" "$prompt" >"$out/events.jsonl" 2>"$out/stderr.txt"
-}
+    -C "$cwd" --json -o "$out/last.txt" "$@" "$prompt" </dev/null >"$out/events.jsonl" 2>"$out/stderr.txt"
+}   # </dev/null: with a non-terminal stdin, codex exec waits to read more prompt from it
