@@ -209,7 +209,7 @@ ac4_guard_denies_hook_bypass() {
     "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x git commit -m x"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
-  for c in "git commit -am x" "git commit -m '-n'" "git commit -m \"-n\"" "git commit -m 'docs: --no-verify'" \
+  for c in "git commit -am x" "git commit -m '-n'" "git commit -m \"-n\"" "git commit -am '-n'" "git commit -m 'docs: --no-verify'" \
     "git commit -m x -m 'never use -n'" "git commit -F msg.txt" "git commit -C HEAD" \
     "git push -n" "git push --dry-run origin main" "git clean -n" "git clean -nd" "git config --global core.hooksPath" \
     "git config --global core.hooksPath ~/.claude/githooks" "git config --global core.hooksPath '~/.claude/githooks'" \
@@ -426,8 +426,10 @@ ac10_commit_msg_blocks_ai_coauthor() {
   passed "a human co-author" || return 1
   commit_in "$p" --allow-empty -m "docs: how Claude and Codex share hooks" -m "Claude reads CLAUDE.md; GPT does not."
   passed "the word Claude in the subject and body" || return 1
-  commit_in "$p" --allow-empty -m "fix: x" -m "Co-authored-by: Egypt Smith <e@example.test>"
-  passed "a human whose name holds 'gpt'" || return 1
+  commit_in "$p" --allow-empty -m "fix: x" -m "Co-authored-by: Amy Mcclaude <amy@example.test>"
+  passed "a human whose name ends in an AI's name" || return 1
+  commit_in "$p" --allow-empty -m "fix: x" -m "Co-authored-by: Claudette Smith <cs@example.test>"
+  passed "a human whose name starts with an AI's name" || return 1
   printf 'a\nCo-authored-by: Claude <noreply@anthropic.com>\nb\n' >"$p/doc.txt"; ing git -C "$p" add doc.txt
   nohooks -C "$p" commit -q -m "doc (fixture)"
   printf 'a\nCo-authored-by: Claude <noreply@anthropic.com>\nb changed\n' >"$p/doc.txt"; ing git -C "$p" add doc.txt
@@ -499,9 +501,10 @@ ac11_githooks_chain_repo_hooks() {
   # a repo whose hooks folder is the githooks folder itself: no self-exec loop
   cp -R "$GHOOKS" "$S/gh-copy"; gitrepo "$H/code/loop" || return 1
   rm -rf "$H/code/loop/.git/hooks"; ln -s "$S/gh-copy" "$H/code/loop/.git/hooks"
-  out=$(cd "$H/code/loop" && limit 30 env HOME="$H" GIT_CONFIG_GLOBAL="$S/gitconfig" GIT_CONFIG_NOSYSTEM=1 \
-    git -c core.hooksPath="$S/gh-copy" commit -q --allow-empty -m loop 2>&1); rc=$?
-  pkill -f "$S/gh-copy/" 2>/dev/null   # a looping hook outlives the git the alarm killed
+  # output to a file, not $(…): a looping hook outlives the git the alarm kills and would hold a pipe open
+  (cd "$H/code/loop" && limit 30 env HOME="$H" GIT_CONFIG_GLOBAL="$S/gitconfig" GIT_CONFIG_NOSYSTEM=1 \
+    git -c core.hooksPath="$S/gh-copy" commit -q --allow-empty -m loop >"$S/loop.out" 2>&1); rc=$?
+  pkill -f "$H/code/loop/" 2>/dev/null; pkill -f "$S/gh-copy/" 2>/dev/null; out=$(cat "$S/loop.out")
   [ "$rc" = 0 ] || fail "hooks folder = githooks folder: rc=$rc (142 = looped until the alarm) out=$out" || return 1
   echo "# hooks folder = githooks folder: no self-exec"
   done_ok
