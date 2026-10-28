@@ -51,7 +51,7 @@ This setup lives on both machines through the private repo `Just-In-N-Out/claude
 
 **Pushing Leorna repos goes through the Leorna account, never the personal one:**
 - The remotes use the SSH alias `git@github-leorna:LeornaAI/<repo>.git`, which signs in with `~/.ssh/id_ed25519_leorna` (`~/.ssh/config`).
-- If that key is locked (it has a passphrase, so `Permission denied (publickey)`), push over HTTPS through `gh`, whose active account is `Justin-Leorna`: `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push https://github.com/LeornaAI/<repo>.git <refspec>`. Then fetch back the same way so `origin/<branch>` updates.
+- If that key is locked (it has a passphrase, so `Permission denied (publickey)`), push over HTTPS through `gh`, whose active account is `Justin-Leorna`: `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push https://github.com/LeornaAI/<repo>.git <refspec>`, with the URL written out, never in a shell variable (`git-guard.sh` denies that). Then fetch back the same way so `origin/<branch>` updates.
 - Never run `gh auth switch`, and never change a remote URL or credential helper (`git-guard.sh` denies them; it allows the HTTPS fallback above). If a push would go as `Just-In-N-Out`, stop and tell the user.
 - Leorna's own rules still apply: push or open a PR only when the user says "push" or "make a PR", and never merge (`git-guard.sh` asks before any Leorna push, so approve only after he said it). The `leorna` and `git-commit-rules` skills hold the details.
 
