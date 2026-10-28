@@ -390,31 +390,41 @@ class Guard:
         return os.path.normpath(os.path.join(cwd, p))
 
     # ---- shell ----
-    def scan(self, cmd, cwd, depth):
+    def scan(self, cmd, cwd, depth, shenv=None):
+        """shenv: the shell's variables (export NAME=value, or a bare NAME=value), inherited by a nested
+        shell; a subshell's changes to them and to the folder end at its ')'."""
+        shenv = {} if shenv is None else dict(shenv)
         toks, subs = tokens(cmd)
-        saved = []  # the folder at each open '(': a cd inside a subshell ends with it
+        saved = []
         for seg in segments(toks):
             if seg == "(":
-                saved.append(cwd)
+                saved.append((cwd, dict(shenv)))
             elif seg == ")":
-                cwd = saved.pop() if saved else cwd
+                if saved:
+                    cwd, env = saved.pop()
+                    shenv.clear()
+                    shenv.update(env)
             else:
-                cwd = self.segment(seg, cwd, depth, subs)
+                cwd = self.segment(seg, cwd, depth, subs, shenv)
         return cwd
 
-    def segment(self, w, cwd, depth, subs):
+    def segment(self, w, cwd, depth, subs, shenv):
         if any(PH in t for t in w):  # the substitutions and heredoc scripts in it run first, here
             for t in w:
                 for m in PH_RE.finditer(t):
                     k = int(m.group(1))
                     if depth < 3 and k < len(subs) and subs[k]:
-                        self.scan(subs[k], cwd, depth + 1)
+                        self.scan(subs[k], cwd, depth + 1, shenv)
             w = [PH_RE.sub("", t) for t in w]
         env, i = split_prefix(w)
         for k in env:
             if k in IDENTITY_ENV:
                 self.deny("identity")
         cmd = w[i:]
+        if not cmd:  # export NAME=value, or a bare NAME=value: it stays for the later segments
+            shenv.update(env)
+        env = dict(shenv, **env)
+        self.env_rules(env)
         if not cmd:
             return cwd
         name = os.path.basename(cmd[0])
@@ -424,16 +434,28 @@ class Guard:
                 return self.home or cwd
             return self.path(args[0], cwd)
         if name == "git":
-            self.git(cmd[1:], cwd, env)
+            self.git(cmd[1:], cwd)
         elif name == "gh":
             self.gh(cmd[1:])
-        elif depth < 3 and name in ("bash", "sh", "zsh", "dash", "ksh"):
+        elif depth < 3 and name in SHELLS:
             script = shell_c(cmd[1:])
             if script is not None:
-                self.scan(script, cwd, depth + 1)
+                self.scan(script, cwd, depth + 1, env)
         elif depth < 3 and name == "eval":
-            self.scan(" ".join(cmd[1:]), cwd, depth + 1)
+            self.scan(" ".join(cmd[1:]), cwd, depth + 1, env)
         return cwd
+
+    def env_rules(self, env):
+        """git config set through the environment (GIT_CONFIG_COUNT/KEY_n/VALUE_n, GIT_CONFIG_PARAMETERS) reaches
+        every git command run with it, so it is judged on every segment: no Leorna fallback exception here."""
+        for k, v, how in self.env_configs(env):
+            kl = lower(k)
+            if kl in IDENTITY_KEYS:
+                self.deny("identity")
+            elif kl == "core.hookspath":
+                self.deny("hooks")
+            elif kl.startswith("credential."):
+                self.deny("credential")
 
     # ---- gh ----
     def gh(self, args):
@@ -442,7 +464,7 @@ class Guard:
             self.deny("gh")
 
     # ---- git ----
-    def git(self, args, cwd, env):
+    def git(self, args, cwd):
         configs = []  # (key, value, how)
         folder = cwd
         dirs = []
@@ -476,7 +498,6 @@ class Guard:
                 break
         sub = args[i] if i < len(args) else ""
         rest = args[i + 1:]
-        configs += self.env_configs(env)
         for k, v, how in configs:
             kl = lower(k)
             if kl in IDENTITY_KEYS:

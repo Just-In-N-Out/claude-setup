@@ -142,7 +142,9 @@ ac1_guard_denies_identity_override() {
     "git config user.email x@example.test" "git config --global user.email x@example.test" \
     "git config --local user.name X" "git config set --global user.email x@example.test" \
     "git config --global --replace-all user.email x@example.test" "git config --unset user.email" \
-    "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=user.email GIT_CONFIG_VALUE_0=x@example.test git commit -m x"; do
+    "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=user.email GIT_CONFIG_VALUE_0=x@example.test git commit -m x" \
+    "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=user.email GIT_CONFIG_VALUE_0=x@example.test; git commit -m x" \
+    "GIT_CONFIG_PARAMETERS=\"'user.email'='x@example.test'\" bash -c 'git commit -m x'"; do
     expect deny 'commit identity' "$c" || return 1
   done
   expect deny 'commit identity' "git -c user.email=x@example.test commit -m x" "$H/work" agent-1 || return 1
@@ -184,7 +186,9 @@ ac3_guard_denies_remote_and_credential_changes() {
     "git config set --global credential.helper store" "git config unset --local credential.helper" \
     "git config --system credential.https://github.com.username x" \
     "git -c credential.helper=store fetch origin" "git -c credential.helper= push origin main" \
-    "git -c credential.https://github.com.helper=store push origin main"; do
+    "git -c credential.https://github.com.helper=store push origin main" \
+    "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=credential.helper GIT_CONFIG_VALUE_0=store; git fetch origin" \
+    "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=credential.helper 'GIT_CONFIG_VALUE_0=!gh auth git-credential' && git push https://github.com/LeornaAI/leorna-client.git feat/x"; do
     expect deny 'credential helper' "$c" || return 1
   done
   for c in "git remote -v" "git remote add upstream https://github.com/x/y.git" "git config --get-regexp credential" \
@@ -209,12 +213,24 @@ ac4_guard_denies_hook_bypass() {
     "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x git commit -m x"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
+  # the git config environment counts wherever it is set: export, a ; chain, or a nested shell that inherits it
+  for c in "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/dev/null && git commit -m x" \
+    "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/dev/null; git commit -m x" \
+    "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/dev/null bash -c 'git commit -m x'" \
+    "env GIT_CONFIG_PARAMETERS=\"'core.hooksPath'=''\" sh -c \"git commit -m x\"" \
+    "export GIT_CONFIG_PARAMETERS=\"'core.hooksPath'=''\"; git commit -m x" \
+    "export GIT_CONFIG_COUNT=1; export GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=; git commit -m x" \
+    "export GIT_CONFIG_COUNT=1; bash -c 'GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x'"; do
+    expect deny 'skip the git hooks' "$c" || return 1
+  done
   for c in "git commit -am x" "git commit -m '-n'" "git commit -m \"-n\"" "git commit -am '-n'" "git commit -m 'docs: --no-verify'" \
     "git commit -m x -m 'never use -n'" "git commit -F msg.txt" "git commit -C HEAD" \
     "git push -n" "git push --dry-run origin main" "git clean -n" "git clean -nd" "git config --global core.hooksPath" \
     "git config --global core.hooksPath ~/.claude/githooks" "git config --global core.hooksPath '~/.claude/githooks'" \
     "git config --global core.hooksPath \"\$HOME/.claude/githooks\"" "git config --global core.hooksPath \${HOME}/.claude/githooks/" \
-    "git config --global core.hooksPath $H/.claude/githooks"; do
+    "git config --global core.hooksPath $H/.claude/githooks" \
+    "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=color.ui GIT_CONFIG_VALUE_0=always; git log -1" \
+    "(export GIT_CONFIG_COUNT=1); GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x git commit -m x"; do
     expect none '' "$c" || return 1
   done
   done_ok
