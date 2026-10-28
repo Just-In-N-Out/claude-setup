@@ -173,3 +173,4 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Info (documented limit): credential names matching no pattern word (`DB_CREDS`, `PASSKEY`) still pass rule S; gitleaks is the backstop.
 - Info (by design): the plain-name rule still quotes a human-style secret pasted into a name (letter words, ≤3 digits each); random tokens are covered.
 - Process: agents twice ran `codex --version` once with the real HOME (no `~/.codex` change found); briefs now say throwaway homes even for `--version`.
+- P4 (86bcm901w fixer 2): three more migration 23 constraints have no test: `pack_number >= 1` (DB5), the pack name length CHECK (DB6), `pack_lineages` → `tenants` FK (DB7). Each mutant survives all 435 tests in store/web/dbcheck; app code also guards these (defence in depth). Receipt `evidence/86bcm901w/fixer2/found-else-constraints-8a50486.txt`.
