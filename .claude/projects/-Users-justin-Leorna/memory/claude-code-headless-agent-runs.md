@@ -1,0 +1,36 @@
+---
+name: claude-code-headless-agent-runs
+description: "How an agent proves a Claude Code project agent really ran, headless with claude -p (2.1.312), and the gotchas; Justin asked for live agent checks to be run for him"
+metadata:
+  node_type: memory
+  type: reference
+  originSessionId: 6a5cb64a-ef1e-4913-b9a6-0011ebf1675e
+  modified: 2026-10-28T22:55:28.721Z
+---
+
+Proven 2026-10-28 by the 86bcm901a AC5 runner (receipts: `~/.hermes/plans/leorna/evidence/86bcm901a/ac5-live/run-agent/`). Justin asked "can't you run it?" instead of doing the live AC by hand.
+
+**The run:** start `claude -p '<prompt>'` from the sample project's folder with:
+- `--setting-sources project --output-format stream-json --verbose --permission-prompts none --strict-mcp-config`;
+- `--allowedTools` / `--disallowedTools` set as needed;
+- the parent session's variables unset with `env -u CLAUDECODE -u CLAUDE_CODE_SESSION_ID -u CLAUDE_CODE_MESSAGING_SOCKET -u CLAUDE_CODE_MESSAGING_TOKEN -u CLAUDE_EFFORT …`.
+
+Never use `--dangerously-skip-permissions`. `claude agents` lists background sessions, not agent definitions.
+
+**The proof, all in the stream:**
+- **Agent list:** the opening `system`/`init` event's `agents` field.
+- **The named agent really ran:**
+  - a `tool_use` with `name: "Agent"` and `input.subagent_type` set to the agent's name (init lists the tool as `Task`, but the calls say `Agent`);
+  - the `system`/`task_started` event;
+  - that call's `tool_result`, whose `tool_use_result` has `agentType` and `resolvedModel`.
+- **The agent's own report:** the text of that `tool_result`.
+
+**Gotchas:**
+- **`--allowedTools` isn't a strict Bash allowlist.** Commands Claude Code treats as read-only (`grep`, `head`, `git ls-files`) are auto-approved anyway, and `Bash(git diff:*)` doesn't match `git -C <dir> diff`.
+- **`~/.claude/CLAUDE.md` still loads under `--setting-sources project`.**
+  - Agents under test then append the pipeline's `verdict`/`ac_status`/`skill_lessons`/`MAIN SESSION` lines. Read past them when judging a report's format.
+  - The session transcripts under `~/.claude/projects/` carry Justin's email addresses, so never share them as evidence.
+
+**How to apply:** when a planned `(live)` AC is really a CLI or agent run that a headless session can prove from its own event stream, offer to have an agent run it for Justin, with receipts. Keep interactive checks (a native menu, a live publish → Sync) for him.
+
+Related: [[codex-cli-offline-checks]]

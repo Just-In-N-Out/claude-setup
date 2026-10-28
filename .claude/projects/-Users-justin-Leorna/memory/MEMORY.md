@@ -6,3 +6,4 @@
 - [Disk full recovery](disk-full-recovery.md) — what to clear when the disk fills mid-pipeline (go clean -cache is safe; scratch/Docker need Justin)
 - [Codex CLI offline checks](codex-cli-offline-checks.md) — prompt-input/mcp get/doctor/sandbox/execpolicy and `claude doctor` need no login; fake homes outside $TMPDIR; codex exec needs a probe home
 - [Update main before a Leorna worktree](leorna-update-main-before-worktree.md) — ff the main checkout's main too, not just the worktree
+- [Claude Code headless agent runs](claude-code-headless-agent-runs.md) — prove a project agent ran via claude -p stream-json; allowlist and CLAUDE.md gotchas
