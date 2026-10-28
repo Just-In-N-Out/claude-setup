@@ -4,8 +4,26 @@
 
 ## Start here: handoff of 2026-10-19 (the previous chat was cleared; read this first)
 
-**Current build `2026-10-28.1`.** Builds 21.13–22.9 were recorded only in `docs/HANDOFF.md` (their agents
+**Current build `2026-10-28.2`.** Builds 21.13–22.9 were recorded only in `docs/HANDOFF.md` (their agents
 couldn't write this file; their queued edits are in `~/.hermes/plans/figma-to-bricks/*-claude-md-pending.md`).
+- **Bigger words in pills and Learn more links (28.2, label-floor):**
+  - Justin's rule (2026-10-26): pill words at least **13px**, linked Learn-more-style words at least **15px**, on
+    every screen. Already-large words and other text stay drawn. The element carries the minimum; its Figma style
+    class is unchanged, so re-pasting creates no label-class import conflict (`understand/min-font.ts`).
+  - Menus, footer link lists and current menu items keep their size. A chosen tab stays drawn only with at least two
+    other clickable options (Justin's "Clickable = tabs"); a blog-card category beside plain meta words grows.
+    Matching two-option switches stay drawn; remaining unconfirmed rulings are in HANDOFF.
+  - **Space gives way:** an exactly filled row gives up gaps equally, at most half each screen's step, then widens
+    into column room (through hugging rows to an ancestor that can decide); without room its words stay drawn and
+    the panel names it. The plan counts grown words and planned widths/gaps (`understand/give-way.ts`).
+  - Integrated with flip-cards: a front keeps its label/link minimums when its card link moves to the back
+    (`linksHere`); hover copies keep minimum/give-way fields and flip variant keys. Button styling lives in
+    `style/button.ts`; `style.ts` is 293 lines.
+  - Both independent AC reports and ac-check accept the 14 automated ACs; **AC9 / paste check 3bm is owed**. Copy
+    typed FAQ answers before emptying Home; convert Home Page Final with header/footer ticks as on the site,
+    paste/save, restore answers/save; regenerate code signatures and Purge All. Check tags 13px / LEARN MORE 15px
+    and no Import-classes dialog. GRO links outside tight rows remain open. Details: HANDOFF and label-floor's
+    plan/ledger; evidence `~/.hermes/plans/figma-to-bricks/evidence/label-floor/`.
 - **Flip cards (28.1, flip-cards):**
   - **Justin's ask** (bdryswi.com's home page, "Our Services"): six photo cards in a 3-column grid that turn over like
     a playing card under the mouse, showing a back with the title, a sentence and a button to the service's page; a
@@ -1054,6 +1072,14 @@ run Bricks → Settings → Custom code → **Regenerate code signatures**; afte
     no mouse events headless.
   - **Deferred:** a divided row of flip cards; Safari's composited children; Figma text properties; a flip on click.
   - Not yet pasted by the user (3bn).
+- **Label minimums and tight-row space** (build `2026-10-28.2`, label-floor, Full pipeline): see "Start here" and
+  HANDOFF "Bigger words in pills and Learn more links"; plan/ledger `docs/plans/2026-10-26-label-floor*`.
+  - `understand/min-font.ts` marks 13px pill words / 15px linked go-words or arrow labels, with menu/current-item and
+    clickable-tab controls; `give-way.ts` plans gap giving, widening and the drawn-size fallback with notes.
+  - `style/min-font.ts` and `style/button.ts` apply element sizes; `adapt/{least,layout,shapes,hero-pair}.ts` and
+    `adapt/rules/space.ts` share planned grown widths/gaps. `overlay.ts` retains marks; flip fronts use `linksHere`.
+  - Verifier and blind auditor proved the 14 automated ACs; ac-check passed with **AC9 / paste check 3bm** owed.
+    Existing GRO links outside tight rows, the wrapped-row gap approximation and fixture-file splits remain in HANDOFF.
 - **Paste checks:**
   - **WordPress pictures** (2026-10-07, build .19): the user's run worked; photos and icons show on the saved page.
     The descriptions list is not yet tried.
@@ -1134,6 +1160,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A size change made after Figma must reach the layout plan as a planned width.** Shares and row shapes read
+  drawn widths unless the earlier pass records growth (`IRNode.giveWay`, `grownAlong`, `plannedWidth`, `rowGapAt`).
+  Counting grown words only in `least()` can make laptops wrap rows tablets keep (label-floor, GRO's hero).
 - **Git, with a private GitHub copy** (user, 2026-10-19; this replaces the earlier "no git"):
   `github.com/Just-In-N-Out/FigmaToBricksV2`, branch `main`. The main folder stays on `main`, and it's the copy Figma
   loads (`manifest.json` → `dist/`).
@@ -1433,6 +1462,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     a sticky header (100) and pop-ups (9999).
 - **Layout:** one Container per section, 1440px max with gutters 64 / 36 / 16. Bricks default breakpoints:
   tablet_portrait ≤991, mobile_landscape ≤767, mobile_portrait ≤478.
+  - **A tight row gives way to bigger words** (Justin, 2026-10-26, "Space gives way"): an exactly filled row gives
+    equal gaps up to half each screen's step, then widens into column room; nested hugging rows hand growth to an
+    ancestor that can decide. Without room its words keep drawn sizes and the panel names the row
+    (`understand/give-way.ts`). From design width through laptops and tablets where the row stays on one line.
   - **Designs wider than 1440 keep the 1440 Container** (confirmed 2026-10-06, after M1b): their content is squeezed to
     1312 on desktop rather than kept at the design's width. A Figma wrapper's own max width still widens its Container.
   - **Boxes drawn the same height stay the same height** (user, 2026-10-20, "1A 2A 3B" then "4A"; build
@@ -1524,9 +1557,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **A sideways label beside a heading** turns upright, a small line above it (where its row stacks; where the row
     keeps its line, the label keeps running beside it, M2b).
 - **Website rules** (2026-10-02: HTML5 semantics, WCAG 2.2 AA, search and speed basics; the user means technical
-  rules, not laws). The look never changes to follow one:
-  - **The design breaks a rule** (faint text, small targets, tiny text): never recolour or resize. The design-check
-    findings list is **left out of v2** (2026-10-06).
+  rules, not laws). The design stays as drawn except for the two label minimums below:
+  - **The design breaks a rule** (faint text, small targets, tiny text): never recolour or resize, except Justin's
+    two minimums (2026-10-26, Sai Varsha's "too tiny"): pill words at least 13px, Learn-more-style links at least 15px
+    (`understand/min-font.ts`, exclusions in HANDOFF). Other text stays drawn. The design-check findings list is
+    **left out of v2** (2026-10-06).
   - **Extras Figma never shows** only where mouse and touch users can't see them: keyboard focus ring
     (`:focus-visible`), reduced motion, a pause control that appears on Tab.
   - **Bricks owns** `<main>`, the skip link and the page header/footer (its templates): the plugin never emits `main`,

@@ -17,6 +17,9 @@ CLAUDE.md wins. Read Start here, relevant Where things stand/HANDOFF/ledger and 
 - Separate actual runtime/exits/evidence receipts per gate. Long browser gates tracked background+wait; orphan f2b Chrome roots only PPID1, never living siblings. Source pins before/after mutations/gates; original failed captures remain diagnostic.
 
 ## User decisions (ask before reversing)
+
+- **Label minimums:** pill words≥13px, linked Learn-more/go/arrow labels≥15px on element; classes unchanged, other text drawn. Menus/footer/current items unchanged; tabs need2+ clickable alternatives; plain-meta category grows.
+- **Tight rows give way:** equal gap give≤half per tier, then widen into column room through hugging ancestors, else drawn size+note incl copies. Plan grown widths/gaps; pushes stay drawn. Q6–Q9, switches and other rulings: HANDOFF.
 - Native interactions; exact Figma hover/phone tap and scroll-in motion; invent none except CTAs/photo cards/marquees/flip cards. CTA Button≥32px/painted pill (not3+tags/menu): no Figma hover, lift3px/fade/cursor, drawn colours. Photo cards2+/zigzags zoom110%, cards fade; drop Figma hover. No glare/shine/glass (reverses Oct19); sole showcase pseudo-element=zoom copy.
 - Marquee rightward60px/s, one line, keeps moving under mouse. Tab originals only; copies tabindex−1 preserve href/style/index+pause/resume. Sideways frames scroll/snap, arrows glide. Navigate→frame slug, Home…→/.
 - Flip Q1A–5A(unconfirmed): only annotated `flip`(+left/up/down) hover→Change to back; else unchanged/noted. One-cell grid Front/live Back, taller face, unmarked width, card link→back; CSS hover/Tab/tap, less motion 50ms swap; judged by front (faceOf); never showcase/hover layer/CTA. Nested links test-only, never refused; list PDF beats enclosing link.
