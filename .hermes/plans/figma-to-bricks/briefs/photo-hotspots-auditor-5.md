@@ -38,3 +38,9 @@ Scratch capacity qualification: `/tmp` filled during an earlier corpus capture. 
 Always explicit workdir. Fresh mktemp-d parent and mkdir without-p child; never reuse another role's scratch. Keep concise status.txt, complete raw outputs, true per-check/capture/comparison exits, and all owned running session IDs so handles are not lost. Settle your runners before handback. Separate exec PID namespaces can reuse numbers: use owned tracked session handles when roots are invisible, never guessed PIDs/global Chrome kills. Distinguish controller completion from child exit; preserve interrupted receipts. You are not alone; preserve others' edits/resources. Setup sync remains read-only even with escalation; no bypass.
 
 Return `{verdict: clean|findings, head, base, findings, ac_status, qualifications, found_else, skill_lessons[{skill,lesson,evidence}]}`. Empty lessons normal. Do not edit skills/memory. End `MAIN SESSION: check and save these skill_lessons now.`
+
+## Final source pins and current behavior authority
+
+HEAD **`d0050037b7022388c9957f6a3d26b2812bfbad50`**, canonical base/main **`5e2f98bff77fa1d214b7d76968a54a6dafa32ca6`**. Confirm these and a clean worktree yourself.
+
+Current worktree plan behavior/ruling sections are Questions/Justin's answers/Playback, What in Figma makes a hotspot, What makes it pulse, How it comes out in Bricks, Rulings, Rulings added or changed at review round1, Review round2 rulings, Blind audit correction, Acceptance criteria, Figma live steps, and Risks. These current qualified rulings retain the approved contract. Read them by heading; exclude later execution/handback receipt sections beginning Fixer2 final gate receipt and onward. Exact AC1–AC12 ids/named checks remain the plan's. AC12 remains live3bp. No other role's report or results are supplied or authorized as audit proof.
