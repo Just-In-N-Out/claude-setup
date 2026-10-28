@@ -61,9 +61,21 @@ check_claude_md() {
   [ -z "$bad" ] || stop "CLAUDE.md files are never committed (CLAUDE.md, Git & GitHub Privacy):$bad. Unstage with git restore --staged <path> and list it in .git/info/exclude."
 }
 check_trailer() {
-  # the message as git will keep it: stop at the scissors line (commit -v puts the diff below it), skip # comments
+  # the message as git will keep it: skip # comments, and stop at git's own verbose cut (commit -v): its scissors
+  # line, then "# Do not modify or remove the line above.", its other comment lines and the diff. A scissors line
+  # typed into the message (-m) is kept by git, and so is anything below it.
   [ -f "${1:-}" ] || return 0
-  if awk '/^# -+ >8 -+$/ { exit } /^#/ { next } { print tolower($0) }' "$1" \
+  if awk '{ l[NR] = $0 }
+      END {
+        for (i = 1; i <= NR; i++) {
+          if (l[i] ~ /^# -+ >8 -+$/ && l[i + 1] == "# Do not modify or remove the line above.") {
+            j = i + 2
+            while (j <= NR && l[j] ~ /^#/) j++
+            if (j <= NR && index(l[j], "diff --git ") == 1) exit
+          }
+          if (l[i] !~ /^#/) print tolower(l[i])
+        }
+      }' "$1" \
     | grep -qE "^[[:space:]]*co-authored-by:(.*[^[:alpha:]])?($AI_NAMES)([^[:alpha:]]|$)"; then
     stop "no Co-authored-by line naming an AI (CLAUDE.md, Git & GitHub Privacy). Remove that trailer and commit again."
   fi

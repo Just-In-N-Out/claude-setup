@@ -519,6 +519,13 @@ ac10_commit_msg_blocks_ai_coauthor() {
   refused commit-msg 'AI' "personal: the exact Claude Code trailer" || return 1
   commit_in "$p" --allow-empty -m "fix: x" -m "Co-authored-by: GPT-4o <x@example.test>"
   refused commit-msg 'AI' "personal: GPT-4o" || return 1
+  # a scissors line typed into the message (git keeps it, and the trailer below it): only git's own verbose cut,
+  # followed by its explanation and the diff, ends the message
+  commit_in "$p" --allow-empty -m fix -m "# ------------------------ >8 ------------------------" \
+    -m "Co-authored-by: Claude <noreply@anthropic.com>"
+  refused commit-msg 'AI' "personal: a scissors line given with -m above the trailer" || return 1
+  commit_in "$p" --allow-empty -m $'fix\n\n# ------------------------ >8 ------------------------\n# Do not modify or remove the line above.\n# Everything below it will be ignored.\nCo-authored-by: Claude <noreply@anthropic.com>'
+  refused commit-msg 'AI' "personal: git's cut text given with -m, with no diff below it" || return 1
   printf 'fix: y\n\nCo-authored-by: Claude <noreply@anthropic.com>\n' >"$S/msg.txt"
   commit_in "$p" --allow-empty -F "$S/msg.txt"; refused commit-msg 'AI' "personal -F" || return 1
   commit_in "$p" --allow-empty -m "fix: z"; passed "personal: plain message" || return 1
