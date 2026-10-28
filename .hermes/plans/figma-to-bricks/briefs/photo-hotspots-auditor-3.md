@@ -7,7 +7,7 @@ Fresh blind auditor: independently prove every criterion from plan and source. C
 - Immutable plan `/home/justin/.hermes/plans/figma-to-bricks/evidence/photo-hotspots/plan-approved.md`.
 - Its recorded later acceptance changes: only Justin's answers, Rulings, review-ruling sections and later changed-ruling/execution-profile sections in worktree `docs/plans/2026-10-26-photo-hotspots.md`. Read those plan decisions, not role reports. AC12's live check was renumbered from 3bo to **3bp**.
 - Worktree `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/photo-hotspots`, branch `worktree-photo-hotspots`.
-- Candidate **`9236571fb5976514f5e6412df2e67ef3e230b232`**, clean. Confirm exact HEAD and fully clean `git status --porcelain --untracked-files=all` first.
+- Candidate **`e5ca6a261d6d9380d371e3c20d3c6266e3ac6850`**, clean. Confirm exact HEAD and fully clean `git status --porcelain --untracked-files=all` first.
 - Base **`5e2f98bff77fa1d214b7d76968a54a6dafa32ca6`**. Confirm merge-base HEAD main and report unexpected movement.
 - Own evidence `/home/justin/.hermes/plans/figma-to-bricks/evidence/photo-hotspots/auditor/round-3/`; never read or modify its parent's other role/round files. Every cited receipt must be your own execution inside this directory.
 

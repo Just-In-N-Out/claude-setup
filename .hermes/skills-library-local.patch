@@ -137,7 +137,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..47a2f43 100644
+index f2d882d..fb80617 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,7 +31,9 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -215,7 +215,7 @@ index f2d882d..47a2f43 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -290,7 +310,38 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +310,42 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -232,6 +232,10 @@ index f2d882d..47a2f43 100644
 +    swap an unreachable call (e.g. `EvalSymlinks` on a fresh temp dir) for a
 +    failing stub, apply the same swap to old (RED) and fixed (GREEN) code, and
 +    run only the failure subtest; no test hook in production (9019).
++    A consistency tripwire (a test-side list that must match production) is often
++    masked when production is broken, because an earlier assertion fails first:
++    overlay the legitimate future change instead (the tripwire must fire) and pair it
++    with a control that also updates the list (the test must pass) (901a M3c/M3d).
 +12. **A path-traversal test can be unable to fail.** When the guarded path is
 +    `<dir>/<prefix>.<id>`, an `../../evil` id makes `<prefix>.` a missing
 +    folder, so the OS refuses the path even with the sanitizer deleted. Create
