@@ -9,7 +9,8 @@
 # into the parent's context, so that last line is the main session's reminder.
 # A report with lessons in the structured form a script can read reliably
 # (skill_lessons: [{…}] or "skill_lessons": [ {…} ], also across lines) but no
-# enforce anywhere is sent back once too, asking for enforce on each lesson.
+# enforce anywhere is sent back once too, asking for enforce on each lesson; a
+# list quoted as an example (`…`, "…", '…') doesn't count.
 # Markdown-only lessons aren't parsed, and an empty list passes. Both checks
 # share the once-only mechanisms below, so an agent is sent back at most once.
 #
@@ -40,11 +41,14 @@ IFS=$'\x1f' read -r event active agent_type has_message tool session agent <<<"$
 for t in $SKIP; do [[ $agent_type == "$t" ]] && exit 0; done
 
 has_lessons() { grep -qiE 'skill_lessons|skill lessons' <<<"$1"; }
-# a non-empty structured list (JSON, or an unquoted key) with no enforce anywhere in the report
+# a non-empty structured list (JSON, or an unquoted key) with no enforce anywhere in the report. A list quoted in
+# `…`, "…" or '…' is an example, not the report's own, so it doesn't count; a ``` fence's content still does, and
+# so does a JSON "skill_lessons" key (its quotes are kept apart first). An apostrophe inside a word isn't a quote.
 missing_enforce() {
   local one
-  one=$(tr '\n' ' ' <<<"$1")
-  grep -qE 'skill_lessons"?[[:space:]]*[:=][[:space:]]*\[[[:space:]]*\{' <<<"$one" && ! grep -qi 'enforce' <<<"$one"
+  one=$(tr '\n' ' ' <<<" $1 " | sed -E 's/```[[:alnum:]_-]*//g; s/"skill_lessons"/skill_lessons/g; s/`[^`]*`//g; s/"[^"]*"//g' \
+    | sed -E "s/([^[:alnum:]])'[^']*'([^[:alnum:]])/\1\2/g")
+  grep -qE 'skill_lessons[[:space:]]*[:=][[:space:]]*\[[[:space:]]*\{' <<<"$one" && ! grep -qi 'enforce' <<<"$1"
 }
 
 reason="Before you finish: your final report has no skill lessons. Restate your complete final report \

@@ -931,31 +931,38 @@ ac16_lessons_gate_sends_back_missing_enforce_once() {
     out=$(printf '%s' "$j" | HOME="$H" SUBAGENT_LESSONS_STATE_DIR="$S/lessons" bash "$LGATE"); rc=$?
   }
   enforce_reason() { grep -qi 'no enforce field' <<<"$1" && grep -qF "$LAST" <<<"$1"; }
-  local no1 no2 no3 yes1 yes2
+  local no1 no2 no3 no4 no5 yes1 yes2
   no1=$'status: ready\nskill_lessons: [{skill: leorna, lesson: "x", evidence: "y"}]\n'"$LAST"
   no2=$'{"status": "ready", "skill_lessons": [ {"skill": "leorna", "lesson": "x", "evidence": "y"} ]}'
   no3=$'status: ready\nskill_lessons:\n  [\n    {"skill": "git-commit-rules", "lesson": "x",\n     "evidence": "y"}\n  ]\n'"$LAST"
+  # a real list after prose with apostrophes and quotes, and one inside a ``` fence, still count
+  no4=$'I didn\'t learn much; it\'s "done".\nskill_lessons: [{skill: leorna, lesson: "x", evidence: "y"}]\n'"$LAST"
+  no5=$'status: ready\n```json\n{"skill_lessons": [{"skill": "leorna", "lesson": "x", "evidence": "y"}]}\n```\n'"$LAST"
   yes1=$'status: ready\nskill_lessons: [{skill: leorna, lesson: "x", evidence: "y", enforce: none}]\n'"$LAST"
   yes2=$'{"skill_lessons": [{"skill": "leorna", "lesson": "x", "evidence": "y", "enforce": "git hook: pre-commit refuses x"}]}'
-  for m in "$no1" "$no2" "$no3"; do
+  for m in "$no1" "$no2" "$no3" "$no4" "$no5"; do
     stopcall "$m"
     r=$(jq -r 'select(.decision == "block") | .reason' <<<"$out" 2>/dev/null)
     [ "$rc" = 0 ] && enforce_reason "$r" || fail "SubagentStop: lessons without enforce not sent back: [$m] out=$out" || return 1
     stopcall "$m" true
     [ "$rc" = 0 ] && [ -z "$out" ] || fail "SubagentStop with stop_hook_active=true was sent back again: $out" || return 1
   done
-  echo "# SubagentStop: three structured forms without enforce sent back once"
+  echo "# SubagentStop: five structured forms without enforce sent back once"
   handcall "$no1" h1; [ "$(decision)" = deny ] && enforce_reason "$(reason)" || fail "first handback not denied: $out" || return 1
   handcall "$no1" h1; [ "$rc" = 0 ] && [ -z "$out" ] || fail "second handback from the same agent was denied: $out" || return 1
   handcall "$no2" h2; [ "$(decision)" = deny ] || fail "another agent's first handback not denied: $out" || return 1
   echo "# SubagentHandback: denied once per agent"
   for m in "$yes1" "$yes2" $'Report.\nskill_lessons: []\n'"$LAST" \
     $'Report.\n\n## Skill lessons\n- leorna: x (evidence: y)\n'"$LAST" \
-    $'Report.\n\n## Skill lessons\n- skill: leorna\n  lesson: x\n'"$LAST"; do
+    $'Report.\n\n## Skill lessons\n- skill: leorna\n  lesson: x\n'"$LAST" \
+    $'Report.\nskill_lessons: []\nThe old shape was `skill_lessons: [{skill: x, lesson: y}]`.\n'"$LAST" \
+    $'Report.\nskill_lessons: []\nThe old brief said "skill_lessons: [{skill: x, lesson: y}]".\n'"$LAST" \
+    $'Report.\nskill_lessons: []\nIts example was \'skill_lessons: [{skill: x, lesson: y}]\' then.\n'"$LAST" \
+    $'Report.\nskill_lessons: []\nThe gate matches `{"skill_lessons": [{"skill": "x"}]}`.\n'"$LAST"; do
     stopcall "$m"; [ "$rc" = 0 ] && [ -z "$out" ] || fail "SubagentStop sent back a passing report [$m]: $out" || return 1
     handcall "$m" "h-$RANDOM"; [ "$rc" = 0 ] && [ -z "$out" ] || fail "SubagentHandback denied a passing report [$m]: $out" || return 1
   done
-  echo "# with enforce, an empty list, or markdown-only lessons: passes"
+  echo "# with enforce, an empty list (also beside a quoted example), or markdown-only lessons: passes"
   stopcall "Done, no lessons at all."
   r=$(jq -r '.reason // ""' <<<"$out"); grep -qF "$SHAPE" <<<"$r" && ! grep -qi 'no enforce field' <<<"$r" \
     || fail "a report with no lessons did not get the no-lessons reason: $out" || return 1
