@@ -59,67 +59,130 @@ ASSIGN_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 KEYWORDS = {"if", "then", "else", "elif", "do", "while", "until", "{", "!", "fi", "done", "}"}
 
 
-HEREDOC_RE = re.compile(r"<<(-?)[ \t]*(?:'([^'\n]*)'|\"([^\"\n]*)\"|\\?([^\s;&|()<>'\"]+))")
+HEREDOC_RE = re.compile(r"<<(-?)[ \t]*(?:'([^'\n]*)'|\"([^\"\n]*)\"|(\\?)([^\s;&|()<>'\"]+))")
 SHELLS = {"bash", "sh", "zsh", "dash", "ksh"}
+PH = "\x01"  # a placeholder for a substitution or heredoc body: PH <index into subs> PH
+PH_RE = re.compile("\x01([0-9]+)\x01")
 
 
-def normalize(cmd):
-    """One quote-aware pass, so shlex sees one line: unquoted newlines become ';', backslash-newline
-    joins lines, unquoted '#' comments are dropped. A heredoc body is read as commands only when a shell
-    or eval reads it (bash <<EOF, cat <<EOF | sh): each of its lines becomes its own segment, with its
-    quote characters blanked (an apostrophe in a body must not open a quote). Any other heredoc body
-    (cat > f <<EOF, python3 - <<EOF, git commit -F - <<EOF) is data and is dropped."""
-    out, q, i, n, pending, prev, start = [], None, 0, len(cmd), [], " ", 0
+def placeholder(subs, body):
+    subs.append(body)
+    return "%s%d%s" % (PH, len(subs) - 1, PH)
+
+
+def substitution(cmd, i):
+    """cmd[i] opens $( or a backtick: (the body, the index just after its end)."""
+    if cmd[i] == "`":
+        j, n = i + 1, len(cmd)
+        while j < n and cmd[j] != "`":
+            j += 2 if cmd[j] == "\\" else 1
+        return re.sub(r"\\([\\`$])", r"\1", cmd[i + 1:j]), j + 1
+    end = normalize(cmd, i + 2, [], closer=True)[1]
+    return cmd[i + 2:end], end + 1
+
+
+def dq_part(cmd, i, subs, closes=True):
+    """Double-quoted text from cmd[i] (just after the opening quote): (text, index of the closing quote or
+    len(cmd)). Each $(…) or `…` inside becomes a placeholder and its body goes to subs."""
+    out, n = [], len(cmd)
     while i < n:
         c = cmd[i]
-        if q:
-            if q == '"' and c == "\\" and i + 1 < n:
-                out.append(cmd[i:i + 2])
-                i += 2
-                continue
-            if c == q:
-                q = None
+        if c == "\\" and i + 1 < n:
+            out.append(cmd[i:i + 2])
+            i += 2
+        elif closes and c == '"':
+            return "".join(out), i
+        elif cmd.startswith("$(", i) or c == "`":
+            body, i = substitution(cmd, i)
+            out.append(placeholder(subs, body))
+        else:
             out.append(c)
-            prev = c
             i += 1
+    return "".join(out), n
+
+
+def heredoc_body(cmd, i, delim, dash):
+    """The lines from cmd[i] up to the delimiter line: (body, the index after the delimiter line)."""
+    lines, n = [], len(cmd)
+    while i < n:
+        j = cmd.find("\n", i)
+        line = cmd[i:n if j < 0 else j]
+        i = n if j < 0 else j + 1
+        if (line.lstrip("\t") if dash else line) == delim:
+            break
+        lines.append(line)
+    return "\n".join(lines), i
+
+
+def normalize(cmd, i=0, subs=None, closer=False):
+    """One quote-aware pass, so shlex sees one line: (text, end).
+    - Unquoted newlines become ';', backslash-newline joins lines, unquoted '#' comments are dropped.
+    - $(…) and `…` (unquoted or inside double quotes) run their body: each becomes a placeholder and the
+      body goes to subs, to be scanned as a script of its own where the placeholder sits.
+    - A heredoc body is a script only when a shell or eval reads it (bash <<EOF, cat <<EOF | sh); any other
+      heredoc body (cat > f <<EOF, python3 - <<EOF, git commit -F - <<EOF) is data, except the $(…) and
+      `…` in it when its delimiter is unquoted. Its placeholder sits where the << was.
+    - With closer, the pass stops at the ')' that closes a $( and end is that index."""
+    subs = [] if subs is None else subs
+    out, n, pending, prev, start, depth = [], len(cmd), [], " ", 0, 0
+    while i < n:
+        c = cmd[i]
+        if c == "'":
+            j = cmd.find("'", i + 1)
+            j = n - 1 if j < 0 else j
+            out.append(cmd[i:j + 1])
+            prev = "'"
+            i = j + 1
+            continue
+        if c == '"':
+            text, end = dq_part(cmd, i + 1, subs)
+            out.append('"' + text + ('"' if end < n else ""))
+            prev = '"'
+            i = end + 1
             continue
         if c == "\\":
-            if cmd.startswith("\\\n", i):
-                i += 2
-                continue
-            out.append(cmd[i:i + 2])
-            prev = "x"
+            if not cmd.startswith("\\\n", i):
+                out.append(cmd[i:i + 2])
+                prev = "x"
             i += 2
             continue
-        if c in "'\"":
-            q = c
-        elif c == "#" and prev in " \t\n;&|()":
+        if cmd.startswith("$(", i) or c == "`":
+            body, i = substitution(cmd, i)
+            out.append(placeholder(subs, body))
+            prev = "x"
+            continue
+        if c == "#" and prev in " \t\n;&|()":
             j = cmd.find("\n", i)
             i = n if j < 0 else j
             continue
-        elif c == "<" and cmd.startswith("<<", i) and not cmd.startswith("<<<", i):
+        if cmd.startswith("<<", i) and not cmd.startswith("<<<", i):
             m = HEREDOC_RE.match(cmd, i)
             if m:
-                delim = next(g for g in m.groups()[1:] if g is not None)
-                pending.append((delim, m.group(1) == "-", start))
-                out.append(" ")
+                out.append(" " + placeholder(subs, "") + " ")
+                pending.append((m, start, len(subs) - 1))
                 prev = " "
                 i = m.end()
                 continue
-        elif c == "\n":
+        if closer and c in "()":
+            if c == "(":
+                depth += 1
+            elif depth == 0:
+                return "".join(out), i
+            else:
+                depth -= 1
+        if c == "\n":
             out.append(" ; ")
             prev = ";"
             i += 1
-            for delim, dash, at in pending:
-                script = feeds_shell("".join(out[at:]))
-                while i < n:
-                    j = cmd.find("\n", i)
-                    line = cmd[i:n if j < 0 else j]
-                    i = n if j < 0 else j + 1
-                    if (line.lstrip("\t") if dash else line) == delim:
-                        break
-                    if script:
-                        out.append(" " + re.sub(r"[\\'\"`]", " ", line) + " ; ")
+            for m, at, k in pending:
+                delim = next(g for g in (m.group(2), m.group(3), m.group(5)) if g is not None)
+                body, i = heredoc_body(cmd, i, delim, m.group(1) == "-")
+                if feeds_shell("".join(out[at:])):
+                    subs[k] = body
+                elif m.group(5) is not None and not m.group(4):  # unquoted delimiter: $(…) and `…` still run
+                    inner = []
+                    dq_part(body, 0, inner, closes=False)
+                    subs[k] = "\n".join(inner)
             pending = []
             start = len(out)
             continue
@@ -128,7 +191,7 @@ def normalize(cmd):
         i += 1
         if c in ";&|()":
             start = len(out)
-    return "".join(out)
+    return "".join(out), n
 
 
 def feeds_shell(text):
@@ -161,10 +224,14 @@ def lex(s):
 
 
 def tokens(cmd):
+    """(tokens, subs) of a command line; subs[k] is the script behind placeholder k."""
+    cmd = cmd.replace(PH, " ")
+    subs = []
     try:
-        return lex(normalize(cmd))
+        return lex(normalize(cmd, 0, subs)[0]), subs
     except ValueError:  # an unbalanced quote: drop the quote characters and read it again
-        return lex(normalize(re.sub(r"[\\'\"]", "", cmd)))
+        subs = []
+        return lex(normalize(re.sub(r"[\\'\"]", "", cmd), 0, subs)[0]), subs
 
 
 def op_kind(tok):
@@ -184,6 +251,8 @@ def segments(tokens):
     for t in tokens:
         if skip:
             skip = False
+            if PH in t:  # a redirect target's substitution still runs
+                seg.append("".join(m.group(0) for m in PH_RE.finditer(t)))
             continue
         k = op_kind(t)
         if k == "sep":
@@ -317,11 +386,19 @@ class Guard:
 
     # ---- shell ----
     def scan(self, cmd, cwd, depth):
-        for seg in segments(tokens(cmd)):
-            cwd = self.segment(seg, cwd, depth)
+        toks, subs = tokens(cmd)
+        for seg in segments(toks):
+            cwd = self.segment(seg, cwd, depth, subs)
         return cwd
 
-    def segment(self, w, cwd, depth):
+    def segment(self, w, cwd, depth, subs):
+        if any(PH in t for t in w):  # the substitutions and heredoc scripts in it run first, here
+            for t in w:
+                for m in PH_RE.finditer(t):
+                    k = int(m.group(1))
+                    if depth < 3 and k < len(subs) and subs[k]:
+                        self.scan(subs[k], cwd, depth + 1)
+            w = [PH_RE.sub("", t) for t in w]
         env, i = split_prefix(w)
         for k in env:
             if k in IDENTITY_ENV:

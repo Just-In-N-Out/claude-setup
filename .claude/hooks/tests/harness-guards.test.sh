@@ -301,6 +301,19 @@ ac7_guard_parses_shell_forms() {
     expect none '' "$c" || return 1
   done
   expect none '' $'cat > .claude/settings.json <<\'EOF\'\n{"permissions": {"deny": ["Bash(git push --force:*)", "Bash(git push -f:*)"]}}\nEOF' "$H/Leorna/x" || return 1
+  # command substitution runs its body: $(…) and `…`, unquoted or inside double quotes, also in a data heredoc
+  # whose delimiter is unquoted; inside single quotes, an escaped \$, or a quoted heredoc it is text
+  for c in "echo \"\$(git push $nv)\"" "out=\"\$(git commit $nv -m x)\"" "echo \"\`git push $nv\`\"" \
+    "echo \`git commit $nv -m x\`" "x=\`git push $nv\`" "git commit -m \"\$(git commit $nv -m y)\"" \
+    "git commit -m \"fix: \$(echo x; git push $nv)\" -q" $'cat <<EOF\nlog: $(git push '"$nv"$')\nEOF' \
+    "echo \"a \$(echo \"b \$(git push $nv)\")\""; do
+    expect deny 'skip the git hooks' "$c" || return 1
+  done
+  for c in "echo '\$(git push $nv)'" "echo \"\\\$(git push $nv)\"" $'cat <<\'EOF\'\nlog: $(git push '"$nv"$')\nEOF' \
+    $'git commit -m "$(cat <<\'EOF\'\nfix(guard): deny git push '"$nv"$' (it\'s a bypass)\nEOF\n)" -q'; do
+    expect none '' "$c" || return 1
+  done
+  expect ask 'Leorna push' "cd ~/Leorna/x && echo \"\$(git push origin feat/x)\"" || return 1
   # a git command only inside a quoted message, a heredoc body or a comment is not a git command
   for c in "git commit -m 'run git commit $nv later'" "echo 'git push $nv'" "echo hi # git commit $nv" \
     "git commit -m \"\$(cat <<'EOF'"$'\nfix: don\'t skip hooks\n\nCo-Authored-By: someone\nEOF\n)"' \
