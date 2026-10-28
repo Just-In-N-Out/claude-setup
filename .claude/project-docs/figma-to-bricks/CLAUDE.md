@@ -348,6 +348,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - **A card that is a link** puts the link on its back; the back's own links stay live.
     - **As tall as its taller face** on every screen, never growing on hover; laid out as the same card unmarked.
     - **Never a product card, a hover layer or a CTA** itself (its back's Buttons are CTAs).
+  - **Sliders that play by themselves** (user: the source page's hero, as a general feature; build `2026-10-28.3`,
+    HANDOFF "A slider that plays by itself"): only a component instance whose variants change to one another After
+    delay, in a loop back to its own variant, becomes Bricks' Slider (Nestable), one slide per variant, pausing under
+    the mouse. Bricks' interval is Figma's wait plus the change's duration (Justin confirmed); arrows and dots drawn in
+    every slide become the slider's own.
   - **Logo marquees** (user, 2026-10-19: "this marquee … the logo needs to be going from left to right"; build
     `2026-10-19.14`): a row of logos or short words running past the box that clips it moves in an endless loop.
     - **Toward the right**, at medium speed (60px a second, v1's).
@@ -368,6 +373,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
       - it shows the hand;
       - it stands still for reduced motion.
     - **Colours stay as drawn** (the user chose "Only the lift" over a darker shade or the sample's grey).
+    - **Words on one line, Figma's width** (2026-10-21, W1A, E1A): a button's words stay on one line as Figma draws
+      them, and above phones a button keeps Figma's width.
   - **Product and team cards** (user, 2026-10-19: "when it comes to media but not every media, just media when
     displaying a product or a team, I want this animation", their Bricks sample `reference/bricks/staff-card.json`;
     build `2026-10-19.9`):
@@ -517,6 +524,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **Section intro on phones:** heading, text, then its button. Photo cards keep their photo's shape, two per row
     where they can't slide. Stacked items' divider padding evens out; a row split by its items' own divider lines
     loses the lines once it wraps, goes two per row or stacks, its sides even out and the space becomes its gap.
+  - **Side padding** (2026-10-21, P1A P2B: "padding must look clean on any layout"): upright phones get a box's own
+    side padding back after a sideways phone's squeeze; a tablet's squeeze carries on to sideways phones.
   - **Hero, photo beside text:** text, then photo, then buttons.
   - **Hero without a photo** (a colour or gradient behind its words; the user left it to what looks nicer,
     2026-10-07): its buttons stay where they are, right under its words, full width. No buttons band.
@@ -639,8 +648,18 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - a linked card, or a heading's own row, keeps its heading.
 - **The site's own header and footer** (user, 2026-10-20: "if there is already a header and footer in bricks then the
   plugin will remove the header and footer"):
-  - **Asking:** two ticks in the panel, remembered in the Figma file (chosen over asking on every Convert).
-  - **The room under the site's header:** measured by a script (chosen over Figma's header height).
+  - **Asking:** two ticks in the panel (chosen over asking on every Convert), remembered per WordPress site since
+    2026-10-23 (a file that never saved ticks takes the connected site's). Every Convert says where the header and
+    footer went, in red when the paste may double the site's.
+  - **The room under the site's header:** measured by a script (chosen over Figma's header height). The site's header
+    is `position: fixed` (Bricks' Sticky header too), so it takes no room of its own.
+- **Fonts not on Google Fonts** (user, 2026-10-20: "the fonts will be put on WordPress automatically like a drag
+  them"): files, a folder or a .zip dropped on the panel go to WordPress's own Font Library (`wp/v2/font-families`),
+  chosen over Bricks Custom Fonts (admin-ajax only, not in REST) plus a helper plugin. It needs an Administrator's
+  Application Password. Every paste carries `@font-face` rules for the design's families, after Google's.
+- **Videos** (user, 2026-10-19: "just do what v1 did"): an address in the layer name (`Video: https://…`) or an Open
+  link to a video makes Bricks' Video, muted and looping where it is a background behind words. Without one, the
+  panel finds the file in WordPress Media by its exact name, or the user chooses it in the panel's Videos box.
 - **Lists a visitor searches and filters** (user, 2026-10-19): "In the page" (the plugin pastes every row and a small
   script; no WordPress post type) and "Spreadsheet in the panel" (a CSV per list, kept in the Figma file).
   - **On tablets and phones** (user, 2026-10-19, screenshots at 990/766/477: "whenever there's a panel, it looks clean
@@ -660,11 +679,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **Phone sliders are copies (2026-10-06):** the desktop row hides on phones and a phone-only Slider Nestable holds
   copies of its items, as the user builds them by hand ("Card-Desktop" / "Card - Mobile").
 - **Kept features:** WordPress upload (REST + Application Password), AVIF/WebP, Figma Motion, Google Fonts, text
-  styles → global classes, debug file. **Deferred** (2026-10-06): tablet designs (a third drawn width; desktop + phone
-  drawn designs are done, 2026-10-08), audit list, masks and maps (video plays since 2026-10-19; a captured Google map
-  is live since 2026-10-20, at the user's request), timer/state machines (logo marquees are
-  built, 2026-10-19, but not v1's Figma timer loops that slide logos). Don't build
-  these unless the user asks.
+  styles → global classes, debug file. **Deferred** (2026-10-06): tablet designs (a third drawn width), the audit
+  list, masks, and v1's Figma timer loops that slide logos. Don't build these unless the user asks.
 - **Unverified in Bricks:** anything not in `reference/bricks/`. Check it with a paste-and-copy-back round trip first:
   custom tags, `_attributes`, `_cssId`, `link.newTab`, `display: contents`, `%root%` in custom CSS, Block
   `tag: "nav"`, Image `altText`/`loading`, and `aria-*`/`fetchpriority`/`tabindex` attributes.
