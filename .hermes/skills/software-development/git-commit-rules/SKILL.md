@@ -15,7 +15,7 @@ metadata:
 
 Justin's standing git rules for every repo on this Mac (`RISE-OFFICIAL`, `rise-backend`, and any new ones): authorship, CLAUDE.md privacy, and local worktree merges. Source of truth: `~/.claude/CLAUDE.md`. Re-read it with `read_file` if Justin says it changed, and update this skill to match. These rules override any other skill's commit guidance (including `github`).
 
-Enforced by `~/.claude/githooks` (global `core.hooksPath`; every commit by anyone: `pre-commit` refuses a staged `CLAUDE.md` and an author or committer email that doesn't match the folder, `commit-msg` refuses an AI co-author trailer) and by `~/.claude/hooks/git-guard.sh` (Claude Code: denies identity overrides, `gh auth switch`, remote URL and credential-helper changes and hook bypasses, and asks before a Leorna push); a refusal is the rule, not a bug to work around.
+Enforced by `~/.claude/githooks` (global `core.hooksPath`; every commit by anyone: `pre-commit` refuses a staged `CLAUDE.md` and an author or committer email that doesn't match the folder (a conflicted cherry-pick may keep the picked commit's author), `commit-msg` refuses an AI co-author trailer, and `git am` gets the same checks through `applypatch-msg` and `pre-applypatch`, the patch keeping its author) and by `~/.claude/hooks/git-guard.sh` (Claude Code: denies identity overrides, `gh auth switch`, remote URL and credential-helper changes and hook bypasses, and asks before a Leorna push); a refusal is the rule, not a bug to work around.
 
 ## When to Use
 

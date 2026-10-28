@@ -7,6 +7,8 @@
 #                     and committer email by folder (a conflicted cherry-pick may keep the picked commit's author)
 #   pre-merge-commit  author and committer email by folder
 #   commit-msg        no Co-authored-by trailer naming an AI
+#   git am: applypatch-msg checks the trailer as commit-msg does; pre-applypatch checks CLAUDE.md as pre-commit
+#                     does, and the committer email (the patch keeps its author)
 # Then it hands over to the repo's own <git common dir>/hooks/<name> when that is executable
 # (exec: same args, same stdin, its exit code), because a global hooks path hides the repo's own hooks.
 # push-to-checkout with no own hook does git's default updateInstead update itself, because any
@@ -89,7 +91,8 @@ if ! scratch; then
   case $name in
     pre-commit) check_claude_md; check_identity AUTHOR COMMITTER ;;
     pre-merge-commit) check_identity AUTHOR COMMITTER ;;
-    commit-msg) check_trailer "${1:-}" ;;
+    commit-msg | applypatch-msg) check_trailer "${1:-}" ;;
+    pre-applypatch) check_claude_md; check_identity COMMITTER ;;
   esac
 fi
 own="$common/hooks/$name"

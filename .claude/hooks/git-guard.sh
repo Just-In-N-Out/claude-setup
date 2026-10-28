@@ -451,9 +451,24 @@ def shell_c(args):
     return args[i] if has_c and i < len(args) else None
 
 
-def no_verify(a):
-    """--no-verify, or an abbreviation git accepts for it (--no-veri, --no-verif)."""
-    return len(a) >= 9 and "--no-verify".startswith(a)
+def no_verify(a, shortest=9):
+    """--no-verify, or an abbreviation git accepts for it: --no-veri on (--no-ver is also --no-verbose there),
+    --no-v for git am (shortest=6), which has no --verbose."""
+    return len(a) >= shortest and "--no-verify".startswith(a)
+
+
+def am_n(rest):
+    """git am -n (its --no-verify), also in a short cluster (-3n); -C, -p and -S take the rest as their value."""
+    for a in rest:
+        if a == "--":
+            break
+        if a.startswith("-") and not a.startswith("--"):
+            for c in a[1:]:
+                if c == "n":
+                    return True
+                if c in "CpS":
+                    break
+    return False
 
 
 def long_opts(negatable, plain=""):
@@ -704,7 +719,7 @@ class Guard:
                     self.deny("credential")
         if sub == "commit":
             self.commit(rest)
-        elif any(no_verify(a) for a in rest):
+        elif any(no_verify(a, 6 if sub == "am" else 9) for a in rest) or (sub == "am" and am_n(rest)):
             self.deny("hooks")
         if sub == "push":  # asked unless something denies it (deny wins in result())
             here = [folder] + dirs

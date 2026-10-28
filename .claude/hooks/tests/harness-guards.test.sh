@@ -122,6 +122,16 @@ refused() { # refused <hook name> <ERE> <what>: the last commit attempt failed i
   echo "# refused by $1: $3"
 }
 passed() { [ "$rc" = 0 ] || fail "refused: $1 (out: $out)" || return 1; echo "# committed: $1"; }
+patch_of() { # patch_of <repo> <file> <commit args…>: $S/<file, / as _>.patch adds <file> (made with no hooks); the repo stays as it was
+  local r=$1 f=$2; shift 2
+  mkdir -p "$(dirname "$r/$f")" && echo "$f" >"$r/$f" && ing git -C "$r" add -- "$f" && nohooks -C "$r" commit -q "$@" \
+    && ing git -C "$r" format-patch -1 --stdout >"$S/${f//\//_}.patch" && nohooks -C "$r" reset -q --hard HEAD~1
+}
+am_in() { # am_in <repo> <patch> [git options…]: git am with the hooks; $out (both streams), $rc; a refused am is aborted
+  local r=$1 p=$2; shift 2
+  out=$(cd "$r" && ing git "$@" am -q "$p" 2>&1 </dev/null); rc=$?
+  [ "$rc" = 0 ] || ing git -C "$r" am --abort >/dev/null 2>&1
+}
 
 # ---- tests: one function per AC, each in a ( subshell ) via run ----
 
@@ -242,6 +252,7 @@ ac4_guard_denies_hook_bypass() {
     "git config unset --global core.hooksPath" "git config --global core.hooksPath ~/.claude/githooks-old" \
     "git config --global --unset-a core.hooksPath" \
     "git config --global --remove-s core" "git config --global --rep core.hooksPath /x" \
+    "git am -n x.patch" "git am -3n x.patch" "git am -sn x.patch" "git am --no-v x.patch" "git am --no-ver x.patch" \
     "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x git commit -m x"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
@@ -268,6 +279,7 @@ ac4_guard_denies_hook_bypass() {
   for c in "git commit -am x" "git commit -m '-n'" "git commit -m \"-n\"" "git commit -am '-n'" "git commit -m 'docs: --no-verify'" \
     "git commit -m x -m 'never use -n'" "git commit -F msg.txt" "git commit -C HEAD" \
     "git push -n" "git push --dry-run origin main" "git clean -n" "git clean -nd" "git config --global core.hooksPath" \
+    "git am -3 x.patch" "git am -s -C1 x.patch" "git am -Sn x.patch" "git am --continue" "git push --no-ver origin main" \
     "git config --global core.hooksPath ~/.claude/githooks" "git config --global core.hooksPath '~/.claude/githooks'" \
     "git config --global core.hooksPath \"\$HOME/.claude/githooks\"" "git config --global core.hooksPath \${HOME}/.claude/githooks/" \
     "git config --global core.hooksPath $H/.claude/githooks" "git config --global core.hooksPath \$'$H/.claude/githooks'" \
@@ -501,6 +513,15 @@ ac8_precommit_blocks_claude_md_except_setup_repo() {
   ing git -C "$r" revert --no-edit HEAD~1 >/dev/null 2>&1; echo resolved >"$r/c.txt"; ing git -C "$r" add c.txt
   [ -f "$r/.git/REVERT_HEAD" ] || fail "the revert fixture did not stop on a conflict" || return 1
   commit_in "$r" --no-edit; passed "conflicted revert bringing back the reverted commit's parent's CLAUDE.md" || return 1
+  # git am: pre-applypatch refuses a patch that adds a CLAUDE.md; a patch adding another file applies
+  r="$H/code/am"; gitrepo "$r" || return 1
+  patch_of "$r" CLAUDE.md -m "notes (fixture)" && patch_of "$r" docs/CLAUDE.md -m "docs notes (fixture)" \
+    && patch_of "$r" docs/ok.txt -m "ok (fixture)" || fail "am fixture" || return 1
+  for f in CLAUDE.md docs_CLAUDE.md; do
+    am_in "$r" "$S/$f.patch"; refused pre-applypatch 'CLAUDE\.md.*\.git/info/exclude' "git am of $f.patch" || return 1
+  done
+  [ "$(ing git -C "$r" rev-list --count HEAD)" = 1 ] || fail "$r: a refused git am landed" || return 1
+  am_in "$r" "$S/docs_ok.txt.patch"; passed "git am of a patch adding docs/ok.txt" || return 1
   setuprepo || fail "setup repo" || return 1
   for f in .claude/CLAUDE.md .claude/project-docs/x/CLAUDE.md; do
     mkdir -p "$(dirname "$H/$f")"; echo "# rules" >"$H/$f"; (cd "$H" && ing git --git-dir="$H/.claude-setup.git" add -- "$f")
@@ -571,6 +592,13 @@ ac9_precommit_blocks_wrong_email_by_folder() {
   passed "conflicted cherry-pick of a teammate's commit, concluded with --continue" || return 1
   [ "$(ing git -C "$r" log -1 --format='%ae %ce')" = "mate@example.test $PERSONAL" ] \
     || fail "the concluded pick is not mate's commit committed as $PERSONAL: $(ing git -C "$r" log -1 --format='%ae %ce')" || return 1
+  # git am keeps the patch's author too: pre-applypatch checks the committer only
+  patch_of "$p" mate.txt --author="Mate <mate@example.test>" -m "mate (fixture)" || fail "am fixture" || return 1
+  am_in "$p" "$S/mate.txt.patch" -c user.email="$LEORNA"
+  refused pre-applypatch "committer email is '$LEORNA'.*$PERSONAL" "personal repo: git am with -c user.email=$LEORNA" || return 1
+  am_in "$p" "$S/mate.txt.patch"; passed "personal repo: git am of a teammate's patch" || return 1
+  [ "$(ing git -C "$p" log -1 --format='%ae %ce')" = "mate@example.test $PERSONAL" ] \
+    || fail "git am: not mate's patch committed as $PERSONAL: $(ing git -C "$p" log -1 --format='%ae %ce')" || return 1
   # ~/Leorna may be a link to the real folder (git's includeIf "gitdir:~/Leorna/" still matches): so does the hook
   rm -rf "$S"; newroot; mkdir -p "$S/data/Leorna"; ln -s "$S/data/Leorna" "$H/Leorna"; l="$H/Leorna/client"
   gitrepo "$l" || fail "linked ~/Leorna repo setup" || return 1
@@ -635,6 +663,11 @@ ac10_commit_msg_blocks_ai_coauthor() {
   passed "commit -v: a trailer line inside the diff below the scissors line" || return 1
   out=$(cd "$H" && ing git --git-dir="$H/.claude-setup.git" commit -q --allow-empty -m "sync" -m "Co-authored-by: Jane <j@example.test>" 2>&1); rc=$?
   passed "setup repo: a human co-author" || return 1
+  # git am: applypatch-msg refuses a patch whose message has an AI trailer; a human co-author's patch applies
+  patch_of "$p" am-ai.txt -m "fix: am" -m "Co-authored-by: Claude <noreply@anthropic.com>" \
+    && patch_of "$p" am-human.txt -m "fix: am" -m "Co-authored-by: Jane Doe <jane@example.test>" || fail "am fixture" || return 1
+  am_in "$p" "$S/am-ai.txt.patch"; refused applypatch-msg 'AI' "git am of a patch with an AI trailer" || return 1
+  am_in "$p" "$S/am-human.txt.patch"; passed "git am of a patch with a human co-author" || return 1
   done_ok
 }
 
