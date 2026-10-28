@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 3a0d874a-6f6c-4ea9-8614-1bbe2049f45f
-  modified: 2026-10-26T20:46:40.412Z
+  modified: 2026-10-28T13:30:21.519Z
 ---
 
 On 2026-10-26 Justin asked for bdryswi.com's home page (WordPress.com + Elementor) as a Bricks paste for the new
@@ -28,6 +28,12 @@ on 132, 94, 92, 93, 98 and 105. alttext.ai wasn't needed. The capture of the sou
 boxes and the photo hotspots stay still in the first paste; each becomes a plugin feature (worktrees `slider-autoplay`,
 `headline-marker`, `flip-cards`, `photo-hotspots`; planner briefs in `~/.hermes/plans/figma-to-bricks/briefs/`). On 2026-10-26 Justin narrowed it to two now (slider + flip boxes, "for usage reasons"); the circle and the dots come later. The slider plan is approved (auto-go) and its builder waits on Justin's Bricks slider sample before its emit task. For the hotspot dots: a card next to the dot on
 hover/tap. For "Schedule Your Inspection Today!": Justin will make a Bricks popup and name it.
+
+**Status 2026-10-28:** flip-cards merged as build 2026-10-28.1. The paste with the v2 fixes is
+`evidence/bdry-paste/home-paste-v2.json`. Justin paused everything and handed the other three features to three Codex
+chats, one each. Their prompts are in `C:\Users\Admin\Downloads\codex-prompts\` (they give each feature's head and
+next step). Before continuing any of them here, check `git log` in its worktree: Codex may have moved it on or merged
+it.
 
 **How to apply:** after Justin pastes, read the live Home fresh and compare it with the source shots; once each
 feature merges, rebuild those parts of the paste exactly as the plugin emits them. The headline-marker and
