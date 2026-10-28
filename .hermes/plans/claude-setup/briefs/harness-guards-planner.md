@@ -7,7 +7,15 @@ You are the **planner** in Justin's Mini pipeline (`~/.claude/CLAUDE.md`, "Bugs 
 
 You may investigate read-only, run small probes in temp folders (a temp git repo with `GIT_CONFIG_GLOBAL` pointing at a temp file, never the real global config) and write the plan file.
 
-**Mini mode:** load only what this touches, skip a full context load and finish within about 15 steps. If this is bigger or riskier than a Mini job, say so in `summary` and recommend Full. It is likely about 5 small files (two hook scripts, two git hooks, a `settings.json` entry) plus tests, which is a bit over Mini's usual 1–3.
+**Mini mode:** load only what this touches, skip a full context load and finish within about 15 steps. If this is bigger or riskier than a Mini job, say so in `summary` and recommend Full. With item 5 (added mid-run), it is likely about 7–9 files:
+- two hook scripts;
+- two git hooks;
+- a `settings.json` entry;
+- the lessons gate;
+- CLAUDE.md and feature-dispatch text;
+- tests.
+
+That is well over Mini's usual 1–3. Say plainly in `summary` whether it should be Full; Justin decides at plan approval.
 
 ## Skills to load (Skill tool) before planning
 - `engineering-best-practices`
@@ -72,6 +80,42 @@ Justin read an article on "harness engineering". Its key idea: write each import
   - C) a marker file the orchestrator writes when it dispatches a planner and removes at finish.
   Recommend one, preferring the simplest that works.
 - Bash writes (`sed -i`, heredocs) can get around an Edit/Write guard. Say whether to cover them or accept the gap. Recommend accepting it for now if covering them is fragile.
+
+### 5. Lessons that can become checks (added by Justin on 2026-10-28, mid-run)
+Justin's list was numbered 1–6 and he picked 1, 2 and 5. Items 3, 4 and 6 are out of scope.
+
+**Why:** the article says a failure should improve the system, and the strongest improvement is a mechanical check, not more text. Today every `skill_lessons` entry turns into text in a skill.
+
+**The `enforce` field:**
+- Add a field: `skill_lessons[{skill, lesson, evidence, enforce}]`.
+- `enforce` is `none`, or a one-line proposal for a check that would have caught the problem: its kind (Claude Code hook, git hook, test, lint, script), what it checks, and where it runs.
+- Agents are told: when the lesson is about a rule that was broken or nearly broken, propose a check; otherwise write `none`.
+
+**Change every place that defines the `skill_lessons` shape** (grep for it):
+- `~/.claude/CLAUDE.md`: the "Subagents report skill lessons" bullet.
+- `feature-dispatch/SKILL.md`: the Phase 1 lessons line and any other copies of the schema.
+- `~/.claude/hooks/subagent-lessons-gate.sh`: its send-back message, and `subagent-handback-gate.sh` if it repeats that text.
+- The tests for both gates.
+- Codex: `~/.codex/AGENTS.md` is generated from CLAUDE.md, so never edit it directly; check how Codex's hooks reuse the gates.
+
+**Decide whether the lessons gate checks for `enforce`** when the list isn't empty. Recommend: check it only when the lessons are in a form the script can read reliably, and avoid fragile parsing of free text. An empty list must still pass.
+
+**What the main session does with a proposal:**
+- Saves the lesson as usual.
+- Appends the proposal to a backlog file (e.g. `~/.hermes/plans/claude-setup/enforce-backlog.md`).
+- Tells Justin in one line and offers to make it a story.
+- Never builds the check itself, because it only orchestrates.
+
+Write this into the CLAUDE.md lessons bullet and the feature-dispatch lesson-intake text.
+
+**Keep it lean:** fold the change into existing lines rather than adding paragraphs. `feature-dispatch/SKILL.md` is about 96,000 characters, near Hermes' 100,000 limit, so the plan must keep it under that.
+
+**ACs must include:**
+- the gate's send-back message names `enforce`;
+- if the gate checks the field: a lesson without `enforce` is sent back once, a report with it passes, and an empty list passes;
+- CLAUDE.md and feature-dispatch describe the field and the backlog rule (a grep test is fine);
+- `SKILL.md` stays under 100,000 characters;
+- all existing gate tests still pass.
 
 ### Scope decisions for you to make (as questions with a recommended option)
 - **Codex.** Codex shares this setup and has PreToolUse hooks (`~/.codex/hooks/codex-hooks.sh`). The git-level hooks in 1(b) already cover Codex's commits. Should the Bash guard in 1(a) also be wired into Codex now, or listed as a follow-up?
