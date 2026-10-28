@@ -19,7 +19,7 @@ index 7fc2b43..905e163 100644
  
  # Adversarial Verification Loop
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..f7dc1cc 100644
+index d6a2493..49ee8a5 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,13 +60,13 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -50,7 +50,7 @@ index d6a2493..f7dc1cc 100644
  - Fixture credential disposal: after verified exact resource absence, require the generated owner/runtime credential maps to be absent too; private permissions alone do not establish disposal. On incomplete/refused cleanup retain necessary recoverable credentials with an explicit reason. Reconcile historical remnants additively without rewriting sealed resource receipts.
  - Keep ownership authority distinct from resource-policy acceptance where the frozen fixture contract permits exact-ID cleanup of a proved-owned but policy-invalid resource. Compare new retirement requirements with inherited wrong-image/resource-policy assertions before accepting a design; otherwise adding image agreement at cleanup can contradict the positive recovery contract. Require a prospective, explicitly reviewed oracle supersession if the authority contract truly changes, not both incompatible expectations.
  - Ownership refusal classification: validate required response envelopes, mappings and identity fields before dereference, and classify missing/malformed proof as explicit refusal rather than a generic exception eligible for cleanup retry. Audit every consuming call path: a guarded pre-start observation does not validate a fresh raw post-start response. Inject malformed evidence at each meaningful lifecycle point, allow later responses to be healthy, and require no subsequent client use, retry or deletion after refusal. Pair genuine nonzero transport failure and proved-resource-absence controls so the repair neither masks errors nor silently disables safe recovery.
-+- Guard vs consumer parsing: when a policy check and the tool it protects read the same document, probe a case-variant duplicate of a guarded key (`APPROVAL_POLICY` beside `approval_policy`) and a case-variant key of the wrong type that breaks only the guard's decode. Go `encoding/json` and BurntSushi/toml match struct fields case-insensitively (toml in random map order) while renderers and real tools read exact keys; a guard that returns "no failures" when its decode fails is a bypass. Require exact-key decoding, an allowlist of known keys, and fail-closed decode errors (86bcm901j review 1: one extra `"ARGS":1` passed the gate; real Codex ran `danger-full-access` in 154 of 200 gate passes).
++- Guard vs consumer parsing: when a policy check and the tool it protects read the same document, probe a case-variant duplicate of a guarded key (`APPROVAL_POLICY` beside `approval_policy`) and a case-variant key of the wrong type that breaks only the guard's decode. Go `encoding/json` and BurntSushi/toml match struct fields case-insensitively (toml in random map order) while renderers and real tools read exact keys; a guard that returns "no failures" when its decode fails is a bypass. Require exact-key decoding, an allowlist of known keys, and fail-closed decode errors (86bcm901j review 1: one extra `"ARGS":1` passed the gate; real Codex ran `danger-full-access` in 154 of 200 gate passes). The same applies to ids: one validated case-insensitively (a UUID check accepting A–F) but then used as text (audit target, cache key, log join) needs an upper-cased id sent through every entry point; typed parsers make it lower case, raw `r.PathValue` values don't (86bcm901w review 1: an upper-case edit URL hid a save from the pack's audit history).
  - Readiness budgets: reject nonfinite and negative numeric timeouts before resource or persistent-state claims, including direct API callers. Preserve zero only when it is the documented immediate-timeout control; use bounded fake-clock regressions rather than launching an infinite wait.
  - Maintainability: simple design, local conventions, names, duplication, abstraction fit.
  - Docs and rollout: README, changelog, feature flags, migration notes, operator impact.
@@ -145,7 +145,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..4903d54 100644
+index f2d882d..a80700f 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,21 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -276,7 +276,7 @@ index f2d882d..4903d54 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -290,7 +340,45 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +340,47 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -287,8 +287,10 @@ index f2d882d..4903d54 100644
 +    Name each mutated copy by its full repo path, not its basename: two
 +    `pack_builder.go` mutants in one overlay folder gave "found packages
 +    postgres and web", a setup failure that reads as a kill by exit code (901w M5).
-+    `-overlay` reaches only files the go command compiles: mutate a guard's
-+    run-time input (a JSON record, a diff the test applies) in the real file,
++    `-overlay` reaches files the go command compiles, including `//go:embed`
++    files (an embedded SQL migration mutated with nothing on disk; mutate its
++    down file too, or the cleanup rollback fails and muddies the result, 901w
++    S1–S6). Mutate any other run-time input (a JSON record, a diff the test applies) in the real file,
 +    restore the saved bytes in `finally`, and check hash and git status;
 +    also remove folders a mutant created (a leftover empty item folder made
 +    every later mutant fail for the wrong reason) and digest folders too.
