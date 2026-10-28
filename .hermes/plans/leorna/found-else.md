@@ -157,3 +157,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Environment: `/tmp` on the desktop is a 7.9 GB tmpfs shared by all sessions (hit 98%); heavy temp files belong on the real disk.
 - 2026-10-28 (86bcm901b reviewer 2, low, pre-existing 86bcm945u): a skill or agent frontmatter description can hold a raw lone CR (Transform folds only CR LF; `Item.Validate` allows CR/LF in descriptions, `internal/library/library.go:215`); renderers JSON-quote descriptions, so nothing breaks (`evidence/86bcm901b/review-2/probe-lone-cr-description.log`).
 - 2026-10-28 (86bcm901b reviewer 2, low, pre-existing): no control-character guard on imported library text of any kind: a skill's raw bytes or a prompt's TOML escape can carry terminal escape sequences into shipped bodies, and the content gate doesn't check (`evidence/86bcm901b/review-2/probe-hostile-commands.log`); the shipped texts contain none.
+
+## 2026-10-28: 86bcm901j review 2
+- Minor (pre-existing on main): the copied renderers quote keys in warnings/errors (e.g. "permissions key %q is not supported"), so a token in a dropped key reaches the JSON report and summary through the render stage; fix belongs in the client renderer or the report writer.
+- Info: npx reads the project's own `.npmrc`, so a cloned repo can redirect the registry for any pinned npx server regardless of the template's env (supports "prefer a hosted server").
