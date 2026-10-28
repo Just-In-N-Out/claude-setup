@@ -117,7 +117,48 @@ PY
 ac2_first_turn_knows_rules() { fail "not written"; }
 ac3_session_start_rules_fresh() { fail "not written"; }
 ac4_codex_sees_claude_skills() { fail "not written"; }
-ac5_roles_valid_and_load() { fail "not written"; }
+ROLES="planner builder reviewer fixer verifier auditor finisher"
+doctor_json() { # doctor_json <out>: codex doctor --json in the fake home (its exit is 1 without a sign-in)
+  (mkdir -p "$H/work" && cd "$H/work" && inhome codex doctor --json >"$1" 2>"$1.err"); jq -e .checks "$1" >/dev/null
+}
+ac5_roles_valid_and_load() {
+  local r f
+  for r in $ROLES; do need "$SRC/.codex/agents/pipeline-$r.toml" || return 1; done
+  newroot; echo "# test folder: $S"; mkdir -p "$H/.codex/agents"
+  for r in $ROLES; do cp "$SRC/.codex/agents/pipeline-$r.toml" "$H/.codex/agents/"; done
+  # content: name, description, developer_instructions, the model lines from the one setting, the contract
+  python3 - "$SRC/.claude/setup/codex/pipeline-model.toml" "$H/.codex/agents" $ROLES <<'PY' || fail "role file content" || return 1
+import sys, tomllib
+setting, d, roles = sys.argv[1], sys.argv[2], sys.argv[3:]
+m = tomllib.load(open(setting, "rb"))
+bad = []
+for r in roles:
+    t = tomllib.load(open(f"{d}/pipeline-{r}.toml", "rb"))
+    di = t.get("developer_instructions", "")
+    if t.get("name") != f"pipeline_{r}": bad.append(f"{r}: name {t.get('name')!r}")
+    if not t.get("description"): bad.append(f"{r}: no description")
+    if not di.strip(): bad.append(f"{r}: no developer_instructions")
+    if t.get("model") != m["model"] or t.get("model_reasoning_effort") != m["model_reasoning_effort"]:
+        bad.append(f"{r}: model {t.get('model')}/{t.get('model_reasoning_effort')} != setting {m['model']}/{m['model_reasoning_effort']}")
+    for p in ["brief", "skill_lessons", "MAIN SESSION: check and save these skill_lessons now.", "Never spawn"]:
+        if p not in di: bad.append(f"{r}: lacks {p!r}")
+    if r in ("reviewer", "verifier", "auditor"):
+        for p in ["verdict", "ac_status"]:
+            if p not in di: bad.append(f"{r}: lacks {p!r}")
+        if "never edit" not in di.lower(): bad.append(f"{r}: does not say it never edits source files")
+for b in bad: print("#", b)
+sys.exit(1 if bad else 0)
+PY
+  # they load: no malformed-role warning, while a broken copy does produce one
+  doctor_json "$S/doctor.json" || fail "codex doctor --json gave no report: $(head -c 300 "$S/doctor.json.err")" || return 1
+  if grep -q 'malformed agent role' "$S/doctor.json"; then
+    grep -o 'malformed agent role[^"]*' "$S/doctor.json" | head -3; fail "doctor reports a malformed role"; return 1
+  fi
+  sed 's/^developer_instructions = """/developer_instructions = """broken/; s/^name = /name  /' "$H/.codex/agents/pipeline-planner.toml" >"$H/.codex/agents/pipeline-broken.toml"
+  doctor_json "$S/doctor-broken.json"
+  grep -q 'malformed agent role.*pipeline-broken.toml' "$S/doctor-broken.json" || fail "a broken copy is not reported" || return 1
+  done_ok
+}
 ac6_gates_match_claude_twins() { fail "not written"; }
 ac7_claude_hooks_unchanged() { fail "not written"; }
 ac8_commit_guard_blocks_ai_trailer() { fail "not written"; }
