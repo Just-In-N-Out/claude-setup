@@ -1,12 +1,12 @@
 # REVIEWER — headline-marker, first full review of the height amendment
 
-Fresh independent reviewer, report only. Do not edit the feature worktree, commit, rebase, merge, push, bump BUILD, edit skills/memory or spawn agents. Root owns each later role. This draft is NOT dispatchable until the admission pins and builder handback below are populated.
+Fresh independent reviewer, report only. Do not edit the feature worktree, commit, rebase, merge, push, bump BUILD, edit skills/memory or spawn agents. Root owns each later role.
 
-## Admission pins — POPULATE BEFORE DISPATCH
+## Admission pins
 
-- Clean candidate HEAD: PENDING_BUILDER_HANDOFF.
-- Exact integration base/main: PENDING_BUILDER_HANDOFF.
-- Merge lock: PENDING_BUILDER_HANDOFF. Observe only; do not acquire/release/repair it.
+- Clean candidate HEAD: `cd3927e0d9b1f9c7519285b99ec962d019818664`.
+- Exact integration base/main: `5e2f98bff77fa1d214b7d76968a54a6dafa32ca6`.
+- Merge lock held for root continuation by `headline-marker since 2026-10-28T20:06:24Z (pid 2)`. Main clean at the pinned base, no busy markers. Observe only; do not acquire/release/repair it. The helper's GNU-stat age display emits an already-known diagnostic; do not change the shared helper or delete its lock.
 - Worktree `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/headline-marker`, branch `worktree-headline-marker`.
 - Review the **complete feature range base...HEAD**, plus focused scrutiny of the latest height amendment. Old reviews never approved later bytes. This is full review 1 of the rebuilt candidate; a second fresh full reviewer follows valid fixes.
 
@@ -16,7 +16,7 @@ Fresh independent reviewer, report only. Do not edit the feature worktree, commi
 - Approved immutable amendment `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/height-amendment-approved.md`, SHA256 `baa6b7847ecf902fecaed22c2e69d6f2fbd16bf0811eb4b6a58f435fddd60fde`. Read it completely. Committed copy `docs/plans/2026-10-28-headline-marker-height.md`.
 - Approved auto-go ruling record `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/p1-responsive-ring-ruling.md`. **P1A and C1 are unconfirmed orchestrator rulings**, never Justin explicitly answering. P1A permits responsive apparent angle/proportion changes below design width while preserving words/layout, original design-width drawing, timing/start/direction, paint order and physical stroke. C1 permits one empty out-of-flow aria-hidden image-plane HTML span within the existing marked span, same encoded SVG CSS background transport, no new Bricks element/script/link/visible or accessible words.
 - AC13 alone is live. Installed Bricks retention and Safari/iPhone remain owed; do not relabel local obligations live. Final current paste-check number comes from integrated records (builder reserved3bp).
-- Builder handback/report `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/builder-height/report.json`; previous review witness `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/reviewer-3/report.json`; stopped research in `fixer-4/report.json`. Reviews may consult author/historical evidence but must execute their own proof.
+- Builder returned its complete handback as its final agent message; structured author summary `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/builder-height/final-gate-summary.json` (there is no builder report.json). Parent artifact admission `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/orchestrator-builder-height-intake.json`. Previous review witness `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/reviewer-3/report.json`; stopped research in `fixer-4/report.json`. Reviews may consult author/historical evidence but must execute their own proof.
 - Own evidence ONLY `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/reviewer-height-1/`. Create fresh scratch with `mktemp -d` and `mkdir` without `-p`; never reuse another role's scratch, evidence destinations or process profiles. Mutations/probes go in your isolated exports, never the committed worktree.
 - You are not alone in the codebase: other chats own other features/worktrees/evidence/processes. Do not touch or revert their work, kill their processes or repair shared helpers. Observe relevant main drift and return integration-required where warranted; do not take over another release.
 
@@ -25,6 +25,8 @@ Fresh independent reviewer, report only. Do not edit the feature worktree, commi
 Load project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, its rules-summary.md and rendering-validation.md references, then engineering-best-practices, requesting-code-review, code-review-practice, mutation-testing-discipline, plus systematic-debugging for unexpected failures. You are the requested independent reviewer: omit nested-agent/automatic-fix steps; root handles them.
 
 Copy BOTH byte-identical neutral tools from `/home/justin/.hermes/plans/figma-to-bricks/runtime-tools/chrome-2d/` into your own folder's tools/ before use, preserving executable mode. Run ONLY your own copy of run-capture.py with fresh receipt names. It writes logs beside itself. Pinned Node22.23.3 `/home/justin/.local/node-v22.23.3/bin/node`, Chrome156.0.8078.47, task-local --use-gl=disabled qualified for 2D HTML/CSS/SVG; GPU/WebGL fidelity unproved. Existing driver unchanged. Fresh positive/negative pixel controls qualify your runtime. Actual child stdout/exit prove a test; wrapper recipe JSON/copy/final echo does not. Close browsers in finally, reconcile only proven owned processes via tracked handles. No global security/runtime/config changes.
+
+The builder hit ENOSPC in /tmp, then Chrome SingletonSocket startup failure using a long disk TMPDIR. Use your own **short disk-backed** runtime parent, e.g. freshly created `mktemp -d /home/justin/.hermes/rh1.XXXXXX`, passed as TMPDIR to your own unchanged runner. Qualify fresh plain/SVG positive and negative pixels. Preserve failed runs; never kill numeric PIDs from an invisible exec namespace. The project skill already covers this lesson. Create isolated source exports in an owned disk-backed scratch too; clean only those owned paths, retain all receipts/evidence.
 
 ## Known defect class and review obligations
 
@@ -38,9 +40,13 @@ The approved method refits a complete intrinsic turned ellipse in an empty CSS s
 4. Run required project/role gates independently: npm run check and npm run corpus, full browser population plus focused headline tests, mapped corpus-backed unit/performance controls and available-file/replay comparisons against the exact integrated base. Original G1–G4 are in the plans. Compare complete test names/skip/failure multisets, complete available corpus reports/fonts/payloads/HTML and the four replay pairs, not only totals. Keep original/raw failures and any unchanged complete-file retry provenance. Three legacy Mac corpus inputs unavailable on WSL; historically12 font failures/one Mac-only skip, but independently compare current base. Never call a failed raw/full legacy suite green or waive a new difference from historical counts.
 5. Evaluate each author disposition independently and review security/quality/mutation concerns. For findings give severity, introduced versus baseline, exact file:line, admitted reproducer and concrete evidence. Apply no fixes. Preserve all receipts, actual runtimes/exits and final source identity; source remains clean.
 
-## Builder handback — POPULATE BEFORE DISPATCH
+## Builder handback
 
-PENDING_BUILDER_HANDOFF.
+Builder returned ready-for-review on the clean pins above, with the entire43-file integrated feature delta and main's slider/HANDOFF additions preserved. AC9 incoming source was RED on mixed-run complete-contour proof, then GREEN with original assertions plus mixed/tall fixtures. Typed geometry, child propagation, emit/adapt and zero/negative-radius controls were RED then GREEN. Sixteen intended mutant kills with exact restoration; a first percentage-origin mutant survived a weaker oracle, so its raw evidence is retained and independent tight-viewport complete-paint assertions were added before successful reruns, including final-guard SVG mutants. Do not mistake the earlier survivor for proof or silently weaken those strengthened assertions.
+
+Author gate summary: worktree check exit0 (2419 pass/60 path skips; performance1/5), mapped check exit0 (2443/36; performance3/3), full browser HEAD382pass/12fail/1skip vs BASE373/12/1 with matching failure identities, nine added passes and no lost cases. Raw browser suites remain failed. Corpus raw exit1 due three unavailable Mac inputs; all15 available artifacts byte-identical, complete reports equal except timestamp, fonts complete. Four replay pairs (eight actual exit0 commands) have identical payloads/HTML/warnings/artifacts. Both sandbox typechecks and SES build pass. Complete screenshot and mutation manifests in the builder folder. Parent admitted all435 sealed payload files and639 current source/test hashes without mismatch and matched seven gate execution receipts to the summary. This is artifact admission, not your independent review.
+
+All source/plan/ledger/HANDOFF records were committed before final gates. Headline-marker live check is now3bp, slider retains3bo. Original approvals unchanged. P1A/C1 unconfirmed. No merge/BUILD bump/push. Builder held the properly owned integration lock for root, removed only its owned scratch and reported zero remaining owned processes for final controls. Earlier controller interruption exit130 had child exit unobserved; ENOSPC and long-TMPDIR failed receipts are preserved, short-disk positive/negative pixels and final gates succeeded. Historical builders.ts split and three legacy Mac inputs remain deferred. Current main unchanged. Setup sync was retried by root after the temporary busy result and still fails read-only despite approved escalation; do not bypass.
 
 ## Return
 
