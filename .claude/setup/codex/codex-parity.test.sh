@@ -856,7 +856,53 @@ ac20_codex_edit_reaches_other_machine() {
   grep -q supersedes <<<"$ctx" && grep -qF -- "$(cat "$B/.claude/CLAUDE.md")" <<<"$ctx" || fail "new CLAUDE.md not in full in the context" || return 1
   done_ok
 }
-ac21_pipeline_model_switch() { fail "not written"; }
+model_state() { # everything a refused switch must leave alone
+  (cd "$H" && shasum .claude/setup/codex/pipeline-model.toml .codex/agents/pipeline-*.toml .codex/AGENTS.md)
+  gh_ rev-parse HEAD; gh_ status --porcelain; remote_count
+}
+roles_say() { # roles_say <home> <model> <effort>: all seven role files and AGENTS.md carry them
+  local r
+  for r in $ROLES; do
+    grep -qx "model = \"$2\"" "$1/.codex/agents/pipeline-$r.toml" && grep -qx "model_reasoning_effort = \"$3\"" "$1/.codex/agents/pipeline-$r.toml" \
+      || { echo "# $1: pipeline-$r.toml is not $2/$3"; return 1; }
+  done
+  grep -qF "**$2** at **$3** effort" "$1/.codex/AGENTS.md" || { echo "# $1: AGENTS.md is not $2/$3"; return 1; }
+}
+last_commit_files() { git --git-dir="$S/remote.git" show --name-only --format= main | sort; }
+ac21_pipeline_model_switch() {
+  local SP B before out rc c0 want r
+  need "$SRC/.claude/setup/codex/set-pipeline-model.sh" || return 1
+  newroot; echo "# test folder: $S"; install_setup; SP="$H/.claude/setup/codex/set-pipeline-model.sh"
+  cp "$FIX/models_cache.sample.json" "$H/.codex/models_cache.json"
+  attach_repo || fail "setup repo attach failed" || return 1
+  B="$S/desk"; attach_desk "$B" || { cat "$S/attach-desk.out"; fail "desk attach failed"; return 1; }
+  roles_say "$H" gpt-6.1-sol xhigh && roles_say "$B" gpt-6.1-sol xhigh || fail "start state is not gpt-6.1-sol/xhigh" || return 1
+  # an unknown model: exit 2, the valid list, nothing changed
+  before=$(model_state)
+  out=$(cd "$H" && inhome bash "$SP" gpt-nope 2>&1); rc=$?
+  [ $rc -eq 2 ] && grep -q "gpt-6-luna" <<<"$out" && grep -q "gpt-6.1-sol" <<<"$out" || fail "gpt-nope: exit $rc, or no model list: $out" || return 1
+  [ "$(model_state)" = "$before" ] || fail "gpt-nope changed a file or commit" || return 1
+  # an effort the model doesn't have: exit 2 and luna's efforts
+  out=$(cd "$H" && inhome bash "$SP" gpt-6-luna ultra 2>&1); rc=$?
+  [ $rc -eq 2 ] && grep -q "low medium high xhigh max" <<<"$out" || fail "gpt-6-luna ultra: exit $rc: $out" || return 1
+  [ "$(model_state)" = "$before" ] || fail "gpt-6-luna ultra changed a file or commit" || return 1
+  # a valid switch: seven role files + AGENTS.md, one commit holding the setting and the role files
+  c0=$(remote_count)
+  (cd "$H" && inhome bash "$SP" gpt-6-luna low) >"$S/switch.out" 2>&1 || { cat "$S/switch.out"; fail "switch failed"; return 1; }
+  roles_say "$H" gpt-6-luna low || fail "A not switched" || return 1
+  [ "$(remote_count)" = $((c0 + 1)) ] || fail "not exactly one new commit on the remote" || return 1
+  want=$( { echo .claude/setup/codex/pipeline-model.toml; for r in $ROLES; do echo ".codex/agents/pipeline-$r.toml"; done; } | sort)
+  [ "$(last_commit_files)" = "$want" ] || { last_commit_files | sed 's/^/# /'; fail "the commit is not the setting + seven role files"; return 1; }
+  (H="$B"; cd "$B" && inhome bash "$B/.claude/setup/sync.sh" pull) >"$S/pull.out" 2>&1 || { cat "$S/pull.out"; fail "desk pull failed"; return 1; }
+  roles_say "$B" gpt-6-luna low || fail "desk not switched after its pull" || return 1
+  # a hand edit of the setting: sync.sh rewrites and commits all seven role files too
+  printf '# edited by hand\nmodel = "gpt-6.1-sol"\nmodel_reasoning_effort = "xhigh"\n' >"$H/.claude/setup/codex/pipeline-model.toml"
+  (cd "$H" && inhome bash "$H/.claude/setup/sync.sh") >"$S/hand.out" 2>&1 || { cat "$S/hand.out"; fail "sync after the hand edit failed"; return 1; }
+  roles_say "$H" gpt-6.1-sol xhigh || fail "hand edit: role files not rewritten" || return 1
+  [ "$(last_commit_files)" = "$want" ] || fail "hand edit: the commit is not the setting + seven role files" || return 1
+  for r in $ROLES; do git --git-dir="$S/remote.git" show "main:.codex/agents/pipeline-$r.toml" | grep -qx 'model = "gpt-6.1-sol"' || fail "remote $r not gpt-6.1-sol" || return 1; done
+  done_ok
+}
 ac22_roles_use_switched_model() { fail "not written"; }
 ac23_docs_updated() { fail "not written"; }
 ac24_linux_suites() { fail "not written"; }
