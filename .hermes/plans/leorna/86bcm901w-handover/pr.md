@@ -44,31 +44,32 @@ ClickUp: [Create a pack by picking library items](https://app.clickup.com/t/86bc
 
 ## Test Plan
 
-These ran on head `8a50486` on 2026-10-28. The pipeline's independent verifier ran them in a detached copy with its own `_test` database, and the blind AC auditor reran the ACs. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0, gitleaks 8.30.1, PostgreSQL 18.6 (CI's image). When this PR is made, the gates run again on the exact pushed head and this list is updated.
+Everything below ran on head `8a50486`, the pushed head, on 2026-10-28. The gates were run again when this PR was opened, in a detached copy of that exact head with its own `_test` database. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 and gitleaks 8.30.1 (CI's pins), PostgreSQL 18.6 (CI's image). The mutation checks and the console run were done on the same head by the pipeline's independent verifier and blind AC auditor.
 
 - [x] `make check`, exit 0:
   - workspace, contracts-check, fmt, vet;
   - `go test -race -count=1` on every package;
   - lint 0 issues in both modules;
   - govulncheck: no called vulnerability (the "1 vulnerability in modules you require" note is the same on main `1ee7157`);
-  - gitleaks: no leaks;
+  - gitleaks: no leaks in the repository's 401 commits;
   - library gate PASSED (32 items);
   - build.
 - [x] `scripts/test-module-add.sh`: exit 0
 - [x] Postgres tests (`go test -json` over `internal/pack`, `internal/store/postgres`, `internal/web` and `internal/cloud/dbcheck`, read per test): 536 pass, 0 fail, 0 missing. The only 4 skips are the accepted ones: the two ClickHouse subtests of `TestTeamsAPIWithPostgres`, the live Scaleway test and the opt-in evidence-dir test. All 55 `TestPackBuilder*`/`TestMigrationRoundTrip` entries pass.
 - [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: OK (5 tests)
-- [x] gitleaks over the branch's 18 commits: no leaks. No `.github` change.
+- [x] gitleaks over the branch's 18 commits: no leaks.
+- [x] Scope: no `.github` change, no existing migration changed (only `000023` added), all 18 commits by the Leorna identity with no AI attribution lines.
 - [x] `TestPackBuilderAC1NewPackVersion1HasExactlyTheTickedItemsWithPostgres` (3 subtests): pass
 - [x] `TestPackBuilderAC2AddRemoveSavesImmutableVersionWithParentWithPostgres` (4 subtests): pass
 - [x] `TestPackBuilderAC3EverySaveWritesAuditRecordWithPostgres` (6 subtests): pass
 - [x] `TestPackBuilderAC4RefusedSavesWriteNothingWithPostgres` (15 subtests: no name, no items, unknown/malformed/repeated item, name taken, nothing changed, pack left empty, outdated version, member, bad CSRF, another company's pack, malformed pack id, signed out, strict JSON): pass
-- [x] Each AC test fails on base `1ee7157` (build failure: the builder, routes and contract types don't exist there).
+- [x] Each AC test fails on base `1ee7157` (build failure: the builder, routes and contract types don't exist there), checked by the verifier and the auditor.
 - [x] Mutation checks on this head:
   - the verifier: 39 mutants, all killed. They cover the triggers, admin and tenant checks, CSRF, the stale-parent check, the unique name, audit atomicity, the diff and the tick handling.
   - the blind auditor: 15 mutants, all killed.
   - Two builder mutants are documented equivalents: M2 (the tenant key on one lock query, also enforced by the composite FK) and M6 (an ignored audit error, also caught because Postgres aborts the transaction).
 - [x] Admin console in dev mode on a throwaway database, with a binary built at `8a50486` (auditor): tick 4 items and Create pack gives "version 1" with those 4 ticked; untick one and tick another gives "version 2 … from version 1"; the change history for the pack shows `pack.create` and `pack.version.create` with actor and diff; the same name in other case gives the inline 409 alert.
-- [ ] Hosted CI "Go quality gates": not run yet. Nothing is pushed.
+- [ ] Hosted CI "Go quality gates": pending (filled in below when the run finishes).
 
 ## Security, migration, rollback
 
@@ -119,6 +120,7 @@ These ran on head `8a50486` on 2026-10-28. The pipeline's independent verifier r
 
 ## Evidence
 
-- Head: `8a5048694d40ee975c7b3c276ca1b8af521cae5d` (base `1ee7157`)
+- Head: `8a5048694d40ee975c7b3c276ca1b8af521cae5d` (base `1ee7157`, GitHub `main` when this PR was opened)
 - Required check: "Go quality gates"
-- Actions run: pending until pushed
+- Actions run: pending
+- Local gates on this head (2026-10-28): `make check`, `test-module-add.sh`, the Postgres `go test -json` stream read per test, the story gate, gitleaks and the scope checks, each exit 0 (one log per gate plus a `SUMMARY.txt`, kept with the story's evidence).

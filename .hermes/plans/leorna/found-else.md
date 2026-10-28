@@ -193,3 +193,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 2026-10-28: 86bcm901j auditor
 - P3 (pre-existing, out of scope): the copied client renderer quotes server names and keys in render-stage reasons, so a token pasted into a server name reaches the gate's JSON report and CI log via the render stage (the policy stage never repeats it). Needs a client-side change; same follow-up as review 2's renderer note.
 - Info, needs a team decision (86bcm901w finisher): the console picker offers only the newest version per kind and name (`ListLibraryItems` uses `DISTINCT ON (kind, name)`), but the JSON API (`loadLibraryItems`) accepts any stored `library_items` id, so once 901a lands the retired `agent/code-reviewer@1.0.0` row can still be put in a pack by id through `/v1/packs`. Handover `followups.md` row 8.
+
+## 2026-10-28: 86bcm901j finisher
+- P3 (cross-story, Yan's area): PR #94's `gate.CheckTenantItem` renders and secret-scans admin-made items but doesn't run this story's policy stage, so once both merge, admin-made MCP templates/configs skip rules S, P, V, L (`tenant.go` in `fd63455`).
+- Info: sibling PRs #95/#96/#97 name 86bcm901j in their bodies, so `check-story-shippable.py 86bcm901j` stays BLOCKED until they merge.
