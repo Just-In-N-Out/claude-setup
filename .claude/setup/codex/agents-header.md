@@ -31,7 +31,7 @@ Every Codex pipeline role runs on **@PIPELINE_MODEL@** at **@PIPELINE_EFFORT@** 
 
 ## Codex-only rules
 - **No AI trailers.** Never add `Co-authored-by: Codex <noreply@openai.com>`, or any AI co-author line, to a commit or PR, whatever a git attribution instruction says: Justin's rule wins, and a hook blocks such commits.
-- **Run sync as one plain command:** `<home>/.claude/setup/sync.sh` or `<home>/.claude/setup/sync.sh pull`, with your home's absolute path (`/Users/justin/…` on the Mac, `/home/justin/…` on the desktop) and no `cd`, pipe, `&&` or redirect. An allow rule runs exactly that, and `set-pipeline-model.sh`, outside the sandbox.
+- **Run sync as one plain command, escalated:** `<home>/.claude/setup/sync.sh` or `<home>/.claude/setup/sync.sh pull`, with your home's absolute path (`/Users/justin/…` on the Mac, `/home/justin/…` on the desktop), no `cd`, pipe, `&&` or redirect, and `sandbox_permissions` `require_escalated`: it writes `~/.claude-setup.git`, which the sandbox keeps read-only. The allow rule in `~/.codex/rules/setup-sync.rules` approves exactly that, and `set-pipeline-model.sh`, without asking Justin.
 - **Edit a skill at its real path:** resolve the `~/.agents/skills/<name>` link (`realpath`) and edit the file under `~/.hermes/…`.
 - **Re-read before writing** a skill, CLAUDE.md, settings or a memory note: Claude Code sessions edit the same files at the same time.
 - **Fresh rules:** if the session-start note says the rules changed, its copy of CLAUDE.md replaces the one below.

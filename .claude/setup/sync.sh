@@ -82,7 +82,11 @@ write_exclude() {
 }
 
 lock() {
-  if ! mkdir "$LOCK" 2>/dev/null; then
+  local err
+  if ! err=$(mkdir "$LOCK" 2>&1); then
+    if [ ! -d "$LOCK" ] && ! grep -qi 'exists' <<<"$err"; then # not a held lock: the repo can't be written here
+      die "can't create $LOCK, so $GD is not writable here ($err). In Codex's sandbox, run sync.sh with escalation (sandbox_permissions require_escalated): ~/.codex/rules/setup-sync.rules approves it."
+    fi
     if [ -n "$(find "$LOCK" -maxdepth 0 -mmin +10 2>/dev/null)" ]; then
       rm -rf "$LOCK" && mkdir "$LOCK"
     else

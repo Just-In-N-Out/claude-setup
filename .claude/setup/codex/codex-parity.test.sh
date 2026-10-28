@@ -470,6 +470,12 @@ ac10_sandbox_profile_and_rules() {
     { [ "$c" = ABSENT ] && [ ! -e "$H/$p" ]; } || [ "$c" = "$(cat "$H/$p" 2>/dev/null)" ] || fail "~/$p changed" || return 1
   done
   sandboxed "cat '$H/.hermes/.env'" && fail "~/.hermes/.env is readable" && return 1
+  # sync.sh run inside the sandbox can't take its lock: it says so (not "another sync is running") and leaves none
+  git init -q --bare "$H/.claude-setup.git"
+  sandboxed "'$H/.claude/setup/sync.sh'" && fail "sync.sh worked inside the sandbox" && return 1
+  grep -q "not writable" "$S/sbx.err" && ! grep -q "another sync is running" "$S/sbx.err" \
+    || fail "sandboxed sync.sh does not say the setup repo is not writable: $(cat "$S/sbx.err")" || return 1
+  [ ! -e "$H/.claude-setup.git/setup-sync.lock" ] || fail "sandboxed sync.sh left a lock" || return 1
   ! grep -q SECRET_FOR_AC10 "$S/sbx.out" || fail "~/.hermes/.env leaked" || return 1
   echo "# sandbox: 4 writes allowed, git commit works, 9 writes and the .env read denied"
   for c in "/Users/justin/.claude/setup/sync.sh" "/home/justin/.claude/setup/sync.sh pull" \
@@ -997,8 +1003,11 @@ ac11_codex_runs_sync_outside_sandbox() {
   rm -f "$H/.codex/hooks.json"                                  # no hooks: only Codex itself can sync
   echo "Version: v2 (ac11)" >"$H/.hermes/skills/sd/foo/SKILL.md"; c0=$(remote_count)
   probe_begin "$H" || return 1; trap probe_end EXIT
+  # on-request is the interactive default. Under "never" Codex 0.163 rejects every escalation and drops the
+  # approved prefixes from its prompt, so no rule can lift the sandbox. exec has no human to approve
+  # anything, so a sync that ran unsandboxed was approved by setup-sync.rules.
   probe_exec "$H" "$H/work" "$S/run" "Run the setup sync now: run exactly $H/.claude/setup/sync.sh as one plain command, then tell me its last line." \
-    -c 'approval_policy="never"' || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
+    -c 'approval_policy="on-request"' || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
   remote_has .hermes/skills/sd/foo/SKILL.md "Version: v2 (ac11)" && [ "$(remote_count)" -gt "$c0" ] || fail "the edit is not on the remote: $(cat "$S/run/last.txt")" || return 1
   [ ! -e "$H/.claude-setup.git/setup-sync.lock" ] || fail "sync lock left" || return 1
   done_ok
