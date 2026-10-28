@@ -37,6 +37,12 @@ His follow-up questions are requirements:
    - This is Codex only; Claude's sync stays manual.
 2. **From turn one, Codex has read `~/.claude/CLAUDE.md` and knows where the Hermes skills are.** It is proven with a `codex exec` probe on a rule only `CLAUDE.md` states.
 3. **Codex edits the real files.** That means the Hermes skills (through the links), `~/.claude/CLAUDE.md` and the Claude memory notes, and the edits reach GitHub through `sync.sh`. An AC proves that a Codex skill edit becomes a commit on a fake remote.
+5. **Codex roles run on a Codex model Justin picks, not Opus.** Justin: "When I use Codex, instead of Opus 5.5 it will use a Codex model that I will specify, like 6.1 Sol."
+   - Every Codex pipeline role uses one model and effort, set in one place.
+   - The default is `gpt-6.1-sol` at `xhigh`.
+   - An AC proves that changing the setting changes every role's model.
+   - The available models are listed in `~/.codex/models_cache.json`: gpt-6.1-sol, gpt-6-sol, gpt-6-astra, gpt-6-luna, gpt-5.6-sol/terra/luna, gpt-reserve.
+   - The docs say in one line how to change it. Claude's Opus roles stay unchanged.
 4. **The plan is pre-approved** ("just go over the plan and just start it"). Questions get recommended defaults that make Codex behave like Claude, and the main session applies them.
 
 ## Facts already established (2026-10-28, on this Mac)
