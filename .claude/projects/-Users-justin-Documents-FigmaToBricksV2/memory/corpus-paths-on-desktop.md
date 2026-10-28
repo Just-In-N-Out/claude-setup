@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 41446e56-3547-4d3a-8588-7488cbdf535c
-  modified: 2026-10-28T18:18:05Z
+  modified: 2026-10-28T18:24:53.287Z
 ---
 
 `corpus/corpus.json` lists absolute Mac paths (`/Users/justin/...`). `tools/lib/corpus-files.ts` checks them with `existsSync`, so on the Windows desktop (Ubuntu, `/home/justin`) every corpus file reads as missing and `npm run corpus` measures nothing (checked 2026-10-26). In the repo: `corpus/files/hydraulics-home.json` and `gro-home.json`. Not on this machine: v1's design, final-design and page-1 (`~/Desktop/figmaplugin` doesn't exist).
@@ -13,6 +13,8 @@ metadata:
 Browser gates: Linux Chrome is available through the portable wrapper in "How to apply" below (photo-hotspots fixer/verifier/auditor runs, 2026-10-28; Chrome for Testing 156.0.8078.47 with Node 22.23.3). `test/browser/chrome.ts` still defaults `CHROME_PATH` to the macOS app, so set the override. Without a working Chrome every `test/browser` test is `{ skip }`ped (`hasChrome()`), yet `npm run test:browser` exits 0: an AC's browser test run alone counts only when its output says `skipped 0`; the full suite skips `woff.test.ts` (Mac font path) and has known font-environment failures, so compare by complete test name/hierarchy against the actual base. `npm run check` likewise exits 0 while corpus tests skip (`corpus-convert` soundness, plugin = replay): run them for real in scratch `git archive` trees of head and base, `node_modules` linked, only `corpus/corpus.json` rewritten to local files (node counts from that tree's `countNodes(loadSnapshot())`), and compare by test name. Historical 2026-10-26 observations were 55 unit + 5 performance skips and `corpus-colors` failures on Repairs/Services (colour records); remeasure the current base.
 
 CPU/CSS execution profile proven 2026-10-28 (photo-hotspots execution recovery): the default software-GPU path stalled real animation frames, fades and touch even in plain HTML. A fresh owned wrapper containing `exec /home/justin/.cache/chrome-for-testing/chrome-f2b --disable-software-rasterizer "$@"`, with Node `/home/justin/.local/node-v22.23.3/bin/node` also first on PATH, restored actual frames/fades/taps and complete 391/386-case head/base suites plus measured corpus captures. Lower-level GPU cause is unknown; this proves the CPU/CSS profile, not general GPU/WebGL or Safari behavior. Preserve failed default-profile receipts. Browser lifecycle repair `2e74eb5` (await owned Chrome exit before closing its own stderr) was explicitly overlaid only on the old base harness; production/assertions/rendering stayed unchanged. Recreate the wrapper in each role's own scratch, record actual executable/flags, and use the same profile on both sources; do not depend on removed scratch paths.
+
+Real files on this machine for blast-radius probes and byte-identity receipts: five, not four: hydraulics, GRO, the repo-root Repairs and brainstorm debug files, and the Services save from git (`git show 2199895:figma-to-bricks-debug-page-1.json`, extracted to scratch or evidence, never the worktree). Services holds a closing CTA a four-file list misses (closing-cta planner, 2026-10-28).
 
 Re-pointing `corpus.json`'s hydraulics/gro entries to `corpus/files/` in a scratch copy (never the worktree) un-skips 22 corpus unit tests (sandbox-convert, paste-id invariants, corpus-convert): 2278 pass vs 2256 with 55 skips (label-floor review 1).
 
