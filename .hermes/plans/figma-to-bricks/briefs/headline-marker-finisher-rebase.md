@@ -5,12 +5,13 @@ Role: fresh pipeline finisher. Justin authorized continuation through merge, one
 ## Scope and pins
 
 - Own `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/headline-marker`, branch `worktree-headline-marker`.
-- Expected original HEAD `d6fff71aa4b131f113285d3748a079ccc7ce7c5e`; original base `f46f8a20dec5558ce85b246db48ef83c13ca72d2`.
-- Main folder `/home/justin/Documents/FigmaToBricksV2`; last known main `70d54085ea034190909846de77ce9e4e57587b1e`. Read-only main access in this assignment.
+- Expected incoming HEAD `f992469cccbcbd3a33c8355658b359737aa88d95`; incoming merge-base `70d54085ea034190909846de77ce9e4e57587b1e`.
+- Main folder `/home/justin/Documents/FigmaToBricksV2`; last known main `27b787b78d88850cbb9863bb31fcfc840406331c` (completed label-floor build 2026-10-28.2). Read-only main access in this assignment.
 - Acceptance: AC1–AC13 from `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/plan-approved.md`, amended by the worktree plan's `Changed by review fix pass 1` and `Changed by review fix pass 2`. AC13 is live paste check 3bo.
 - Original-head verifier and blind auditor both returned clean. The orchestrator ran ac-check: `READY FOR THE USER: 12 of 13 ACs proven on d6fff71; live ACs owed to the user: AC13`. This accepts only that original head; it does not cover your rebased commit.
+- Current recovery: a fresh verifier on f992469 proved AC1–AC12 and all integrated gates against 70d5408, but returned `integration-required` because main advanced during that run to 27b787b with label-floor changes in shared styling/layout. Its report is `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/integration-f992469/verifier/report.json`. This is integration drift, not a reported feature defect. Rebase onto the coherent latest main and preserve both feature contracts. This is the first newly observed main drift during acceptance; if main moves again during this integration, apply the established take-lock-before-rebase rule to avoid an endless race.
 - Current plan `docs/plans/2026-10-26-headline-marker.md`; ledger `.superpowers/sdd/2026-10-26-headline-marker/progress.md`; feature section of `docs/HANDOFF.md`.
-- Your evidence only: `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/finisher-rebase/`. Create fresh task-owned scratch with `mktemp -d` and `mkdir` without `-p`; never reuse another role's scratch.
+- Your evidence only: `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/finisher-rebase-2/`. Create fresh task-owned scratch with `mktemp -d` and `mkdir` without `-p`; never reuse another role's scratch.
 - You are not alone in the codebase. Other chats own slider-autoplay and photo-hotspots. Do not touch their worktrees, evidence, processes or edits, and never revert anyone else's changes. Preserve both sides' meaning during integration.
 
 ## Skills
