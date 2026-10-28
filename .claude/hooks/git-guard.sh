@@ -60,13 +60,16 @@ KEYWORDS = {"if", "then", "else", "elif", "do", "while", "until", "{", "!", "fi"
 
 
 HEREDOC_RE = re.compile(r"<<(-?)[ \t]*(?:'([^'\n]*)'|\"([^\"\n]*)\"|\\?([^\s;&|()<>'\"]+))")
+SHELLS = {"bash", "sh", "zsh", "dash", "ksh"}
 
 
 def normalize(cmd):
     """One quote-aware pass, so shlex sees one line: unquoted newlines become ';', backslash-newline
-    joins lines, unquoted '#' comments are dropped, and each heredoc body line becomes its own segment
-    with its quote characters blanked (an apostrophe in a body must not open a quote)."""
-    out, q, i, n, pending, prev = [], None, 0, len(cmd), [], " "
+    joins lines, unquoted '#' comments are dropped. A heredoc body is read as commands only when a shell
+    or eval reads it (bash <<EOF, cat <<EOF | sh): each of its lines becomes its own segment, with its
+    quote characters blanked (an apostrophe in a body must not open a quote). Any other heredoc body
+    (cat > f <<EOF, python3 - <<EOF, git commit -F - <<EOF) is data and is dropped."""
+    out, q, i, n, pending, prev, start = [], None, 0, len(cmd), [], " ", 0
     while i < n:
         c = cmd[i]
         if q:
@@ -98,7 +101,7 @@ def normalize(cmd):
             m = HEREDOC_RE.match(cmd, i)
             if m:
                 delim = next(g for g in m.groups()[1:] if g is not None)
-                pending.append((delim, m.group(1) == "-"))
+                pending.append((delim, m.group(1) == "-", start))
                 out.append(" ")
                 prev = " "
                 i = m.end()
@@ -107,20 +110,47 @@ def normalize(cmd):
             out.append(" ; ")
             prev = ";"
             i += 1
-            for delim, dash in pending:
+            for delim, dash, at in pending:
+                script = feeds_shell("".join(out[at:]))
                 while i < n:
                     j = cmd.find("\n", i)
                     line = cmd[i:n if j < 0 else j]
                     i = n if j < 0 else j + 1
                     if (line.lstrip("\t") if dash else line) == delim:
                         break
-                    out.append(" " + re.sub(r"[\\'\"`]", " ", line) + " ; ")
+                    if script:
+                        out.append(" " + re.sub(r"[\\'\"`]", " ", line) + " ; ")
             pending = []
+            start = len(out)
             continue
         out.append(c)
         prev = c
         i += 1
+        if c in ";&|()":
+            start = len(out)
     return "".join(out)
+
+
+def feeds_shell(text):
+    """True when the command at the start of text (a heredoc's command, up to the end of its line) is a
+    shell or eval, or pipes into one: then the heredoc body is a script, not data."""
+    try:
+        toks = lex(text)
+    except ValueError:
+        toks = lex(re.sub(r"[\\'\"]", "", text))
+    words, nxt = [], []
+    for k, t in enumerate(toks):
+        if op_kind(t) == "sep":
+            if t == "|":
+                nxt = toks[k + 1:]
+            break
+        words.append(t)
+    for w in (words, nxt):
+        seg = next(segments(w), [])
+        rest = seg[split_prefix(seg)[1]:]
+        if rest and os.path.basename(rest[0]) in SHELLS | {"eval"}:
+            return True
+    return False
 
 
 def lex(s):
@@ -209,6 +239,58 @@ def no_verify(a):
     return len(a) >= 9 and "--no-verify".startswith(a)
 
 
+def split_prefix(w):
+    """The leading assignments (NAME=value, also after env and export) and wrappers (env, command, exec,
+    nohup, builtin, time, timeout) of a segment: (assignments, index of the command word)."""
+    env = {}
+    i = 0
+    while i < len(w):
+        t = w[i]
+        if t in KEYWORDS:
+            i += 1
+        elif ASSIGN_RE.match(t):
+            k, v = t.split("=", 1)
+            env[k] = v
+            i += 1
+        elif os.path.basename(t) == "env":
+            i += 1
+            while i < len(w):
+                x = w[i]
+                if x in ("-u", "--unset"):
+                    i += 2
+                elif x.startswith("-") or x == "--":
+                    i += 1
+                elif ASSIGN_RE.match(x):
+                    k, v = x.split("=", 1)
+                    env[k] = v
+                    i += 1
+                else:
+                    break
+        elif os.path.basename(t) in ("command", "exec", "nohup", "builtin"):
+            i += 1
+            while i < len(w) and w[i].startswith("-"):
+                i += 1
+        elif t == "time":
+            i += 1
+            while i < len(w) and w[i].startswith("-"):
+                i += 1
+        elif os.path.basename(t) == "timeout":
+            i += 1
+            while i < len(w) and w[i].startswith("-"):
+                i += 2 if w[i] in ("-s", "--signal", "-k", "--kill-after") else 1
+            i += 1  # the duration
+        elif t == "export":
+            i += 1
+            for x in w[i:]:
+                if ASSIGN_RE.match(x):
+                    k, v = x.split("=", 1)
+                    env[k] = v
+            i = len(w)
+        else:
+            break
+    return env, i
+
+
 class Guard:
     def __init__(self, home):
         self.home = home
@@ -240,52 +322,7 @@ class Guard:
         return cwd
 
     def segment(self, w, cwd, depth):
-        env = {}
-        i = 0
-        while i < len(w):
-            t = w[i]
-            if t in KEYWORDS:
-                i += 1
-            elif ASSIGN_RE.match(t):
-                k, v = t.split("=", 1)
-                env[k] = v
-                i += 1
-            elif os.path.basename(t) == "env":
-                i += 1
-                while i < len(w):
-                    x = w[i]
-                    if x in ("-u", "--unset"):
-                        i += 2
-                    elif x.startswith("-") or x == "--":
-                        i += 1
-                    elif ASSIGN_RE.match(x):
-                        k, v = x.split("=", 1)
-                        env[k] = v
-                        i += 1
-                    else:
-                        break
-            elif os.path.basename(t) in ("command", "exec", "nohup", "builtin"):
-                i += 1
-                while i < len(w) and w[i].startswith("-"):
-                    i += 1
-            elif t == "time":
-                i += 1
-                while i < len(w) and w[i].startswith("-"):
-                    i += 1
-            elif os.path.basename(t) == "timeout":
-                i += 1
-                while i < len(w) and w[i].startswith("-"):
-                    i += 2 if w[i] in ("-s", "--signal", "-k", "--kill-after") else 1
-                i += 1  # the duration
-            elif t == "export":
-                i += 1
-                for x in w[i:]:
-                    if ASSIGN_RE.match(x):
-                        k, v = x.split("=", 1)
-                        env[k] = v
-                i = len(w)
-            else:
-                break
+        env, i = split_prefix(w)
         for k in env:
             if k in IDENTITY_ENV:
                 self.deny("identity")

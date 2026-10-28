@@ -287,6 +287,20 @@ ac7_guard_parses_shell_forms() {
     $'echo hi # don\'t worry\ngit commit '"$nv"$' -m x\necho it\'s done' "git commit -m a#b $nv"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
+  # a heredoc body is a script only when a shell (or eval) reads it; every other heredoc body is data
+  for c in $'bash <<\'EOF\'\ngit commit '"$nv"$' -m x\nEOF' $'sh -s <<EOF\necho hi\ngit push '"$nv"$'\nEOF' \
+    $'env FOO=1 bash <<\'EOF\'\ncd /x && git commit '"$nv"$'\nEOF' $'timeout 60 /bin/bash <<-\'EOF\'\n\tgit commit '"$nv"$'\n\tEOF' \
+    $'cat <<\'EOF\' | bash\ngit commit '"$nv"$' -m x\nEOF' $'cat <<\'A\' >a.txt; bash <<\'B\'\nnot a command\nA\ngit push '"$nv"$'\nB'; do
+    expect deny 'skip the git hooks' "$c" || return 1
+  done
+  mkdir -p "$H/Leorna/x"
+  for c in $'cat >> brief.md <<\'EOF\'\n## Addendum\n- The builder\'s first task: fetch main over HTTPS (`git -c credential.helper= -c \'credential.helper=!gh auth git-credential\' fetch https://github.com/LeornaAI/leorna-control-plane.git main:refs/remotes/origin/main`), then check it.\nEOF' \
+    $'python3 - <<\'EOF\'\np = "t.test.sh"\ns = open(p).read().replace("git commit -n -m x", "git commit '"$nv"$' -m x")\nopen(p, "w").write(s)\nEOF' \
+    $'git commit -F - <<\'MSG\'\ndocs: off switch\n\ngit config --global --unset core.hooksPath\nMSG' \
+    $'cat > notes.md <<\'EOF2\'\nOff switch, in a terminal:\n    git config --global --unset core.hooksPath\nEOF2'; do
+    expect none '' "$c" || return 1
+  done
+  expect none '' $'cat > .claude/settings.json <<\'EOF\'\n{"permissions": {"deny": ["Bash(git push --force:*)", "Bash(git push -f:*)"]}}\nEOF' "$H/Leorna/x" || return 1
   # a git command only inside a quoted message, a heredoc body or a comment is not a git command
   for c in "git commit -m 'run git commit $nv later'" "echo 'git push $nv'" "echo hi # git commit $nv" \
     "git commit -m \"\$(cat <<'EOF'"$'\nfix: don\'t skip hooks\n\nCo-Authored-By: someone\nEOF\n)"' \
