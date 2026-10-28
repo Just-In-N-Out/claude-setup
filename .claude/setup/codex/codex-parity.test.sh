@@ -991,26 +991,37 @@ ac9_codex_commit_identity_no_trailer() {
   ! grep -qi 'co-authored-by' <<<"$l1$l2" || fail "a commit carries a Co-authored-by line" || return 1
   done_ok
 }
-ac11_codex_runs_sync_outside_sandbox() {
-  local c0
-  need "$SRC/.codex/rules/setup-sync.rules" && need "$SRC/.claude/setup/codex/config.managed.toml" || return 1
-  probe_ready || return 1
-  newroot; echo "# test folder: $S"; install_setup
+ac11_try() { # ac11_try <with-rule|no-rule>: one probe run asked to run the setup sync; sets ac11_pushed=yes|no
+  local mode=$1 c0
+  newroot; echo "# $mode: test folder $S"; install_setup
   mkdir -p "$H/.hermes/skills/sd/foo" "$H/work" "$S/run"; echo "Version: v1" >"$H/.hermes/skills/sd/foo/SKILL.md"
   attach_repo || fail "setup repo attach failed" || return 1
   cp "$SRC/.claude/setup/codex/config.managed.toml" "$H/.codex/config.toml"
   sed -e "s|/Users/justin|$H|g" -e "s|/home/justin|$H|g" "$SRC/.codex/rules/setup-sync.rules" >"$H/.codex/rules/setup-sync.rules"
+  [ "$mode" = no-rule ] && rm -f "$H/.codex/rules/setup-sync.rules"
   rm -f "$H/.codex/hooks.json"                                  # no hooks: only Codex itself can sync
   echo "Version: v2 (ac11)" >"$H/.hermes/skills/sd/foo/SKILL.md"; c0=$(remote_count)
-  probe_begin "$H" || return 1; trap probe_end EXIT
-  # on-request is the interactive default. Under "never" Codex 0.163 rejects every escalation and drops the
-  # approved prefixes from its prompt, so no rule can lift the sandbox. exec has no human to approve
-  # anything, so a sync that ran unsandboxed was approved by setup-sync.rules.
+  probe_begin "$H" || return 1
   probe_exec "$H" "$H/work" "$S/run" "Run the setup sync now: run exactly $H/.claude/setup/sync.sh as one plain command, then tell me its last line." \
-    -c 'approval_policy="on-request"' || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
-  remote_has .hermes/skills/sd/foo/SKILL.md "Version: v2 (ac11)" && [ "$(remote_count)" -gt "$c0" ] || fail "the edit is not on the remote: $(cat "$S/run/last.txt")" || return 1
-  [ ! -e "$H/.claude-setup.git/setup-sync.lock" ] || fail "sync lock left" || return 1
-  done_ok
+    --approve-for-me; probe_end
+  jq -r 'select(.type == "item.completed") | .item | select(.type != "reasoning" and .type != "error") | "#   \(.type): \(.command // ((.message // .text // "") | .[0:140])) \(if .exit_code == null then "" else "(exit \(.exit_code))" end)"' "$S/run/events.jsonl"
+  if remote_has .hermes/skills/sd/foo/SKILL.md "Version: v2 (ac11)" && [ "$(remote_count)" -gt "$c0" ]; then ac11_pushed=yes; else ac11_pushed=no; fi
+  [ ! -e "$H/.claude-setup.git/setup-sync.lock" ] || fail "$mode: sync lock left" || return 1
+  echo "# $mode: pushed=$ac11_pushed"; rm -rf "$S"
+}
+ac11_codex_runs_sync_outside_sandbox() {
+  local with without
+  need "$SRC/.codex/rules/setup-sync.rules" && need "$SRC/.claude/setup/codex/config.managed.toml" || return 1
+  probe_ready || return 1
+  # Codex 0.163 `exec` can't isolate the rule: under approval "never" (the exec default) it rejects every
+  # escalation and drops the approved prefixes from its prompt, so no rule lifts the sandbox; exec takes no
+  # on-request policy; and with --approve-for-me an automatic reviewer may approve the escalation itself.
+  # So the run with the rule must push AND the same run without the rule must not: only then did the rule do it.
+  ac11_try with-rule || return 1; with=$ac11_pushed
+  ac11_try no-rule || return 1; without=$ac11_pushed
+  [ "$with" = yes ] || fail "with the allow rule, the sync did not reach the remote" || return 1
+  [ "$without" = no ] || fail "without the allow rule the sync was approved anyway (--approve-for-me's reviewer), so this run can't show the rule did it; check it live in the Codex TUI: 'run the setup sync' must run without an approval prompt" || return 1
+  return 0
 }
 ac17_codex_skill_edit_reaches_remote() {
   local c0 msg
