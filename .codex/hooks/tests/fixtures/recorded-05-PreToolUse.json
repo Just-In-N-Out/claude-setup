@@ -1,0 +1,17 @@
+{
+  "session_id": "01a18268-5082-76b3-8b10-64bdccd19946",
+  "turn_id": "01a18268-64c4-7e41-ab2b-654d42eb7713",
+  "transcript_path": null,
+  "cwd": "/FAKEHOME/work",
+  "hook_event_name": "PreToolUse",
+  "model": "gpt-6-luna",
+  "permission_mode": "bypassPermissions",
+  "tool_name": "collaborationspawn_agent",
+  "tool_input": {
+    "agent_type": "capture_role",
+    "task_name": "capture_run",
+    "fork_turns": "all",
+    "message": "<encrypted by Codex; redacted>"
+  },
+  "tool_use_id": "call_23ac8cebad864177ab6d4e90b5ea580b"
+}

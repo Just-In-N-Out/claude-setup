@@ -1,0 +1,32 @@
+Task 2 findings: real Codex hook payloads, recorded 2026-10-28 by capture-payloads.sh through the probe home
+(codex-cli 0.163.0 on macOS, parent gpt-6-luna at low, capture_role agent file with model gpt-5.6-luna,
+--dangerously-bypass-hook-trust). Raw stream: recorded-events.jsonl; payloads: recorded-NN-<Event>.json
+(paths sanitized to /FAKEHOME, /FAKEROOT, /CODEXHOME; the encrypted spawn messages are redacted).
+
+F1  SubagentStop fires for the spawned capture_role agent with last_assistant_message
+    ("DONE AGENTS-MARK-5521", stop_hook_active false). A {decision: block} continues that agent: a second
+    SubagentStop arrives with stop_hook_active true and the corrected text, and the parent's final answer
+    is the corrected text ("BLOCKWORD-ALPHA BLOCKWORD-BETA"). Gate: PASS.
+F2  Both blocking reasons reach the agent: its corrected answer holds both words. Codex merges the two
+    SubagentStop blocks. (codex-hooks.sh still sends one combined block, AC reason first.)
+F3  A subagent's PostToolUse carries agent_id and agent_type (recorded-11); main-thread payloads carry
+    agent_id null. skill-review-nudge.sh tells them apart. Gate: PASS.
+F4  Hooks run outside the sandbox: the logger wrote $HOME/hook-wrote-here although the fake home lies
+    outside the workspace root. Gate: PASS.
+F5  Subagents get the global AGENTS.md: the agent's first answer named the marker AGENTS-MARK-5521.
+F6  The spawn tool's hook tool_name is "collaborationspawn_agent" (wait: "collaborationwait_agent"; shell
+    commands: "Bash"). spawn_agent tool_input fields: agent_type, task_name, fork_turns, message (the
+    message is encrypted in the hook payload). The model's tool list: spawn_agent, send_message,
+    followup_task, wait_agent, interrupt_agent, list_agents (no close_agent). Codex's own instructions say
+    full-history forks (fork_turns omitted or "all") inherit the parent's model and effort, so pipeline
+    roles must be spawned with fork_turns "none"; agents-header.md now says so.
+F7  SubagentStart and SubagentStop report model gpt-5.6-luna for capture_role (the role file's model),
+    while the parent ran gpt-6-luna. Gate: PASS.
+F8  codex-cli 0.163.0.
+
+Stable fixtures used by codex-parity.test.sh are copies of these recordings:
+  SessionStart.json = recorded-01   UserPromptSubmit.json = recorded-02   PreToolUse-Bash.json = recorded-17
+  PostToolUse-Bash.json = recorded-18   PostToolUse-Bash-subagent.json = recorded-11
+  SubagentStop.json = recorded-13   Stop.json = recorded-19
+schema/: the rust-v0.163.0 hook input/output schemas (codex-rs/hooks/schema/generated).
+models_cache.sample.json: slugs and reasoning levels from ~/.codex/models_cache.json (2026-10-28).

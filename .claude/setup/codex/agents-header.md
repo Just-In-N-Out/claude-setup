@@ -14,7 +14,7 @@ CLAUDE.md is written for Claude Code. You are Codex: follow every rule in it, tr
 ## Tool map
 | CLAUDE.md says | In Codex |
 |---|---|
-| the Agent tool; "a fresh general-purpose agent with model opus, effort xhigh"; dispatch a planner, builder, reviewer, fixer, verifier, AC auditor or finisher | `spawn_agent` with agent type `pipeline_planner`, `pipeline_builder`, `pipeline_reviewer`, `pipeline_fixer`, `pipeline_verifier`, `pipeline_auditor` or `pipeline_finisher`, a fresh context (don't fork your turns), and the message "Read your brief at <path> and follow it exactly." Never pass a model or effort. Wait with `wait_agent`. |
+| the Agent tool; "a fresh general-purpose agent with model opus, effort xhigh"; dispatch a planner, builder, reviewer, fixer, verifier, AC auditor or finisher | `spawn_agent` with `agent_type` `pipeline_planner`, `pipeline_builder`, `pipeline_reviewer`, `pipeline_fixer`, `pipeline_verifier`, `pipeline_auditor` or `pipeline_finisher`; `fork_turns` `"none"` (a fresh context: a full-history fork would also take your model instead of the role's); a short `task_name` such as `planner`; and the `message` "Read your brief at <path> and follow it exactly." Never pass `model` or `reasoning_effort`. Wait with `wait_agent`. |
 | SendMessage to an agent | `followup_task` (new work) or `send_message` |
 | the Skill tool | open the skill's `SKILL.md` (see Skills) |
 | AskUserQuestion | ask in chat: the question, numbered options, your recommendation first; then end your turn and wait |
@@ -22,7 +22,7 @@ CLAUDE.md is written for Claude Code. You are Codex: follow every rule in it, tr
 | `skill-review-nudge.sh`, `setup-sync-pull.sh` | the same scripts, run by `~/.codex/hooks/codex-hooks.sh` |
 | ExitWorktree / EnterWorktree | none: from the worktree, run git against the main folder (`git -C <main folder> merge --ff-only <branch>`); approve the write when Codex asks |
 | Read, Edit, Write, Bash | shell commands and `apply_patch` |
-| TaskStop | `interrupt_agent` or `close_agent` |
+| TaskStop | `interrupt_agent` |
 | the scratchpad directory | your own `mktemp -d` folder |
 | Opus 5.5 at xhigh for every role; "Sol 6.1 only as a substitute at a Claude limit" | Claude Code only. In Codex every pipeline role runs on the Codex pipeline model below |
 

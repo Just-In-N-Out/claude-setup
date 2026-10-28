@@ -1,0 +1,11 @@
+{
+  "session_id": "01a18268-5082-76b3-8b10-64bdccd19946",
+  "turn_id": "01a18268-64c4-7e41-ab2b-654d42eb7713",
+  "transcript_path": null,
+  "cwd": "/FAKEHOME/work",
+  "hook_event_name": "Stop",
+  "model": "gpt-6-luna",
+  "permission_mode": "bypassPermissions",
+  "stop_hook_active": false,
+  "last_assistant_message": "BLOCKWORD-ALPHA BLOCKWORD-BETA"
+}

@@ -1,12 +1,11 @@
 {
-  "_fixture": "synthetic: built from the rust-v0.163.0 hook input schema (schema/); replace with a Task 2 recording",
-  "session_id": "019a0000-0000-7000-8000-000000000001",
-  "transcript_path": "/FAKEHOME/.codex/sessions/2026/10/28/rollout-x.jsonl",
+  "session_id": "01a18268-5082-76b3-8b10-64bdccd19946",
+  "turn_id": "01a18268-64c4-7e41-ab2b-654d42eb7713",
+  "transcript_path": null,
   "cwd": "/FAKEHOME/work",
   "hook_event_name": "Stop",
-  "model": "gpt-6.1-sol",
-  "permission_mode": "default",
-  "turn_id": "turn-1",
+  "model": "gpt-6-luna",
+  "permission_mode": "bypassPermissions",
   "stop_hook_active": false,
-  "last_assistant_message": "done"
+  "last_assistant_message": "BLOCKWORD-ALPHA BLOCKWORD-BETA"
 }

@@ -1,15 +1,14 @@
 {
-  "_fixture": "synthetic: built from the rust-v0.163.0 hook input schema (schema/); replace with a Task 2 recording",
-  "session_id": "019a0000-0000-7000-8000-000000000001",
-  "transcript_path": "/FAKEHOME/.codex/sessions/2026/10/28/rollout-x.jsonl",
+  "session_id": "01a18268-5082-76b3-8b10-64bdccd19946",
+  "turn_id": "01a18268-b840-7a10-b820-67ec90c5678c",
+  "transcript_path": null,
+  "agent_transcript_path": null,
   "cwd": "/FAKEHOME/work",
   "hook_event_name": "SubagentStop",
-  "model": "gpt-6-luna",
-  "permission_mode": "default",
-  "turn_id": "turn-2",
-  "agent_id": "019a0000-0000-7000-8000-0000000000a1",
-  "agent_type": "pipeline_planner",
-  "agent_transcript_path": null,
+  "model": "gpt-5.6-luna",
+  "permission_mode": "bypassPermissions",
   "stop_hook_active": false,
+  "agent_id": "01a18268-b82d-7710-acf0-0b0e2a144d26",
+  "agent_type": "capture_role",
   "last_assistant_message": "DONE AGENTS-MARK-5521"
 }

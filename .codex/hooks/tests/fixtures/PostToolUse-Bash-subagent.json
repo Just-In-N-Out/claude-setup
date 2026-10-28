@@ -1,18 +1,17 @@
 {
-  "_fixture": "synthetic: built from the rust-v0.163.0 hook input schema (schema/); replace with a Task 2 recording",
-  "session_id": "019a0000-0000-7000-8000-000000000001",
-  "transcript_path": "/FAKEHOME/.codex/sessions/2026/10/28/rollout-x.jsonl",
+  "session_id": "01a18268-5082-76b3-8b10-64bdccd19946",
+  "turn_id": "01a18268-b840-7a10-b820-67ec90c5678c",
+  "agent_id": "01a18268-b82d-7710-acf0-0b0e2a144d26",
+  "agent_type": "capture_role",
+  "transcript_path": null,
   "cwd": "/FAKEHOME/work",
   "hook_event_name": "PostToolUse",
-  "model": "gpt-6-luna",
-  "permission_mode": "default",
-  "turn_id": "turn-2",
+  "model": "gpt-5.6-luna",
+  "permission_mode": "bypassPermissions",
   "tool_name": "Bash",
-  "tool_use_id": "call_2",
   "tool_input": {
     "command": "echo sub-ran"
   },
-  "tool_response": "sub-ran",
-  "agent_id": "019a0000-0000-7000-8000-0000000000a1",
-  "agent_type": "pipeline_planner"
+  "tool_response": "sub-ran\n",
+  "tool_use_id": "exec-de2f974c-0902-4b16-a9a6-72aa92aaeddb"
 }

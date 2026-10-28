@@ -1,0 +1,16 @@
+{
+  "session_id": "01a18268-5082-76b3-8b10-64bdccd19946",
+  "turn_id": "01a18268-b840-7a10-b820-67ec90c5678c",
+  "agent_id": "01a18268-b82d-7710-acf0-0b0e2a144d26",
+  "agent_type": "capture_role",
+  "transcript_path": null,
+  "cwd": "/FAKEHOME/work",
+  "hook_event_name": "PreToolUse",
+  "model": "gpt-5.6-luna",
+  "permission_mode": "bypassPermissions",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "echo sub-ran"
+  },
+  "tool_use_id": "exec-de2f974c-0902-4b16-a9a6-72aa92aaeddb"
+}
