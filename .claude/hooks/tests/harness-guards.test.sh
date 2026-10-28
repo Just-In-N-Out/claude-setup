@@ -263,6 +263,11 @@ ac6_guard_asks_before_leorna_push() {
     expect none '' "$c" "$H/code/site" || return 1
   done
   mkdir -p "$H/Leorna-old/x"; expect none '' "git push" "$H/Leorna-old/x" || return 1
+  # a cd inside ( … ) ends with the subshell; a cd inside { …; } does not
+  expect ask "$re" "(cd $H/code/site && git status); git push" "$lc" || return 1
+  expect ask "$re" "( (cd $H/code/site) ; git status ) && git push origin feat/x" "$lc" || return 1
+  expect none '' "(cd ~/Leorna/leorna-client && git fetch) && git push origin main" "$H/code/site" || return 1
+  expect ask "$re" "{ cd ~/Leorna/leorna-client; }; git push" "$H/code/site" || return 1
   for c in "git fetch" "git status" "git log -1" "git pull --ff-only" "git -C ~/Leorna/leorna-client fetch"; do
     expect none '' "$c" "$lc" || return 1
   done

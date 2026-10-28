@@ -209,7 +209,7 @@ def feeds_shell(text):
             break
         words.append(t)
     for w in (words, nxt):
-        seg = next(segments(w), [])
+        seg = next((x for x in segments(w) if isinstance(x, list)), [])
         rest = seg[split_prefix(seg)[1]:]
         if rest and os.path.basename(rest[0]) in SHELLS | {"eval"}:
             return True
@@ -246,6 +246,8 @@ def op_kind(tok):
 
 
 def segments(tokens):
+    """The simple commands in tokens, split at ; & && | || ( ) and friends. Each '(' or ')' is also yielded,
+    as that one-character string, so scan() can end a subshell's cd."""
     seg = []
     skip = False
     for t in tokens:
@@ -259,6 +261,9 @@ def segments(tokens):
             if seg:
                 yield seg
             seg = []
+            for c in t:
+                if c in "()":
+                    yield c
         elif k == "redir":
             if seg and seg[-1].isdigit():
                 seg.pop()  # the fd number of 2>&1, 2>/dev/null
@@ -387,8 +392,14 @@ class Guard:
     # ---- shell ----
     def scan(self, cmd, cwd, depth):
         toks, subs = tokens(cmd)
+        saved = []  # the folder at each open '(': a cd inside a subshell ends with it
         for seg in segments(toks):
-            cwd = self.segment(seg, cwd, depth, subs)
+            if seg == "(":
+                saved.append(cwd)
+            elif seg == ")":
+                cwd = saved.pop() if saved else cwd
+            else:
+                cwd = self.segment(seg, cwd, depth, subs)
         return cwd
 
     def segment(self, w, cwd, depth, subs):
