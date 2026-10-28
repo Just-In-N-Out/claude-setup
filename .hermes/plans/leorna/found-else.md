@@ -161,3 +161,4 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 2026-10-28: 86bcm901j review 2
 - Minor (pre-existing on main): the copied renderers quote keys in warnings/errors (e.g. "permissions key %q is not supported"), so a token in a dropped key reaches the JSON report and summary through the render stage; fix belongs in the client renderer or the report writer.
 - Info: npx reads the project's own `.npmrc`, so a cloned repo can redirect the registry for any pinned npx server regardless of the template's env (supports "prefer a hosted server").
+- 2026-10-28 (86bcm901b fixer 2, info, upstream content): the agent-skills TOML bodies of `/build`, `/spec` and others have no `$ARGUMENTS`, yet `/build` picks its mode from the arguments; Claude Code 2.1.312 appears to append "ARGUMENTS: <input>" when a body has no placeholder (read from minified source, not run). 901b's AC5 step 5 (`/spec <idea>`) is the first live check.
