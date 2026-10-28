@@ -51,6 +51,7 @@ This README is written for the AI agent (Claude Code) on either machine, and for
 | `sync.sh attach` | Run once on a new machine, after the bare clone (see `desktop.md`). It backs up files it would overwrite to `~/.claude-setup-backup/<time>/`. |
 | `sync.sh links` | Creates the desktop memory links and writes project `CLAUDE.md` files into projects cloned on this machine. Run it after cloning a project. |
 | `sync.sh init` | Mac only, already done. Creates `~/.claude-setup.git`. |
+| `sync.sh changed` | Exits 0 when there is anything to sync, 1 when not. No lock, network or staging; Codex's push worker uses it. |
 | `bash ~/.claude/setup/sync.test.sh` | Tests `sync.sh` with two fake homes and a local remote: one-commit pushes, the secret gate, the 5 MB limit, the excluded paths, attach, memory links, both sync directions, conflicts, deletions. It never touches the real repo. Run it after changing `sync.sh`. |
 
 After a pull, `sync.sh` also does three things:
@@ -71,7 +72,8 @@ All paths are relative to `$HOME`.
 | `.claude/CLAUDE.md` | Global rules for every Claude Code session: the story pipeline (planner → builder → reviews → verifier → AC auditor → `ac-check.sh` → finisher), git identities, Leorna rules, which skills to load. |
 | `.claude/settings.json` | Claude Code settings: the hook registrations, plugins, status line, model and effort. |
 | `.claude/hooks/*.sh`, `.claude/hooks/tests/` | The pipeline's guard hooks (`subagent-ac-gate`, `subagent-lessons-gate`, `subagent-handback-gate`, `skill-review-nudge`) and their tests. They need `jq`. |
-| `.claude/setup/` | This sync system: `sync.sh`, `manifest.txt`, `exclude.txt`, `gitleaks.toml`, `projects.tsv`, `mac.md`, `desktop.md`. |
+| `.claude/setup/` | This sync system: `sync.sh`, `manifest.txt`, `exclude.txt`, `gitleaks.toml`, `projects.tsv`, `mac.md`, `desktop.md`. `codex/` holds the Codex adapter (see *Codex*). |
+| `.codex/hooks.json`, `.codex/hooks/`, `.codex/agents/`, `.codex/rules/setup-sync.rules` | Codex's hooks, the seven `pipeline_*` roles and the rule that lets Codex run `sync.sh` (see *Codex*). |
 | `.claude/projects/<key>/memory/` | Claude's per-project memory notes. `<key>` is the project's absolute path with every non-alphanumeric character turned into `-`. The Mac keys look like `-Users-justin-…`; the desktop links its own keys to them (see `projects.tsv`). |
 | `.claude/project-docs/<name>/CLAUDE.md` | Copies of the personal projects' own `CLAUDE.md` files. Those never go in the projects' repos; `projects.tsv` maps each one to its folder. |
 | `.claude/plans/*.md` | Claude Code plan-mode designs. |
@@ -115,6 +117,32 @@ All paths are relative to `$HOME`.
 5. **The other machine gets it** at its next `sync.sh pull`.
 6. **Leorna code** moves between machines only through its own branches: push when Justin says "push", then fetch on the other machine.
 
+## Codex
+
+Codex CLI, signed in with ChatGPT, uses this same setup on both machines: the same rules and story pipeline, the same Hermes skills, Claude's memory notes, and the same sync. Machine steps: `mac.md` and `desktop.md`, section "Codex".
+
+**Install and set up, once per machine:**
+1. Install: Mac `npm install -g @openai/codex`; desktop `curl -fsSL https://chatgpt.com/codex/install.sh | sh`. Keep both on the same version (`codex --version`, 0.163.0 or newer).
+2. Sign in: `codex login` (Justin, in his own terminal).
+3. `bash ~/.claude/setup/codex/setup-codex.sh`: builds `~/.codex/AGENTS.md`, links the skills into `~/.agents/skills`, merges its managed blocks into `~/.codex/config.toml` (with a backup) and checks what Codex loads.
+4. Open `codex`, type `/hooks` and trust the six hooks, again after any change to `~/.codex/hooks.json`.
+
+**How it fits together:**
+- **Rules:** `~/.codex/AGENTS.md` is generated from `~/.claude/CLAUDE.md` plus a Codex header with a tool map (`~/.claude/setup/codex/agents-header.md`), by `build-codex.sh`. Edit the sources, never `AGENTS.md`; every sync rebuilds it.
+- **Skills:** the Hermes skills Claude uses, linked at `~/.agents/skills/<name>`. **Memory:** Claude's notes; the session-start hook shows the index. Codex's own memories stay off.
+- **Hooks:** session start pulls with Claude's `setup-sync-pull.sh`; after each turn a background worker (`~/.claude/hooks/setup-sync-push.sh`) pushes through the same `sync.sh` lock; SubagentStop runs Claude's AC and lessons gates; a commit guard blocks AI co-author trailers.
+- **Sandbox:** the `claude-setup` permission profile lets Codex write skills, plans, rules and memory, but not the sync machinery, hooks or `settings.json`. `~/.codex/rules/setup-sync.rules` lets exactly `sync.sh` and `set-pipeline-model.sh` run outside the sandbox.
+
+**The pipeline model:** File: `~/.claude/setup/codex/pipeline-model.toml`; value: `model` and `model_reasoning_effort`. Every Codex pipeline role runs on it. To switch, tell any agent "switch the Codex pipeline model to X": it runs `~/.claude/setup/codex/set-pipeline-model.sh X`, which (1) checks X against `~/.codex/models_cache.json`, (2) edits that file and rewrites the role files, (3) runs `sync.sh`. The other machine gets it at its next pull.
+
+**What syncs and what never does:**
+- Synced: `.codex/hooks.json`, `.codex/hooks/`, `.codex/agents/*.toml`, `.codex/rules/setup-sync.rules`, `.claude/setup/codex/`, `.claude/hooks/setup-sync-push.sh`.
+- Never synced (each machine keeps its own): `~/.codex/auth.json`, `~/.codex/config.toml` (with hook trust), the generated `~/.codex/AGENTS.md`, sessions, history, logs, caches, plugins, `~/.agents/skills` links and the probe home `~/.codex-probe/`. `sync.sh`'s denylist blocks them even if the manifest is widened.
+
+**Don't use Codex's `/import` from Claude Code:** it would make a second copy of the rules, skills and hooks that drifts from these.
+
+**Tests:** `bash ~/.claude/setup/codex/codex-parity.test.sh` (offline, no sign-in). Probe tests run a real `codex exec` through `~/.codex-probe` and run only when named.
+
 ## Troubleshooting
 
 | Message | Fix |
@@ -126,6 +154,8 @@ All paths are relative to `$HOME`.
 | Skills missing in Claude | `~/.hermes/scripts/update-skills-library.sh` (needs `~/.hermes/skills-library`). |
 | Memory not shared between machines | `~/.claude/setup/sync.sh links` |
 | `git has no user.email` | Set the identity: `desktop.md`, step 3. |
+| Codex: "hooks need review" | Open `codex`, type `/hooks` and trust them. |
+| Codex follows old rules | `bash ~/.claude/setup/codex/build-codex.sh` (`--check` exits 1 when `~/.codex/AGENTS.md` is stale). |
 
 ## Status
 

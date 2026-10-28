@@ -134,11 +134,45 @@ The **[Justin]** steps need admin rights, a reboot, a browser or a GUI. The agen
    - **[Justin]** in Claude, run `/plugin` and install **superpowers**, **frontend-design**, **context7** and **claude-md-management** (all from `claude-plugins-official`);
    - **[Justin]** add ClickUp: `claude mcp add --transport http --scope user clickup https://mcp.clickup.com/mcp`, then sign in through `/mcp`. The login stays on this machine.
 7. **Check:**
-   - `bash ~/.claude/setup/sync.test.sh` ends with `passed 28, failed 0`;
+   - `bash ~/.claude/setup/sync.test.sh` ends with `passed 32, failed 0`;
    - `bash ~/.claude/hooks/tests/subagent-ac-gate.test.sh` and the other hook tests pass;
    - `~/.claude/setup/sync.sh status` reports no errors;
    - in Claude, `/skills` lists engineering-best-practices, leorna, code-review-practice and the rest;
    - live round trip: make a harmless one-line edit to a skill here, run `~/.claude/setup/sync.sh`, then on the Mac run `~/.claude/setup/sync.sh pull` and see it. Then the other way round.
+
+## Codex
+
+Codex CLI, signed in with ChatGPT, uses this same setup inside Ubuntu: the same rules and story pipeline, the same Hermes skills, Claude's memory notes, and the same sync. Do Part 3 above first.
+
+**Install and set up (once):**
+1. **Install** the standalone binary (no Node needed): `curl -fsSL https://chatgpt.com/codex/install.sh | sh`, then `codex --version` (0.163.0 or newer, the same version as the Mac). If `codex doctor` reports the sandbox helper missing: `sudo apt install -y bubblewrap`.
+2. **[Justin] Sign in:** `codex login`. WSL2 passes the browser callback to Windows; if that fails, use `codex login --device-auth`. The login lands in `~/.codex/auth.json`, which never syncs.
+3. `~/.claude/setup/sync.sh pull`
+4. `bash ~/.claude/setup/codex/setup-codex.sh`. It builds `~/.codex/AGENTS.md`, links the skills into `~/.agents/skills`, merges its managed blocks into `~/.codex/config.toml` (backup in `~/.codex/backups/`), and checks what Codex loads.
+5. **[Justin]** Open `codex`, type `/hooks` and trust the six hooks. Do it again after any change to `~/.codex/hooks.json`: until then Codex skips them and warns that they need review.
+6. **Check:** `bash ~/.claude/setup/codex/setup-codex.sh --check` exits 0, and a new `codex` session starts with a "Setup sync:" line.
+
+**How Codex finds the setup:**
+- **Rules:** `~/.codex/AGENTS.md` is generated from `~/.claude/CLAUDE.md` plus a Codex header with a tool map (`~/.claude/setup/codex/agents-header.md`). Edit those two, never `AGENTS.md`; every sync rebuilds it. A project's own `AGENTS.md`, or else its `CLAUDE.md`, loads too.
+- **Skills:** the Hermes skills Claude uses, linked at `~/.agents/skills/<name>` by `~/.hermes/scripts/update-skills-library.sh`.
+- **Memory:** Claude's notes in `~/.claude/projects/<key>/memory/` (the desktop folders link to the Mac's, see "Desktop notes"); the session-start hook shows the index. Codex's own memories stay off.
+- **Pipeline:** the seven `pipeline_*` roles in `~/.codex/agents/`.
+
+**Hooks:** session start pulls with Claude's own `setup-sync-pull.sh` and refreshes the rules; after each turn the Stop hook pushes in the background (`~/.claude/hooks/setup-sync-push.sh`) through the same `sync.sh` lock Claude uses; SubagentStop runs Claude's AC and lessons gates; a commit guard blocks AI co-author trailers. `~/.codex/rules/setup-sync.rules` lets Codex run `/home/justin/.claude/setup/sync.sh` itself, outside the sandbox.
+
+**The pipeline model:** File: `~/.claude/setup/codex/pipeline-model.toml`; value: `model` and `model_reasoning_effort`. To switch, tell any agent "switch the Codex pipeline model to X": it runs `~/.claude/setup/codex/set-pipeline-model.sh X`, which (1) checks X against `~/.codex/models_cache.json`, (2) edits that file and rewrites the role files, (3) runs `sync.sh`. The Mac gets it at its next pull.
+
+**What syncs and what never does:**
+- Synced: `~/.codex/hooks.json`, `~/.codex/hooks/`, `~/.codex/agents/*.toml`, `~/.codex/rules/setup-sync.rules`, `~/.claude/setup/codex/`, `~/.claude/hooks/setup-sync-push.sh`.
+- Never synced, per machine: `~/.codex/auth.json`, `~/.codex/config.toml` (and its hook trust), the generated `~/.codex/AGENTS.md`, sessions, history, logs, caches, plugins, `~/.agents/skills` links, and `~/.codex-probe/`.
+
+**Don't use Codex's `/import` from Claude Code.** It would make a second copy of the rules, skills and hooks that drifts from these.
+
+**Troubleshooting:**
+- "hooks need review": open `codex`, `/hooks`, trust them.
+- "Not logged in": `codex login` (or `--device-auth`).
+- Codex follows old rules: `bash ~/.claude/setup/codex/build-codex.sh` (`--check` exits 1 when `AGENTS.md` is stale).
+- Tests: `bash ~/.claude/setup/codex/codex-parity.test.sh` (offline, no sign-in).
 
 ## Desktop notes
 

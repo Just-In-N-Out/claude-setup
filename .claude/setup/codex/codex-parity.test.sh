@@ -904,7 +904,41 @@ ac21_pipeline_model_switch() {
   done_ok
 }
 ac22_roles_use_switched_model() { fail "not written"; }
-ac23_docs_updated() { fail "not written"; }
+codex_section() { # codex_section <md file>: the text of its "Codex" section, up to the next heading as high
+  awk 'BEGIN { lvl = 0 }
+    /^#+ / { n = index($0, " ") - 1
+             if (lvl && n <= lvl) exit
+             if (!lvl && $0 ~ /Codex/) { lvl = n } }
+    lvl { print }' "$1"
+}
+ac23_docs_updated() {
+  local f sec s base n total added
+  for f in .claude/setup/mac.md .claude/setup/desktop.md .github/README.md; do
+    sec=$(codex_section "$SRC/$f")
+    [ -n "$sec" ] || fail "$f has no Codex section" || return 1
+    for s in "codex login" "setup-codex.sh" "/hooks" "pipeline-model.toml" "set-pipeline-model.sh" "models_cache.json" \
+             "role files" "sync.sh" "auth.json" "config.toml" "AGENTS.md" "/import"; do
+      grep -qF -- "$s" <<<"$sec" || fail "$f Codex section lacks '$s'" || return 1
+    done
+    grep -qiE "never (synced|syncs)|not synced" <<<"$sec" || fail "$f does not say what never syncs" || return 1
+    grep -qiE "(don't|do not|never) use[^.]*/import" <<<"$sec" || fail "$f does not say not to use /import" || return 1
+    case $f in
+      *mac.md) grep -qF "npm install -g @openai/codex" <<<"$sec" || fail "mac.md lacks the install command" || return 1 ;;
+      *) grep -qF "curl -fsSL https://chatgpt.com/codex/install.sh | sh" <<<"$sec" || fail "$f lacks the install command" || return 1 ;;
+    esac
+    echo "# $f: Codex section complete ($(wc -l <<<"$sec" | tr -d ' ') lines)"
+  done
+  total=$(grep -c '^ok "' "$SRC/.claude/setup/sync.test.sh")
+  grep -qF "passed $total, failed 0" "$SRC/.claude/setup/desktop.md" || fail "desktop.md does not expect 'passed $total, failed 0'" || return 1
+  ! grep -q "passed 28, failed 0" "$SRC/.claude/setup/desktop.md" || fail "desktop.md still says passed 28" || return 1
+  # CLAUDE.md: exactly one added line, in Setup Sync, naming Codex
+  base=$(base_commit) || return 1
+  [ "$(srcgit diff --numstat "$base" -- .claude/CLAUDE.md | awk '{print $1" "$2}')" = "1 0" ] || fail "CLAUDE.md is not exactly one added line" || return 1
+  added=$(srcgit diff -U0 "$base" -- .claude/CLAUDE.md | sed -n 's/^+\([^+].*\)/\1/p')
+  grep -q Codex <<<"$added" || fail "the added CLAUDE.md line does not mention Codex" || return 1
+  awk '/^## /{ s = ($0 ~ /^## Setup Sync/) } s' "$SRC/.claude/CLAUDE.md" | grep -qxF -- "$added" || fail "the added line is not in Setup Sync" || return 1
+  echo "# CLAUDE.md: + $added"
+}
 ac24_linux_suites() { fail "not written"; }
 ac25_desktop_codex_parity() { fail "not written"; }
 ac26_mac_install_smoke() { fail "not written"; }
