@@ -125,6 +125,9 @@ Tell the user to add the public key at: **https://github.com/settings/keys**
 ```bash
 ssh -T git@github.com
 # Expected: "Hi <username>! You've successfully authenticated..."
+# If a system include fails ownership checks, inspect its metadata and Host patterns first. For an irrelevant VM-only
+# include, ssh -F ~/.ssh/config -T git@github.com keeps the existing user config/key; verify the exact expected account.
+# Use the same SSH command via process-scoped GIT_SSH_COMMAND for git, without editing system config, remotes or helpers.
 ```
 
 **Step 4: Configure git to use SSH for GitHub**
