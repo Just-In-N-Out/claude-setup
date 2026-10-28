@@ -339,6 +339,20 @@ ac6_guard_asks_before_leorna_push() {
   expect ask "$re" "( (cd $H/code/site) ; git status ) && git push origin feat/x" "$lc" || return 1
   expect none '' "(cd ~/Leorna/leorna-client && git fetch) && git push origin main" "$H/code/site" || return 1
   expect ask "$re" "{ cd ~/Leorna/leorna-client; }; git push" "$H/code/site" || return 1
+  # eval runs in this shell: its cd stays; cd - goes back to the folder before the last cd (\$OLDPWD), and is an
+  # unknown folder (so a push asks) when this command never set it
+  for c in "eval 'cd ~/Leorna/leorna-client'; git push" "eval cd \$HOME/Leorna/leorna-client && git push origin feat/x" \
+    "cd ~/Leorna/leorna-client && cd /tmp && cd - && git push" "cd - && git push" "cd -; git -C sub push" \
+    "cd -; cd .. && git push" "OLDPWD=$lc; cd - >/dev/null; git push"; do
+    expect ask "$re" "$c" "$H/code/site" || return 1
+  done
+  expect ask "$re" "cd $H/code/site && cd - && git push" "$lc" || return 1
+  for c in "cd ~/Leorna/leorna-client && cd $H/code/site && cd - && cd - && git push" "cd -; cd $H/code/site && git push" \
+    "cd ~/Leorna/leorna-client; (cd /tmp); cd $H/code/site; cd - && cd $H/code/site && git push"; do
+    expect none '' "$c" "$H/code/site" || return 1
+  done
+  expect none '' "eval \"cd $H/code/site\"; git push" "$lc" || return 1
+  expect none '' "cd - && git status" "$H/code/site" || return 1
   # ~/Leorna may be a link to the real folder: its logical and physical paths are both Leorna
   local h0=$H; H="$S/home2"; mkdir -p "$H/work" "$S/data/Leorna/lc"; ln -s "$S/data/Leorna" "$H/Leorna"
   expect ask "$re" "git push" "$H/Leorna/lc" || return 1
@@ -367,6 +381,10 @@ ac7_guard_parses_shell_forms() {
     "echo it's here; git commit $nv -m x" "git commit -m 'a#b' $nv" "echo hi # a comment"$'\n'"git commit $nv" \
     "bash -c \$'git commit $nv -m x'" "eval \$'git push \\x2d-no-verify'" "echo \$'it\\'s'; git commit $nv" \
     "echo \"\$(echo \$'a\\')'; git push $nv)\"" "echo \$\$'\\'; git push $nv #'" \
+    "(( n <<= 1 ))"$'\n'"git commit $nv -m x" "echo \$(( n <<= 1 ))"$'\n'"git push $nv" \
+    "eval 'export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x'; git commit -m x" \
+    "eval GIT_CONFIG_COUNT=1; GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x" \
+    "GIT_CONFIG_COUNT=1 eval 'GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x'" \
     $'cat <<\'EOF\' >notes.txt\nit\'s a note\nEOF\ngit commit '"$nv" "git commit $nv -m x 2>&1 >/dev/null" \
     $'cat <<\'EOF\' >n.txt\nit\'s\nEOF\ngit commit '"$nv"$' -m x\necho it\'s done' \
     $'echo hi # don\'t worry\ngit commit '"$nv"$' -m x\necho it\'s done' "git commit -m a#b $nv"; do

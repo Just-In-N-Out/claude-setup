@@ -65,8 +65,10 @@ ASSIGN_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 KEYWORDS = {"if", "then", "else", "elif", "do", "while", "until", "{", "!", "fi", "done", "}"}
 
 
-HEREDOC_RE = re.compile(r"<<(-?)[ \t]*(?:'([^'\n]*)'|\"([^\"\n]*)\"|(\\?)([^\s;&|()<>'\"]+))")
+# a heredoc's << (not <<=, arithmetic's shift-assign) and its delimiter word
+HEREDOC_RE = re.compile(r"<<(?!=)(-?)[ \t]*(?:'([^'\n]*)'|\"([^\"\n]*)\"|(\\?)([^\s;&|()<>'\"]+))")
 SHELLS = {"bash", "sh", "zsh", "dash", "ksh"}
+UNKNOWN = "\x7f?"  # a folder the guard can't know (cd - with no cd before it in the command); a push there asks
 PH = "\x01"  # a placeholder for a substitution or heredoc body: PH <index into subs> PH
 PH_RE = re.compile("\x01([0-9]+)\x01")
 HS = "\x02"  # marks a here-string's word in a segment (HS + the word): it is the command's stdin, not an arg
@@ -585,13 +587,16 @@ class Guard:
 
     def path(self, p, cwd):
         p = expand_home(p, self.home)
+        if not os.path.isabs(p) and UNKNOWN in (cwd, p):  # relative to an unknown folder: still unknown
+            return UNKNOWN
         return os.path.normpath(os.path.join(cwd, p))
 
     # ---- shell ----
-    def scan(self, cmd, cwd, depth, shenv=None):
-        """shenv: the shell's variables (export NAME=value, or a bare NAME=value), inherited by a nested
-        shell; a subshell's changes to them and to the folder end at its ')'."""
-        shenv = {} if shenv is None else dict(shenv)
+    def scan(self, cmd, cwd, depth, shenv=None, share=False):
+        """shenv: the shell's variables (export NAME=value, or a bare NAME=value; OLDPWD after a cd), inherited
+        by a nested shell; a subshell's changes to them and to the folder end at its ')'. With share, the script
+        runs in this shell (eval): its changes to shenv stay, and the folder it ends in is returned."""
+        shenv = {} if shenv is None else (shenv if share else dict(shenv))
         toks, subs = tokens(cmd)
         saved = []
         items = list(segments(toks))
@@ -639,10 +644,15 @@ class Guard:
                 self.scan(h, cwd, depth + 1, env)
         name = os.path.basename(cmd[0])
         if name in ("cd", "pushd"):
-            args = [a for a in cmd[1:] if not a.startswith("-")]
+            args = [a for a in cmd[1:] if not a.startswith("-") or (a == "-" and name == "cd")]
             if not args:
-                return self.home or cwd
-            return self.path(args[0], cwd)
+                new = self.home or cwd
+            elif args[0] == "-":  # back to $OLDPWD: known when this command set it, else unknown
+                new = self.path(shenv["OLDPWD"], cwd) if shenv.get("OLDPWD") else UNKNOWN
+            else:
+                new = self.path(args[0], cwd)
+            shenv["OLDPWD"] = cwd
+            return new
         if name == "git":
             self.git(cmd[1:], cwd)
         elif name == "gh":
@@ -651,8 +661,9 @@ class Guard:
             script = shell_c(cmd[1:])
             if script is not None:
                 self.scan(script, cwd, depth + 1, env)
-        elif depth < 3 and name == "eval":
-            self.scan(" ".join(cmd[1:]), cwd, depth + 1, env)
+        elif depth < 3 and name == "eval":  # runs in this shell, like a { …; } group: its cd and variables stay
+            shenv.update(env)
+            return self.scan(" ".join(cmd[1:]), cwd, depth + 1, shenv, share=True)
         return cwd
 
     def env_rules(self, env):
@@ -735,7 +746,9 @@ class Guard:
                 self.deny("remote")
 
     def under_leorna(self, d):
-        """d is in ~/Leorna, by its logical or its physical path (~/Leorna may be a link)."""
+        """d is in ~/Leorna, by its logical or its physical path (~/Leorna may be a link); an unknown folder may be."""
+        if d == UNKNOWN:
+            return True
         if not self.home:
             return False
         logical = os.path.normpath(os.path.join(self.home, "Leorna"))
