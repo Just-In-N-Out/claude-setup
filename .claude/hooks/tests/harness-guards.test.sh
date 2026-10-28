@@ -149,8 +149,19 @@ ac1_guard_denies_identity_override() {
     "git config \$'user.email' x@example.test" "git config \$\"user.name\" X"; do
     expect deny 'commit identity' "$c" || return 1
   done
+  # git takes any unique abbreviation of a long option (--auth is --author, --val is --value)
+  for c in "git commit --auth='X <x@example.test>' -m x" "git commit --au 'X <x@example.test>' -m x" \
+    "git commit -m x --autho='Z <z@example.test>'" "git config set --global --val x user.email x@example.test" \
+    "git config --global --rep user.email x@example.test" "git config --global --a user.name X" \
+    "git config --global --remove-s user" "git config --global --unset-a user.email"; do
+    expect deny 'commit identity' "$c" || return 1
+  done
   expect deny 'commit identity' "git -c user.email=x@example.test commit -m x" "$H/work" agent-1 || return 1
   for c in "git log --author=x" "git shortlog -se" "git config user.email" "git config --global --get user.email" \
+    "git commit --amend --no-edit" "git commit --all -m x" "git commit --mess '--author=x' -q" \
+    "git config --get-a user.email" "git config --global --get-r '^user'" "git config --fil x.cfg --get user.email" \
+    "git config --global --un user.email" "git config --global --fi x.cfg user.email x@example.test" \
+    "git config --global --uns core.hooksPath" "git config --global --e" \
     "git config get user.name" "git config --get-regexp '^user\.'" "unset GIT_AUTHOR_EMAIL" \
     "git log --format='%ae' -1" "git commit -m 'set --author later'" "git commit -m x"; do
     expect none '' "$c" || return 1
@@ -190,8 +201,17 @@ ac3_guard_denies_remote_and_credential_changes() {
     "git -c credential.helper=store fetch origin" "git -c credential.helper= push origin main" \
     "git -c credential.https://github.com.helper=store push origin main" \
     "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=credential.helper GIT_CONFIG_VALUE_0=store; git fetch origin" \
-    "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=credential.helper 'GIT_CONFIG_VALUE_0=!gh auth git-credential' && git push https://github.com/LeornaAI/leorna-client.git feat/x"; do
+    "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=credential.helper 'GIT_CONFIG_VALUE_0=!gh auth git-credential' && git push https://github.com/LeornaAI/leorna-client.git feat/x" \
+    "git config --global --unset-al credential.helper" "git config --global --remove-s credential" \
+    "git config --global --a credential.helper store" "git config --global --rep credential.helper store" \
+    "git config --global --ty path credential.helper store" "git config set --global --comm hi credential.helper store"; do
     expect deny 'credential helper' "$c" || return 1
+  done
+  for c in "git config --global --rename-s remote.origin remote.x" "git config --remove-sec remote.origin"; do
+    expect deny 'remote URL' "$c" || return 1
+  done
+  for c in "git config --global --edit" "git config --global --ed" "git config edit --global" "git config -e"; do
+    expect deny 'config --edit' "$c" || return 1
   done
   for c in "git remote -v" "git remote add upstream https://github.com/x/y.git" "git config --get-regexp credential" \
     "git config --local --list" "git config get credential.helper" "git config --get remote.origin.url" \
@@ -212,6 +232,8 @@ ac4_guard_denies_hook_bypass() {
     "git --config-env=core.hooksPath=X commit -m x" "git config --global core.hooksPath /other" \
     "git config --global --unset core.hooksPath" "git config --local core.hooksPath .githooks" \
     "git config unset --global core.hooksPath" "git config --global core.hooksPath ~/.claude/githooks-old" \
+    "git config --global --unset-a core.hooksPath" \
+    "git config --global --remove-s core" "git config --global --rep core.hooksPath /x" \
     "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x git commit -m x"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done

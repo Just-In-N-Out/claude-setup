@@ -364,6 +364,45 @@ def no_verify(a):
     return len(a) >= 9 and "--no-verify".startswith(a)
 
 
+def long_opts(negatable, plain=""):
+    """A command's long options as git 2.53's -h lists them: --x and --no-x for each negatable one."""
+    names = {"--" + n for n in (negatable + " " + plain).split()}
+    return frozenset(names | {"--no-" + n for n in negatable.split()})
+
+
+_CFG_FILE = "global system local worktree file blob "
+_CFG_SHOW = "null name-only show-origin show-scope show-names "
+_CFG_TYPES = "bool int bool-or-int bool-or-str path expiry-date"
+CONFIG_OPTS = {  # git config: legacy mode (""), then each subcommand
+    "": long_opts(_CFG_FILE + _CFG_SHOW + "type default comment fixed-value includes",
+                  "get get-all get-regexp get-urlmatch replace-all add unset unset-all rename-section remove-section "
+                  "list edit get-color get-colorbool " + _CFG_TYPES),
+    "list": long_opts(_CFG_FILE + _CFG_SHOW + "type includes", _CFG_TYPES),
+    "get": long_opts(_CFG_FILE + _CFG_SHOW + "all regexp value fixed-value url type includes default", _CFG_TYPES),
+    "set": long_opts(_CFG_FILE + "type all value fixed-value comment append", _CFG_TYPES),
+    "unset": long_opts(_CFG_FILE + "all value fixed-value"),
+    "rename-section": long_opts(_CFG_FILE), "remove-section": long_opts(_CFG_FILE), "edit": long_opts(_CFG_FILE),
+}
+COMMIT_OPTS = long_opts("quiet verbose file author date message reedit-message reuse-message fixup squash reset-author "
+                        "signoff template edit cleanup status gpg-sign all include interactive patch only dry-run short "
+                        "branch ahead-behind porcelain long null amend untracked-files pathspec-from-file "
+                        "pathspec-file-nul",
+                        "trailer unified inter-hunk-context no-verify verify no-post-rewrite post-rewrite allow-empty "
+                        "allow-empty-message")
+
+
+def canon(a, names):
+    """The long option git reads for a: a itself when exact, else the one option in names it abbreviates (the
+    part before '=' is matched); an unknown or ambiguous one stays as it is (git refuses an ambiguous one)."""
+    if not a.startswith("--") or a == "--":
+        return a
+    k, eq, v = a.partition("=")
+    if k in names:
+        return a
+    hits = [x for x in names if x.startswith(k)]
+    return hits[0] + eq + v if len(hits) == 1 else a
+
+
 def split_prefix(w):
     """The leading assignments (NAME=value, also after env and export) and wrappers (env, command, exec,
     nohup, builtin, time, timeout) of a segment: (assignments, index of the command word)."""
@@ -647,11 +686,12 @@ class Guard:
             a = rest[i]
             if a == "--":
                 break
-            if a == "--author" or a.startswith("--author="):
+            c = canon(a, COMMIT_OPTS)  # --auth=… is --author=…
+            if c == "--author" or c.startswith("--author="):
                 self.deny("identity")
             if no_verify(a):
                 self.deny("hooks")
-            if a in takes:
+            if c in takes:
                 i += 2
                 continue
             if a.startswith("-") and not a.startswith("--") and len(a) > 1:
@@ -679,9 +719,10 @@ class Guard:
         write_flags = {"--add", "--unset", "--unset-all", "--replace-all", "--rename-section", "--remove-section",
                        "-e", "--edit"}
         flags, pos = set(), []
+        opts = CONFIG_OPTS.get(rest[0] if rest else "", CONFIG_OPTS[""])  # a subcommand's options, or legacy mode's
         i = 0
         while i < len(rest):
-            a = rest[i]
+            a = canon(rest[i], opts)  # --unset-a is --unset-all, --val is --value
             if a in takes:
                 i += 2
                 continue
