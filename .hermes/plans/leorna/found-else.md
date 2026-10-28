@@ -144,3 +144,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - P3 (docs): `internal/library/README.md`'s older gate paragraph says "Failure reasons quote the offending text"; the new policy reasons never repeat a value.
 - 2026-10-28 (86bcm901b builder, low, environment): on the WSL desktop a headless Chrome capture that times out leaves its `--type=gpu-process` child running indefinitely (the builder killed its own 9). Another session's Chrome under `/tmp/f2b-chrome-*` had been running ~12 h; not this story's, left untouched.
 - 2026-10-28 (86bcm901b builder, info, pre-existing on base `1ee7157`): govulncheck reports 1 vulnerability in a required module the code does not call; the gate passes.
+
+## 2026-10-28: 86bcm901j review 1
+- Info (environment): Justin's own Codex app-server daemon and interactive Codex sessions write the real `~/.codex/*.sqlite` continuously; real-tool isolation proofs must rest on the scratch `CODEX_HOME` and the real `config.toml` timestamp.
+- Info: codex-cli 0.165.0 refuses a top-level `profile = "x"`, so `[profiles.*]` aren't a privilege path on 0.165.
