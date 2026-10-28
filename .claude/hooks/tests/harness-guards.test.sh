@@ -411,6 +411,32 @@ ac8_precommit_blocks_claude_md_except_setup_repo() {
       commit_in "$r" -m "vendored $f"; passed "$r: $f" || return 1
     done
   done
+  # a conflicted merge, cherry-pick or revert that brings in the other side's tracked CLAUDE.md, unchanged, concludes
+  # (as the same merge without a conflict does); a CLAUDE.md this side changed is still refused
+  r="$H/code/merge"; gitrepo "$r" || return 1
+  nohooks -C "$r" checkout -q -b up && echo theirs >"$r/CLAUDE.md" && echo up >"$r/a.txt" && ing git -C "$r" add CLAUDE.md a.txt \
+    && nohooks -C "$r" commit -q -m "up: a tracked CLAUDE.md (fixture)" && nohooks -C "$r" checkout -q main && echo main >"$r/a.txt" \
+    && ing git -C "$r" add a.txt && nohooks -C "$r" commit -q -m main || fail "merge fixture" || return 1
+  ing git -C "$r" merge -q up >/dev/null 2>&1; echo resolved >"$r/a.txt"; ing git -C "$r" add a.txt
+  [ -f "$r/.git/MERGE_HEAD" ] || fail "the merge fixture did not stop on a conflict" || return 1
+  echo mine >"$r/CLAUDE.md"; ing git -C "$r" add CLAUDE.md
+  commit_in "$r" --no-edit; refused pre-commit 'CLAUDE\.md' "conflicted merge, CLAUDE.md changed on this side" || return 1
+  echo theirs >"$r/CLAUDE.md"; ing git -C "$r" add CLAUDE.md
+  commit_in "$r" --no-edit; passed "conflicted merge bringing in the other side's CLAUDE.md" || return 1
+  r="$H/code/pick"; gitrepo "$r" || return 1
+  nohooks -C "$r" checkout -q -b pk && mkdir -p "$r/docs" && echo theirs >"$r/docs/CLAUDE.md" && echo pk >"$r/b.txt" \
+    && ing git -C "$r" add docs b.txt && nohooks -C "$r" commit -q -m "pk (fixture)" && nohooks -C "$r" checkout -q main \
+    && echo main >"$r/b.txt" && ing git -C "$r" add b.txt && nohooks -C "$r" commit -q -m main || fail "pick fixture" || return 1
+  ing git -C "$r" cherry-pick pk >/dev/null 2>&1; echo resolved >"$r/b.txt"; ing git -C "$r" add b.txt
+  [ -f "$r/.git/CHERRY_PICK_HEAD" ] || fail "the cherry-pick fixture did not stop on a conflict" || return 1
+  commit_in "$r" --no-edit; passed "conflicted cherry-pick bringing in the picked commit's docs/CLAUDE.md" || return 1
+  r="$H/code/revert"; gitrepo "$r" || return 1
+  echo old >"$r/CLAUDE.md" && echo c1 >"$r/c.txt" && ing git -C "$r" add CLAUDE.md c.txt && nohooks -C "$r" commit -q -m "r1 (fixture)" \
+    && ing git -C "$r" rm -q CLAUDE.md && echo c2 >"$r/c.txt" && ing git -C "$r" add c.txt && nohooks -C "$r" commit -q -m r2 \
+    && echo c3 >"$r/c.txt" && ing git -C "$r" add c.txt && nohooks -C "$r" commit -q -m r3 || fail "revert fixture" || return 1
+  ing git -C "$r" revert --no-edit HEAD~1 >/dev/null 2>&1; echo resolved >"$r/c.txt"; ing git -C "$r" add c.txt
+  [ -f "$r/.git/REVERT_HEAD" ] || fail "the revert fixture did not stop on a conflict" || return 1
+  commit_in "$r" --no-edit; passed "conflicted revert bringing back the reverted commit's parent's CLAUDE.md" || return 1
   setuprepo || fail "setup repo" || return 1
   for f in .claude/CLAUDE.md .claude/project-docs/x/CLAUDE.md; do
     mkdir -p "$(dirname "$H/$f")"; echo "# rules" >"$H/$f"; (cd "$H" && ing git --git-dir="$H/.claude-setup.git" add -- "$f")

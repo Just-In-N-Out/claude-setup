@@ -2,8 +2,9 @@
 # Justin's git hooks for every repo: global core.hooksPath = ~/.claude/githooks (one-time per machine:
 #   git config --global core.hooksPath '~/.claude/githooks').
 # Each other file here is a wrapper: githook.sh <hook name> <git's args>.
-#   pre-commit        no staged CLAUDE.md (any folder; vendor/ and node_modules/ ignored; setup repo excepted),
-#                     then author and committer email by folder
+#   pre-commit        no staged CLAUDE.md (any folder; vendor/ and node_modules/ ignored; setup repo excepted;
+#                     one a conflicted merge, cherry-pick or revert brings in unchanged is not new), then author
+#                     and committer email by folder
 #   pre-merge-commit  author and committer email by folder
 #   commit-msg        no Co-authored-by trailer naming an AI
 # Then it hands over to the repo's own <git common dir>/hooks/<name> when that is executable
@@ -39,12 +40,23 @@ check_identity() {
     [ "$got" = "$want" ] || stop "$(echo "$who" | tr A-Z a-z) email is '$got'; this folder needs $want (CLAUDE.md, Git Commit Authorship). Don't override it: fix git config, or tell Justin (an amended commit keeps its old author)."
   done
 }
+# the commits whose files a conflicted merge, cherry-pick or revert brings in (a revert brings back its parent's)
+sides() { git rev-parse -q --verify MERGE_HEAD; git rev-parse -q --verify CHERRY_PICK_HEAD; git rev-parse -q --verify 'REVERT_HEAD^'; } 2>/dev/null
+from_side() { # from_side <path> <commits>: the staged blob is the one in one of those commits (not a new CLAUDE.md)
+  local staged c
+  staged=$(git rev-parse -q --verify ":$1" 2>/dev/null) || return 1
+  for c in $2; do [ "$(git rev-parse -q --verify "$c:$1" 2>/dev/null)" = "$staged" ] && return 0; done
+  return 1
+}
 check_claude_md() {
   setup_repo && return 0
-  local p bad=""
+  local p bad="" incoming
+  incoming=$(sides)
   while IFS= read -r -d '' p; do
     case "/$p" in */vendor/* | */node_modules/*) continue ;; esac
-    case "${p##*/}" in [Cc][Ll][Aa][Uu][Dd][Ee].[Mm][Dd]) bad="$bad $p" ;; esac
+    case "${p##*/}" in [Cc][Ll][Aa][Uu][Dd][Ee].[Mm][Dd]) ;; *) continue ;; esac
+    [ -n "$incoming" ] && from_side "$p" "$incoming" && continue
+    bad="$bad $p"
   done < <(git diff --cached --name-only -z --diff-filter=ACMRT 2>/dev/null)
   [ -z "$bad" ] || stop "CLAUDE.md files are never committed (CLAUDE.md, Git & GitHub Privacy):$bad. Unstage with git restore --staged <path> and list it in .git/info/exclude."
 }
