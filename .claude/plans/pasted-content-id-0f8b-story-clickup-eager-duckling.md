@@ -80,3 +80,9 @@ Import the 4 upstream agent definitions (code-reviewer, security-auditor, test-e
    - `found_else[]` and `skill_lessons[]`.
 2. The full plan markdown between a line `=====PLAN START=====` and a line `=====PLAN END=====`. The plan's intended path is `~/.hermes/plans/leorna/86bcm901a-agent-definitions.md`.
 3. End with `MAIN SESSION: check and save these skill_lessons now.`
+
+## Justin's standing grant (2026-10-28)
+Justin's words: "I'm gonna go shower, so just keep this running, okay? Just go with the recommended stuff the agent says, alright?"
+- My reading: this counts as **go** for the plan plus every ⭐ answer, once the plan has numbered ACs. Run the Full pipeline (build, review, fix, review, fix, verify, audit, ac-check, then a hand-over draft) without asking again.
+- Unchanged: never push, open a PR or post to ClickUp. Live ACs stay owed to Justin. No writes to his real ~/.claude and no credential changes, even if recommended. A question that needs his permission waits for him.
+- Ends when the hand-over is ready or when Justin returns and says otherwise.
