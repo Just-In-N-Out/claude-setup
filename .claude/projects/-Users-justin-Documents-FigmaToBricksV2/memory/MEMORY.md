@@ -1,6 +1,6 @@
 - [User workflow](user-workflow.md) — Figma (desktop only) → own plugin → Bricks 2.3.9; plain explanations
 - [Git and parallel agents](git-and-parallel-agents.md) — private GitHub as Just-In-N-Out (not Justin-Leorna); claude -w per feature; CLAUDE.md copied via .worktreeinclude
-- [v2 rewrite](v2-rewrite.md) — status, ExampleBricks is the target output; M1 then M2, native execution
+- [v2 rewrite](v2-rewrite.md) — rewrite/output target; autoplay released2026-10-28.3, live check3bo; current source/release evidence
 - [Run without stopping](run-without-stopping.md) — build straight through; when away: recommended options, research, resume limit-stopped agents, full report; ONE agent at a time (2026-10-28)
 - [GRO phone pass](gro-phone-pass.md) — phones for free-floating designs: the user's 4 decoration choices (2026-10-07), rules must be general
 - [Site and team](site-and-team.md) — live site on Hostinger, WPForms Pro team; after a paste: regenerate code signatures, LiteSpeed Purge All
@@ -11,5 +11,5 @@
 - [Reading the live site](reading-the-live-site.md) — LiteSpeed cache-bust, page list, site-header-room marker, stacked pastes
 - [Old site gallery](old-site-gallery.md) — Gallery paste: 38 photos rebuilt 2026-10-26 as Media AVIFs (ids 837–874) with alt text; hotlinked until pasted
 - [Checks on the desktop](corpus-paths-on-desktop.md) — Mac corpus paths do not resolve; cached Linux Chrome is available via CHROME_PATH; local corpus copies and base comparisons required
-- [B-Dry home copy](bdry-home-copy.md) — bdryswi.com → bdry.staging.growithgro.com Home: first paste done 2026-10-26, AVIFs 132–148, icons 149–154; slider + flip features building
+- [B-Dry home copy](bdry-home-copy.md) — Home AVIFs and page artifacts; autoplay28.3/3bo, slider-only paste candidate under final browser verification
 - [WSL clipboard](wsl-clipboard.md) — read the clipboard back through a UTF-8 file, never stdout (non-ASCII gets mangled)

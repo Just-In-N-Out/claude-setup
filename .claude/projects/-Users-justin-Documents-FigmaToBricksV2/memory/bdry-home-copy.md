@@ -1,6 +1,6 @@
 ---
 name: bdry-home-copy
-description: "bdryswi.com home page → B-Dry Bricks site (bdry.staging.growithgro.com, Home id 14): first paste on the clipboard 2026-10-26; slider-autoplay and flip-cards features building, headline-marker and photo-hotspots later"
+description: "bdryswi.com home page → B-Dry Bricks site (bdry.staging.growithgro.com, Home id 14): first paste on the clipboard 2026-10-26; autoplay released28.3 with live check3bo owed; local page-artifact status below"
 metadata:
   node_type: memory
   type: project
@@ -26,7 +26,7 @@ on 132, 94, 92, 93, 98 and 105. alttext.ai wasn't needed. The capture of the sou
 
 **Justin's choices:** "Plugin features first". The slider autoplay, the "60 Years" circle drawing itself, the 6 flip
 boxes and the photo hotspots stay still in the first paste; each becomes a plugin feature (worktrees `slider-autoplay`,
-`headline-marker`, `flip-cards`, `photo-hotspots`; planner briefs in `~/.hermes/plans/figma-to-bricks/briefs/`). On 2026-10-26 Justin narrowed it to two now (slider + flip boxes, "for usage reasons"); the circle and the dots come later. The slider plan is approved (auto-go) and its builder waits on Justin's Bricks slider sample before its emit task. For the hotspot dots: a card next to the dot on
+`headline-marker`, `flip-cards`, `photo-hotspots`; planner briefs in `~/.hermes/plans/figma-to-bricks/briefs/`). On 2026-10-26 Justin narrowed it to two now (slider + flip boxes, "for usage reasons"); the circle and the dots come later. The slider sample gate was lifted on2026-10-27 in favour of documented evidence; installed-Bricks proof remains owed. For the hotspot dots: a card next to the dot on
 hover/tap. For "Schedule Your Inspection Today!": Justin will make a Bricks popup and name it.
 
 **Status 2026-10-28:** flip-cards merged as build 2026-10-28.1. The paste with the v2 fixes is
@@ -38,3 +38,18 @@ it.
 **How to apply:** after Justin pastes, read the live Home fresh and compare it with the source shots; once each
 feature merges, rebuild those parts of the paste exactly as the plugin emits them. The headline-marker and
 photo-hotspots planners re-dispatch from their briefs when Justin asks.
+
+## Slider autoplay closeout — 2026-10-28
+
+Plugin feature released as build `2026-10-28.3` (build979c5b3, pushed records5e2f98b). Justin's sample gate was
+lifted: documented Bricks2.4.3 keys were authorized, installed Bricks2.3.9 proof remains live check **3bo**.
+His full-wait choice gives the B-Dry hero interval7500/speed2500; three Block slides, source-colour arrows25
+(phone24), no dots, gap0, hover/focus pause. This feature's code and push are complete.
+
+New local slider-only paste copy of the v2 base:
+`~/.hermes/plans/figma-to-bricks/evidence/slider-autoplay/finisher-closeout/home-paste-slider-autoplay.json`.
+SHA256 `f342ff5d017e78e9196a6b488d1a8eb1293a9bd6e750f9aa53ef671e4517139a`; 191 elements, original non-hero
+content/links/media/classes retained. Structural/geometry checks pass at13 widths; final motion/screenshots are
+held because independent blank-page controls also stalled. Fresh finisher-artifact-proof is investigating.
+Treat this as a candidate until that proof completes. No live-site write, clipboard replacement or Windows
+Downloads overwrite occurred. Preserve any later headline/photo-hotspot updates when combining page artifacts.

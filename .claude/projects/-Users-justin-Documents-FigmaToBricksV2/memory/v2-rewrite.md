@@ -73,3 +73,20 @@ per view, dots; the drawn peek needs a slider sample). Selecting both frames: Cm
 team switched that form to WPForms by hand), photos keep their drawn size on wide screens / zoomed out, and searchable
 lists (search, pills, count, CSV in the panel, scroll boxes). The current status, what's waiting on the user and the
 open questions live in CLAUDE.md "Start here: handoff of 2026-10-19"; read that first.
+
+## Slider autoplay — 2026-10-28
+
+Released build `2026-10-28.3`: feature `2b551344`, build commit `979c5b3`, records/push `5e2f98b`.
+Local main, origin/main and GitHub were verified equal. Figma component variants looping After delay become
+native Slider (Nestable) with Block slides; emitted interval is delay plus speed, drawn controls only,
+24px phone arrows and corner-pair recognition. Ordinary designs' five complete replays/warnings are unchanged.
+Verifier and blind auditor round3 accepted AC1–AC12 on base `27b787b`; ac-check READY FOR THE USER.
+AC13/AC14 remain live paste check **3bo** (renumbered from 3bm); real Figma test expects interval5800/speed800.
+Narrow desktop/tablet sliders can have CTA endpoints under arrows (OBS1); phones pass. Existing 12 browser
+font/environment failures and 3 unavailable Mac corpus files remain. Full details: HANDOFF and
+`docs/plans/2026-10-26-slider-autoplay-ledger.md`.
+
+SSH's system-config ownership error was resolved for the push with a command-scoped explicit trusted config,
+preserving byte-identical effective settings and verifying Just-In-N-Out; no system files/remotes/keys changed.
+Setup sync still cannot write its read-only bare repository. CLAUDE status edits remain queued behind older
+unapplied/denied records at `~/.hermes/plans/figma-to-bricks/slider-autoplay-claude-md-pending.md`.
