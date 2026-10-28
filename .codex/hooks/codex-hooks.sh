@@ -7,6 +7,7 @@
 #   pre-tool       (Bash) deny a git commit whose message has an AI co-author trailer
 #   post-tool      skill-review nudge; after a git commit, block when the new HEAD has one
 #   subagent-stop  AC gate + lessons gate, both reasons in one block (Codex has no handback tool)
+#   stop           start the detached setup push worker; returns at once, prints nothing
 # Bad input exits 0 silently: a hook must never trap Codex.
 # Tests: ~/.claude/setup/codex/codex-parity.test.sh
 set -uo pipefail
@@ -128,5 +129,6 @@ case $mode in
   pre-tool) pre_tool ;;
   post-tool) post_tool ;;
   subagent-stop) subagent_stop ;;
+  stop) [ -f "$PUSH" ] && printf '%s' "$input" | bash "$PUSH" stop >/dev/null 2>&1 ;;
 esac
 exit 0

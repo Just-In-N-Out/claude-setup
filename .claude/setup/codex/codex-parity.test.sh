@@ -15,6 +15,10 @@ REAL_HOME=$HOME
 ROOT=${CODEX_PARITY_TEST_ROOT:-$REAL_HOME/.cache/codex-parity-tests}
 FIX="$SRC/.codex/hooks/tests/fixtures"
 mkdir -p "$ROOT"
+# overrides inherited from a Codex or Claude session would point the tests at real files: drop them
+unset CODEX_HOME SETUP_SYNC_SCRIPT SETUP_SYNC_GIT_DIR SETUP_SYNC_URL SETUP_SYNC_PUSH_STATE SETUP_SYNC_PUSH_TRIES \
+  SETUP_SYNC_PUSH_WAIT CODEX_HOOKS_CLAUDE_DIR CODEX_HOOKS_BUILD CODEX_HOOKS_RULES CODEX_HOOKS_STATE_DIR CODEX_BUILD_RULES \
+  SUBAGENT_AC_STATE_DIR SUBAGENT_LESSONS_STATE_DIR SKILL_NUDGE_STATE_DIR HERMES_HOME
 . "$HERE/probe-lib.sh" 2>/dev/null || true   # missing on the base commit: probe tests then fail, never skip
 
 OFFLINE="ac1_agents_md_loaded ac3_session_start_rules_fresh ac4_codex_sees_claude_skills ac5_roles_valid_and_load
@@ -502,7 +506,56 @@ OLD
   [ ! -e "$H/.claude/setup/sync.sh" ] || fail "fake home unexpectedly has sync.sh" || return 1
   done_ok
 }
-ac14_lock_claude_and_codex_same_moment() { fail "not written"; }
+no_locks() { # nothing half-done in the fake home's setup repo or the push state
+  local G="$H/.claude-setup.git"
+  [ ! -e "$G/setup-sync.lock" ] && [ ! -e "$(PUSHST)/worker.lock" ] && [ ! -e "$G/index.lock" ] \
+    && [ ! -d "$G/rebase-merge" ] && [ ! -d "$G/rebase-apply" ]
+}
+once_on_remote() { # once_on_remote <base> <file> <text>: one commit since <base> touched <file>, and it has <text>
+  [ "$(git --git-dir="$S/remote.git" log --format=%H "$1..main" -- "$2" | wc -l | tr -d ' ')" = 1 ] && remote_has "$2" "$3"
+}
+ac14_lock_claude_and_codex_same_moment() {
+  local base round mrc wrc c id
+  push_ready || return 1
+  newroot; echo "# test folder: $S"; install_setup; attach_repo || fail "setup repo attach failed" || return 1
+  export SETUP_SYNC_PUSH_WAIT=1 SETUP_SYNC_PUSH_TRIES=8
+  # `sync.sh changed` takes no index lock, so it can't break a sync running at that moment
+  touch "$H/.claude/setup/mac.md"; id=$(fileid "$H/.claude-setup.git/index")
+  (cd "$H" && inhome bash "$H/.claude/setup/sync.sh" changed) >/dev/null 2>&1
+  [ "$(fileid "$H/.claude-setup.git/index")" = "$id" ] || fail "'sync.sh changed' rewrote the index" || return 1
+  # 1. a Claude-style manual sync and a Codex push worker start at the same instant (three rounds)
+  for round in 1 2 3; do
+    base=$(git --git-dir="$S/remote.git" rev-parse main)
+    echo "- ac14 round $round edit 1" >>"$H/.claude/setup/mac.md"; echo "- ac14 round $round edit 2" >>"$H/.claude/setup/desktop.md"
+    rm -f "$S/go"
+    (until [ -e "$S/go" ]; do sleep 0.01; done; cd "$H" && inhome bash "$H/.claude/setup/sync.sh") >"$S/manual.$round" 2>&1 & m=$!
+    (until [ -e "$S/go" ]; do sleep 0.01; done; inhome bash "$H/.claude/hooks/setup-sync-push.sh" worker) >"$S/worker.$round" 2>&1 & w=$!
+    touch "$S/go"; wait $m; mrc=$?; wait $w; wrc=$?
+    [ $wrc -eq 0 ] || fail "round $round: worker exit $wrc" || return 1
+    if [ $mrc -ne 0 ]; then
+      grep -q "another sync is running" "$S/manual.$round" || { cat "$S/manual.$round"; fail "round $round: manual sync failed"; return 1; }
+      c=$(remote_count); (cd "$H" && inhome bash "$H/.claude/setup/sync.sh") >/dev/null 2>&1 || fail "round $round: retry failed" || return 1
+      [ "$(remote_count)" = "$c" ] || fail "round $round: the retry made a new commit" || return 1
+    fi
+    echo "# round $round: manual exit $mrc, worker exit $wrc"
+    once_on_remote "$base" .claude/setup/mac.md "- ac14 round $round edit 1" && once_on_remote "$base" .claude/setup/desktop.md "- ac14 round $round edit 2" \
+      || fail "round $round: an edit is not on the remote exactly once" || return 1
+    no_locks || fail "round $round: a lock or half-done rebase is left" || return 1
+    no_flags || fail "round $round: failure flag left: $(cat "$(PUSHST)"/*.flag)" || return 1
+  done
+  # 2. a sync already holds the lock when the worker starts; it is released two seconds later
+  base=$(git --git-dir="$S/remote.git" rev-parse main)
+  echo "- ac14 held-lock edit" >>"$H/.claude/setup/mac.md"
+  mkdir "$H/.claude-setup.git/setup-sync.lock"
+  inhome bash "$H/.claude/hooks/setup-sync-push.sh" worker >"$S/worker.held" 2>&1 & w=$!
+  sleep 2; rmdir "$H/.claude-setup.git/setup-sync.lock"
+  wait $w; wrc=$?
+  [ $wrc -eq 0 ] || fail "held lock: worker exit $wrc" || return 1
+  once_on_remote "$base" .claude/setup/mac.md "- ac14 held-lock edit" || fail "held lock: edit not on the remote exactly once" || return 1
+  no_locks && no_flags || fail "held lock: lock or flag left" || return 1
+  echo "# held lock: worker waited and pushed"
+  done_ok
+}
 pull_stub() { # pull_stub <exit code> <output> [extra shell line]: a fake sync.sh (setup-sync-pull.test.sh's style)
   { printf '#!/usr/bin/env bash\n[ "$1" = pull ] || exit 9\n%s\n' "${3:-}"
     printf 'cat <<'"'"'EOF'"'"'\n%s\nEOF\nexit %s\n' "$2" "$1"; } >"$SETUP_SYNC_SCRIPT"
@@ -541,7 +594,67 @@ CASES
   grep -qF -- "- ac15 pulled rule" <<<"$ctx" && grep -q supersedes <<<"$ctx" || fail "pulled CLAUDE.md not in the context" || return 1
   done_ok
 }
-ac16_stop_hook_pushes_in_background() { fail "not written"; }
+now() { perl -MTime::HiRes=time -e 'printf "%.3f", time'; }
+wait_for() { # wait_for <seconds> <shell condition>: poll until it holds
+  local end=$(( $(date +%s) + $1 )); shift
+  until eval "$1"; do [ "$(date +%s)" -lt "$end" ] || return 1; sleep 0.2; done
+}
+remote_count() { git --git-dir="$S/remote.git" rev-list --count main 2>/dev/null || echo 0; }
+remote_has() { git --git-dir="$S/remote.git" show "main:$1" 2>/dev/null | grep -qF -- "$2"; }
+gh_() { git --git-dir="$H/.claude-setup.git" --work-tree="$H" "$@"; }   # the fake home's setup repo
+PUSHST() { echo "$H/.claude/hooks/state/setup-sync-push"; }
+no_flags() { ! ls "$(PUSHST)"/*.flag >/dev/null 2>&1; }
+worker_idle() { [ ! -d "$(PUSHST)/worker.lock" ]; }
+stop_hook() { payload Stop.json | codex_hook stop; }
+prompt_ctx() { ctx_of "$(payload UserPromptSubmit.json | codex_hook prompt)"; }
+push_ready() {
+  need "$SRC/.claude/hooks/setup-sync-push.sh" && need "$SRC/.codex/hooks/codex-hooks.sh" || return 1
+  grep -q 'stop)' "$SRC/.codex/hooks/codex-hooks.sh" || fail "codex-hooks.sh has no stop mode (not built yet)"
+}
+ac16_stop_hook_pushes_in_background() {
+  local c0 t0 t1 pid lines fh
+  push_ready || return 1
+  newroot; echo "# test folder: $S"; install_setup; attach_repo || fail "setup repo attach failed" || return 1
+  export SETUP_SYNC_PUSH_WAIT=1 SETUP_SYNC_PUSH_TRIES=8
+  c0=$(remote_count); [ "$c0" -ge 1 ] || fail "no first sync on the remote" || return 1
+  echo "- ac16 edit" >>"$H/.claude/CLAUDE.md"
+  # the hook, in its own process group, returns within 1 s with no output ...
+  t0=$(now)
+  payload Stop.json | inhome perl -MPOSIX -e 'POSIX::setsid(); exec @ARGV' bash "$H/.codex/hooks/codex-hooks.sh" stop >"$S/stop.out" 2>&1 &
+  pid=$!; wait $pid; t1=$(now)
+  kill -TERM -"$pid" 2>/dev/null                              # ... and killing that group doesn't stop the worker
+  echo "# stop hook returned in $(perl -e "printf '%.3f', $t1 - $t0") s"
+  perl -e "exit(($t1 - $t0) < 1.0 ? 0 : 1)" || fail "stop hook took $(perl -e "print $t1 - $t0") s" || return 1
+  [ ! -s "$S/stop.out" ] || fail "stop hook printed: $(cat "$S/stop.out")" || return 1
+  wait_for 30 '[ "$(remote_count)" -gt "$c0" ]' || fail "no push within 30 s: $(cat "$(PUSHST)/worker.log" 2>/dev/null | tail -5)" || return 1
+  wait_for 30 worker_idle || fail "worker still running" || return 1
+  [ "$(remote_count)" = $((c0 + 1)) ] && remote_has .claude/CLAUDE.md "- ac16 edit" || fail "not exactly one commit with the edit" || return 1
+  no_flags || fail "flag left after a clean push" || return 1
+  # nothing changed and nothing unpushed: no sync.sh run (no fetch, no new log line)
+  lines=$(grep -c ' rc=' "$(PUSHST)/worker.log"); fh=$(fileid "$H/.claude-setup.git/FETCH_HEAD")
+  stop_hook; sleep 3; wait_for 30 worker_idle
+  [ "$(grep -c ' rc=' "$(PUSHST)/worker.log")" = "$lines" ] && [ "$(fileid "$H/.claude-setup.git/FETCH_HEAD")" = "$fh" ] \
+    || fail "worker ran sync.sh with nothing to sync" || return 1
+  # a gitleaks block leaves a flag, the next prompt shows it, a later clean sync clears it
+  printf 'aws_access_key_id = %s%s\n' AKIA Z7XQ3MLP4RTW2KD5 >"$H/.claude/setup/leak.md"
+  printf 'aws_secret_access_key = %s%s\n' Zx9pQ2rT7vW1yB4n M8kL3jH6gF5dS0aQwErTyUiO >>"$H/.claude/setup/leak.md"
+  stop_hook; wait_for 30 '[ -f "$(PUSHST)/blocked.flag" ]' || fail "no flag after a gitleaks block" || return 1
+  prompt_ctx | grep -q 'BLOCKED' && prompt_ctx | grep -q gitleaks || fail "prompt does not show the block" || return 1
+  rm -f "$H/.claude/setup/leak.md"; wait_for 30 worker_idle
+  stop_hook; wait_for 30 'no_flags && worker_idle' || fail "clean sync did not clear the flag" || return 1
+  [ -z "$(prompt_ctx | grep 'Setup sync')" ] || fail "prompt still shows a sync problem" || return 1
+  # a CONFLICT leaves a flag too; merging and a clean sync clear it
+  git clone -q "$S/remote.git" "$S/other" && echo "- the other machine's line" >>"$S/other/.claude/CLAUDE.md"
+  inhome git -C "$S/other" commit -qam other && git -C "$S/other" push -q origin HEAD:main || return 1
+  echo "- this machine's line" >>"$H/.claude/CLAUDE.md"
+  stop_hook; wait_for 30 '[ -f "$(PUSHST)/conflict.flag" ]' || fail "no flag after a CONFLICT" || return 1
+  prompt_ctx | grep -q CONFLICT || fail "prompt does not show the CONFLICT" || return 1
+  wait_for 30 worker_idle; gh_ reset -q --soft refs/remotes/origin/main   # merge by hand: keep both lines
+  { gh_ show refs/remotes/origin/main:.claude/CLAUDE.md; echo "- this machine's line"; } >"$S/merged.md" && mv "$S/merged.md" "$H/.claude/CLAUDE.md"
+  stop_hook; wait_for 30 'no_flags && worker_idle' || fail "flag kept after the merge was synced" || return 1
+  remote_has .claude/CLAUDE.md "- this machine's line" && remote_has .claude/CLAUDE.md "- the other machine's line" || fail "merge not pushed" || return 1
+  done_ok
+}
 ac17_codex_skill_edit_reaches_remote() { fail "not written"; }
 memkey() { printf '%s' "$1" | sed 's/[^a-zA-Z0-9]/-/g'; }   # Claude's project key, computed independently
 ac18_memory_index_injected() {
@@ -582,7 +695,42 @@ PY
   done_ok
 }
 ac19_config_merge_idempotent() { fail "not written"; }
-ac20_codex_edit_reaches_other_machine() { fail "not written"; }
+attach_desk() { # attach_desk <home>: a second machine on the same remote, attached the way desktop.md says
+  local B=$1
+  mkdir -p "$B"; cp "$H/.gitconfig" "$H/.gitconfig-leorna" "$B/"
+  git clone -q --bare "$S/remote.git" "$B/.claude-setup.git"
+  (cd "$B" && HOME="$B" CODEX_HOME="$B/.codex" TMPDIR="$S/tmp" GIT_CONFIG_NOSYSTEM=1 \
+    bash <(git --git-dir="$B/.claude-setup.git" show main:.claude/setup/sync.sh) attach) >"$S/attach-$(basename "$B").out" 2>&1
+}
+ac20_codex_edit_reaches_other_machine() {
+  local B c0 out ctx
+  push_ready || return 1
+  newroot; echo "# test folder: $S"; install_setup
+  mkdir -p "$H/.hermes/skills/sd/foo" "$H/.claude/projects/-mac-proj/memory"
+  echo "Version: v1" >"$H/.hermes/skills/sd/foo/SKILL.md"
+  echo "- [note](note.md)" >"$H/.claude/projects/-mac-proj/memory/MEMORY.md"; echo "note v1" >"$H/.claude/projects/-mac-proj/memory/note.md"
+  attach_repo || fail "setup repo attach failed" || return 1
+  B="$S/desk"; attach_desk "$B" || { cat "$S/attach-desk.out"; fail "desk attach failed"; return 1; }
+  [ -f "$B/.codex/AGENTS.md" ] || fail "desk has no AGENTS.md after attach" || return 1
+  # A (mac) edits a skill, CLAUDE.md and a memory note; its Stop hook pushes in the background
+  export SETUP_SYNC_PUSH_WAIT=1 SETUP_SYNC_PUSH_TRIES=8
+  c0=$(remote_count)
+  echo "Version: v2" >"$H/.hermes/skills/sd/foo/SKILL.md"
+  echo "- ac20 rule from the Mac" >>"$H/.claude/CLAUDE.md"
+  echo "note v2" >"$H/.claude/projects/-mac-proj/memory/note.md"
+  stop_hook
+  wait_for 45 '[ "$(remote_count)" -gt "$c0" ] && worker_idle' || fail "mac's edits not pushed: $(tail -5 "$(PUSHST)/worker.log")" || return 1
+  # B (desk) starts a Codex session: the hook pulls, rebuilds AGENTS.md and hands over the new CLAUDE.md
+  out=$(H="$B"; payload SessionStart.json "$B" | codex_hook session-start); ctx=$(ctx_of "$out")
+  echo "# desk: $(msg_of "$out")"
+  schema_ok SessionStart "$out" || return 1
+  grep -qx "Version: v2" "$B/.hermes/skills/sd/foo/SKILL.md" || fail "skill edit not on the desk" || return 1
+  grep -qxF -- "- ac20 rule from the Mac" "$B/.claude/CLAUDE.md" || fail "CLAUDE.md edit not on the desk" || return 1
+  grep -qx "note v2" "$B/.claude/projects/-mac-proj/memory/note.md" || fail "memory note edit not on the desk" || return 1
+  grep -qxF -- "- ac20 rule from the Mac" "$B/.codex/AGENTS.md" || fail "desk AGENTS.md not rebuilt" || return 1
+  grep -q supersedes <<<"$ctx" && grep -qF -- "$(cat "$B/.claude/CLAUDE.md")" <<<"$ctx" || fail "new CLAUDE.md not in full in the context" || return 1
+  done_ok
+}
 ac21_pipeline_model_switch() { fail "not written"; }
 ac22_roles_use_switched_model() { fail "not written"; }
 ac23_docs_updated() { fail "not written"; }

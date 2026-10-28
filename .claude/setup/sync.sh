@@ -269,8 +269,9 @@ do_changed() {
     case "$spec" in '' | '#'*) continue ;; esac
     specs+=("$spec")
   done <"$SETUP/manifest.txt"
-  if g status --porcelain --untracked-files=all -- "${specs[@]}" 2>/dev/null | cut -c4- | grep -vE "$DENY_RE" | grep -q .; then exit 0; fi
-  if [ -d "$LIB/.git" ] && [ -n "$(git -C "$LIB" diff --name-only)" ] && ! git -C "$LIB" diff | cmp -s - "$PATCHF"; then exit 0; fi
+  # --no-optional-locks: never write the index, so a sync running at this moment can't hit index.lock
+  if g --no-optional-locks status --porcelain --untracked-files=all -- "${specs[@]}" 2>/dev/null | cut -c4- | grep -vE "$DENY_RE" | grep -q .; then exit 0; fi
+  if [ -d "$LIB/.git" ] && [ -n "$(git -C "$LIB" --no-optional-locks diff --name-only)" ] && ! git -C "$LIB" --no-optional-locks diff | cmp -s - "$PATCHF"; then exit 0; fi
   [ -n "$(g rev-list -1 HEAD --not --remotes=origin 2>/dev/null)" ] && exit 0
   exit 1
 }
