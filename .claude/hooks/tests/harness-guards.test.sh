@@ -383,6 +383,7 @@ ac7_guard_parses_shell_forms() {
     "echo \"\$(echo \$'a\\')'; git push $nv)\"" "echo \$\$'\\'; git push $nv #'" \
     "(( n <<= 1 ))"$'\n'"git commit $nv -m x" "echo \$(( n <<= 1 ))"$'\n'"git push $nv" \
     "(( x << 2 ))"$'\n'"git commit $nv -m x" "x=1; if (( x<<1 > 1 )); then"$'\n'"git push $nv"$'\n'"fi" \
+    "echo \$(( n <<= 1"$'\n'"))"$'\n'"git push $nv" \
     "eval 'export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x'; git commit -m x" \
     "eval GIT_CONFIG_COUNT=1; GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x" \
     "GIT_CONFIG_COUNT=1 eval 'GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x'" \
