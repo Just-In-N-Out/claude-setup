@@ -137,3 +137,8 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - P2 (environment): the WSL desktop has no C compiler, so cgo is off and control-plane `make test` (`go test -race`) can't run ("-race requires cgo"; `go env CGO_ENABLED` = 0; no gcc/cc/clang). Blocks 901a/901b/901j/901w `make check` here until `sudo apt-get install -y make gcc`.
 - P3: `scripts/verify-workspace.sh:26` and `scripts/format-workspace.sh:15` `find .` excluding only `./.git` and vendor; from the main checkout they walk `.claude/worktrees/*` (`make workspace` sees extra modules, `make fmt-fix` would rewrite sibling worktrees' files).
 - P4: `~/.local/leorna-toolchain/.install.lock` didn't exist until the 901w builder's `flock` created it, so the shared-install lock the plans name wasn't shared by the first installer. Tools now verified against go.dev and CI checksums.
+
+## 2026-10-28: 86bcm901j builder
+- P3 (environment): the desktop also lacked `make` and a C compiler (`go: -race requires cgo`); fixed locally under `~/.local/leorna-tools` (make via dpkg-deb, Zig as `CC`).
+- P3 (Codex): `history.persistence = "none"` covers only `history.jsonl`; Codex 0.165 also writes `rollout-*.jsonl` session files, so a pasted secret can likely still reach disk (not confirmed with a signed-in run).
+- P3 (docs): `internal/library/README.md`'s older gate paragraph says "Failure reasons quote the offending text"; the new policy reasons never repeat a value.
