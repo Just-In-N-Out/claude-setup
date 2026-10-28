@@ -56,7 +56,7 @@ Turn a review report into verified fixes and reasoned pushback. Understand the c
 
    Commit per the project's rules. Add newly approved decision-dependent work as a separate named task/commit at a dependency-safe boundary, rather than folding it into completed fixes.
 
-6. **Re-run the full gates** after the last fix: Leorna's `make check` set, or Figma's `npm run check` plus `npm run corpus`. Two correct fixes can still break each other.
+6. **Re-run the full gates** after the last fix: Leorna's `make check` set, or Figma's `npm run check` plus `npm run corpus`. Two correct fixes can still break each other. When a fix widens what a guard scans or matches, replay real recorded inputs (for a Claude Code hook, the transcripts' commands) before committing it, because hand-written controls miss false denies.
 
 7. **Report back:**
    - a one-line verdict;

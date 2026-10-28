@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-28)
 
-- **Current build `2026-10-28.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-28.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **28.4 photo-hotspots:** Manual Open overlay makes a card beside its dot; optional `pulse` annotation. Paste check
+    **3bp** owed (AC12: Figma Manual offset, Bricks, mouse/Tab, real iPhone and Reduce Motion).
   - **28.3 slider-autoplay:** a component whose variants loop After delay becomes a Slider (Nestable) that plays by
     itself. Paste check **3bo** owed (AC13/AC14: Bricks round trip and Figma's real timings).
   - **28.2 label-floor:** pill words at least 13px, Learn-more-style links at least 15px; tight rows give way. Paste
@@ -60,6 +62,8 @@ header spacer) the user runs Bricks → Settings → Custom code → **Regenerat
   once they wrap more and from 991px down; a badge pinned to the bottom of such a box lands on its words on phones.
 - **Flip cards:** Safari may show a turned-away face's composited children (a `will-change` picture, a video, a CTA's
   fade-in); a divided row of flip cards keeps its lines on tablets and phones.
+- **Photo hotspots:** any clipping ancestor can cut a hanging card; long labels may meet on narrow phones. Combining
+  `pulse` with CTA/product animations and the generic class name's possible site collision remain follow-ups.
 - **Header tick:** GRO's and brainstorm's nav drawn inside the hero stays in the paste.
 - **Fonts:** fonts may load twice (needs a live paste proof); `localeCompare` may sort fonts differently under Figma's
   SES.
@@ -347,7 +351,17 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **Motion:** plays when scrolled into view.
   - **Only Figma's animations** (2026-10-01): convert what the design sets up, faithfully (entering and leaving). Never
     invent motion the design doesn't have: no automatic scroll reveals, hover lifts or added transitions. The
-    exceptions are call-to-action buttons, product and team cards, logo marquees and flip cards (below).
+    exceptions are call-to-action buttons, product and team cards, logo marquees, flip cards and a marked `pulse` (below).
+  - **Photo hotspots** (Justin, 2026-10-26: a small card beside the dot, no Bricks pop-up; Q1A–Q4A defaults under the
+    auto-go, not yet confirmed; details and rulings in HANDOFF "Photo hotspots"):
+    - A designer's placed layer in a photo box with **Open overlay → Manual** opens the card beside it: While hovering
+      / Mouse enter under the pointer, On click / On tap on a click; Tab/focus also opens it and its links stay live.
+      Moving away, Tab onward or a tap elsewhere closes it (CSS only; no Escape). Unsupported overlays are named.
+    - **Phones keep the photo and dots.** The photo's ratio is a floor that flowing words may grow; dots keep their
+      drawn size and spots, cards their width up to the photo's. Nothing in a trigger becomes a CTA or a hero button.
+    - **Optional beat, only marked:** a whole-line `pulse` annotation on a layer, its corresponding main layer or an
+      instance's main/set makes it beat (0.7s each way, 10%, ease). It works on other layers too; its own Figma Motion
+      wins and is named. Reduced motion stops the beat and shows cards without a fade. Unmarked layers gain no beat.
   - **Flip cards** (user, 2026-10-26: bdryswi.com's service cards, as a general feature; build `2026-10-28.1`; the ⭐
     answers Q1A–Q5A under the auto-go, not yet confirmed):
     - **Only where the designer marks it:** a component whose front has While hovering → Change to its back variant,
