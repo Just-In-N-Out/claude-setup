@@ -404,7 +404,8 @@ ac7_guard_parses_shell_forms() {
     "command echo \"git commit $nv\" |& env FOO=1 bash" ". /dev/stdin <<< \"git push $nv\"" \
     $'cat <<\'X\' | source /dev/stdin\ngit push '"$nv"$'\nX' "bash -s <<<\"\$(echo x); git commit $nv\"" \
     "printf 'git commit %s -m x\\n' $nv | bash" "zsh <<< \$'git push $nv'" $'cat <<< \'EOF\'\ngit commit '"$nv"$'\nEOF' \
-    "echo 'git push $nv' | bash -s arg1" "bash -s -- x <<< 'git push $nv'" "echo 'git push $nv' | bash --norc"; do
+    "echo 'git push $nv' | bash -s arg1" "bash -s -- x <<< 'git push $nv'" "echo 'git push $nv' | bash --norc" \
+    "echo 'git push $nv' | sh -sc 'echo hi'"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
   for c in "cat <<< 'git push $nv'" "echo 'git commit $nv' > notes.md" "echo 'git commit $nv' | cat" \

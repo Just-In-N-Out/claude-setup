@@ -424,7 +424,8 @@ def lower(s):
 
 
 def shell_stdin(args):
-    """True when a shell given args reads its script from stdin: no -c, and -s or no script file operand."""
+    """True when a shell given args reads a script from stdin: with -s (dash's sh -sc runs its -c command, then
+    stdin), or with no operand at all (a -c command string or a script file is one)."""
     i, s = 0, False
     while i < len(args):
         a = args[i]
@@ -435,10 +436,7 @@ def shell_stdin(args):
             i += 1
             break
         if len(a) > 1 and a[0] in "-+":
-            if a[0] == "-" and not a.startswith("--"):
-                if "c" in a[1:]:
-                    return False
-                s = s or "s" in a[1:]
+            s = s or (a[0] == "-" and not a.startswith("--") and "s" in a[1:])
             i += 1
             continue
         break
