@@ -604,6 +604,8 @@ ac9_precommit_blocks_wrong_email_by_folder() {
   [ -f "$r/.git/CHERRY_PICK_HEAD" ] || fail "the cherry-pick fixture did not stop on a conflict" || return 1
   out=$(cd "$r" && GIT_EDITOR=true ing git -c user.email="$LEORNA" cherry-pick --continue 2>&1 </dev/null); rc=$?
   refused pre-commit "committer email is '$LEORNA'" "conflicted cherry-pick of a teammate's commit, committer $LEORNA" || return 1
+  out=$(cd "$r" && GIT_EDITOR=true ing git -c user.email=mate@example.test cherry-pick --continue 2>&1 </dev/null); rc=$?
+  refused pre-commit "committer email is 'mate@example\.test'" "conflicted cherry-pick, committer = the picked author" || return 1
   commit_in "$r" --no-edit --author="Other <other@example.test>"
   refused pre-commit "author email is 'other@example\.test'" "conflicted cherry-pick concluded with another author" || return 1
   out=$(cd "$r" && GIT_EDITOR=true ing git cherry-pick --continue 2>&1 </dev/null); rc=$?
@@ -936,7 +938,7 @@ ac16_lessons_gate_sends_back_missing_enforce_once() {
   no2=$'{"status": "ready", "skill_lessons": [ {"skill": "leorna", "lesson": "x", "evidence": "y"} ]}'
   no3=$'status: ready\nskill_lessons:\n  [\n    {"skill": "git-commit-rules", "lesson": "x",\n     "evidence": "y"}\n  ]\n'"$LAST"
   # a real list after prose with apostrophes and quotes, and one inside a ``` fence, still count
-  no4=$'I didn\'t learn much; it\'s "done".\nskill_lessons: [{skill: leorna, lesson: "x", evidence: "y"}]\n'"$LAST"
+  no4=$'I didn\'t learn much; "done".\nskill_lessons: [{skill: leorna, lesson: "x", evidence: "y"}]\nThat\'s it.\n'"$LAST"
   no5=$'status: ready\n```json\n{"skill_lessons": [{"skill": "leorna", "lesson": "x", "evidence": "y"}]}\n```\n'"$LAST"
   yes1=$'status: ready\nskill_lessons: [{skill: leorna, lesson: "x", evidence: "y", enforce: none}]\n'"$LAST"
   yes2=$'{"skill_lessons": [{"skill": "leorna", "lesson": "x", "evidence": "y", "enforce": "git hook: pre-commit refuses x"}]}'
