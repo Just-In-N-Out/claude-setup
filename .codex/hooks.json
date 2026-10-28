@@ -1,0 +1,11 @@
+{
+  "description": "Justin's Codex hooks, synced by claude-setup. One handler per event; see ~/.codex/hooks/codex-hooks.sh. Trust them in /hooks after any change to this file.",
+  "hooks": {
+    "SessionStart": [{"matcher": "startup|resume|clear", "hooks": [{"type": "command", "command": "bash ~/.codex/hooks/codex-hooks.sh session-start", "timeout": 60, "statusMessage": "Pulling setup files from GitHub", "additionalContextLimit": 12000}]}],
+    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "bash ~/.codex/hooks/codex-hooks.sh prompt", "timeout": 10}]}],
+    "PreToolUse": [{"matcher": "^Bash$", "hooks": [{"type": "command", "command": "bash ~/.codex/hooks/codex-hooks.sh pre-tool", "timeout": 10}]}],
+    "PostToolUse": [{"hooks": [{"type": "command", "command": "bash ~/.codex/hooks/codex-hooks.sh post-tool", "timeout": 10}]}],
+    "SubagentStop": [{"hooks": [{"type": "command", "command": "bash ~/.codex/hooks/codex-hooks.sh subagent-stop", "timeout": 20}]}],
+    "Stop": [{"hooks": [{"type": "command", "command": "bash ~/.codex/hooks/codex-hooks.sh stop", "timeout": 10}]}]
+  }
+}

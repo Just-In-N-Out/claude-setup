@@ -70,6 +70,34 @@ prompt_input() { # prompt_input <out json> [cwd]: codex debug prompt-input in th
   (cd "${2:-$H/work}" && inhome codex debug prompt-input >"$1" 2>"$1.err") || { cat "$1.err"; return 1; }
 }
 done_ok() { rm -rf "$S"; return 0; }   # remove the test folder on success (kept on failure)
+schema_ok() { # schema_ok <event> <hook output>: empty, or JSON that Codex's output schema for <event> accepts
+  local f
+  case $1 in SessionStart) f=session-start ;; SubagentStop) f=subagent-stop ;; PreToolUse) f=pre-tool-use ;;
+    PostToolUse) f=post-tool-use ;; UserPromptSubmit) f=user-prompt-submit ;; Stop) f=stop ;; esac
+  [ -z "$2" ] && return 0
+  python3 - "$FIX/schema/$f.command.output.schema.json" "$2" <<'PY'
+import json, sys
+schema, out = json.load(open(sys.argv[1])), json.loads(sys.argv[2])
+def check(sch, obj, where):
+    assert isinstance(obj, dict), f"{where}: not an object"
+    props = sch.get("properties", {})
+    if sch.get("additionalProperties") is False:
+        extra = set(obj) - set(props)
+        assert not extra, f"{where}: keys not in the schema: {sorted(extra)}"
+    for k in sch.get("required", []): assert k in obj, f"{where}: missing {k}"
+    for k, v in obj.items():
+        p = props.get(k, {})
+        for sub in p.get("allOf", []) + ([p] if "$ref" in p else []):
+            d = schema["definitions"][sub["$ref"].split("/")[-1]]
+            if d.get("type") == "object": check(d, v, f"{where}.{k}")
+            elif "enum" in d: assert v in d["enum"], f"{where}.{k}: {v!r} not in {d['enum']}"
+        if "const" in p: assert v == p["const"], f"{where}.{k}: {v!r} != {p['const']!r}"
+        t = p.get("type")
+        if t == "string": assert isinstance(v, str), f"{where}.{k}: not a string"
+        if t == "boolean": assert isinstance(v, bool), f"{where}.{k}: not a boolean"
+check(schema, out, "output")
+PY
+}
 
 ac1_agents_md_loaded() {
   local C="$SRC/.claude/setup/codex" first id1 id2
@@ -228,8 +256,94 @@ PY
   grep -q 'malformed agent role.*pipeline-broken.toml' "$S/doctor-broken.json" || fail "a broken copy is not reported" || return 1
   done_ok
 }
-ac6_gates_match_claude_twins() { fail "not written"; }
-ac7_claude_hooks_unchanged() { fail "not written"; }
+hooks_env() { # hook state for a test, never the real ~/.codex or ~/.claude
+  export CODEX_HOOKS_STATE_DIR="$S/codex-state" SUBAGENT_AC_STATE_DIR="$S/claude-state/ac" \
+    SUBAGENT_LESSONS_STATE_DIR="$S/claude-state/lessons" SKILL_NUDGE_STATE_DIR="$S/claude-state/nudge"
+}
+codex_hook() { inhome bash "$H/.codex/hooks/codex-hooks.sh" "$@"; }
+ac6_gates_match_claude_twins() {
+  local i msg active cp cl out rc want r ac lessons got n c p
+  need "$SRC/.codex/hooks/codex-hooks.sh" && need "$SRC/.codex/hooks.json" || return 1
+  newroot; echo "# test folder: $S"; install_setup; hooks_env
+  # SubagentStop: block exactly when the Claude gates block on the Claude-shaped payload, reasons joined, AC first
+  local -a msgs=(
+    $'Verdict: clean\nNo findings.\nskill_lessons: []'                                   # verdict without ac_status
+    $'Verdict: clean\nac_status: [{"ac":"AC1","accepted":true}]\nskill_lessons: []'      # verdict with it
+    $'Built the thing. All tests pass.'                                                  # no lessons
+    $'Built the thing.\n## Skill lessons\nskill_lessons: []'                             # lessons
+    $'status: ready-for-review\nhead_sha: 1234567\nAC1: ok - ac1_x\nskill_lessons: []\nMAIN SESSION: check and save these skill_lessons now.'  # builder report
+    NULL                                                                                 # null message
+    $'Verdict: findings\nno lessons here'                                                # both missing
+    ACTIVE                                                                               # stop_hook_active: true
+  )
+  for i in "${!msgs[@]}"; do
+    msg=${msgs[$i]}; active=false
+    case $msg in NULL) ;; ACTIVE) active=true; msg=$'Verdict: findings\nno lessons here' ;; esac
+    if [ "$msg" = NULL ]; then
+      cp=$(payload SubagentStop.json | jq -c --argjson a $active '.last_assistant_message = null | .stop_hook_active = $a')
+    else
+      cp=$(payload SubagentStop.json | jq -c --arg m "$msg" --argjson a $active '.last_assistant_message = $m | .stop_hook_active = $a')
+    fi
+    cl=$(jq -c '{session_id, transcript_path, cwd, hook_event_name, stop_hook_active, agent_id, agent_type, last_assistant_message}' <<<"$cp")
+    want=""
+    for g in subagent-ac-gate.sh subagent-lessons-gate.sh; do
+      r=$(printf '%s' "$cl" | bash "$SRC/.claude/hooks/$g" | jq -r 'select(.decision == "block") | .reason // empty')
+      [ -n "$r" ] && want="${want:+$want
+
+}$r"
+    done
+    out=$(printf '%s' "$cp" | codex_hook subagent-stop); rc=$?
+    [ $rc -eq 0 ] || fail "case $i: exit $rc" || return 1
+    schema_ok SubagentStop "$out" || fail "case $i: output fails the SubagentStop schema: $out" || return 1
+    got=$(jq -r 'select(.decision == "block") | .reason // empty' <<<"$out" 2>/dev/null)
+    [ "$got" = "$want" ] || { echo "# case $i want: ${want:0:120}"; echo "# case $i got:  ${got:0:120}"; fail "case $i: SubagentStop differs from the Claude gates"; return 1; }
+    echo "# case $i: $( [ -n "$want" ] && echo "blocks ($(grep -c 'Before you finish' <<<"$want") reason(s))" || echo allows)"
+  done
+  # Nudges: identical text on the same counts, main session, subagent and prompts
+  for p in PostToolUse-Bash.json PostToolUse-Bash-subagent.json UserPromptSubmit.json; do
+    case $p in UserPromptSubmit.json) c=10; mode=prompt ;; *) c=15; mode=post-tool ;; esac
+    for n in $(seq 1 $c); do
+      out=$(payload "$p" | codex_hook "$mode")
+      want=$(payload "$p" | bash "$SRC/.claude/hooks/skill-review-nudge.sh" | jq -r '.hookSpecificOutput.additionalContext // empty')
+      got=$(jq -r '.hookSpecificOutput.additionalContext // empty' <<<"$out" 2>/dev/null)
+      schema_ok "$(jq -r .hook_event_name "$FIX/$p")" "$out" || fail "$p #$n: output fails the schema" || return 1
+      if [ "$n" -lt "$c" ]; then [ -z "$got" ] && [ -z "$want" ] || fail "$p #$n: nudged early" || return 1
+      else [ -n "$want" ] && [ "$got" = "$want" ] || { echo "# got: ${got:0:100}"; fail "$p #$n: nudge text differs"; return 1; }; fi
+    done
+    case $p in *subagent*) grep -q 'skill_lessons\[' <<<"$got" || fail "subagent did not get the subagent text" || return 1 ;;
+      *) grep -q 'Self-improvement check' <<<"$got" || fail "$p: main text expected" || return 1 ;; esac
+    echo "# $p: nudge on call $c, same text as skill-review-nudge.sh"
+  done
+  done_ok
+}
+srcgit() { # git for the checkout: the worktree, or $HOME's bare repo once merged
+  if git -C "$SRC" rev-parse --git-dir >/dev/null 2>&1; then git -C "$SRC" "$@"
+  else git --git-dir="$SRC/.claude-setup.git" --work-tree="$SRC" "$@"; fi
+}
+base_commit() { # the story's base: CODEX_PARITY_BASE, else the merge-base with main (origin/main in a clone)
+  [ -n "${CODEX_PARITY_BASE:-}" ] && { echo "$CODEX_PARITY_BASE"; return; }
+  srcgit merge-base HEAD main 2>/dev/null || srcgit merge-base HEAD origin/main
+}
+ac7_claude_hooks_unchanged() {
+  local base f files="" t
+  base=$(base_commit) || fail "no base commit" || return 1
+  for f in setup-sync-pull skill-review-nudge subagent-ac-gate subagent-lessons-gate subagent-handback-gate; do
+    files="$files .claude/hooks/$f.sh .claude/hooks/tests/$f.test.sh"
+  done
+  files="$files .claude/settings.json"
+  echo "# base $base"
+  for f in $files; do
+    srcgit cat-file -e "$base:$f" 2>/dev/null || fail "$f missing at base" || return 1
+    srcgit show "$base:$f" | cmp -s - "$SRC/$f" || fail "$f differs from base" || return 1
+  done
+  newroot
+  for t in "$SRC"/.claude/hooks/tests/*.test.sh; do
+    inhome bash "$t" >"$S/$(basename "$t").out" 2>&1 || { tail -5 "$S/$(basename "$t").out"; fail "$(basename "$t") failed"; return 1; }
+    echo "# $(basename "$t"): $(tail -1 "$S/$(basename "$t").out")"
+  done
+  [ "$(ls "$SRC"/.claude/hooks/tests/*.test.sh | wc -l | tr -d ' ')" = 5 ] || fail "expected five Claude hook test files" || return 1
+  done_ok
+}
 ac8_commit_guard_blocks_ai_trailer() { fail "not written"; }
 ac9_codex_commit_identity_no_trailer() { fail "not written"; }
 ac10_sandbox_profile_and_rules() { fail "not written"; }
