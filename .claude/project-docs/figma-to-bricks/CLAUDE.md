@@ -150,20 +150,24 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     don't change the remote or the helper.
   - **Not in git (rebuilt by tools):** `node_modules/`, `dist/`, `corpus/out|paste|compare/`, `corpus/report-v2.json`.
 - **Every bug or feature runs the orchestrated pipeline** in the first section of the global `~/.claude/CLAUDE.md`
-  (user, 2026-10-23): the session only orchestrates; fresh Opus agents plan, build, review, fix, verify and audit,
-  and `ac-check.sh` decides when every AC is accepted. Never plan, build or review in the session itself. This repo's
-  specifics:
+  (user, 2026-10-23): the session only orchestrates; fresh Opus 5.5 xhigh `general-purpose` agents plan, build,
+  review, fix, verify and audit, and `ac-check.sh` decides when every AC is accepted. Never plan, build or review in
+  the session itself (this replaces the single-session `superpowers:writing-plans` flow). This repo's specifics:
   - **Start:** in a terminal in the main folder, `claude -w <feature-name>` (`.claude/worktrees/<feature-name>` on
     branch `worktree-<feature-name>`, with what `.worktreeinclude` lists: this file, `node_modules/` and v1's corpus
     output). One session per feature, so no agent sees another's half-done work; two or three features at a time,
     touching different stages or rules, or merges get harder.
-  - **Plan:** `docs/plans/<date>-<name>.md` (in git, not `~/.hermes/plans`), numbered ACs with one test each.
+  - **Plan:** `docs/plans/<date>-<name>.md` (in git, not `~/.hermes/plans`), numbered AC1, AC2… with one test each
+    (`implementation-planning`).
     **Standing auto-go** ("no stop between plan and run"): show the plan message (questions with ⭐ answers, proposed
     and `(live)` ACs) and dispatch the builder at once, taking the ⭐ answers, unless the user replies **stop** or
     changes something. Make the read-only copy first: `mkdir -p <evidence> && install -m 444 <plan>
     <evidence>/plan-approved.md`. Evidence goes in `~/.hermes/plans/figma-to-bricks/evidence/<name>/`.
   - **Build and review:** the builder keeps a ledger in `.superpowers/sdd/<plan>/progress.md` and runs `npm run
-    corpus` before Task 1 and at the close. The review diff is `git diff main...HEAD` in the copy.
+    corpus` before Task 1 and at the close. Then two fresh Opus reviews with a fix pass after each (each fix test
+    first), then the verifier, the blind AC auditor and `ac-check.sh`, looping until every AC is accepted (global
+    CLAUDE.md steps 5–6). The review diff is `git diff main...HEAD` in the copy, or `git diff <commit before the
+    milestone>` on `main`.
   - **Rules for every agent in a copy:**
     - Run `npm run check` and `npm run corpus` there.
     - Commit to the branch after each passing task. The branch stays on the Mac: don't push it (merges are local).
@@ -173,14 +177,20 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - Never use bare `git stash`: the stash list is shared by every copy.
   - **Finish, once `ac-check.sh` says ALL ACCEPTED or READY FOR THE USER** (no need to wait for the user), as the
     global "Worktrees from `claude -w`" says:
-    1. **Finisher, in the copy:** move the ledger to `docs/plans/<plan>-ledger.md`, commit everything, `git rebase
-       main` (on a conflict keep both sides' meaning; HANDOFF sections usually both stay), run `npm run check` and
-       `npm run corpus` again (two features that pass alone can break together) and report the new HEAD. If it
-       differs from the head `ac-check.sh` accepted, the session runs verifier → auditor → `ac-check.sh` on it first.
-    2. **Session:** ExitWorktree with `"keep"`, then in the main folder `git merge --ff-only worktree-<feature-name>`.
-       If it refuses, main moved (go back into the copy and repeat from 1) or the main folder has uncommitted changes
+    1. **Finisher agent, in the copy:** move the ledger to `docs/plans/<plan>-ledger.md`, commit everything, then
+       `git rebase main`. On a conflict keep both sides' meaning; HANDOFF sections usually both stay. Run `npm run
+       check` and `npm run corpus` again on the rebased branch: two features that pass alone can break together. It
+       stops and reports the new HEAD. If HEAD now differs from the head `ac-check.sh` accepted, the AC receipts no
+       longer match: the session runs verifier → auditor → `ac-check.sh` again on the new head before step 2 (agents
+       don't start agents).
+    2. **Session: leave the copy.** Call the ExitWorktree tool with action `"keep"` (the user's standing permission).
+       Claude Code refuses git commands and edits aimed at the main folder from inside a copy (`git -C …`
+       included), so the merge runs from the main folder. If ExitWorktree finds no worktree session, EnterWorktree
+       with `path` set to the main folder; only if both fail, give the user the one `!` merge command and say why.
+       Then, in the main folder: `git merge --ff-only worktree-<feature-name>`. If it refuses, main moved (go back
+       into the copy with EnterWorktree and its `path`, repeat from 1) or the main folder has uncommitted changes
        (stop and tell the user). Never force it.
-    3. **Finisher, in the main folder:** bump `BUILD` (read it first), `npm run build` (Figma loads that `dist/`),
+    3. **Finisher agent, in the main folder:** bump `BUILD` (read it first), `npm run build` (Figma loads that `dist/`),
        commit "Build <BUILD>: <feature>" and `git push` (`main` only). Then update this file's **Status** (the build
        line, one line for the feature with its paste check) and add any new standing rule or user decision to the
        sections below; everything else goes in HANDOFF. If writing this file is refused, leave exactly those lines in
