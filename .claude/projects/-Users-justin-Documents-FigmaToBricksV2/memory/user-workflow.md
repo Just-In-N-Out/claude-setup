@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: user
   originSessionId: f7a3c41a-53da-4665-b4dd-957fb80b6724
-  modified: 2026-10-19T22:15:33.389Z
+  modified: 2026-10-28T21:22:16.729Z
 ---
 
 The user builds client websites in Bricks Builder (WordPress). A UI designer hands them desktop-only Figma mockups; they
@@ -28,5 +28,8 @@ each step. Answer with short numbered steps naming exactly what's on that screen
 tab), one screen at a time; confirm when a screenshot shows it right ("That looks right"). For design decisions with
 trade-offs, a multiple-choice question with small text previews worked well (they picked "Hero colour" for photo
 edges, "In the page" and "Spreadsheet in the panel" for lists). They want every fix to work for other designers'
-files, not just theirs ("does this work on general cases right"). Their team uses WPForms; the live site and its
+files, not just theirs ("does this work on general cases right"). Edge-case layout questions without a picture lose
+them: on 2026-10-28, asked two "should this case get the even space too?" questions, they answered "I'm not sure how to
+answer these … put it in a way where it looks more aesthetic". For such cases, pick what looks better yourself, say
+what it will look like, and keep questions for real trade-offs, with a preview. Their team uses WPForms; the live site and its
 post-paste steps are in [[site-and-team]].
