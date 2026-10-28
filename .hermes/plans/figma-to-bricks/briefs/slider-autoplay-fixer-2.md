@@ -52,3 +52,22 @@ edit the main folder, never bare `git stash`. Justin is away: when unsure, take 
 Return `{name, status: ready-for-verify|stopped, summary, findings[{id, verdict: fixed|pushed-back, evidence, commit}],
 rulings[], gates, last_commit, ac_status[{ac, accepted, test, evidence}], found_else[], skill_lessons[{skill, lesson, evidence}]}`
 and end with `MAIN SESSION: check and save these skill_lessons now.` Don't edit skills or memory yourself.
+
+## Resume note (2026-10-28)
+The earlier fixer 2 was stopped mid-work when Justin paused everything. **Its uncommitted work is still in the
+worktree** (head still `160caa3`): `git -C <worktree> diff` shows about 66 lines in
+`src/core/normalise/{carousel,content-box,infer,normalise,pairs,past-edge,wrappers}.ts`, `test/browser/carousel.test.ts`
+and `test/fixtures/carousel.ts`, plus the new untracked `test/unit/normalise-carousel-pages.test.ts`. Most of it is
+R2-F1. Main has moved on to `70d5408` since; still don't rebase (the finisher does).
+1. Read that work first and keep what's right; never stash, reset or check out those files (fix them in place).
+2. Finish **R2-F1 test-first**: prove the new scene and browser tests fail without the fix (e.g. a scratch copy of the
+   worktree with the source changes reverted, never a revert in the worktree itself), then pass with it.
+3. Then R2-F2, R2-F3 and R2-F4 as above, one commit each.
+4. Run the gates above and record them in the ledger (`.superpowers/sdd/2026-10-26-slider-autoplay/progress.md`) and
+   HANDOFF; the ledger's last line says "ready-for-verify". Leave the worktree committed and clean (`git status
+   --porcelain` empty).
+- **Scratch:** `/tmp/claude-1000/-home-justin-Documents-FigmaToBricksV2/a9c7f93c-51b3-4315-acc0-a1d6d3c9361a/scratchpad/slider-autoplay-fixer-2b/`,
+  created fresh with `mkdir` (no `-p`). Evidence: `~/.hermes/plans/figma-to-bricks/evidence/slider-autoplay/fixer-2/`.
+- Two other chats are finishing headline-marker and photo-hotspots at the same time: never touch their worktrees,
+  evidence or scratch. If a browser test fails from a Chrome port or profile clash, rerun it before judging it.
+- You can't start agents: any skill step that says "spawn a subagent" is the main session's job; note it in your report.
