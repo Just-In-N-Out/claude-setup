@@ -45,6 +45,18 @@ The probe tests need `~/.codex-probe` to be signed in: the Task 2 payload record
 
 Live ACs (AC24–AC27): build their test functions so they run only when named, as the plan says. Don't claim them.
 
+## Change from Justin (2026-10-28, sent mid-run): build, then finish and push
+His Claude limit is nearly used up, so there are no review, verifier or auditor rounds. After the build, the builder does the plan's finisher section itself:
+1. `sync.sh pull`, rebase onto `main`, rerun every suite.
+2. `--ff-only` merge into `main`.
+3. `setup-codex.sh` and `update-skills-library.sh`.
+4. `sync.sh` push, then check with `ls-remote`.
+5. A probe smoke test.
+
+The report then gives:
+- (a) step-by-step desktop instructions. These check that Codex runs inside WSL Ubuntu and install it there if not.
+- (b) one ready-to-paste prompt for desktop Codex that verifies the whole setup and reports pass or fail per item.
+
 ## Output contract
 Stop when every non-live AC's test passes on the committed head, the Claude hook tests still pass, and `sync.test.sh` passes. Report:
 - `status`: `ready-for-review`, or `blocked-on-probe` / `stopped` with the reason;
