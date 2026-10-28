@@ -111,6 +111,11 @@ def lower(s):
     return s.lower()
 
 
+def no_verify(a):
+    """--no-verify, or an abbreviation git accepts for it (--no-veri, --no-verif)."""
+    return len(a) >= 9 and "--no-verify".startswith(a)
+
+
 class Guard:
     def __init__(self, home):
         self.home = home
@@ -247,17 +252,41 @@ class Guard:
             kl = lower(k)
             if kl in IDENTITY_KEYS:
                 self.deny("identity")
+            elif kl == "core.hookspath":
+                self.deny("hooks")
             elif kl.startswith("credential."):
                 if not self.leorna_fallback(configs, sub, rest):
                     self.deny("credential")
         if sub == "commit":
             self.commit(rest)
+        elif any(no_verify(a) for a in rest):
+            self.deny("hooks")
+        if sub == "push":  # asked unless something denies it (deny wins in result())
+            here = [folder] + dirs
+            if any(self.under_leorna(d) for d in here) or any(
+                    "LeornaAI/" in a or a.startswith("github-leorna:") or a.startswith("git@github-leorna:")
+                    for a in rest):
+                self.ask = True
         elif sub == "config":
             self.config(rest)
         elif sub == "remote":
             pos = [a for a in rest if not a.startswith("-")]
             if pos and pos[0] == "set-url":
                 self.deny("remote")
+
+    def under_leorna(self, d):
+        if not self.rhome:
+            return False
+        root = os.path.join(self.rhome, "Leorna")
+        r = os.path.realpath(d)
+        return r == root or r.startswith(root + os.sep)
+
+    def hooks_path_ok(self, v):
+        if v is None:
+            return False
+        v = v.rstrip("/")
+        return v in ("~/.claude/githooks", "$HOME/.claude/githooks", "${HOME}/.claude/githooks") or (
+            bool(self.home) and v in (self.home.rstrip("/") + "/.claude/githooks", self.rhome + "/.claude/githooks"))
 
     def env_configs(self, env):
         out = []
@@ -318,9 +347,27 @@ class Guard:
                 break
             if a == "--author" or a.startswith("--author="):
                 self.deny("identity")
+            if no_verify(a):
+                self.deny("hooks")
             if a in takes:
                 i += 2
                 continue
+            if a.startswith("-") and not a.startswith("--") and len(a) > 1:
+                # a short cluster (-anm): n before any value-taking letter is --no-verify; after one,
+                # the rest of the cluster is that letter's value (-uno, -mfix)
+                letters = a[1:]
+                takes_next = False
+                for j, c in enumerate(letters):
+                    if c == "n":
+                        self.deny("hooks")
+                    elif c in "uS":
+                        break
+                    elif c in "mFcCt":
+                        takes_next = j == len(letters) - 1
+                        break
+                if takes_next:
+                    i += 2
+                    continue
             i += 1
 
     def config(self, rest):
@@ -381,6 +428,8 @@ class Guard:
                 self.deny("remote")
             elif kl.startswith("credential."):
                 self.deny("credential")
+            elif kl == "core.hookspath" and not self.hooks_path_ok(v):
+                self.deny("hooks")
         for s in sections:
             sl = lower(s)
             if sl in ("user", "author", "committer"):
@@ -389,6 +438,8 @@ class Guard:
                 self.deny("credential")
             elif sl.startswith("remote."):
                 self.deny("remote")
+            elif sl == "core":
+                self.deny("hooks")
 
 
 def main():
