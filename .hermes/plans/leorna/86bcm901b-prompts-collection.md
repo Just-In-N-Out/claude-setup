@@ -235,7 +235,8 @@ BIN=$ENV/pg/root/usr/lib/postgresql/18/bin; export LD_LIBRARY_PATH=$ENV/pg/root/
 ldd "$BIN/postgres" "$BIN/initdb" | grep 'not found'   # fetch each missing library's package the same way, then re-check; stop if one has no package
 ( umask 077; head -c 24 /dev/urandom | base64 | tr -d '/+=' > "$ENV/pg/password" )   # never print it
 "$BIN/initdb" -D "$ENV/pg/data" -U leorna --auth=scram-sha-256 --pwfile="$ENV/pg/password" -E UTF8 --locale=C.UTF-8
-PORT=<first free port in 55400-55499 per `ss -ltn`>; echo "PORT=$PORT" > "$ENV/pg/pg.env"; mkdir "$ENV/pg/sock"
+PORT=$(for p in $(seq 55400 55499); do ss -ltnH "sport = :$p" | grep -q . || { echo "$p"; break; }; done); [ -n "$PORT" ] || exit 1
+echo "PORT=$PORT" > "$ENV/pg/pg.env"; mkdir "$ENV/pg/sock"
 "$BIN/pg_ctl" -D "$ENV/pg/data" -l "$ENV/pg/server.log" -o "-c listen_addresses=127.0.0.1 -c port=$PORT -c unix_socket_directories=$ENV/pg/sock" start
 PGPASSWORD="$(cat "$ENV/pg/password")" "$BIN/createdb" -h 127.0.0.1 -p "$PORT" -U leorna leorna_86bcm901b_test
 ```
@@ -247,7 +248,8 @@ If `initdb` can't find its share files, pass `-L "$ENV/pg/root/usr/share/postgre
 **B0.3 Upstream mirror** (data only: never checked out, never run; in the builder's own scratch folder `<scratchpad>/86bcm901b-builder/`, created with `mkdir`, no `-p`):
 
 ```bash
-S=<scratchpad>/86bcm901b-builder; mkdir "$S/upstream" "$S/tmp" "$S/examples"
+S="$SCRATCHPAD/86bcm901b-builder"   # SCRATCHPAD = this session's Claude Code scratchpad directory; the folder is created with mkdir (no -p)
+mkdir "$S/upstream" "$S/tmp" "$S/examples"
 git clone --bare --quiet https://github.com/addyosmani/agent-skills.git "$S/upstream/agent-skills.git"
 git -C "$S/upstream/agent-skills.git" rev-parse --verify 'aeac41d4d005999432bb7312f7ff06383a91d59d^{commit}'
 for f in build code-simplify constraints planning review ship spec test webperf; do echo "$f $(git -C "$S/upstream/agent-skills.git" rev-parse aeac41d4d005999432bb7312f7ff06383a91d59d:commands/$f.toml)"; done   # must equal the D4 blob list
