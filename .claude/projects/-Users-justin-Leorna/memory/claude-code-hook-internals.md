@@ -17,3 +17,5 @@ Checked in Claude Code 2.1.310 on 2026-10-23 (binary: `~/.local/share/claude/ver
 **How to check:** read the binary with Python `re` over bytes in a fixed window around a key such as `hook_event_name:"SubagentStop"` or `case"deny":if(`. `grep -a -o '.{0,400}KEY.{0,400}'` fails here with ugrep's "exceeds complexity limits".
 
 Related: [[zsh-bash-tool-gotchas]], [[claude-md-loads-at-session-start]]
+
+- A hook that starts a background worker with `perl -e 'POSIX::setsid(); exec …' &` loses it when the caller kills the hook's process group right after it returns (5/5 in an experiment). Fork, setsid and a pipe handshake, so the hook returns only once the child is in its own session (codex-parity `setup-sync-push.sh`, 2026-10-28).
