@@ -1,0 +1,17 @@
+# Setup sync and the pipeline-model switch run outside Codex's sandbox: they write every synced
+# path, read gh's token and push. Only these exact scripts, called directly with their absolute
+# path; the scripts themselves are read-only to sandboxed commands (permissions.claude-setup).
+prefix_rule(
+    pattern = [["/Users/justin/.claude/setup/sync.sh", "/home/justin/.claude/setup/sync.sh"]],
+    decision = "allow",
+    justification = "Justin's setup sync (~/.claude/setup/sync.sh) commits, pulls and pushes the synced setup files.",
+    match = ["/Users/justin/.claude/setup/sync.sh", "/Users/justin/.claude/setup/sync.sh pull", "/home/justin/.claude/setup/sync.sh status"],
+    not_match = ["bash /Users/justin/.claude/setup/sync.sh", "/tmp/sync.sh", "sync.sh"],
+)
+prefix_rule(
+    pattern = [["/Users/justin/.claude/setup/codex/set-pipeline-model.sh", "/home/justin/.claude/setup/codex/set-pipeline-model.sh"]],
+    decision = "allow",
+    justification = "Switches the Codex pipeline model: checks the name, edits the one setting, runs sync.sh.",
+    match = ["/Users/justin/.claude/setup/codex/set-pipeline-model.sh gpt-6.1-sol xhigh"],
+    not_match = ["/tmp/set-pipeline-model.sh gpt-6.1-sol"],
+)

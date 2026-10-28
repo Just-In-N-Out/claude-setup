@@ -445,7 +445,45 @@ ac8_commit_guard_blocks_ai_trailer() {
   done_ok
 }
 ac9_codex_commit_identity_no_trailer() { fail "not written"; }
-ac10_sandbox_profile_and_rules() { fail "not written"; }
+sandboxed() { # sandboxed <shell command>: run it under Codex's real sandbox with the claude-setup profile
+  (cd "$H/work" && inhome codex sandbox -P claude-setup -C "$H/work" -- /bin/sh -c "$1") >"$S/sbx.out" 2>"$S/sbx.err"
+}
+policy() { # policy <argv…>: the decision setup-sync.rules gives, or "none"
+  inhome codex execpolicy check --rules "$H/.codex/rules/setup-sync.rules" -- "$@" 2>"$S/policy.err" | jq -r '.decision // "none"'
+}
+ac10_sandbox_profile_and_rules() {
+  local p c
+  need "$SRC/.claude/setup/codex/config.managed.toml" && need "$SRC/.codex/rules/setup-sync.rules" || return 1
+  newroot; echo "# test folder: $S"; install_setup
+  cp "$SRC/.claude/setup/codex/config.managed.toml" "$H/.codex/config.toml"
+  mkdir -p "$H/work" "$H/.hermes/skills" "$H/.hermes/plans" "$H/.hermes/scripts" "$H/.claude/projects/k/memory" "$H/.claude-setup.git" "$H/other"
+  echo 'SECRET_FOR_AC10=1' >"$H/.hermes/.env"; echo '{}' >"$H/.claude/settings.json"
+  inhome git -C "$H/work" init -q -b main
+  for p in .hermes/skills/x .hermes/plans/x .claude/CLAUDE.md .claude/projects/k/memory/n.md; do
+    sandboxed "echo ac10 > '$H/$p'" && [ "$(cat "$H/$p")" = ac10 ] || fail "write denied to ~/$p: $(head -c 200 "$S/sbx.err")" || return 1
+  done
+  echo w >"$H/work/w.txt"
+  sandboxed "cd '$H/work' && git add w.txt && git commit -q -m 'ac10 commit'" || fail "git commit denied in the workspace: $(head -c 300 "$S/sbx.err")" || return 1
+  [ "$(inhome git -C "$H/work" log -1 --format=%s 2>/dev/null)" = "ac10 commit" ] || fail "no commit in the workspace" || return 1
+  for p in .claude/setup/sync.sh .claude/settings.json .claude/hooks/x .hermes/scripts/x .claude-setup.git/x \
+           .codex/config.toml .codex/hooks.json .codex/rules/x other/x; do
+    [ -e "$H/$p" ] && c=$(cat "$H/$p") || c=ABSENT
+    sandboxed "echo ac10 > '$H/$p'" && fail "write allowed to ~/$p" && return 1
+    { [ "$c" = ABSENT ] && [ ! -e "$H/$p" ]; } || [ "$c" = "$(cat "$H/$p" 2>/dev/null)" ] || fail "~/$p changed" || return 1
+  done
+  sandboxed "cat '$H/.hermes/.env'" && fail "~/.hermes/.env is readable" && return 1
+  ! grep -q SECRET_FOR_AC10 "$S/sbx.out" || fail "~/.hermes/.env leaked" || return 1
+  echo "# sandbox: 4 writes allowed, git commit works, 9 writes and the .env read denied"
+  for c in "/Users/justin/.claude/setup/sync.sh" "/home/justin/.claude/setup/sync.sh pull" \
+           "/Users/justin/.claude/setup/codex/set-pipeline-model.sh gpt-6-luna"; do
+    [ "$(policy $c)" = allow ] || fail "rules: '$c' is not allowed: $(head -c 200 "$S/policy.err")" || return 1
+  done
+  for c in "bash /Users/justin/.claude/setup/sync.sh" "/tmp/sync.sh" "rm -rf /"; do
+    [ "$(policy $c)" = none ] || fail "rules: '$c' matched" || return 1
+  done
+  echo "# rules: allow for the 3 setup commands, no match for the 3 others"
+  done_ok
+}
 ac11_codex_runs_sync_outside_sandbox() { fail "not written"; }
 sync_suite() { # sync_suite <out>: this checkout's sync.test.sh, with HOME a fake home that has no sync.sh
   newroot; echo "# test folder: $S"
@@ -694,7 +732,94 @@ assert "memories" not in d.get("features", {}) and "memories" not in d, d.keys()
 PY
   done_ok
 }
-ac19_config_merge_idempotent() { fail "not written"; }
+justin_config() { # a config.toml shaped like Justin's (fake values)
+  cat <<'EOF'
+model = "gpt-5.6-luna"
+model_reasoning_effort = "medium"
+personality = "pragmatic"
+
+[projects."/Users/justin/Documents/weightstone-journal"]
+trust_level = "trusted"
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[hooks.state."x"]
+trusted_hash = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+
+[mcp_servers.x]
+command = "npx"
+args = ["-y", "example-mcp-server"]
+
+[mcp_servers.x.env]
+X_API_KEY = "fake-value-for-the-ac19-test"
+
+[tui]
+screen_reader_detection_done = true
+EOF
+}
+ac19_config_merge_idempotent() {
+  local SC b1 out rc k
+  SC="$SRC/.claude/setup/codex/setup-codex.sh"
+  need "$SC" && need "$SRC/.claude/setup/codex/config.managed.toml" || return 1
+  newroot; echo "# test folder: $S"; install_setup; hermes_home
+  mkdir -p "$H/.codex/plugins/cache/openai-curated/github/c6ea566d/skills/github" "$H/.codex/plugins/cache/openai-curated/github/c6ea566d/skills/yeet"
+  printf -- '---\nname: github\ndescription: plugin copy\n---\nx\n' >"$H/.codex/plugins/cache/openai-curated/github/c6ea566d/skills/github/SKILL.md"
+  printf -- '---\nname: yeet\ndescription: plugin only\n---\nx\n' >"$H/.codex/plugins/cache/openai-curated/github/c6ea566d/skills/yeet/SKILL.md"
+  HERMES_HOME="$H/.hermes" inhome bash "$H/.hermes/scripts/update-skills-library.sh" >"$S/lib.out" 2>&1 || fail "library links" || return 1
+  justin_config >"$H/.codex/config.toml"; cp "$H/.codex/config.toml" "$S/original.toml"
+  out=$(HERMES_HOME="$H/.hermes" inhome bash "$H/.claude/setup/codex/setup-codex.sh" 2>&1); rc=$?
+  echo "$out" | sed 's/^/# /' | head -12
+  [ $rc -eq 0 ] || fail "setup-codex.sh exit $rc" || return 1
+  # a backup of the original, mode 600
+  b1=$(ls "$H"/.codex/backups/config.toml.* 2>/dev/null | head -1)
+  [ -n "$b1" ] && cmp -s "$b1" "$S/original.toml" || fail "no backup of the original" || return 1
+  [ "$(python3 -c 'import os,sys; print(oct(os.stat(sys.argv[1]).st_mode & 0o777))' "$b1")" = 0o600 ] || fail "backup is not mode 600" || return 1
+  # managed top-level keys before the first table, managed tables at the end, every other key kept
+  python3 - "$S/original.toml" "$H/.codex/config.toml" "$H/.codex/plugins/cache/openai-curated/github/c6ea566d/skills/github/SKILL.md" <<'PY' || fail "merged config" || return 1
+import re, sys, tomllib
+orig, new, gh = sys.argv[1:4]
+o, t = tomllib.load(open(orig, "rb")), open(new).read()
+n = tomllib.loads(t)
+lines = t.splitlines()
+first_table = next(i for i, l in enumerate(lines) if re.match(r"\s*\[", l))
+top = lines.index("# >>> claude-setup managed: top-level >>>"); tab = lines.index("# >>> claude-setup managed: tables >>>")
+assert top < first_table, "top-level block is not before the first table"
+assert lines[-1] == "# <<< claude-setup managed: tables <<<", "tables block does not end the file"
+own = [i for i, l in enumerate(lines) if re.match(r"\s*\[", l) and "claude-setup" not in l and "skills.config" not in l]
+assert own and max(own) < tab, "a table of Justin's comes after the managed tables block"
+def walk(a, b, p=""):
+    for k, v in a.items():
+        assert k in b, f"lost {p}{k}"
+        if isinstance(v, dict): walk(v, b[k], f"{p}{k}.")
+        else: assert b[k] == v, f"changed {p}{k}: {v!r} -> {b[k]!r}"
+walk(o, n)
+assert n["default_permissions"] == "claude-setup" and n["project_doc_fallback_filenames"] == ["CLAUDE.md"] and n["project_doc_max_bytes"] == 262144
+assert n["permissions"]["claude-setup"]["extends"] == ":workspace"
+sc = n.get("skills", {}).get("config", [])
+assert [s["path"] for s in sc if s.get("enabled") is False] == [gh], f"plugin duplicate not disabled exactly: {sc}"
+PY
+  # a second run is byte-identical and makes no new backup
+  cp "$H/.codex/config.toml" "$S/first.toml"
+  HERMES_HOME="$H/.hermes" inhome bash "$H/.claude/setup/codex/setup-codex.sh" >"$S/second.out" 2>&1 || fail "second run failed" || return 1
+  cmp -s "$S/first.toml" "$H/.codex/config.toml" || fail "second run changed config.toml" || return 1
+  [ "$(ls "$H"/.codex/backups/ | wc -l | tr -d ' ')" = 1 ] || fail "second run made a backup" || return 1
+  HERMES_HOME="$H/.hermes" inhome bash "$H/.claude/setup/codex/setup-codex.sh" --check >"$S/check.out" 2>&1 || { cat "$S/check.out"; fail "--check not 0 when current"; return 1; }
+  # Codex sees the claude-setup permission entries
+  prompt_input "$S/pi.json" || return 1
+  jq -r '.[] | .content[]? | .text // empty' "$S/pi.json" >"$S/pi.txt"
+  grep -qF "<entry access=\"write\"><path>$H/.hermes</path>" "$S/pi.txt" && grep -qF "<entry access=\"read\"><path>$H/.claude/setup</path>" "$S/pi.txt" \
+    && grep -qF "<entry access=\"write\"><path>$H/work/.git</path>" "$S/pi.txt" || fail "claude-setup permission entries not in the prompt" || return 1
+  # an unmanaged managed key makes it refuse: exit 3, file untouched
+  for k in 'project_doc_max_bytes = 65536' 'sandbox_mode = "workspace-write"'; do
+    { echo "$k"; justin_config; } >"$H/.codex/config.toml"; cp "$H/.codex/config.toml" "$S/hand.toml"
+    HERMES_HOME="$H/.hermes" inhome bash "$H/.claude/setup/codex/setup-codex.sh" >"$S/refuse.out" 2>&1; rc=$?
+    [ $rc -eq 3 ] && cmp -s "$S/hand.toml" "$H/.codex/config.toml" || { cat "$S/refuse.out"; fail "'$k': exit $rc, or the file changed"; return 1; }
+    grep -q "${k%% *}" "$S/refuse.out" || fail "refusal does not name ${k%% *}" || return 1
+  done
+  echo "# refused with exit 3 for a hand-set project_doc_max_bytes and sandbox_mode"
+  done_ok
+}
 attach_desk() { # attach_desk <home>: a second machine on the same remote, attached the way desktop.md says
   local B=$1
   mkdir -p "$B"; cp "$H/.gitconfig" "$H/.gitconfig-leorna" "$B/"
