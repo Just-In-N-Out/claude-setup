@@ -48,7 +48,7 @@ Justin's standing git rules for every repo on this Mac (`RISE-OFFICIAL`, `rise-b
 ## Pushing
 
 - `gh` holds both GitHub accounts; the active one is `Justin-Leorna`, which Leorna work relies on. Never run `gh auth switch`, and never change a repo's remote URL or credential helper.
-- Personal repos that push as `Just-In-N-Out` do it through a repo-local credential helper in `.git/config`. Check `git config --local --get-regexp credential` before the first push in a repo; if a personal repo has none and the push would go as the wrong account, stop and tell Justin.
+- Personal repos that push as `Just-In-N-Out` do it through a repo-local credential helper in `.git/config`. Check `git config --local --get-regexp credential` before the first push in a repo; if a personal repo has none and the push would go as the wrong account, stop and tell Justin. A remote over SSH (`git@github.com:…`, as FigmaToBricksV2 on the WSL desktop) needs no helper: confirm the key's account with `ssh -T git@github.com` ("Hi Just-In-N-Out!") before pushing.
 - If a push fails on auth, report it. Don't work around it with another account or token.
 
 ## Merge policy per project

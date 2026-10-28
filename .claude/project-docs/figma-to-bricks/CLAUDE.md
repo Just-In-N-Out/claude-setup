@@ -4,8 +4,65 @@
 
 ## Start here: handoff of 2026-10-19 (the previous chat was cleared; read this first)
 
-**Current build `2026-10-26.1`.** Builds 21.13–22.9 were recorded only in `docs/HANDOFF.md` (their agents
+**Current build `2026-10-28.1`.** Builds 21.13–22.9 were recorded only in `docs/HANDOFF.md` (their agents
 couldn't write this file; their queued edits are in `~/.hermes/plans/figma-to-bricks/*-claude-md-pending.md`).
+- **Flip cards (28.1, flip-cards):**
+  - **Justin's ask** (bdryswi.com's home page, "Our Services"): six photo cards in a 3-column grid that turn over like
+    a playing card under the mouse, showing a back with the title, a sentence and a button to the service's page; a
+    general plugin feature for any Figma file. Figma has no flip animation, so the designer marks the card.
+  - **In Figma (Q1A):** the card is a component with two variants, front and back; the front has While hovering (or
+    Mouse enter) → Change to the back; a Figma **annotation** `flip` sits on the component set, the main component or
+    one instance (Dev Mode → Annotate). `flip left` / `up` / `down` choose the way (`flip` alone turns right); the
+    Change to's time and easing are the turn's (Instant: 0.6s ease-in-out). **Without the mark nothing changes.** A
+    mark that can't flip (no hover Change to; a Button, text, picture or section; a form on a face; an instance holding
+    a layer its main doesn't) is one panel note and converts as unmarked. No extract or debug-file change.
+  - **What the paste holds** (`understand/flip.ts`, `style/flip.ts`, `style/classes.ts` `flipClass`): the card
+    (`flip-card`, the instance's Div or Block: its size and place only, a one-cell grid) holding a "Front"
+    (`flip-front`: the instance's layers, paint and padding) and a live "Back" (`flip-back`: the hover variant, paired
+    as hover layers pair it, its Button keeping its link). One class holds the turn (`perspective: 1000px`, `backface-visibility:
+    hidden`). The card is as tall as its taller face on every screen, as wide as unmarked, and never grows on hover.
+  - **How it behaves:** the mouse turns it; Tab onto a link on the back turns it (a card whose back holds no link takes
+    the focus itself, `tabindex="0"`); phones (Q2A, CSS only): a tap turns it without opening the link, the next tap
+    opens it, a tap elsewhere turns it back; less motion (Q4A): the faces swap after 50ms without turning; the back
+    takes the pointer 50ms after the turn (`transition-behavior: allow-discrete`), so a tap's own click never lands on
+    its link; a card that is a link (Q3A) puts the link on its back; each card's back words as drawn (Q5A).
+  - **Phones and tablets:** laid out as the same card unmarked (`ir.ts` `faceOf`: recognise and the layout plan judge
+    a flip card by its front); a photo card's phone slider holds copies that flip too. Never a product card, a hover
+    layer or a CTA (its back's Buttons are CTAs); unmarked photo cards beside it keep their zoom.
+  - **Nested links** (review 2, F1): a link inside another is a test-only invariant (`emit-nested-links`, every
+    fixture and corpus page), not a paste refusal: review 1's refusal broke pastes main made. A list's PDF wins over a
+    link around its row, card or footer (one note per address); the hero's phone band copy finds links at every depth.
+  - **The ⭐ answers Q1A–Q5A**, taken under Justin's auto-go (not yet confirmed).
+  - **Rulings, not yet confirmed:**
+    - planner R1–R10: drawn heights are minimums; perspective 1000px, right unless named; Instant → 0.6s ease-in-out;
+      Tab focuses the card only when its back has nothing to tab to; "Front" / "Back" labels; no zoom or fade-in on
+      the card; one note per component, one per mark that can't flip; the back's title takes its front twin's level;
+      the back's words aren't searched for numbers or page names; up/down turns clip sideways;
+    - builder: the card takes the focus when its back holds no link, even with an unlinked Button (Bricks renders it a
+      `span`); the turned look reads `:has(> .flip-back:focus-within)`;
+    - fixer 1: a card inside a link takes no `tabindex`; a back drawn wider than its card wraps its words from the
+      design width; the 50ms swap counts as "at once"; a pill-shaped flip card is no CTA;
+    - fixer 2: a nested link never refuses the paste; a list's PDF wins over a link around it; the back's pointer waits
+      50ms in both motion modes (at once where `transition-behavior` is missing, Safari before 17.4); the layout plan
+      reads a flip card by its front everywhere, its back adds nothing.
+  - **Review:** two fresh opus reviews, all findings fixed test-first: review 1 F1–F7 (less motion's first tap opened
+    the link; a hugging card widened by its back; a nested link; CTA marks; mutants; element type; a short instance),
+    review 2 F1–F6 (high: the nested-link guard refused main's own pastes; high: the layout plan gave a flip card no
+    room, so its row never stacked; the site check lost its links; Safari's pointer; test gaps; a linked card's front).
+  - **Checks:** check 2351 + 6, 0 fail (60 corpus skips on the WSL desktop: Mac paths); browser 373: 360 pass, the same
+    12 font failures and 1 Mac-only skip as main; corpus-backed tests in `git archive` trees 0 fail; hydraulics, GRO,
+    debug-page-1, brainstorm and Services replays byte-identical (none has an annotation). AC1–AC12 proven by the
+    verifier and the blind auditor; AC13 is the live paste. Owed on a Mac: v1's three files' corpus tests and replays.
+  - **Paste check 3bn owed** (HANDOFF steps, one action at a time): make a card a component with a back variant,
+    While hovering → Change to, annotate `flip`, convert, paste, LiteSpeed Purge All (no code: no signatures); point,
+    click, Tab; on the iPhone tap where the button will be (turns, opens nothing), again (opens), elsewhere (turns
+    back), then the same with Reduce Motion; save a debug file of the page.
+  - **Limits** (HANDOFF "Limits"): Safari may show a turned-away face's composited children (a `will-change` picture, a
+    video, a CTA's fade-in) through `backface-visibility` (a fix hides the back from screen readers: a question for
+    Justin after 3bn); Chrome never hit-tests a turned-away face, so the faces' `pointer-events: none` is pinned by the
+    CSS test only; a divided row of flip cards keeps its lines on phones; the near edge grows mid-turn (a clipping
+    parent cuts it); the Bricks editor shows the back only under the pointer; Figma text properties aren't read; every
+    card carries its back. Not in scope: a flip on click, push/slide/zoom flips. The bdry paste comes next.
 - **Space under an open FAQ answer (26.1, faq-answer-space):**
   - **Justin's ask** (screenshot of the live Home page): "Can we add more space under the FAQ when it's open? Under
     the answer." The open answer's last line sat right on the divider above the next question.
@@ -406,6 +463,9 @@ run Bricks → Settings → Custom code → **Regenerate code signatures**; afte
   words at its top loses the space under them once they wrap more, and from 991px down (`size.unpin` drops its min
   height); FAQ answers are fixed, other boxes aren't yet. A badge pinned to the bottom of such a box lands on its
   words on phones (on main too).
+- **Flip cards** (28.1): Safari may show a turned-away face's composited children (a `will-change` picture, a video, a
+  CTA's fade-in) through `backface-visibility` (iPhone check 3bn); a divided row of flip cards keeps its lines on
+  tablets and phones.
 
 **How the user works (see memory too):**
 - They answer with screenshots and short messages.
@@ -981,6 +1041,19 @@ run Bricks → Settings → Custom code → **Regenerate code signatures**; afte
     than its lines; a painted or placed-layer answer box keeping its space on phones; the same frozen space outside
     FAQs.
   - Not yet pasted by the user (3bl).
+- **Flip cards** (build `2026-10-28.1`, branch `worktree-flip-cards`, full pipeline, HANDOFF of the same name; plan
+  and ledger `docs/plans/2026-10-26-flip-cards*`): see "Start here".
+  - **Code:** new `understand/flip.ts`, `style/flip.ts`; the mark in `normalise/{scene,notes,hover,normalise}.ts`;
+    `understand/overlay.ts` `variantCopy` (shared by hover layers and backs); `ir.ts` `faceOf`, `linksHere`,
+    `linkFrom`; `adapt/least.ts`, `adapt/hero-pair.ts`; `emit/elements.ts` (`tabindex`), `emit/page-addresses.ts` (a
+    back's link listed for the site check), `emit/payload.ts` (no nested-link refusal);
+    `understand/{phone,lists,list-links,list-rows,showcase,recognise}.ts`.
+  - **Tests:** `normalise-flip`, `understand-flip`, `emit-flip`, `flip-guards`, `emit-nested-links` (helper
+    `test/fixtures/nested-links.ts`), browser `flip-cards`; fixture `test/fixtures/flip-cards.ts`. `chrome.ts`
+    `Page.touch` / `Page.tap` drive a touch screen and a finger's tap: never `Input.synthesizeTapGesture`, which sends
+    no mouse events headless.
+  - **Deferred:** a divided row of flip cards; Safari's composited children; Figma text properties; a flip on click.
+  - Not yet pasted by the user (3bn).
 - **Paste checks:**
   - **WordPress pictures** (2026-10-07, build .19): the user's run worked; photos and icons show on the saved page.
     The descriptions list is not yet tried.
@@ -1044,6 +1117,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     the design width, and puts its custom CSS in `@media (max-width: W−1px)`.
   - Widths at a tier come from the layout plan (`ctx.layout`, `src/core/adapt/layout.ts`): each layer's room and
     width, each row's shape and each grid's columns. Rules read it; they never estimate widths themselves.
+  - A flip card is judged by its front (`ir.ts` `faceOf`, shared by `recognise.ts`, the layout plan, `adapt/least.ts`
+    and `hero-pair.ts`): anything reading a layer's room or kind reads the front; its back adds nothing.
   - Shared behaviour goes in one purpose-named class the style stage makes and a rule fills: `text-balance`,
     `text-pretty` and `tap-area` are the plugin's own.
   - A design drawn for phones (selected beside the desktop one) runs only the rules marked `fits` (they keep a
@@ -1145,6 +1220,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **A WordPress upload attached to no page owns the address `/<its file name>/`,** and since WP 6.4 that address
   redirects to the file. So the panel's uploads always end in `-image`/`-video`, and a link is never a picture or
   video file (`payloadProblems` refuses one). One attached to a page is at `/<page>/<name>/` instead.
+- **A link never sits inside another link** (flip-cards, 28.1): the browser ends the outer link where the inner one
+  starts. It is a test-only invariant (`emit-nested-links`: every fixture, the flip cards' linked shapes, every corpus
+  page), never a paste refusal: a refusal broke pastes main made. Add every new link producer to that test.
 - **WordPress's `font-families/<id>/font-faces` answers every face on the site,** whatever its family
   (`wp_font_face` isn't hierarchical, so the posts controller filters by no parent). Keep only the faces whose
   `parent` is the family (`site-fonts.ts`). A stand-in for WordPress answers as WordPress does, read from its code or
@@ -1249,7 +1327,17 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **Motion:** plays when scrolled into view.
   - **Only Figma's animations** (2026-10-01): convert what the design sets up, faithfully (entering and leaving). Never
     invent motion the design doesn't have: no automatic scroll reveals, hover lifts or added transitions. The
-    exceptions are call-to-action buttons, product and team cards, and logo marquees (below).
+    exceptions are call-to-action buttons, product and team cards, logo marquees and flip cards (below).
+  - **Flip cards** (user, 2026-10-26: bdryswi.com's service cards, as a general feature; build `2026-10-28.1`; the ⭐
+    answers Q1A–Q5A under the auto-go, not yet confirmed):
+    - **Only where the designer marks it:** a component whose front has While hovering → Change to its back variant,
+      with a Figma annotation `flip` (`flip left` / `up` / `down`) on the set, the main component or an instance.
+      Unmarked hovers stay as they are; Figma's own timing is the turn's.
+    - **The card turns over** under the pointer, on Tab and on a tap (CSS only: a tap turns it, the next opens the
+      back's link, a tap elsewhere turns it back); less motion swaps the faces without turning.
+    - **A card that is a link** puts the link on its back; the back's own links stay live.
+    - **As tall as its taller face** on every screen, never growing on hover; laid out as the same card unmarked.
+    - **Never a product card, a hover layer or a CTA** itself (its back's Buttons are CTAs).
   - **Logo marquees** (user, 2026-10-19: "this marquee … the logo needs to be going from left to right"; build
     `2026-10-19.14`): a row of logos or short words running past the box that clips it moves in an endless loop.
     - **Toward the right**, at medium speed (60px a second, v1's).
