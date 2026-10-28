@@ -189,3 +189,6 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Low (unproven): launch-settings denylist omits version-manager homes (`VOLTA_HOME`, `ASDF_*`, `NODENV_*`, `MISE_DATA_DIR`, `FNM_DIR`, `N_PREFIX`); README overclaims for shim users. Raised to Justin.
 - Info: `leorna-test-pg` publishes on 127.0.0.1:55432 on the desktop; the plan's Task 8 URL says 5432.
 - Low, plan text only (86bcm901w auditor): the approved plan's E1 demo-server recipe points `LEORNA_DATABASE_URL` at 127.0.0.1:5432 (Justin's `leorna-pg`) but creates the demo DB in `leorna-test-pg` on 55432; followed literally it connects to the wrong container.
+
+## 2026-10-28: 86bcm901j auditor
+- P3 (pre-existing, out of scope): the copied client renderer quotes server names and keys in render-stage reasons, so a token pasted into a server name reaches the gate's JSON report and CI log via the render stage (the policy stage never repeats it). Needs a client-side change; same follow-up as review 2's renderer note.
