@@ -725,6 +725,16 @@ ac11_githooks_chain_repo_hooks() {
   [ "$rc" = 0 ] && grep -q "chain-message-$$" "$log" && grep -q "own commit-msg args: .*COMMIT_EDITMSG" "$log" \
     || fail "own commit-msg did not get the message file (rc=$rc)" || return 1
   echo "# own commit-msg got the message file"
+  # the own hooks run after the checks: with own hooks that pass, a check still refuses, and the refused
+  # hook's own hook never runs (an exec before the checks would skip them)
+  : >"$log"
+  out=$(cd "$p" && ing git -c user.email="$LEORNA" commit -q --allow-empty -m x 2>&1 </dev/null); rc=$?
+  refused pre-commit "$PERSONAL" "own pre-commit exits 0: -c user.email=$LEORNA" || return 1
+  ! grep -q "own pre-commit" "$log" || fail "own pre-commit ran before the refusing check" || return 1
+  commit_in "$p" --allow-empty -m "fix: x" -m "Co-authored-by: Claude <noreply@anthropic.com>"
+  refused commit-msg 'AI' "own commit-msg exits 0: an AI trailer" || return 1
+  ! grep -q "own commit-msg" "$log" || fail "own commit-msg ran before the refusing check" || return 1
+  echo "# the checks run before the own hooks: a refusal stops the commit and the own hook never runs"
   ownhook "$p/.git" commit-msg 1
   commit_in "$p" --allow-empty -m "blocked by own commit-msg"; [ "$rc" != 0 ] || fail "own commit-msg exit 1 did not block" || return 1
   rm "$p/.git/hooks/commit-msg"
