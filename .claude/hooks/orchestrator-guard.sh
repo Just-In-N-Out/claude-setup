@@ -2,8 +2,8 @@
 # Orchestrator guard: Claude Code PreToolUse hook on ^(Edit|Write|NotebookEdit)$.
 # CLAUDE.md: "The main session only orchestrates." During a bug or story it dispatches agents and never
 # writes code itself. This hook makes that a yes/no prompt: when the MAIN session (no agent_id) is about
-# to edit code, it asks Justin. Code is a file inside a git work tree (a .git folder or a linked
-# worktree's .git file in its folder or any folder above), or a setup code path: ~/.claude/hooks,
+# to edit code, it asks Justin. Code is a file inside a git work tree (a .git folder holding HEAD, or a
+# linked worktree's .git file, in its folder or any folder above), or a setup code path: ~/.claude/hooks,
 # ~/.claude/githooks, ~/.claude/setup, ~/.claude/settings*.json, ~/.codex/hooks*, ~/.codex/agents,
 # ~/.hermes/scripts, and non-.md files under ~/.hermes/skills.
 # Silent (no output):
@@ -70,7 +70,8 @@ fi
 code=""
 d=${real%/*}
 while [[ -n $d ]]; do
-  if [[ -e $d/.git ]]; then code=repo; break; fi
+  # a linked worktree's .git file, or a .git folder git would accept (it has HEAD; an empty one doesn't count)
+  if [[ -f $d/.git || -f $d/.git/HEAD ]]; then code=repo; break; fi
   d=${d%/*}
 done
 case $real in

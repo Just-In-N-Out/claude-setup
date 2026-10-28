@@ -565,6 +565,10 @@ ac14_orchestrator_guard_quiet_for_subagents_and_own_files() {
     expect_edit none '' Edit "$H/$f" || return 1
   done
   expect_edit none '' Write "$H/code/app/.scratch/x.sh" "" auto "$H/code/app/.scratch" || return 1
+  # an empty .git folder is not a repo (this desktop has one in ~/.claude): git needs a HEAD in it
+  mkdir -p "$H/.claude/.git" "$H/notes/.git/objects"
+  expect_edit none '' Edit "$H/.claude/plans/q.md" || return 1
+  expect_edit none '' Write "$H/notes/todo.txt" || return 1
   expect_edit none '' Write "$S/scratchpad/run.sh" || return 1
   for m in acceptEdits bypassPermissions; do
     expect_edit none '' Edit "$H/code/app/src/main.go" "" "$m" || return 1
