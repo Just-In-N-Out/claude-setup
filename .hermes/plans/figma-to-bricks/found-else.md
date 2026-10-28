@@ -320,3 +320,9 @@ Round 3 ownership (2026-10-22): see `found-batches.md` → `found-batches-round3
 ## 2026-10-22 — hero-media-row finisher
 - **P3** — Media-only FILL hero on laptops: picture is 23px wide at 992px on exact main and candidate (identical geometry, pre-existing). Evidence `evidence/hero-media-row/finisher-fix/r1-base-992.log`.
 - **P3** — Long-heading fallback can overflow at 320px when hero keeping is disabled (reviewer finding, not introduced). Evidence `evidence/hero-media-row/independent-review/`.
+
+
+## 2026-10-28 — headline-marker verifier df32227: companion-test mapping
+
+- Coverage note (no severity assigned; verifier clean), AC5: the amended max(words width, line height) behavior is proved by the companion single-digit/oversize test, not the older named fallback test. Reverting max leaves the named test green and fails the companion. Evidence: /home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/integration-df32227/verifier/ac.json (AC5 found_else), review-regressions.log, ac5-size-mutant-{named,supplement}.log.
+- Coverage note (no severity assigned; verifier clean), AC6: unchanged HTML and interval/link/phone preservation are proved by style-marks companion tests, not the named emission-only test. A containing-link expansion mutant leaves the named test green and fails the companion. Evidence: /home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/integration-df32227/verifier/ac.json (AC6 found_else), review-regressions.log, ac6-containment-mutant-{named,supplement}.log.

@@ -14,7 +14,7 @@ lock across this release. Do not acquire/release/delete a lock yourself unless a
 
 Feature plan: `docs/plans/2026-10-26-slider-autoplay.md`. Approved criteria AC1–AC14 are in
 `/home/justin/.hermes/plans/figma-to-bricks/evidence/slider-autoplay/plan-approved.md`, with later answers/rulings in
-the committed plan copy. AC13 and AC14 are live paste check 3bm, still owed to Justin; AC14 expects interval 5800
+the committed plan copy. AC13 and AC14 are live paste check 3bo, still owed to Justin; AC14 expects interval 5800
 and speed 800. Your own evidence folder is
 `/home/justin/.hermes/plans/figma-to-bricks/evidence/slider-autoplay/finisher-release/`.
 
@@ -25,7 +25,7 @@ and speed 800. Your own evidence folder is
    sibling releases. A changed main HEAD requires returning to the orchestrator, not silently releasing another tip.
 2. Move this feature's ledger `.superpowers/sdd/2026-10-26-slider-autoplay/progress.md` to
    `docs/plans/2026-10-26-slider-autoplay-ledger.md`. Update only slider-autoplay's HANDOFF entries with actual
-   build, independent acceptance result, preserved rulings/limits, and paste check 3bm. Keep all other features'
+   build, independent acceptance result, preserved rulings/limits, and paste check 3bo. Keep all other features'
    entries. Ensure the source facts and live obligations are accurate and in plain words.
 3. Run `npm run build` so the manifest's main-folder dist/code.js and dist/ui.html contain the new build. Preserve
    actual runtime, complete output and exit marker. Do not repeat all tests without a new failure/change reason;
@@ -58,3 +58,21 @@ Return `{status: released|stopped, build, feature_head, release_head, push, dist
 rulings[], deferred[], steps_for_justin[], gates, skill_lessons[{skill,lesson,evidence}]}`. Name every unresolved
 live AC and machine-only gate. Empty skill_lessons is normal. Never edit skills/memory yourself.
 End with `MAIN SESSION: check and save these skill_lessons now.`
+
+## Accepted merge and dispatch (2026-10-28)
+The source was fast-forwarded into main at accepted feature HEAD
+`2b55134485cdf5f2d58eec03775a658e5f0544f6`, from integration base
+`27b787b78d88850cbb9863bb31fcfc840406331c`. The worktree branch is at that same tip.
+ac-check exited 0: READY FOR THE USER — AC1–AC12 accepted; AC13 and AC14 live, now paste check **3bo**.
+Current proof: evidence/slider-autoplay/verifier/round-3/ac.json and auditor/round-3/ac.json.
+The orchestrator acquired and independently read back merge-lock owner **slider-autoplay**, since 15:59:59Z.
+It still owns that lock and will release it after your handoff. Do not release or modify the lock.
+Main was clean immediately before the fast-forward. Read BUILD fresh; its prior release was 2026-10-28.2.
+
+Carry the final auditor's found_else OBS1 into HANDOFF and the moved ledger as a known limit/follow-up,
+without expanding this release: a narrow slider with a centered full-width linked CTA can have its outer CTA
+endpoints intercepted by arrows at 1440, 991 and 768; phones pass. The evidence is
+auditor/round-3/narrow-tablet-diagnostic.json, .png and .log. This is outside the approved clearance matrix and
+the auditor returned clean; do not claim desktop/tablet narrow-slider clearance is solved.
+No new product ruling or reusable skill lesson was reported by the integration verifier/auditor.
+The read-only setup repo still prevents setup sync even with escalation. All briefs are saved locally.

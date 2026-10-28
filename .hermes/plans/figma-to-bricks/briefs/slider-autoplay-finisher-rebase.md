@@ -43,3 +43,15 @@ Send concise progress at meaningful checkpoints.
 Return `{status: ready-for-integration|stopped, head, base, main_used, summary, conflicts[], gates,
 rulings[], live_acs:["AC13","AC14"], skill_lessons[{skill,lesson,evidence}]}`. Empty lessons are normal.
 End with `MAIN SESSION: check and save these skill_lessons now.`
+
+## Acceptance and dispatch (2026-10-28)
+Accepted feature HEAD: `ceb1514d8d14a5079d84f854c47938d671eb07d2`.
+Accepted base: `f46f8a20dec5558ce85b246db48ef83c13ca72d2`.
+ac-check exited 0: READY FOR THE USER — AC1–AC12 accepted; AC13 and AC14 live.
+Reports: evidence/slider-autoplay/verifier/round-2/ac.json and auditor/round-2/ac.json.
+AUD-F1 was fixed in ceb1514; both independent agents accepted the corrected note behavior.
+Local main has advanced since the feature base (last observed release 27b787b, label-floor build 2026-10-28.2).
+Resolve and pin the actual current coherent local main before rebasing; other sessions may have advanced it again.
+The source must remain on the worktree branch. Do not merge, bump BUILD, push, or edit main.
+Stop and report the rebased HEAD/base and gates so the orchestrator can repeat verification/audit on that HEAD.
+No skill lessons were reported. Setup sync remains unavailable due its read-only bare repo; do not bypass it.

@@ -5,12 +5,12 @@ You are a fresh blind AC auditor, source read-only. Prove the approved acceptanc
 ## Inputs and ownership
 
 - Worktree: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/headline-marker`, branch `worktree-headline-marker`.
-- Expected clean HEAD: `f992469cccbcbd3a33c8355658b359737aa88d95`.
-- Base: `70d54085ea034190909846de77ce9e4e57587b1e`; confirm the current `git merge-base HEAD main` before running.
-- Expected integration tip: `70d54085ea034190909846de77ce9e4e57587b1e`. The branch has been rebased onto this integration base. This audit independently proves the integrated candidate.
+- Expected clean HEAD: `df32227868452ae93562ad99cad7246e9bc7a52f`.
+- Base: `27b787b78d88850cbb9863bb31fcfc840406331c`; confirm the current `git merge-base HEAD main` before running.
+- Expected integration tip: `27b787b78d88850cbb9863bb31fcfc840406331c`. The branch has been rebased onto this integration base. This audit independently proves the integrated candidate.
 - Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/plan-approved.md` (read-only). AC1–AC13 and their named tests are authoritative; AC13 alone is live.
 - Approved amendments: in `docs/plans/2026-10-26-headline-marker.md`, read only the sections `Changed by review fix pass 1` and `Changed by review fix pass 2` as additions to the approved plan. Judge against the approved wording as amended. In particular, AC4 adds LEFT/JUSTIFIED headings starting with styled words; AC5 measures 1.6× against the larger of words' width and line height; AC9 adds 375px, left/right alignment and paint-order controls. The amendments also define the final style/line-end rules and hover behavior.
-- Your evidence folder only: `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/integration-f992469/auditor/` (create it fresh).
+- Your evidence folder only: `/home/justin/.hermes/plans/figma-to-bricks/evidence/headline-marker/integration-df32227/auditor/` (create it fresh).
 - You must not read any other role's reports, receipts, evidence folders, ledgers or summaries. Obtain all proof yourself from the approved plan, amendments and checked-out code.
 - You are not alone in the codebase. Other chats own slider-autoplay and photo-hotspots. Do not touch their worktrees, evidence, processes or changes. Never revert others' edits.
 

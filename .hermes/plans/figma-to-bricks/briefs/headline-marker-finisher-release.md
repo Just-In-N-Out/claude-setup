@@ -17,6 +17,10 @@ Expected merged HEAD: TO_BE_PINNED_BEFORE_DISPATCH.
 
 Load `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` plus `references/rules-summary.md`, then `engineering-best-practices`, `receiving-code-review`, `git-commit-rules`, and `github`. Follow current global and project privacy/authorship instructions. The main session owns all reviews and skill/memory edits. If the project summary needs a rule update, return the exact proposed edit rather than editing skills yourself.
 
+## Verified coverage mapping
+
+The final verifier reported clean, with two informational `found_else` mappings: AC5's amended size guard is proved by the companion single-digit/oversize test; AC6's unchanged HTML and link/phone containment are proved by style-marks companion tests. Mutation runs prove those companions catch the relevant faults while the older named tests alone do not. Record the precise evidence mapping from `integration-df32227/verifier/ac.json` in final verification records. These are no reported behavior failures and do not authorize source/test changes in this release assignment.
+
 ## Release steps
 
 1. Verify the supplied accepted/merged SHA, main branch, clean status and merge lock. Do not proceed from a different or dirty head. Confirm git identity is Justin <issajustin04@gmail.com>. Confirm the configured push route is Just-In-N-Out without switching accounts, remotes or credential helpers. For an SSH remote, use the documented SSH identity check; never print tokens or keys.
