@@ -76,6 +76,37 @@ def placeholder(subs, body):
     return "%s%d%s" % (PH, len(subs) - 1, PH)
 
 
+ANSI_C = {"a": "\a", "b": "\b", "e": "\x1b", "E": "\x1b", "f": "\f", "n": "\n", "r": "\r", "t": "\t", "v": "\v",
+          "\\": "\\", "'": "'", '"': '"', "?": "?"}
+ANSI_C_RE = re.compile(r"\\(?:([0-7]{1,3})|x([0-9A-Fa-f]{1,2})|u([0-9A-Fa-f]{1,4})|U([0-9A-Fa-f]{1,8})|c(.)|(.))", re.S)
+
+
+def ansi_c(s):
+    """The text of bash's $'…' quoting (s is what sits between the quotes): its escapes decoded, cut at a NUL."""
+    def esc(m):
+        octal, hx, u4, u8, ctrl, other = m.groups()
+        if octal or hx:
+            return chr(int(octal, 8) & 0xFF if octal else int(hx, 16))
+        if u4 or u8:
+            try:
+                return chr(int(u4 or u8, 16))
+            except (ValueError, OverflowError):
+                return ""
+        if ctrl is not None:
+            return chr(ord(ctrl) & 0x1F)
+        return ANSI_C.get(other, "\\" + other)
+    return ANSI_C_RE.sub(esc, s).split("\0")[0].replace(PH, "\x7f")  # PH is the guard's own marker
+
+
+def ansi_c_word(cmd, i):
+    """cmd[i] opens $'…': (the decoded text as one single-quoted word, the index after its closing quote)."""
+    j, n = i + 2, len(cmd)
+    while j < n and cmd[j] != "'":
+        j += 2 if cmd[j] == "\\" else 1
+    text = ansi_c(cmd[i + 2:min(j, n)])
+    return "'" + text.replace("'", "'\"'\"'") + ("'" if j < n else ""), j + 1
+
+
 def substitution(cmd, i):
     """cmd[i] opens $( or a backtick: (the body, the index just after its end)."""
     if cmd[i] == "`":
@@ -123,6 +154,7 @@ def heredoc_body(cmd, i, delim, dash):
 def normalize(cmd, i=0, subs=None, closer=False):
     """One quote-aware pass, so shlex sees one line: (text, end).
     - Unquoted newlines become ';', backslash-newline joins lines, unquoted '#' comments are dropped.
+    - $'…' becomes the single-quoted word bash makes of it (escapes like \\x76 decoded); $"…" is a "…" string.
     - $(…) and `…` (unquoted or inside double quotes) run their body: each becomes a placeholder and the
       body goes to subs, to be scanned as a script of its own where the placeholder sits.
     - A heredoc body is a script only when a shell or eval reads it (bash <<EOF, cat <<EOF | sh); any other
@@ -133,6 +165,19 @@ def normalize(cmd, i=0, subs=None, closer=False):
     out, n, pending, prev, start, depth = [], len(cmd), [], " ", 0, 0
     while i < n:
         c = cmd[i]
+        if cmd.startswith("$$", i):  # the shell's pid: a quote after it is an ordinary one
+            out.append("$$")
+            prev = "x"
+            i += 2
+            continue
+        if cmd.startswith("$'", i):  # ANSI-C quoting: its escapes decoded, as one single-quoted word
+            word, i = ansi_c_word(cmd, i)
+            out.append(word)
+            prev = "'"
+            continue
+        if cmd.startswith('$"', i):  # locale quoting: an ordinary double-quoted string
+            i += 1
+            continue
         if c == "'":
             j = cmd.find("'", i + 1)
             j = n - 1 if j < 0 else j

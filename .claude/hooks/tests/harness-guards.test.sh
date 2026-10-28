@@ -144,7 +144,9 @@ ac1_guard_denies_identity_override() {
     "git config --global --replace-all user.email x@example.test" "git config --unset user.email" \
     "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=user.email GIT_CONFIG_VALUE_0=x@example.test git commit -m x" \
     "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=user.email GIT_CONFIG_VALUE_0=x@example.test; git commit -m x" \
-    "GIT_CONFIG_PARAMETERS=\"'user.email'='x@example.test'\" bash -c 'git commit -m x'"; do
+    "GIT_CONFIG_PARAMETERS=\"'user.email'='x@example.test'\" bash -c 'git commit -m x'" \
+    "git commit \$'--author=X <x@example.test>' -m x" "git -c \$'user.\\x65mail=x@example.test' commit -m x" \
+    "git config \$'user.email' x@example.test" "git config \$\"user.name\" X"; do
     expect deny 'commit identity' "$c" || return 1
   done
   expect deny 'commit identity' "git -c user.email=x@example.test commit -m x" "$H/work" agent-1 || return 1
@@ -223,12 +225,19 @@ ac4_guard_denies_hook_bypass() {
     "export GIT_CONFIG_COUNT=1; bash -c 'GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x'"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
+  # bash's $'…' (with its escapes) and $"…" quoting is read the way bash reads it
+  for c in "git commit \$'--no-verify' -m x" "git commit \$'--no-\\x76erify' -m x" "git commit \$\"--no-verify\" -m x" \
+    "git -c \$'core.hooksPath=' commit -m x" "git commit \$'--no-\\166erify' -m x" "git commit \$'--no-\\u0076erify' -m x" \
+    "git commit -m \$'it\\'s' \$'--no-verify'" "git config --global \$'core.hooksPath' /x"; do
+    expect deny 'skip the git hooks' "$c" || return 1
+  done
   for c in "git commit -am x" "git commit -m '-n'" "git commit -m \"-n\"" "git commit -am '-n'" "git commit -m 'docs: --no-verify'" \
     "git commit -m x -m 'never use -n'" "git commit -F msg.txt" "git commit -C HEAD" \
     "git push -n" "git push --dry-run origin main" "git clean -n" "git clean -nd" "git config --global core.hooksPath" \
     "git config --global core.hooksPath ~/.claude/githooks" "git config --global core.hooksPath '~/.claude/githooks'" \
     "git config --global core.hooksPath \"\$HOME/.claude/githooks\"" "git config --global core.hooksPath \${HOME}/.claude/githooks/" \
-    "git config --global core.hooksPath $H/.claude/githooks" \
+    "git config --global core.hooksPath $H/.claude/githooks" "git config --global core.hooksPath \$'$H/.claude/githooks'" \
+    "git commit -m \$'it\\'s --no-verify'" "git commit -m \$'line 1\\n--no-verify'" "git commit -m \$\"--no-verify\"" \
     "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=color.ui GIT_CONFIG_VALUE_0=always; git log -1" \
     "(export GIT_CONFIG_COUNT=1); GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x git commit -m x"; do
     expect none '' "$c" || return 1
@@ -310,6 +319,8 @@ ac7_guard_parses_shell_forms() {
     "timeout 60 git push $nv" "/usr/bin/git commit $nv -m x" "(cd /x && git commit $nv -m x)" \
     "echo \$(git commit $nv -m x)" "if true; then git commit $nv -m x; fi" "git commit $nv -m \"unterminated" \
     "echo it's here; git commit $nv -m x" "git commit -m 'a#b' $nv" "echo hi # a comment"$'\n'"git commit $nv" \
+    "bash -c \$'git commit $nv -m x'" "eval \$'git push \\x2d-no-verify'" "echo \$'it\\'s'; git commit $nv" \
+    "echo \"\$(echo \$'a\\')'; git push $nv)\"" "echo \$\$'\\'; git push $nv #'" \
     $'cat <<\'EOF\' >notes.txt\nit\'s a note\nEOF\ngit commit '"$nv" "git commit $nv -m x 2>&1 >/dev/null" \
     $'cat <<\'EOF\' >n.txt\nit\'s\nEOF\ngit commit '"$nv"$' -m x\necho it\'s done' \
     $'echo hi # don\'t worry\ngit commit '"$nv"$' -m x\necho it\'s done' "git commit -m a#b $nv"; do
@@ -344,6 +355,7 @@ ac7_guard_parses_shell_forms() {
   expect ask 'Leorna push' "cd ~/Leorna/x && echo \"\$(git push origin feat/x)\"" || return 1
   # a git command only inside a quoted message, a heredoc body or a comment is not a git command
   for c in "git commit -m 'run git commit $nv later'" "echo 'git push $nv'" "echo hi # git commit $nv" \
+    "echo \$'git push $nv'" "echo \$'a\\'b # git push $nv'" "echo \$\"git push $nv\"" \
     "git commit -m \"\$(cat <<'EOF'"$'\nfix: don\'t skip hooks\n\nCo-Authored-By: someone\nEOF\n)"' \
     "git config user.email 2>/dev/null || echo none"; do
     expect none '' "$c" || return 1
