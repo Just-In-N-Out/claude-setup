@@ -144,7 +144,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..f9cd0c0 100644
+index f2d882d..9de9d44 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,18 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -206,7 +206,7 @@ index f2d882d..f9cd0c0 100644
     test identities and require unaffected positive controls to remain green;
     a matching message elsewhere in the combined log is not that method's kill.
     Classify an unexpected survivor only after checking equivalent guards and
-@@ -155,7 +172,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,7 +172,18 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -215,11 +215,18 @@ index f2d882d..f9cd0c0 100644
 + `GIT_ALLOW_PROTOCOL` allowlist test stays green with the allowlist deleted,
 + because git already refuses `ext::`; turn the default off in the test
 + (`GIT_CONFIG_COUNT=1`, `GIT_CONFIG_KEY_0=protocol.allow`,
-+ `GIT_CONFIG_VALUE_0=always`) so the guard under test is the only one. The test process's own environment masks too: a fixture's `t.Setenv("GIT_CONFIG_GLOBAL", os.DevNull)` keeps protecting the child after production stops setting it, so the case meant to kill that mutant must unset it first (9019). Also check test fakes for sentinel
++ `GIT_CONFIG_VALUE_0=always`) so the guard under test is the only one. A
++ decoder's loose matching hides input from the guard too: an exact-key
++ allowlist built on BurntSushi/toml's `Undecoded()`/`IsDefined()` accepts
++ `prompt` plus `Prompt`, because struct decoding matches fields with
++ `strings.EqualFold`, marks the variant decoded and keeps either value at
++ random (0/200 refused, 901b review 1). Probe a key allowlist with a
++ case-variant duplicate key, and enforce the exact set via `metadata.Keys()`
++ or a map decode. The test process's own environment masks too: a fixture's `t.Setenv("GIT_CONFIG_GLOBAL", os.DevNull)` keeps protecting the child after production stops setting it, so the case meant to kill that mutant must unset it first (9019). Also check test fakes for sentinel
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -197,7 +218,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +225,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -231,7 +238,7 @@ index f2d882d..f9cd0c0 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -290,7 +314,42 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +321,42 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively

@@ -148,3 +148,4 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 2026-10-28: 86bcm901j review 1
 - Info (environment): Justin's own Codex app-server daemon and interactive Codex sessions write the real `~/.codex/*.sqlite` continuously; real-tool isolation proofs must rest on the scratch `CODEX_HOME` and the real `config.toml` timestamp.
 - Info: codex-cli 0.165.0 refuses a top-level `profile = "x"`, so `[profiles.*]` aren't a privilege path on 0.165.
+- 2026-10-28 (86bcm901b reviewer 1, info): read-only `merge-tree` at ~19:55Z: 901a (`0ab7e6f`) conflicts with 901b in `cmd/library-upstream/main.go`, `internal/library/upstream/importer.go`, `internal/library/curation.go` (both add flags/fields: keep both) plus README, `stories.json`, `curation.json`; 901j (`7c2c35a`) in `stories.json`, README, `content.lock.json`; 901w (`18ed1b7`) clean. 901a and 901j also set `library.json` to 0.6.0: the second to merge takes the next minor.

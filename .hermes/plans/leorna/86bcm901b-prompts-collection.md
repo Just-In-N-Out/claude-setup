@@ -10,6 +10,8 @@ ClickUp [Curate the reusable prompts collection](https://app.clickup.com/t/86bcm
 
 **Approved by Justin 2026-10-28 (away grant)**, recorded by the main session. His words: "I'm gonna go shower, so just keep this running, okay? Just go with the recommended stuff the agent says, alright?" Picks: **Q1 A** (`requires` list in item.json), **Q2 A** (`planning`), **Q3 A** (ship all 9; flag skills now, agents after 901a), **Q4 A** (user-space PostgreSQL 18.6, plus user-space GNU make, as B0.2 now says). Earlier: "Make sure it pulls the updated main branch" (B0.1: fetch, `merge --ff-only` the main checkout's `main`, then create the worktree from that SHA). Grant scope: run the Full pipeline to the hand-over pack; ask Justin only for a decision that is his or the same AC failing twice for the same reason; AC5 (live) stays owed to him. The questions below are answered.
 
+**Review 1 F4 (main-session ruling under the away grant, 2026-10-28):** reviewer 1 found that `prompt/ship`'s review note and `items/prompt/ship/example.md` (D4's wording) claim more about `/ship`'s fallback than the prompt body says, and that changing `example.md` changes plan text. Its recommended fix is taken: both say only what the body says (the fallback covers a CLI without subagents; what Claude Code does with `/ship` is not verified by this story). This supersedes D4's `ship/example.md` wording on that point only.
+
 ## Open questions (answered 2026-10-28: every ⭐; the plan is written as if every ⭐ was chosen)
 
 **Q1. AC3: the pack builder (86bcm901w) is only being planned now and starter packs (86bcm901r) don't exist. How does each prompt flag the skills it needs?**
