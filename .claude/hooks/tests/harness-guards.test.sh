@@ -833,7 +833,7 @@ ac16_lessons_gate_sends_back_missing_enforce_once() {
 }
 
 ac17_docs_define_enforce_and_backlog() {
-  local f n line hits
+  local f n line hits rc
   need "$SRC/.hermes/plans/claude-setup/enforce-backlog.md" || return 1
   srcgit ls-files --error-unmatch -- .hermes/plans/claude-setup/enforce-backlog.md >/dev/null 2>&1 \
     || fail "enforce-backlog.md is not tracked (it would not sync)" || return 1
@@ -862,8 +862,9 @@ ac17_docs_define_enforce_and_backlog() {
   done < <(srcgit ls-files -- ':(glob).claude/projects/*/memory/periodic-skill-review.md')
   [ "$n" -ge 1 ] || fail "no periodic-skill-review.md memory copy tracked" || return 1
   echo "# CLAUDE.md, feature-dispatch, leorna, 7 role files and $n memory copies name the four fields"
-  hits=$(cd "$SRC" && srcgit ls-files -z | grep -zv '^\.hermes/plans/' | xargs -0 grep -lF -- "$OLD_SHAPE" 2>/dev/null)
-  [ -z "$hits" ] || fail "synced files outside .hermes/plans/ still hold the old shape: $(echo $hits)" || return 1
+  # git grep reads the tracked files itself: no GNU-only grep -z pipeline (this also runs on the Mac)
+  hits=$(cd "$SRC" && srcgit grep -lF -- "$OLD_SHAPE" -- . ':!.hermes/plans'); rc=$?
+  [ "$rc" = 1 ] || fail "synced files outside .hermes/plans/ still hold the old shape (git grep exit $rc): $(echo $hits)" || return 1
   n=$(python3 -c 'import sys; print(len(open(sys.argv[1], encoding="utf-8").read()))' \
     "$SRC/.hermes/skills/autonomous-ai-agents/feature-dispatch/SKILL.md")
   [ "$n" -lt 100000 ] || fail "feature-dispatch SKILL.md is $n characters (limit 100,000)" || return 1
