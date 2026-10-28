@@ -27,7 +27,7 @@ ClickUp shows all four dependencies complete: 86bcm9018 loader, 86bcm901u qualit
      - the dependencies show complete in ClickUp, but the notes say 901u's PR #90 was still open on 2026-10-24. Check what is actually on `origin/main` in each repo before planning on top of it;
      - say which repo or repos the "content" library lives in;
      - check overlap with sibling cards 86bcm901b (prompts collection, to do) and 86bcm901r (starter packs, which depend on this card).
-   - The standard lines: `found_else`, the `skill_lessons[{skill, lesson, evidence}]` rule (never edit skills or memory), and the report ending with `MAIN SESSION: check and save these skill_lessons now.` if lessons are listed.
+   - The standard lines: `found_else`, the `skill_lessons[{skill, lesson, evidence, enforce}]` rule (never edit skills or memory), and the report ending with `MAIN SESSION: check and save these skill_lessons now.` if lessons are listed.
    - Output schema: `{name, plan_path, playback, summary, choices[], questions[{q, options[], recommended}], risks[], touches[], overlaps, found_else[], skill_lessons[]}`.
 2. **When the planner returns:**
    - check that the plan has numbered ACs (if not, it goes back to the planner);

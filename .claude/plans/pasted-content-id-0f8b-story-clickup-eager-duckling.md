@@ -68,7 +68,7 @@ Import the 4 upstream agent definitions (code-reviewer, security-auditor, test-e
 
 ## Rules for every role
 - If you find any other bug or problem along the way, don't fix it or fold it in. List it in `found_else` (one line each, with evidence and severity) and in an "Other things found" section at the end of the plan.
-- If you learn something reusable (a gotcha, an approach that worked after one failed, a skill step that was wrong, missing or stale), don't edit any skill or memory file. List it in `skill_lessons[{skill, lesson, evidence}]` and a "Skill lessons" section of your report, naming the skill (or `memory`). An empty list is the normal answer: list only what a future task needs that the skill doesn't already say.
+- If you learn something reusable (a gotcha, an approach that worked after one failed, a skill step that was wrong, missing or stale), don't edit any skill or memory file. List it in `skill_lessons[{skill, lesson, evidence, enforce}]` and a "Skill lessons" section of your report, naming the skill (or `memory`). An empty list is the normal answer: list only what a future task needs that the skill doesn't already say.
 - Scratch: none in this read-only run. Later roles keep scratch in their own fresh `<scratchpad>/86bcm901a-<role>/` folder (`mkdir` without `-p`) and remove only that.
 
 ## Output (your final message)

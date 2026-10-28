@@ -69,7 +69,7 @@ Rules for every role:
 
 Rule: **agents write lessons down; this main session saves them.** Subagents never edit `SKILL.md` or memory. Parallel agents would overwrite each other's edits to shared skill files, and reviewers and the verifier are read-only.
 
-1. **Every brief** gets this line and an output field: "If you learn something reusable (a gotcha, an approach that worked after one failed, a skill step that was wrong or missing), don't edit any skill: list it in `skill_lessons[{skill, lesson, evidence}]` and a 'Skill lessons' section of your report."
+1. **Every brief** gets this line and an output field: "If you learn something reusable (a gotcha, an approach that worked after one failed, a skill step that was wrong or missing), don't edit any skill: list it in `skill_lessons[{skill, lesson, evidence, enforce}]` and a 'Skill lessons' section of your report."
 2. **On each result,** I check each lesson, then make a small edit to the named `SKILL.md` under `~/.claude/skills` (shared with Hermes) or a memory note. I tell Justin in one line what was saved. Duplicates and story-only facts are dropped; story facts go to `leorna-workflow.md`.
 3. **Hook** `~/.claude/hooks/skill-review-nudge.sh`, test first:
    - In `~/.claude/hooks/tests/skill-review-nudge.test.sh`, add failing cases: a subagent PostToolUse fires a subagent-worded nudge on its 15th call; counters are separate per agent; main-session behaviour is unchanged.

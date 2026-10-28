@@ -71,7 +71,8 @@ All paths are relative to `$HOME`.
 |---|---|
 | `.claude/CLAUDE.md` | Global rules for every Claude Code session: the story pipeline (planner → builder → reviews → verifier → AC auditor → `ac-check.sh` → finisher), git identities, Leorna rules, which skills to load. |
 | `.claude/settings.json` | Claude Code settings: the hook registrations, plugins, status line, model and effort. |
-| `.claude/hooks/*.sh`, `.claude/hooks/tests/` | The pipeline's guard hooks (`subagent-ac-gate`, `subagent-lessons-gate`, `subagent-handback-gate`, `skill-review-nudge`) and their tests. They need `jq`. |
+| `.claude/hooks/*.sh`, `.claude/hooks/tests/` | The pipeline's guard hooks (`subagent-ac-gate`, `subagent-lessons-gate`, `subagent-handback-gate`, `skill-review-nudge`), the rule guards `git-guard` (Bash: git identity, accounts, remotes, credential helpers, hook bypasses; asks before a Leorna push; needs `python3`) and `orchestrator-guard` (asks before the main session edits code), and their tests. They need `jq`. |
+| `.claude/githooks/` | Git hooks for every repo once a machine sets `git config --global core.hooksPath '~/.claude/githooks'` (one time each; see `mac.md`/`desktop.md`): `githook.sh` refuses a staged `CLAUDE.md` outside this repo, an email that doesn't match the folder and an AI co-author trailer, then runs the repo's own hook; the other 16 files are wrappers. |
 | `.claude/setup/` | This sync system: `sync.sh`, `manifest.txt`, `exclude.txt`, `gitleaks.toml`, `projects.tsv`, `mac.md`, `desktop.md`. `codex/` holds the Codex adapter (see *Codex*). |
 | `.codex/hooks.json`, `.codex/hooks/`, `.codex/agents/`, `.codex/rules/setup-sync.rules` | Codex's hooks, the seven `pipeline_*` roles and the rule that lets Codex run `sync.sh` (see *Codex*). |
 | `.claude/projects/<key>/memory/` | Claude's per-project memory notes. `<key>` is the project's absolute path with every non-alphanumeric character turned into `-`. The Mac keys look like `-Users-justin-…`; the desktop links its own keys to them (see `projects.tsv`). |
@@ -156,6 +157,8 @@ Codex CLI, signed in with ChatGPT, uses this same setup on both machines: the sa
 | `git has no user.email` | Set the identity: `desktop.md`, step 3. |
 | Codex: "hooks need review" | Open `codex`, type `/hooks` and trust them. |
 | Codex follows old rules | `bash ~/.claude/setup/codex/build-codex.sh` (`--check` exits 1 when `~/.codex/AGENTS.md` is stale). |
+| `githooks (pre-commit)`, `githooks (commit-msg)` | The rule it names was about to be broken: fix that (unstage `CLAUDE.md`, drop the trailer, fix git config), don't skip it. Off switch, one machine: `git config --global --unset core.hooksPath` in a terminal. |
+| `git-guard:` denied, or a Leorna push / orchestrator prompt | The rule in the reason is the rule. Off switch for a Claude Code guard: delete its entry from `~/.claude/settings.json` (it syncs; `/hooks` shows what is on). |
 
 ## Status
 

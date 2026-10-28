@@ -6,6 +6,7 @@
 .claude/settings.json
 :(glob).claude/hooks/*.sh
 :(glob).claude/hooks/tests/**
+:(glob).claude/githooks/**
 :(glob).claude/setup/**
 :(glob).claude/projects/*/memory/**
 :(glob).claude/project-docs/*/CLAUDE.md
