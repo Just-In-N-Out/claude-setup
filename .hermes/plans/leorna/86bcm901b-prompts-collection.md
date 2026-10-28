@@ -6,7 +6,11 @@ ClickUp [Curate the reusable prompts collection](https://app.clickup.com/t/86bcm
 
 **Approval:** Justin is away and asked to keep going with the ⭐ recommendations, so this plan is approved with every ⭐ answer. Every ⭐ below is reversible before merge and inside the card's scope. Still forbidden: push, PR, ClickUp posts, merge.
 
-## Open questions (⭐ = recommended; the plan is written as if every ⭐ was chosen)
+## Justin's answers (2026-10-28)
+
+**Approved by Justin 2026-10-28 (away grant)**, recorded by the main session. His words: "I'm gonna go shower, so just keep this running, okay? Just go with the recommended stuff the agent says, alright?" Picks: **Q1 A** (`requires` list in item.json), **Q2 A** (`planning`), **Q3 A** (ship all 9; flag skills now, agents after 901a), **Q4 A** (user-space PostgreSQL 18.6, plus user-space GNU make, as B0.2 now says). Earlier: "Make sure it pulls the updated main branch" (B0.1: fetch, `merge --ff-only` the main checkout's `main`, then create the worktree from that SHA). Grant scope: run the Full pipeline to the hand-over pack; ask Justin only for a decision that is his or the same AC failing twice for the same reason; AC5 (live) stays owed to him. The questions below are answered.
+
+## Open questions (answered 2026-10-28: every ⭐; the plan is written as if every ⭐ was chosen)
 
 **Q1. AC3: the pack builder (86bcm901w) is only being planned now and starter packs (86bcm901r) don't exist. How does each prompt flag the skills it needs?**
 - A ⭐ A checked `requires` list in each prompt's item.json
