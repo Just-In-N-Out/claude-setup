@@ -219,29 +219,34 @@ curl -fsSL 'https://go.dev/dl/?mode=json&include=all' -o "$ENV/go-dl.json"
 SUM=$(python3 -I -c "import json,sys;print([f['sha256'] for r in json.load(open(sys.argv[1])) if r['version']=='go1.27.3' for f in r['files'] if f['filename']=='go1.27.3.linux-amd64.tar.gz'][0])" "$ENV/go-dl.json")
 curl -fsSL https://go.dev/dl/go1.27.3.linux-amd64.tar.gz -o "$ENV/go.tgz" && echo "$SUM  $ENV/go.tgz" | sha256sum --check --strict && tar -xzf "$ENV/go.tgz" -C "$ENV"
 export PATH="$ENV/go/bin:$ENV/bin:$PATH" GOTOOLCHAIN=local
+# GNU make 4.4.1: not installed on this desktop. `make check`, scripts/check-generated-contracts.sh and
+# scripts/test-module-add.sh all call `make`, so it must be on PATH. User space, no sudo; depends only on libc6.
+mkdir "$ENV/make" && (cd "$ENV/make" && apt-get download make && dpkg -x make_*.deb root) && cp "$ENV/make/root/usr/bin/make" "$ENV/bin/make"
 # golangci-lint 2.14.0, CI's URL and checksum
 curl -fsSL https://github.com/golangci/golangci-lint/releases/download/v2.14.0/golangci-lint-2.14.0-linux-amd64.tar.gz -o "$ENV/gl.tgz"
 echo "ab90aeb7b066f92a33415b638a50fe5344bbb75a0d32ad30cc248d88f81032ab  $ENV/gl.tgz" | sha256sum --check --strict
 tar -xzf "$ENV/gl.tgz" -C "$ENV" && cp "$ENV/golangci-lint-2.14.0-linux-amd64/golangci-lint" "$ENV/bin/"
 GOBIN="$ENV/bin" go install golang.org/x/vuln/cmd/govulncheck@v1.7.0
-go version; "$ENV/bin/golangci-lint" --version; "$ENV/bin/govulncheck" -version; /usr/local/bin/gitleaks version
+go version; make --version | head -1; "$ENV/bin/golangci-lint" --version; "$ENV/bin/govulncheck" -version; /usr/local/bin/gitleaks version
 ```
 
 PostgreSQL 18.6 in user space (Q4 ⭐A), unless a shared server answers on 127.0.0.1:5432:
 
 ```bash
-mkdir "$ENV/pg" && cd "$ENV/pg" && apt-get download postgresql-18 postgresql-client-18 libpq5 && for d in *.deb; do dpkg -x "$d" root; done
+# libicu78, libnuma1 and liburing2 are not installed here; postgres needs them (ldd, 2026-10-28)
+mkdir "$ENV/pg" && cd "$ENV/pg" && apt-get download postgresql-18 postgresql-client-18 libpq5 libicu78 libnuma1 liburing2 && for d in *.deb; do dpkg -x "$d" root; done
 BIN=$ENV/pg/root/usr/lib/postgresql/18/bin; export LD_LIBRARY_PATH=$ENV/pg/root/usr/lib/x86_64-linux-gnu
-ldd "$BIN/postgres" "$BIN/initdb" | grep 'not found'   # fetch each missing library's package the same way, then re-check; stop if one has no package
+ldd "$BIN/postgres" "$BIN/initdb" "$BIN/pg_ctl" "$BIN/createdb" | grep 'not found'   # must print nothing; else fetch that library's package the same way and re-check, or stop if it has none
 ( umask 077; head -c 24 /dev/urandom | base64 | tr -d '/+=' > "$ENV/pg/password" )   # never print it
 "$BIN/initdb" -D "$ENV/pg/data" -U leorna --auth=scram-sha-256 --pwfile="$ENV/pg/password" -E UTF8 --locale=C.UTF-8
 PORT=$(for p in $(seq 55400 55499); do ss -ltnH "sport = :$p" | grep -q . || { echo "$p"; break; }; done); [ -n "$PORT" ] || exit 1
-echo "PORT=$PORT" > "$ENV/pg/pg.env"; mkdir "$ENV/pg/sock"
-"$BIN/pg_ctl" -D "$ENV/pg/data" -l "$ENV/pg/server.log" -o "-c listen_addresses=127.0.0.1 -c port=$PORT -c unix_socket_directories=$ENV/pg/sock" start
+echo "PORT=$PORT" > "$ENV/pg/pg.env"
+# TCP only: a Unix-socket path over ~107 bytes stops the server ("could not create any Unix-domain sockets")
+"$BIN/pg_ctl" -D "$ENV/pg/data" -l "$ENV/pg/server.log" -o "-c listen_addresses=127.0.0.1 -c port=$PORT -c unix_socket_directories=''" -w start
 PGPASSWORD="$(cat "$ENV/pg/password")" "$BIN/createdb" -h 127.0.0.1 -p "$PORT" -U leorna leorna_86bcm901b_test
 ```
 
-If `initdb` can't find its share files, pass `-L "$ENV/pg/root/usr/share/postgresql/18"`. Any environment step that fails: stop and report the exact error; never change product code, `go.mod` or CI to work around it. Later roles start the server if `pg_ctl status` says it is stopped and create their own database in it; the finisher leaves it stopped and lists `~/.cache/leorna-86bcm901b/` for Justin to delete.
+The planner ran this make step and this PostgreSQL block (with its own folder and database) on this desktop on 2026-10-28: make 4.4.1 ran, `initdb` found its share files with no `-L`, and start, `createdb`, a `select version()` (18.6) and `pg_ctl stop` all exited 0. Any environment step that fails: stop and report the exact error; never change product code, `go.mod` or CI to work around it. Later roles start the server (with the same `LD_LIBRARY_PATH` and `-o` options) if `pg_ctl status` says it is stopped and create their own database in it; the finisher leaves it stopped and lists `~/.cache/leorna-86bcm901b/` for Justin to delete.
 
 **Databases (all end in `_test`; never a sibling's):** builder `leorna_86bcm901b_test`, base baseline `leorna_86bcm901b_base_test`, AC1 admin-page demo `leorna_86bcm901b_demo_test`, then one per later role: `leorna_86bcm901b_review1_test`, `_fix1_test`, `_review2_test`, `_fix2_test`, `_verify_test`, `_audit_test`, `_finish_test`. Gate scripts read the password from the file into the URL inside the script and abort when it is empty; never echo the URL.
 
@@ -947,7 +952,7 @@ func TestAC4_EveryPromptPassesTheContentQualityGate(t *testing.T) {
 }
 ```
 
-Check field and constant names against `internal/library/gate/gate.go` and `report.go` (`Report.Items`, `ItemResult.Key/Passed/Schema/Secrets/Tools`, `ToolResult.Tool/Declared/Status/Reason/Files`, `StatusRendered`, `StatusSkipped`) and fix only names, never the assertions. The plan's code is unchecked by a compiler (no Go on the planning machine).
+The planner compiled the AC1, AC2 and AC4 files against a `1ee7157` export with Go 1.27.3 (`go vet` exit 0) and ran them there: each fails by assertion (`0 prompts are imported from agent-skills, want 9`, `the library has no prompt build`, `prompt/build@1.0.0 did not pass the gate`). The AC3 file and the B1–B4 code need this story's code, so only their syntax was checked (`gofmt -e`); fix a wrong name if the compiler finds one, never an assertion.
 
 ### B6. Import the nine commands (GREEN for AC1–AC4)
 
@@ -1029,7 +1034,8 @@ One script, run from the worktree on the final head, writing `gates-<sha7>.txt` 
 ENV=~/.cache/leorna-86bcm901b; export PATH="$ENV/go/bin:$ENV/bin:/usr/local/bin:/usr/bin:/bin" GOTOOLCHAIN=local
 . "$ENV/pg/pg.env"; PGPW=$(cat "$ENV/pg/password"); [ -n "$PGPW" ] || { echo "empty DB password"; exit 1; }
 export LEORNA_TEST_DATABASE_URL="postgres://leorna:${PGPW}@127.0.0.1:${PORT}/leorna_86bcm901b_test?sslmode=disable"
-go version; golangci-lint --version; govulncheck -version; gitleaks version
+command -v make >/dev/null || { echo "make is not on PATH: run B0.2's make step"; exit 1; }   # test-module-add.sh and check-generated-contracts.sh call make too
+go version; make --version | head -1; golangci-lint --version; govulncheck -version; gitleaks version
 GOLANGCI_LINT="$ENV/bin/golangci-lint" GOVULNCHECK="$ENV/bin/govulncheck" GITLEAKS=/usr/local/bin/gitleaks make -s check; echo "make-check EXIT=$?"
 bash ./scripts/test-module-add.sh; echo "module-add EXIT=$?"
 go test -json -count=1 -run WithPostgres ./... > "$S/pg.json"; echo "pg-json EXIT=$?"   # then read per test: every TestXxxWithPostgres passes; the only skips allowed are TestTeamsAPIWithPostgres's two ClickHouse subtests
@@ -1095,6 +1101,14 @@ Updated by the build and the finish:
 1. **`delivery/stories.json` on `origin/main` misses merged PRs** (medium: `check-story-shippable.py` passes vacuously on an empty list): `86bcm9016` lists `[]` (PR #85 merged), `86bcm901u` `[]` (#90 merged), `86bcm9019` `[]` (#92 merged; 9019's local commit `3cd9b0f` with `[92]` was never pushed), and `86bcm945u` has no entry (#89 merged). Evidence: `delivery/stories.json` at `1ee7157` and `gh pr list`.
 2. **README claims prompt import works** (low, docs): `internal/library/README.md` at `1ee7157` says "Prompts (`commands/*.toml`) and multi-file skills can now be imported", but `importer.go:156-157` refuses prompts and `library.go:255` rejects prompt sources. This story makes the sentence true.
 3. **This desktop can't run the control-plane gates yet** (environment, blocks every role until B0.2): no Go, no PostgreSQL, Docker engine off and not integrated with WSL; Chrome for Testing's `--headless=new --screenshot` hangs.
+
+## Planning checks (run by the planner in its own scratch, 2026-10-28; nothing ran in the repo)
+
+- `bash -n` on every bash block: all pass. `gofmt -e` on every Go block: the complete files and functions parse; the three in-place patches (B1's `case`, B2's and B3's fragments) parse inside their containing switch or as standalone declarations.
+- AC1, AC2 and AC4 test files compile against the `1ee7157` export (`go vet` exit 0) and fail there by assertion; the base library gate itself passes on this machine with gitleaks 8.30.1 (AC4 reached its assertions after `run()` returned 0).
+- D4's fingerprints match two independent computations: Python `tomllib` + a Go-JSON mimic (which reproduced all 11 unadapted single-file skills on main), and Go 1.27.3 with `github.com/BurntSushi/toml` v1.6.0 + `encoding/json` (every file decodes with no undecoded keys).
+- B0.2's Go download recipe ran: go.dev's JSON gives sha256 `65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40` for `go1.27.3.linux-amd64.tar.gz`, `sha256sum --check` OK, `go version go1.27.3 linux/amd64`.
+- Not checked: user-space PostgreSQL (B0.2) and the screenshot probe (B0.4) beyond what "Facts verified" item 13 says.
 
 ## Completion contract
 

@@ -1,8 +1,8 @@
 - [Claude Code hook internals](claude-code-hook-internals.md) — first PreToolUse deny wins; Stop delivers all; how to read the binary
-- [zsh Bash-tool gotchas](zsh-bash-tool-gotchas.md) — `echo ===`, unmatched globs and GNU `stat` break in the Bash tool
+- [zsh Bash-tool gotchas](zsh-bash-tool-gotchas.md) — `echo ===`, unmatched globs and GNU `stat` break in the Bash tool; `grep` is a ugrep wrapper (skips gitignored files, `{0,N}` fails)
 - [CLAUDE.md loads at session start](claude-md-loads-at-session-start.md) — running sessions keep the old rules; restart after editing
 - [Resuming stopped sessions](resuming-stopped-sessions.md) — where subagent reports, models and typed messages live in transcripts
 - [Concurrent sessions share skill files](concurrent-sessions-share-skill-files.md) — re-read right before writing skills, CLAUDE.md, settings
 - [Disk full recovery](disk-full-recovery.md) — what to clear when the disk fills mid-pipeline (go clean -cache is safe; scratch/Docker need Justin)
-- [Codex CLI offline checks](codex-cli-offline-checks.md) — prompt-input/doctor/sandbox/execpolicy need no login; fake homes outside $TMPDIR; codex exec needs a probe home
+- [Codex CLI offline checks](codex-cli-offline-checks.md) — prompt-input/mcp get/doctor/sandbox/execpolicy and `claude doctor` need no login; fake homes outside $TMPDIR; codex exec needs a probe home
 - [Update main before a Leorna worktree](leorna-update-main-before-worktree.md) — ff the main checkout's main too, not just the worktree
