@@ -43,6 +43,11 @@ His follow-up questions are requirements:
    - An AC proves that changing the setting changes every role's model.
    - The available models are listed in `~/.codex/models_cache.json`: gpt-6.1-sol, gpt-6-sol, gpt-6-astra, gpt-6-luna, gpt-5.6-sol/terra/luna, gpt-reserve.
    - The docs say in one line how to change it. Claude's Opus roles stay unchanged.
+   - **Justin switches it by telling any agent, Claude or Codex,** "switch the Codex pipeline model to X". The agent:
+     - checks X against `~/.codex/models_cache.json`;
+     - edits the one setting;
+     - runs `sync.sh`.
+     The change is permanent on both machines until he switches again. Both `AGENTS.md` and the docs name the setting's file, so either agent knows where it is. Add an AC for this.
 5. **The plan is pre-approved** ("just go over the plan and just start it"). Questions get recommended defaults that make Codex behave like Claude, and the main session applies them.
 
 ## Facts already established (2026-10-28, on this Mac)
