@@ -22,3 +22,11 @@ auth.json
 config.yaml
 state.db
 state.db-*
+/.codex/hooks/state/
+/.codex/AGENTS.md
+/.codex/AGENTS.override.md
+/.codex/config.toml
+/.codex/backups/
+/.codex/rules/default.rules
+/.codex-probe/
+/.agents/

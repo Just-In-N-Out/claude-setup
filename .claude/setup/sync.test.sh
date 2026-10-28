@@ -2,16 +2,17 @@
 # Tests ~/.claude/setup/sync.sh with two fake homes ("mac", "desk") and a local bare remote.
 # Touches nothing real: no ~/.claude-setup.git, no GitHub. Needs git, gitleaks, a git identity.
 #   bash ~/.claude/setup/sync.test.sh   -> "passed N, failed 0"
+# Tests the sync.sh next to this file (a worktree's copy, or the live one when run from $HOME).
 set -uo pipefail
-SYNC="$HOME/.claude/setup/sync.sh"
-REAL_SETUP="$HOME/.claude/setup"
+SYNC="$(cd "$(dirname "$0")" && pwd)/sync.sh"
+REAL_SETUP="$(cd "$(dirname "$0")" && pwd)"
 S=$(mktemp -d "${TMPDIR:-/tmp}/sync-test.XXXX")
 R="$S/remote.git"; A="$S/mac"; B="$S/desk"
 git init -q --bare -b main "$R"; mkdir -p "$A" "$B"; cp ~/.gitconfig "$A/.gitconfig"; cp ~/.gitconfig "$B/.gitconfig"
 pass=0; fail=0
 ok() { if eval "$2"; then echo "ok - $1"; pass=$((pass+1)); else echo "NOT OK - $1"; fail=$((fail+1)); fi; }
-runA() { mkdir -p "$A/proj"; cd "$A/proj"; HOME="$A" SETUP_SYNC_URL="$R" SETUP_SYNC_PATH_COL=2 bash "$SYNC" "$@"; }
-runB() { mkdir -p "$B/proj"; cd "$B/proj"; HOME="$B" SETUP_SYNC_URL="$R" SETUP_SYNC_PATH_COL=3 bash "$SYNC" "$@"; }
+runA() { mkdir -p "$A/proj"; cd "$A/proj"; HOME="$A" CODEX_HOME="$A/.codex" SETUP_SYNC_URL="$R" SETUP_SYNC_PATH_COL=2 bash "$SYNC" "$@"; }
+runB() { mkdir -p "$B/proj"; cd "$B/proj"; HOME="$B" CODEX_HOME="$B/.codex" SETUP_SYNC_URL="$R" SETUP_SYNC_PATH_COL=3 bash "$SYNC" "$@"; }
 tree() { git --git-dir="$R" ls-tree -r --name-only main; }
 
 # --- fake Mac home
@@ -19,6 +20,13 @@ mkdir -p "$A/.claude/setup" "$A/.claude/hooks/tests" "$A/.claude/projects/-mac-p
   "$A/.hermes/skills/sd/foo" "$A/.hermes/skills/codex-imports" "$A/.hermes/plans/p/evidence" \
   "$A/.hermes/plans/p/private" "$A/.hermes/plans/p/briefs" "$A/.hermes/memories" "$A/proj" "$S/lib/bar"
 cp "$REAL_SETUP"/{manifest.txt,exclude.txt,gitleaks.toml,sync.sh} "$A/.claude/setup/"
+# Codex files (story codex-parity): the synced sources and outputs, from this checkout
+[ -d "$REAL_SETUP/codex" ] && cp -R "$REAL_SETUP/codex" "$A/.claude/setup/"
+mkdir -p "$A/.codex/hooks/tests/fixtures" "$A/.codex/agents" "$A/.codex/rules"
+echo '{"hooks":{}}' > "$A/.codex/hooks.json"; echo 'echo codex' > "$A/.codex/hooks/codex-hooks.sh"
+echo '{}' > "$A/.codex/hooks/tests/fixtures/x.json"; echo 'prefix_rule(pattern=["x"])' > "$A/.codex/rules/setup-sync.rules"
+echo 'echo push' > "$A/.claude/hooks/setup-sync-push.sh"
+printf 'name = "pipeline_planner"\ndescription = "p"\nmodel = "gpt-6.1-sol"\nmodel_reasoning_effort = "xhigh"\ndeveloper_instructions = """\nplan\n"""\n' > "$A/.codex/agents/pipeline-planner.toml"
 printf '# t\nalpha\t%s\t%s\t%s\tyes\n' "$A/proj" "$B/proj" "-mac-proj" > "$A/.claude/setup/projects.tsv"
 echo "global rules" > "$A/.claude/CLAUDE.md"; echo '{}' > "$A/.claude/settings.json"
 echo 'echo hi' > "$A/.claude/hooks/h.sh"; echo t > "$A/.claude/hooks/tests/h.test.sh"
@@ -97,6 +105,68 @@ echo "skill v3 from mac" > "$A/.hermes/skills/sd/foo/SKILL.md"
 runA >/dev/null
 runB pull >/dev/null
 ok "Mac change arrived on desktop" '[ "$(cat "$B/.hermes/skills/sd/foo/SKILL.md")" = "skill v3 from mac" ]'
+
+echo "== codex files"
+CODEX_FILES=".codex/hooks.json .codex/hooks/codex-hooks.sh .codex/hooks/tests/fixtures/x.json .codex/agents/pipeline-planner.toml
+.codex/rules/setup-sync.rules .claude/hooks/setup-sync-push.sh .claude/setup/codex/build-codex.sh .claude/setup/codex/pipeline-model.toml"
+codex_synced() { local f T; T=$(tree); for f in $CODEX_FILES; do grep -qxF "$f" <<<"$T" || { echo "  missing: $f"; return 1; }; done; }
+ok "codex files synced" codex_synced
+STATE_FILES=".codex/auth.json .codex/config.toml .codex/AGENTS.md .codex/history.jsonl .codex/session_index.jsonl .codex/models_cache.json
+.codex/version.json .codex/installation_id .codex/state_5.sqlite .codex/logs_2.sqlite-wal .codex/sessions/x .codex/log/x .codex/cache/x
+.codex/.tmp/x .codex/tmp/x .codex/skills/.system/x .codex/plugins/x .codex/memories/x .codex/rules/default.rules .codex/hooks/state/x
+.codex-probe/auth.json"
+for f in $STATE_FILES; do mkdir -p "$A/$(dirname "$f")"; [ -e "$A/$f" ] || echo "state $f" > "$A/$f"; done
+mkdir -p "$A/.agents/skills"; ln -sfn "$A/.hermes/skills/sd/foo" "$A/.agents/skills/foo"
+cp "$A/.claude/setup/manifest.txt" "$S/manifest.bak"
+printf ':(glob).codex/**\n:(glob).agents/**\n:(glob).codex-probe/**\n' >> "$A/.claude/setup/manifest.txt"
+runA >/dev/null 2>&1
+codex_state_kept_out() {
+  local f T I; T=$(tree); I=$(git --git-dir="$A/.claude-setup.git" ls-files)
+  for f in $STATE_FILES .agents/skills/foo; do
+    if grep -qxF "$f" <<<"$T" || grep -qxF "$f" <<<"$I"; then echo "  synced: $f"; return 1; fi
+  done
+  ! grep -qE '^\.(agents|codex-probe)/' <<<"$T$I"
+}
+ok "codex state never synced, even with a widened manifest" codex_state_kept_out
+cp "$S/manifest.bak" "$A/.claude/setup/manifest.txt"; runA >/dev/null 2>&1
+codex_rebuilt() {
+  local m='model = "gpt-6-luna"'
+  [ -f "$A/.codex/AGENTS.md" ] && grep -q "global rules" "$A/.codex/AGENTS.md" || { echo "  no AGENTS.md on A"; return 1; }
+  printf '# setting\nmodel = "gpt-6-luna"\nmodel_reasoning_effort = "low"\n' > "$A/.claude/setup/codex/pipeline-model.toml"
+  runA >/dev/null 2>&1
+  grep -qxF "$m" "$A/.codex/agents/pipeline-planner.toml" || { echo "  A's role file not rewritten"; return 1; }
+  git --git-dir="$R" show main:.codex/agents/pipeline-planner.toml | grep -qxF "$m" || { echo "  role file not in the sync commit"; return 1; }
+  [ -f "$B/.codex/AGENTS.md" ] || { echo "  attach built no AGENTS.md on B"; return 1; }
+  runB pull >/dev/null 2>&1
+  grep -qxF "$m" "$B/.codex/agents/pipeline-planner.toml" && grep -q "gpt-6-luna" "$B/.codex/AGENTS.md" || { echo "  B not rebuilt after the pull"; return 1; }
+  echo "global rules v2 for codex" > "$A/.claude/CLAUDE.md"; runA >/dev/null 2>&1; runB pull >/dev/null 2>&1
+  grep -qx "global rules v2 for codex" "$B/.codex/AGENTS.md" || { echo "  B's AGENTS.md missed the pulled CLAUDE.md"; return 1; }
+}
+ok "AGENTS.md and role models rebuilt on sync and after a pull" codex_rebuilt
+changed_rc() { (HOME="$A" CODEX_HOME="$A/.codex" SETUP_SYNC_URL="$R" bash "$SYNC" changed >/dev/null 2>&1); echo $?; }
+sync_changed() {
+  local lib="$A/.hermes/skills-library"
+  mkdir -p "$lib/skills/zz"; echo "lib v1" > "$lib/skills/zz/SKILL.md"
+  git -C "$lib" init -q && git -C "$lib" add -A && HOME="$A" git -C "$lib" commit -qm lib
+  runA >/dev/null 2>&1
+  [ "$(changed_rc)" = 1 ] || { echo "  clean: not 1"; return 1; }
+  echo "edit" >> "$A/.hermes/skills/sd/foo/SKILL.md"
+  [ "$(changed_rc)" = 0 ] || { echo "  edit: not 0"; return 1; }
+  runA >/dev/null 2>&1; [ "$(changed_rc)" = 1 ] || { echo "  after sync: not 1"; return 1; }
+  echo "new" > "$A/.hermes/skills/sd/foo/new-note.md"
+  [ "$(changed_rc)" = 0 ] || { echo "  new file: not 0"; return 1; }
+  runA >/dev/null 2>&1; [ "$(changed_rc)" = 1 ] || { echo "  after sync 2: not 1"; return 1; }
+  echo "lib edit" >> "$lib/skills/zz/SKILL.md"
+  [ "$(changed_rc)" = 0 ] || { echo "  library edit: not 0"; return 1; }
+  runA >/dev/null 2>&1; [ "$(changed_rc)" = 1 ] || { echo "  library edit saved in the patch: not 1"; return 1; }
+  echo "unpushed" >> "$A/.hermes/skills/sd/foo/SKILL.md"; runA pull >/dev/null 2>&1
+  [ -z "$(HOME="$A" git --git-dir="$A/.claude-setup.git" --work-tree="$A" status --porcelain)" ] || { echo "  pull left changes"; return 1; }
+  [ "$(changed_rc)" = 0 ] || { echo "  unpushed commit: not 0"; return 1; }
+  runA >/dev/null 2>&1; [ "$(changed_rc)" = 1 ] || { echo "  after push: not 1"; return 1; }
+  git -C "$lib" checkout -q -- .
+}
+ok "sync.sh changed: 1 when clean, 0 after an edit, a new file, a library edit, or an unpushed commit" sync_changed
+runB pull >/dev/null 2>&1
 
 echo "== conflict"
 echo "mac side" > "$A/.claude/CLAUDE.md"; echo "desk side" > "$B/.claude/CLAUDE.md"

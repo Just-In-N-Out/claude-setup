@@ -34,6 +34,8 @@ inhome() { HOME="$H" CODEX_HOME="${CH:-$H/.codex}" TMPDIR="$S/tmp" GIT_CONFIG_NO
 install_setup() { # copies the checkout's setup files into the fake home (never symlinks into the checkout)
   mkdir -p "$H/.claude/setup" "$H/.claude/hooks" "$H/.codex/hooks" "$H/.codex/agents" "$H/.codex/rules" "$H/.hermes/scripts"
   cp -R "$SRC/.claude/setup/." "$H/.claude/setup/"
+  # no real projects: sync.sh would copy their CLAUDE.md files into the real project folders
+  printf '# name\tmac_path\tdesktop_path\tmemory\tclaude_md\n' >"$H/.claude/setup/projects.tsv"
   cp "$SRC"/.claude/hooks/*.sh "$H/.claude/hooks/"
   cp "$SRC/.claude/CLAUDE.md" "$H/.claude/CLAUDE.md"
   cp "$SRC"/.codex/hooks/*.sh "$H/.codex/hooks/" 2>/dev/null
@@ -441,8 +443,65 @@ ac8_commit_guard_blocks_ai_trailer() {
 ac9_codex_commit_identity_no_trailer() { fail "not written"; }
 ac10_sandbox_profile_and_rules() { fail "not written"; }
 ac11_codex_runs_sync_outside_sandbox() { fail "not written"; }
-ac12_sync_codex_paths() { fail "not written"; }
-ac13_sync_suite_green() { fail "not written"; }
+sync_suite() { # sync_suite <out>: this checkout's sync.test.sh, with HOME a fake home that has no sync.sh
+  newroot; echo "# test folder: $S"
+  (cd "$S" && HOME="$H" TMPDIR="$S/tmp" GIT_CONFIG_NOSYSTEM=1 bash "$SRC/.claude/setup/sync.test.sh") >"$1" 2>&1
+}
+ac12_sync_codex_paths() {
+  local l
+  need "$SRC/.claude/setup/sync.test.sh" || return 1
+  sync_suite "$ROOT/ac12.out.$$"; mv "$ROOT/ac12.out.$$" "$S/out.txt"
+  for l in "codex files synced" "codex state never synced, even with a widened manifest" \
+           "AGENTS.md and role models rebuilt on sync and after a pull" \
+           "sync.sh changed: 1 when clean, 0 after an edit, a new file, a library edit, or an unpushed commit"; do
+    grep -qxF "ok - $l" "$S/out.txt" || { grep -E "NOT OK|  " "$S/out.txt" | tail -5; fail "no 'ok - $l'"; return 1; }
+    echo "# ok - $l"
+  done
+  done_ok
+}
+ac13_sync_suite_green() {
+  local l last n
+  need "$SRC/.claude/setup/sync.test.sh" || return 1
+  sync_suite "$ROOT/ac13.out.$$"; mv "$ROOT/ac13.out.$$" "$S/out.txt"
+  last=$(tail -1 "$S/out.txt"); echo "# $last"
+  [[ $last =~ ^passed\ ([0-9]+),\ failed\ 0$ ]] || fail "last line is not 'passed N, failed 0'" || return 1
+  n=${BASH_REMATCH[1]}; [ "$n" -ge 32 ] || fail "only $n checks" || return 1
+  while IFS= read -r l; do   # the 28 checks sync.test.sh had before this story
+    grep -qF "ok - $l" "$S/out.txt" || fail "old check missing: $l" || return 1
+  done <<'OLD'
+skill synced
+CLAUDE.md, settings, hook, test, memory synced
+plan + brief synced
+project CLAUDE.md copied in
+no evidence/private/.env/.usage/config.yaml
+no symlinks in repo
+author is the personal identity
+1500-file commit is pushed (rc=
+secret blocks the sync (rc=
+nothing pushed
+nothing committed locally
+over-5MB file not synced
+files checked out
+existing settings.json backed up
+desktop memory linked to Mac memory
+project CLAUDE.md written + excluded
+no .env checked out
+skill change arrived on Mac
+memory note written through link arrived
+project CLAUDE.md copied out on Mac
+desktop link not committed
+Mac change arrived on desktop
+conflict stops the sync
+nothing pushed on conflict
+desktop file kept its own text
+no rebase left half-done
+lock released
+a deletion syncs
+OLD
+  # it tests its own checkout's sync.sh: the fake HOME above has no ~/.claude/setup/sync.sh at all
+  [ ! -e "$H/.claude/setup/sync.sh" ] || fail "fake home unexpectedly has sync.sh" || return 1
+  done_ok
+}
 ac14_lock_claude_and_codex_same_moment() { fail "not written"; }
 pull_stub() { # pull_stub <exit code> <output> [extra shell line]: a fake sync.sh (setup-sync-pull.test.sh's style)
   { printf '#!/usr/bin/env bash\n[ "$1" = pull ] || exit 9\n%s\n' "${3:-}"

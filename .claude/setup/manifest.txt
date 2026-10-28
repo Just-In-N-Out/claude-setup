@@ -22,3 +22,8 @@
 .hermes/memories/USER.md
 :(glob).hermes/plans/**/*.md
 :(glob).hermes/plans/**/briefs/**
+.codex/hooks.json
+:(glob).codex/hooks/*.sh
+:(glob).codex/hooks/tests/**
+:(glob).codex/agents/*.toml
+.codex/rules/setup-sync.rules

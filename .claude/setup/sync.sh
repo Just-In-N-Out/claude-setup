@@ -12,7 +12,10 @@
 #   sync.sh init         Mac, once: create ~/.claude-setup.git
 #   sync.sh attach       new machine, once, after the bare clone (see desktop.md)
 #   sync.sh links        (re)create desktop memory links and project CLAUDE.md files
+#   sync.sh changed      exit 0 when there is anything to sync, 1 when not (no lock, network or staging)
 # --allow-deletes lets one commit delete more than 25 files.
+# Every sync also rebuilds the Codex files made from synced sources (~/.codex/AGENTS.md, the role
+# files' model lines) with ~/.claude/setup/codex/build-codex.sh, when this machine has ~/.codex.
 set -euo pipefail
 
 GD="${SETUP_SYNC_GIT_DIR:-$HOME/.claude-setup.git}"
@@ -25,15 +28,15 @@ LOCK="$GD/setup-sync.lock"
 MAX_BYTES=5242880 # 5 MB
 MAX_DELETES=25
 # Never synced, whatever manifest.txt and exclude.txt say.
-DENY_RE='(^|/)\.env($|\.)|(^|/)auth\.json$|(^|/)config\.yaml$|(^|/)state\.db($|-)|^\.claude\.json|(^|/)evidence/|(^|/)private/|^\.ssh/|^\.gnupg/|^\.claude-setup\.git/|^\.hermes/(cache|sessions|hermes-agent|skills-library)/|^\.claude/(history\.jsonl|sessions/|file-history/|plugins/|session-env/|shell-snapshots/|telemetry/|paste-cache/|debug/|daemon|hooks/state/|skills/)|\.(pem|key|p12|pfx)$|(^|/)id_(rsa|ed25519|ecdsa)'
+DENY_RE='(^|/)\.env($|\.)|(^|/)auth\.json$|(^|/)config\.yaml$|(^|/)state\.db($|-)|^\.claude\.json|(^|/)evidence/|(^|/)private/|^\.ssh/|^\.gnupg/|^\.claude-setup\.git/|^\.hermes/(cache|sessions|hermes-agent|skills-library)/|^\.claude/(history\.jsonl|sessions/|file-history/|plugins/|session-env/|shell-snapshots/|telemetry/|paste-cache/|debug/|daemon|hooks/state/|skills/)|\.(pem|key|p12|pfx)$|(^|/)id_(rsa|ed25519|ecdsa)|^\.codex/(auth\.json|config\.toml|AGENTS(\.override)?\.md$|backups/|history\.jsonl|session_index\.jsonl|models_cache\.json|version\.json|installation_id|.*\.sqlite|sessions/|log/|logs|cache/|\.tmp/|tmp/|skills/|plugins/|memories/|packages/|shell_snapshots/|app-server|ipc/|thread-writer-locks/|tui-|\.personality|\.sandbox|rules/default\.rules|hooks/state/)|^\.codex-probe/|^\.agents/'
 
 CMD=sync
 ALLOW_DELETES=0
 for a in "$@"; do
   case "$a" in
-    sync | pull | status | init | attach | links) CMD=$a ;;
+    sync | pull | status | init | attach | links | changed) CMD=$a ;;
     --allow-deletes) ALLOW_DELETES=1 ;;
-    -h | --help) sed -n '2,15p' "$0"; exit 0 ;;
+    -h | --help) sed -n '2,18p' "$0"; exit 0 ;;
     *) echo "setup-sync: unknown argument: $a (try --help)" >&2; exit 2 ;;
   esac
 done
@@ -138,6 +141,12 @@ apply_lib_patch() {
   fi
 }
 
+CODEX_BUILD="$SETUP/codex/build-codex.sh"
+rebuild_codex() { # ~/.codex/AGENTS.md and the role files' model lines, from their synced sources
+  [ -d "${CODEX_HOME:-$HOME/.codex}" ] && [ -f "$CODEX_BUILD" ] || return 0
+  bash "$CODEX_BUILD" >/dev/null 2>&1 || say "WARNING: could not rebuild the Codex files; run $CODEX_BUILD"
+}
+
 relink() {
   local u="$HOME/.hermes/scripts/update-skills-library.sh"
   [ -x "$u" ] && [ -d "$LIB/.git" ] || return 0
@@ -146,6 +155,7 @@ relink() {
 }
 
 stage() {
+  rebuild_codex # first, so a changed pipeline-model.toml rewrites the role files this commit picks up
   copy_in
   save_lib_patch
   write_exclude
@@ -235,6 +245,7 @@ do_sync() {
         copy_out "$changed"
         if printf '%s\n' "$changed" | grep -xF .hermes/skills-library-local.patch >/dev/null; then apply_lib_patch; fi
         if printf '%s\n' "$changed" | grep -E '^\.hermes/skills-library-(keep|claude)\.txt$' >/dev/null; then relink; fi
+        if printf '%s\n' "$changed" | grep -E '^\.claude/(CLAUDE\.md|setup/codex/(agents-header\.md|pipeline-model\.toml))$' >/dev/null; then rebuild_codex; fi
       fi
     fi
   fi
@@ -246,6 +257,22 @@ do_sync() {
     g fetch -q origin || true
     say "pushed to GitHub"
   fi
+}
+
+# Anything to sync? For the push worker: no lock, no network, no staging.
+# Exit 0 when a manifest path changed (new files included), library edits differ from
+# skills-library-local.patch, or this machine has commits GitHub hasn't; 1 when there's nothing.
+do_changed() {
+  [ -d "$GD" ] || exit 1
+  local specs=() spec
+  while IFS= read -r spec || [ -n "$spec" ]; do
+    case "$spec" in '' | '#'*) continue ;; esac
+    specs+=("$spec")
+  done <"$SETUP/manifest.txt"
+  if g status --porcelain --untracked-files=all -- "${specs[@]}" 2>/dev/null | cut -c4- | grep -vE "$DENY_RE" | grep -q .; then exit 0; fi
+  if [ -d "$LIB/.git" ] && [ -n "$(git -C "$LIB" diff --name-only)" ] && ! git -C "$LIB" diff | cmp -s - "$PATCHF"; then exit 0; fi
+  [ -n "$(g rev-list -1 HEAD --not --remotes=origin 2>/dev/null)" ] && exit 0
+  exit 1
 }
 
 do_status() {
@@ -318,6 +345,7 @@ do_attach() {
   [ -d "$backup" ] && say "files that were already here were moved to $backup"
   apply_lib_patch
   do_links
+  rebuild_codex
   say "attached: $(g ls-files | wc -l | tr -d ' ') files from GitHub are in place. Next steps: desktop.md."
 }
 
@@ -327,4 +355,5 @@ case "$CMD" in
   links) do_links ;;
   status) do_status ;;
   sync | pull) do_sync ;;
+  changed) do_changed ;;
 esac
