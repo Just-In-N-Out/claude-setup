@@ -16,3 +16,5 @@ pile up what each one needs in HANDOFF and hand it over at the end. Still never 
 memory (CLAUDE.md): work that needs a sample the user hasn't sent is listed as waiting, not guessed. See [[user-workflow]].
 
 On 2026-10-27, going to sleep mid-pipeline (label-floor), he said: keep it running whatever happens, "go with the recommended stuff" for anything the agents ask, and if an agent is lost, "tell it to go do research and try to implement its best"; resume anything a usage limit stopped; "When I'm back, I want a full report on everything that happened." So while he's away: take every ⭐/recommended option without asking, tell stuck agents to research and implement their best (recorded as rulings), resume rate-limited agents with SendMessage, run the pipeline through to the merge, and keep a running log for the full report.
+
+On 2026-10-28, after the 5-hour usage limit stopped agents twice overnight, he said to run only one agent at a time ("only run one engine"), the one closest to being done. So: never run agents in parallel, resume the stopped one before starting anything new, and tell each agent to keep its own gate runs lean.
