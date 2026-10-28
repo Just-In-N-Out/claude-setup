@@ -4,3 +4,4 @@
 - [Resuming stopped sessions](resuming-stopped-sessions.md) — where subagent reports, models and typed messages live in transcripts
 - [Concurrent sessions share skill files](concurrent-sessions-share-skill-files.md) — re-read right before writing skills, CLAUDE.md, settings
 - [Disk full recovery](disk-full-recovery.md) — what to clear when the disk fills mid-pipeline (go clean -cache is safe; scratch/Docker need Justin)
+- [Codex CLI offline checks](codex-cli-offline-checks.md) — prompt-input/doctor/sandbox/execpolicy need no login; fake homes outside $TMPDIR; codex exec needs a probe home
