@@ -122,6 +122,9 @@ Write this into the CLAUDE.md lessons bullet and the feature-dispatch lesson-int
 - **Ask on push outside Leorna.** Other repos' pushes (FigmaToBricksV2's flow auto-pushes `main`) are a separate decision. Recommend: Leorna only.
 - **Docs.** Keep the CLAUDE.md rules as written (guide + check) and add one short "enforced by `<hook>`" mention to each rule this story enforces. Shrinking CLAUDE.md is **out of scope**.
 
+### Pre-approved by Justin (2026-10-28)
+Justin said "keep this running … just go with the recommended stuff the agent says". The plan is pre-approved with the recommended option on every question, Full vs Mini included. The main session applies those options and dispatches the builder without waiting for "go".
+
 ## Requirements for the plan
 - Save it to `~/.hermes/plans/claude-setup/harness-guards.md`.
 - Mini plan format:
