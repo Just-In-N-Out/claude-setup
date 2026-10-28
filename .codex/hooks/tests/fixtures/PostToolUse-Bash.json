@@ -1,0 +1,16 @@
+{
+  "_fixture": "synthetic: built from the rust-v0.163.0 hook input schema (schema/); replace with a Task 2 recording",
+  "session_id": "019a0000-0000-7000-8000-000000000001",
+  "transcript_path": "/FAKEHOME/.codex/sessions/2026/10/28/rollout-x.jsonl",
+  "cwd": "/FAKEHOME/work",
+  "hook_event_name": "PostToolUse",
+  "model": "gpt-6.1-sol",
+  "permission_mode": "default",
+  "turn_id": "turn-1",
+  "tool_name": "Bash",
+  "tool_use_id": "call_1",
+  "tool_input": {
+    "command": "git status"
+  },
+  "tool_response": "On branch main"
+}
