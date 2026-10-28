@@ -168,3 +168,8 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Info (86bcm901w review 1): migration 23's triggers make every pack version undeletable (like `audit_records`); a future delete or tenant-offboarding feature needs a deliberate path. Documented in the pack README.
 - P3 (86bcm901w fixer 1, by code reading, not probed; extends review 1's lead above): team and project console actions file audit records under the raw path id (`validUUID` accepts A–F): `internal/web/teams_view.go:173` → `internal/store/postgres/teams.go:151,188,229,246` (team.update/delete, membership.add/remove) and `internal/web/projects_view.go:91` → `internal/store/postgres/projects.go:105,116` (project.renew/delete). Pre-existing on main.
 - 2026-10-28 (86bcm901b finisher, info, cross-story): 901a's `orphanDiffs` check counts skill and agent adaptations but not prompts; harmless while every prompt is verbatim, but an adapted prompt would need it once 901a and 901b both merge.
+
+## 2026-10-28: 86bcm901j verifier (round 1)
+- Info (documented limit): credential names matching no pattern word (`DB_CREDS`, `PASSKEY`) still pass rule S; gitleaks is the backstop.
+- Info (by design): the plain-name rule still quotes a human-style secret pasted into a name (letter words, ≤3 digits each); random tokens are covered.
+- Process: agents twice ran `codex --version` once with the real HOME (no `~/.codex` change found); briefs now say throwaway homes even for `--version`.
