@@ -145,7 +145,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..9691bf0 100644
+index f2d882d..4903d54 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,21 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -235,17 +235,19 @@ index f2d882d..9691bf0 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -180,6 +214,9 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -180,6 +214,11 @@ transcripts in `references/blind-test-patterns.md`.
     not reproduce because the fixture omitted a field the real record carried.
     Build fixtures from the real record shape; when a test unexpectedly passes
     against a known-live bug, suspect the fixture before declaring victory.
-+   An ordering guard ("above every recorded version") needs several recorded
-+   values, one with a multi-digit part (1.9.0 and 1.10.0): with one value, the
-+   "first only" and string-compare mutants both survive (901a review 1).
++   An ordering guard ("above every recorded version") needs a fixture where
++   string order and number order disagree: 1.0.0 + 1.9.0 + 1.10.0 (with only
++   1.9.0 and 1.10.0, string sort puts the highest first and the "first only"
++   mutant survives), and an accepted 1.10.1, which a string compare refuses
++   (901a review 1, fixer 1).
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -197,7 +234,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +236,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -257,7 +259,7 @@ index f2d882d..9691bf0 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -240,7 +280,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +282,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -274,7 +276,7 @@ index f2d882d..9691bf0 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -290,7 +338,45 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +340,45 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
