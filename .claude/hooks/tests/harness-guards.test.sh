@@ -382,6 +382,7 @@ ac7_guard_parses_shell_forms() {
     "bash -c \$'git commit $nv -m x'" "eval \$'git push \\x2d-no-verify'" "echo \$'it\\'s'; git commit $nv" \
     "echo \"\$(echo \$'a\\')'; git push $nv)\"" "echo \$\$'\\'; git push $nv #'" \
     "(( n <<= 1 ))"$'\n'"git commit $nv -m x" "echo \$(( n <<= 1 ))"$'\n'"git push $nv" \
+    "(( x << 2 ))"$'\n'"git commit $nv -m x" "x=1; if (( x<<1 > 1 )); then"$'\n'"git push $nv"$'\n'"fi" \
     "eval 'export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/x'; git commit -m x" \
     "eval GIT_CONFIG_COUNT=1; GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x" \
     "GIT_CONFIG_COUNT=1 eval 'GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0= git commit -m x'" \
@@ -421,6 +422,7 @@ ac7_guard_parses_shell_forms() {
     $'cat > notes.md <<\'EOF2\'\nOff switch, in a terminal:\n    git config --global --unset core.hooksPath\nEOF2'; do
     expect none '' "$c" || return 1
   done
+  expect none '' $'(( x << 2 )); cat > notes.md <<\'EOF\'\ngit commit '"$nv"$'\nEOF' || return 1
   expect none '' $'cat > .claude/settings.json <<\'EOF\'\n{"permissions": {"deny": ["Bash(git push --force:*)", "Bash(git push -f:*)"]}}\nEOF' "$H/Leorna/x" || return 1
   # command substitution runs its body: $(…) and `…`, unquoted or inside double quotes, also in a data heredoc
   # whose delimiter is unquoted; inside single quotes, an escaped \$, or a quoted heredoc it is text

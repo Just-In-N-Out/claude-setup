@@ -162,14 +162,27 @@ def normalize(cmd, i=0, subs=None, closer=False):
     - $'…' becomes the single-quoted word bash makes of it (escapes like \\x76 decoded); $"…" is a "…" string.
     - $(…) and `…` (unquoted or inside double quotes) run their body: each becomes a placeholder and the
       body goes to subs, to be scanned as a script of its own where the placeholder sits.
+    - Inside (( … )) a << is a shift, not a heredoc; so is <<= anywhere.
     - A heredoc body is a script only when a shell, eval or source /dev/stdin reads it (bash <<EOF,
       cat <<EOF | sh); any other heredoc body (cat > f <<EOF, python3 - <<EOF, git commit -F - <<EOF) is data,
       except the $(…) and `…` in it when its delimiter is unquoted. Its placeholder sits where the << was.
     - With closer, the pass stops at the ')' that closes a $( and end is that index."""
     subs = [] if subs is None else subs
-    out, n, pending, prev, start, depth = [], len(cmd), [], " ", 0, 0
+    out, n, pending, prev, start, depth, arith = [], len(cmd), [], " ", 0, 0, False
     while i < n:
         c = cmd[i]
+        if not arith and cmd.startswith("((", i) and prev in " \t\n;&|(":  # arithmetic: its << is a shift
+            arith = True
+            out.append("((")
+            prev = "("
+            i += 2
+            continue
+        if arith and cmd.startswith("))", i):
+            arith = False
+            out.append("))")
+            prev = ")"
+            i += 2
+            continue
         if cmd.startswith("$$", i):  # the shell's pid: a quote after it is an ordinary one
             out.append("$$")
             prev = "x"
@@ -216,7 +229,7 @@ def normalize(cmd, i=0, subs=None, closer=False):
             prev = "<"
             i += 3
             continue
-        if cmd.startswith("<<", i):
+        if cmd.startswith("<<", i) and not arith:
             m = HEREDOC_RE.match(cmd, i)
             if m:
                 out.append(" " + placeholder(subs, "") + " ")
