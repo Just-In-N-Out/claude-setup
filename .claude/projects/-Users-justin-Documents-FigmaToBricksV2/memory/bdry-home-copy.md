@@ -49,7 +49,10 @@ His full-wait choice gives the B-Dry hero interval7500/speed2500; three Block sl
 New local slider-only paste copy of the v2 base:
 `~/.hermes/plans/figma-to-bricks/evidence/slider-autoplay/finisher-closeout/home-paste-slider-autoplay.json`.
 SHA256 `f342ff5d017e78e9196a6b488d1a8eb1293a9bd6e750f9aa53ef671e4517139a`; 191 elements, original non-hero
-content/links/media/classes retained. Structural/geometry checks pass at13 widths; final motion/screenshots are
-held because independent blank-page controls also stalled. Fresh finisher-artifact-proof is investigating.
-Treat this as a candidate until that proof completes. No live-site write, clipboard replacement or Windows
+content/links/media/classes retained. Structural and geometry checks pass at 13 widths. Final motion/screenshots remain held after a fresh
+independent finisher repeated the failure, including an approved escalated blank control: 75 timer ticks,
+zero animation frames, frozen CSS timeline and screenshot timeouts on Node 22.23.3 / Chrome 156.0.8078.47.
+No capture-freezing policy ran; the underlying cause is unresolved. Renderer proof needs a working control
+before it can continue. Treat this unchanged file as a draft, not a visually verified paste. Diagnostics:
+`~/.hermes/plans/figma-to-bricks/evidence/slider-autoplay/finisher-artifact-proof/report.json`. No live-site write, clipboard replacement or Windows
 Downloads overwrite occurred. Preserve any later headline/photo-hotspot updates when combining page artifacts.
