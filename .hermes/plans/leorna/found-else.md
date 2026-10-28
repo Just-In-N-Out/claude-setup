@@ -188,3 +188,4 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Nit (test coverage): AC4 has no case for a non-ASCII letter that upper-cases to ASCII (`ſHELLOPTS`, `PREFıX`); mutant M11 survives AC4; no security effect (launch list upper-cases first).
 - Low (unproven): launch-settings denylist omits version-manager homes (`VOLTA_HOME`, `ASDF_*`, `NODENV_*`, `MISE_DATA_DIR`, `FNM_DIR`, `N_PREFIX`); README overclaims for shim users. Raised to Justin.
 - Info: `leorna-test-pg` publishes on 127.0.0.1:55432 on the desktop; the plan's Task 8 URL says 5432.
+- Low, plan text only (86bcm901w auditor): the approved plan's E1 demo-server recipe points `LEORNA_DATABASE_URL` at 127.0.0.1:5432 (Justin's `leorna-pg`) but creates the demo DB in `leorna-test-pg` on 55432; followed literally it connects to the wrong container.
