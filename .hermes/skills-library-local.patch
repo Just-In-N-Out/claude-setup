@@ -145,10 +145,10 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..dd6d2cb 100644
+index f2d882d..2003859 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
-@@ -31,12 +31,22 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
+@@ -31,12 +31,25 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
  
  - A critical permission/identity/data-integrity guard needs targeted sensitivity proof.
  - A changed caller/refactor may bypass an assertion, or a supposed regression test
@@ -161,6 +161,9 @@ index f2d882d..dd6d2cb 100644
    RED/GREEN or run an exhaustive campaign on every small fix.
  - Select claim → mutation → expected diagnostic/controls before executing, within
    the primary workflow's remaining allowance. Missing required proof stays blocked.
++  A wrapper that checks and then execs a hand-over (a global git hook chaining to a
++  repo's own hook) needs an ordering mutant (hand-over first) and a fixture whose own
++  hook passes while a check must refuse (harness-guards verifier, M11h).
 +  A mutant that can loop or fork (a hook that execs itself) sends output to a file,
 +  not `$(…)`, because an orphan holding the pipe hangs the run. Never kill strays with
 +  `pkill -f`: it also matches the Bash tool's own `bash -c` wrapper, even with the
@@ -172,7 +175,7 @@ index f2d882d..dd6d2cb 100644
  
  ## The Core Rule
  
-@@ -47,7 +57,9 @@ then restore exact candidate bytes and verify the relevant GREEN.
+@@ -47,7 +60,9 @@ then restore exact candidate bytes and verify the relevant GREEN.
  ```
  
  An unexpected survivor needs diagnosis: equivalent/duplicate guards, an unreached
@@ -183,7 +186,7 @@ index f2d882d..dd6d2cb 100644
  itself prove that the entire test is worthless.
  
  ## Procedure
-@@ -85,12 +97,28 @@ itself prove that the entire test is worthless.
+@@ -85,12 +100,28 @@ itself prove that the entire test is worthless.
     second guard or a shorter competing timeout. Deleting one site of a
     deliberate defense-in-depth guard is an equivalent mutant that no black-box
     test can kill. Mutate all sites (or the shared helper) together, and record
@@ -216,7 +219,7 @@ index f2d882d..dd6d2cb 100644
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -99,14 +127,21 @@ itself prove that the entire test is worthless.
+@@ -99,14 +130,21 @@ itself prove that the entire test is worthless.
     leave mutated source behind. After a mid-cycle crash, compare the working
     file with the saved green bytes and restore before launching another probe.
  4. **Require the intended failure for every mutation.** A nonzero exit from
@@ -241,7 +244,7 @@ index f2d882d..dd6d2cb 100644
     Validate evidence against the exact intentional variant and actual process
     return, not pristine-only assumptions or attempted-publication flags.
     Repair diagnostic readers offline against retained output; preserve their
-@@ -155,7 +190,18 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,7 +193,18 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -261,7 +264,7 @@ index f2d882d..dd6d2cb 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -180,6 +226,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -180,6 +229,11 @@ transcripts in `references/blind-test-patterns.md`.
     not reproduce because the fixture omitted a field the real record carried.
     Build fixtures from the real record shape; when a test unexpectedly passes
     against a known-live bug, suspect the fixture before declaring victory.
@@ -273,7 +276,7 @@ index f2d882d..dd6d2cb 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -197,7 +248,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +251,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -285,7 +288,7 @@ index f2d882d..dd6d2cb 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -240,7 +294,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +297,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -302,7 +305,7 @@ index f2d882d..dd6d2cb 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -290,7 +352,50 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +355,50 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
