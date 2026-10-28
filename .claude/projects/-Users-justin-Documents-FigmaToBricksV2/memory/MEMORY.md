@@ -10,6 +10,6 @@
 - [Tool escape quirk](tool-escape-quirk.md) — the u-escape for a space in Write/Edit params lands as a literal space; use x-escapes in regexes
 - [Reading the live site](reading-the-live-site.md) — LiteSpeed cache-bust, page list, site-header-room marker, stacked pastes
 - [Old site gallery](old-site-gallery.md) — Gallery paste: 38 photos rebuilt 2026-10-26 as Media AVIFs (ids 837–874) with alt text; hotlinked until pasted
-- [Checks on the desktop](corpus-paths-on-desktop.md) — Mac corpus paths measure nothing; portable Linux Chrome is available; map corpus/files in scratch and compare by test name
+- [Checks on the desktop](corpus-paths-on-desktop.md) — Mac corpus paths do not resolve; cached Linux Chrome is available via CHROME_PATH; local corpus copies and base comparisons required
 - [B-Dry home copy](bdry-home-copy.md) — bdryswi.com → bdry.staging.growithgro.com Home: first paste done 2026-10-26, AVIFs 132–148, icons 149–154; slider + flip features building
 - [WSL clipboard](wsl-clipboard.md) — read the clipboard back through a UTF-8 file, never stdout (non-ASCII gets mangled)
