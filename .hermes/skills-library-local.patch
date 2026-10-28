@@ -128,7 +128,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..15087c0 100644
+index f2d882d..47a2f43 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,7 +31,9 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -156,8 +156,9 @@ index f2d882d..15087c0 100644
 +   site and check which of its fixtures flip. Keep its receipt and
     supersede it with a versioned all-sites variant; do not edit the test. When
     the duplication is unintended, blind-test pattern 6 applies instead.
- 3. **Apply → run → restore, one at a time.** Derive concrete mutation hunks and paths from the preserved proposal and actual source, and require a unique complete match before any edit; do not reconstruct variable/function names or guard boilerplate from a design summary. Preserve a pre-launch hunk/reader mismatch as setup evidence, not a mutation kill. Save the exact candidate bytes
+-3. **Apply → run → restore, one at a time.** Derive concrete mutation hunks and paths from the preserved proposal and actual source, and require a unique complete match before any edit; do not reconstruct variable/function names or guard boilerplate from a design summary. Preserve a pre-launch hunk/reader mismatch as setup evidence, not a mutation kill. Save the exact candidate bytes
 -   and hashes, including uncommitted edits, and restore them in a `finally`.
++3. **Apply → run → restore, one at a time.** Give mutation runs an exclusive scratch copy; never run a green gate concurrently against that copy (it can read a transient mutant and report false regressions). Derive concrete mutation hunks and paths from the preserved proposal and actual source, and require a unique complete match before any edit; do not reconstruct variable/function names or guard boilerplate from a design summary. Preserve a pre-launch hunk/reader mismatch as setup evidence, not a mutation kill. Save the exact candidate bytes
 +   and hashes, including uncommitted edits, and restore them in a `finally`. A `finally` dies with its process group: when the agent's session can end mid-run, run the harness detached (`setsid nohup`) and keep a marker file naming the mutated file while a mutant is applied; the next session checks the marker or `git diff` before testing or committing.
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
