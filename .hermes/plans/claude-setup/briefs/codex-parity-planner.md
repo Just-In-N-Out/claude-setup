@@ -30,6 +30,15 @@ His follow-up questions are requirements:
 - "On Ubuntu on my desktop I should be able to run Codex and it should work correctly."
 - "Will Codex work hand in hand with Claude, and will it update the files and everything correctly?"
 
+## Added by Justin later on 2026-10-28 (sent to the planner mid-run)
+1. **Codex gets sync hooks, not only rules.**
+   - (a) A SessionStart hook runs `~/.claude/setup/sync.sh pull` with a timeout. It is quiet when offline. On CONFLICT or failure, it tells Codex through additionalContext.
+   - (b) A hook pushes after Codex edits synced files, for example Stop running `sync.sh` in the background only when tracked files changed. It never slows a turn and is safe with the lock.
+   - This is Codex only; Claude's sync stays manual.
+2. **From turn one, Codex has read `~/.claude/CLAUDE.md` and knows where the Hermes skills are.** It is proven with a `codex exec` probe on a rule only `CLAUDE.md` states.
+3. **Codex edits the real files.** That means the Hermes skills (through the links), `~/.claude/CLAUDE.md` and the Claude memory notes, and the edits reach GitHub through `sync.sh`. An AC proves that a Codex skill edit becomes a commit on a fake remote.
+4. **The plan is pre-approved** ("just go over the plan and just start it"). Questions get recommended defaults that make Codex behave like Claude, and the main session applies them.
+
 ## Facts already established (2026-10-28, on this Mac)
 
 **Codex on the Mac**
