@@ -50,7 +50,7 @@ echo "$count" >"$file" 2>/dev/null || exit 0
 
 if [[ -n $agent ]]; then
 msg="Skill-lesson check (automatic hook, every $what). Finish the step you are on first. \
-If you learned something reusable since the last check (a gotcha, an approach that worked after one failed, or a skill step that was wrong, missing or stale), note it for your final report: list it in skill_lessons[{skill, lesson, evidence}] and a 'Skill lessons' section, naming the skill it belongs in (or memory for a fact). \
+If you learned something reusable since the last check (a gotcha, an approach that worked after one failed, or a skill step that was wrong, missing or stale), note it for your final report: list it in skill_lessons[{skill, lesson, evidence, enforce}] and a 'Skill lessons' section, naming the skill it belongs in (or memory for a fact); enforce is none, or, when the lesson is about a rule that was broken or nearly broken, a one-line proposal for a check that would have caught it: its kind (Claude Code hook, git hook, test, lint, script), what it checks and where it runs. \
 You do not edit SKILL.md files, skills or memory yourself: the main session saves them, so parallel agents never overwrite each other. \
 skill_lessons: [] is the normal answer: list only something a future task would need that the skill doesn't already say, never a lesson for the sake of one. \
 If nothing qualifies, say nothing about this check and carry on."

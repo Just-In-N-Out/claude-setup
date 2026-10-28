@@ -363,23 +363,15 @@ base_commit() { # the story's base: CODEX_PARITY_BASE, else the merge-base with 
   srcgit merge-base HEAD main 2>/dev/null || srcgit merge-base HEAD origin/main
 }
 ac7_claude_hooks_unchanged() {
-  local base f files="" t
-  base=$(base_commit) || fail "no base commit" || return 1
-  for f in setup-sync-pull skill-review-nudge subagent-ac-gate subagent-lessons-gate subagent-handback-gate; do
-    files="$files .claude/hooks/$f.sh .claude/hooks/tests/$f.test.sh"
-  done
-  files="$files .claude/settings.json"
-  echo "# base $base"
-  for f in $files; do
-    srcgit cat-file -e "$base:$f" 2>/dev/null || fail "$f missing at base" || return 1
-    srcgit show "$base:$f" | cmp -s - "$SRC/$f" || fail "$f differs from base" || return 1
-  done
+  # harness-guards (2026-10-28) removed this story's pins: the five hook files, their tests and settings.json
+  # had to equal the codex-parity base and there had to be exactly five test files, so any later story that
+  # touched a Claude hook failed here. What stays: every Claude hook test passes in a fake home.
+  local t
   newroot
   for t in "$SRC"/.claude/hooks/tests/*.test.sh; do
     inhome bash "$t" >"$S/$(basename "$t").out" 2>&1 || { tail -5 "$S/$(basename "$t").out"; fail "$(basename "$t") failed"; return 1; }
     echo "# $(basename "$t"): $(tail -1 "$S/$(basename "$t").out")"
   done
-  [ "$(ls "$SRC"/.claude/hooks/tests/*.test.sh | wc -l | tr -d ' ')" = 5 ] || fail "expected five Claude hook test files" || return 1
   done_ok
 }
 bash_payload() { # bash_payload <fixture> <command> [cwd] [tool name]
@@ -932,13 +924,13 @@ ac23_docs_updated() {
   total=$(grep -c '^ok "' "$SRC/.claude/setup/sync.test.sh")
   grep -qF "passed $total, failed 0" "$SRC/.claude/setup/desktop.md" || fail "desktop.md does not expect 'passed $total, failed 0'" || return 1
   ! grep -q "passed 28, failed 0" "$SRC/.claude/setup/desktop.md" || fail "desktop.md still says passed 28" || return 1
-  # CLAUDE.md: exactly one added line, in Setup Sync, naming Codex
-  base=$(base_commit) || return 1
-  [ "$(srcgit diff --numstat "$base" -- .claude/CLAUDE.md | awk '{print $1" "$2}')" = "1 0" ] || fail "CLAUDE.md is not exactly one added line" || return 1
-  added=$(srcgit diff -U0 "$base" -- .claude/CLAUDE.md | sed -n 's/^+\([^+].*\)/\1/p')
-  grep -q Codex <<<"$added" || fail "the added CLAUDE.md line does not mention Codex" || return 1
-  awk '/^## /{ s = ($0 ~ /^## Setup Sync/) } s' "$SRC/.claude/CLAUDE.md" | grep -qxF -- "$added" || fail "the added line is not in Setup Sync" || return 1
-  echo "# CLAUDE.md: + $added"
+  # CLAUDE.md: its Setup Sync section has the Codex line. harness-guards (2026-10-28) removed the story-time
+  # pin "exactly one line added since the codex-parity base": it failed as soon as main moved past that base.
+  added=$(awk '/^## /{ s = ($0 ~ /^## Setup Sync/) } s' "$SRC/.claude/CLAUDE.md" | grep -F -- '**Codex shares this setup:**')
+  [ "$(grep -c . <<<"$added")" = 1 ] || fail "CLAUDE.md Setup Sync has no single Codex line" || return 1
+  grep -qF 'AGENTS.md' <<<"$added" && grep -qF 'set-pipeline-model.sh' <<<"$added" \
+    || fail "the CLAUDE.md Codex line lacks AGENTS.md or set-pipeline-model.sh" || return 1
+  echo "# CLAUDE.md: $added"
 }
 
 # ---- probe tests (a real `codex exec` through the probe home; run only when named) ----

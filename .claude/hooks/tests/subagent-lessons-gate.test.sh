@@ -38,7 +38,7 @@ stop $'Report.\n\nskill_lessons: []'
 [[ $rc == 0 && -z $out ]] && ok "skill_lessons: [] lets the agent finish" || fail "empty list: rc=$rc out=$out"
 stop $'Report.\n\n## Skill lessons\n- leorna: gotcha X (evidence: log Y)'
 [[ $rc == 0 && -z $out ]] && ok "a Skill lessons heading lets the agent finish" || fail "heading: rc=$rc out=$out"
-stop $'{"status":"ready","skill_lessons":[{"skill":"leorna","lesson":"x","evidence":"y"}]}'
+stop $'{"status":"ready","skill_lessons":[{"skill":"leorna","lesson":"x","evidence":"y","enforce":"none"}]}'
 [[ $rc == 0 && -z $out ]] && ok "a JSON skill_lessons field lets the agent finish" || fail "json field: rc=$rc out=$out"
 
 # 3. sent back at most once: a stop that is already continuing from this hook finishes
