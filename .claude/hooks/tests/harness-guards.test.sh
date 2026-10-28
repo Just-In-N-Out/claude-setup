@@ -368,6 +368,26 @@ ac7_guard_parses_shell_forms() {
   j=$(jq -nc '{hook_event_name: "PreToolUse", tool_name: "Bash", cwd: "/x", tool_input: {command: "ls -la"}}')
   out=$(printf '%s' "$j" | HOME="$H" PATH="$S/nopy" "$BASH" "$GG" 2>&1); rc=$?
   [ "$rc" = 0 ] && [ -z "$out" ] || fail "no python3, no git: want no output, got rc=$rc out=$out" || return 1
+  # only the command counts: a description or a folder naming git doesn't wake the guard (jq is there, as for
+  # every hook; with no jq either, the raw JSON is read and a git command still gets the warning)
+  mkdir -p "$S/nopy-jq"; ln -s "$(command -v jq)" "$S/nopy-jq/jq"
+  j=$(jq -nc '{hook_event_name: "PreToolUse", tool_name: "Bash", cwd: "/x/github/gh-tools", tool_input: {command: "ls -la", description: "list the git folder"}}')
+  out=$(printf '%s' "$j" | HOME="$H" PATH="$S/nopy-jq" "$BASH" "$GG" 2>&1); rc=$?
+  [ "$rc" = 0 ] && [ -z "$out" ] || fail "no python3, git only in the description and cwd: want no output, got rc=$rc out=$out" || return 1
+  j=$(jq -nc '{hook_event_name: "PreToolUse", tool_name: "Bash", cwd: "/x", tool_input: {command: "git commit --no-verify -m x"}}')
+  out=$(printf '%s' "$j" | HOME="$H" PATH="$S/nopy-jq" "$BASH" "$GG" 2>&1); rc=$?
+  [ "$rc" = 0 ] && jq -e 'keys == ["systemMessage"] and (.systemMessage | test("python3 not found"))' <<<"$out" >/dev/null \
+    || fail "no python3 (jq there): want only a systemMessage, got rc=$rc out=$out" || return 1
+  echo "# no python3: only the command is read; a git command warns"
+  # a python3 that fails (macOS's /usr/bin/python3 stub with no developer tools exits 1): the same visible warning
+  mkdir -p "$S/badpy"; ln -s "$(command -v jq)" "$S/badpy/jq"
+  printf '#!/bin/sh\necho "xcode-select: note: No developer tools were found, requesting install." >&2\nexit 1\n' >"$S/badpy/python3"
+  chmod +x "$S/badpy/python3"
+  out=$(printf '%s' "$j" | HOME="$H" PATH="$S/badpy" "$BASH" "$GG" 2>/dev/null); rc=$?
+  [ "$rc" = 0 ] && [ "$(jq -s 'length' <<<"$out" 2>/dev/null)" = 1 ] \
+    && jq -e 'keys == ["systemMessage"] and (.systemMessage | test("python3 failed"))' <<<"$out" >/dev/null \
+    || fail "python3 exits 1: want only a systemMessage, got rc=$rc out=$out" || return 1
+  echo "# python3 fails: $out"
   done_ok
 }
 

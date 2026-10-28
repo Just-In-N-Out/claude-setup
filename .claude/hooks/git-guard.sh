@@ -15,14 +15,20 @@
 # HOME=/GIT_CONFIG_GLOBAL= isolation are not seen). The git-level hooks in ~/.claude/githooks are
 # the second layer for commits.
 # Bash entry: a cheap pre-filter, then the Python below (one file, so the one *.sh syncs).
-# Needs python3; without it a git command passes with a visible systemMessage.
+# Needs python3; without it, or when it fails (macOS's /usr/bin/python3 stub with no developer tools exits 1),
+# a git command passes with a visible systemMessage.
 # Any bad input exits 0 with no output. Always exits 0.
 # Tests: tests/harness-guards.test.sh (ac1-ac7, ac20)
 input=
 IFS= read -r -d '' input || true
-# cheap pre-filter on the raw JSON: a plain substring test, because a word-boundary test would miss
-# "git" right after a JSON escape such as \n (the command's newline)
-case $input in *git* | *gh* | *GIT_*) ;; *) exit 0 ;; esac
+# cheap pre-filter on the command alone (a description or a folder naming git must not wake the guard), as a
+# plain substring test; with no jq (every hook needs it) the raw JSON is read instead
+if command -v jq >/dev/null 2>&1; then
+  cmd=$(jq -r '.tool_input.command | strings' <<<"$input" 2>/dev/null) || cmd=
+else
+  cmd=$input
+fi
+case $cmd in *git* | *gh* | *GIT_*) ;; *) exit 0 ;; esac
 if ! command -v python3 >/dev/null 2>&1; then
   printf '%s\n' '{"systemMessage":"git-guard: python3 not found; git commands are not checked"}'
   exit 0
@@ -719,5 +725,10 @@ try:
 except Exception:
     pass
 PY
-printf '%s' "$input" | python3 -I -c "$GUARD_PY"
+out=$(printf '%s' "$input" | python3 -I -c "$GUARD_PY" 2>/dev/null); rc=$?
+if [ "$rc" != 0 ]; then
+  printf '{"systemMessage":"git-guard: python3 failed (exit %s); git commands are not checked"}\n' "$rc"
+elif [ -n "$out" ]; then
+  printf '%s\n' "$out"
+fi
 exit 0
