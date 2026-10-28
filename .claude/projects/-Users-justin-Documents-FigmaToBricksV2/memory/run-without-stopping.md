@@ -1,6 +1,6 @@
 ---
 name: run-without-stopping
-description: "2026-10-07: user wants M3 then M4 built straight through, no check-ins; they test everything at the end; keep CLAUDE.md/HANDOFF current for the next agent"
+description: "Build straight through without check-ins (2026-10-07); when away (2026-10-27) take the recommended options, tell lost agents to research, resume limit-stopped agents, full report on return"
 metadata:
   type: feedback
 ---
@@ -14,3 +14,5 @@ the work, so the shared notes must always be current.
 each milestone update CLAUDE.md "Where things stand", docs/HANDOFF.md, and [[v2-rewrite]]. Don't stop for paste checks:
 pile up what each one needs in HANDOFF and hand it over at the end. Still never write a native Bricks emitter from
 memory (CLAUDE.md): work that needs a sample the user hasn't sent is listed as waiting, not guessed. See [[user-workflow]].
+
+On 2026-10-27, going to sleep mid-pipeline (label-floor), he said: keep it running whatever happens, "go with the recommended stuff" for anything the agents ask, and if an agent is lost, "tell it to go do research and try to implement its best"; resume anything a usage limit stopped; "When I'm back, I want a full report on everything that happened." So while he's away: take every ⭐/recommended option without asking, tell stuck agents to research and implement their best (recorded as rulings), resume rate-limited agents with SendMessage, run the pipeline through to the merge, and keep a running log for the full report.
