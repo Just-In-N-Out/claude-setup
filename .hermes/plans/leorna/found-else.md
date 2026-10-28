@@ -122,3 +122,13 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - 2026-10-28 (86bcm901w planner, P2, audit gap): pack versions made by Fork, SaveEditedVersion and add-library-item write no audit record (`internal/store/postgres/pack_versions.go:21-97` has no `appendAudit`), against `internal/audit/README.md` "Future domain mutation methods must call appendAudit inside their transaction"; Yan's open PR #94 (`CreateItem`) uses the same path.
 - 2026-10-28 (86bcm901w planner, P3, contract trap): both repos' contract-kind tests require exactly 2 inline `kind: {type: string, enum: [...]}` lines (control plane `internal/web/contract_kinds_test.go:22`, client `application/contract_kinds_test.go:18`), so a new schema written that way breaks them even with a correct enum (saved to leorna-control-plane-workflow.md).
 - 2026-10-28 (86bcm901w planner, P3, product): every new pack version gets new item ids, so script approvals never carry over, even for unchanged items (migration 22 comment; `pack_versions.go:71`).
+
+## 2026-10-28: 86bcm901j planner
+- P2 (client repo): the Codex transformer forwards env by key name and ignores the `${VAR}` name (control-plane copy `render/codex.go:121`), so Codex reads a different variable than Claude Code/Cursor; the client should refuse `KEY:${OTHER}` like the tiles (`internal/integration/tile.go:378-381`).
+- P2: `internal/pack/seed.json:42-60` (seed 1.2.0) ships github-mcp 2.0.0 (unpinned deprecated npx + variable mismatch) and the old configs to every new install. Owner: 86bcm901r.
+- P3: admin-edited pack versions get no secret or pin policy checks (`internal/pack`).
+- P3: the GitHub tile (`internal/integration/tiles/github.json`) asks for classic `repo,read:org` scopes (write access) and uses the non-read-only address.
+- P3: `delivery/stories.json` on main lists 86bcm9019 with `[]` although PR #92 merged; local commit 3cd9b0f was never pushed, so `check-story-shippable` checks nothing for it.
+- P3: the credential-key regex will be duplicated between `tile.go:143` and the new `policy.go`.
+- Info: `@modelcontextprotocol/server-github` (2025.4.8) and `server-postgres` (0.6.2) are deprecated on npm (confirmed by the main session with `npm view`).
+- Environment: the Windows desktop has no Linux Go, golangci-lint, govulncheck or Docker inside Ubuntu, and headless Chrome screenshots hang inside the agent sandbox; sibling stories hit the same.

@@ -17,3 +17,5 @@ Justin's words: "Okay, look, I'm gonna go shower, so just keep this running, oka
 ## Status
 
 - 2026-10-28: planner dispatched (Opus 5.5 xhigh), plan only.
+- 2026-10-28: plan returned (AC1–AC5; AC4, AC5 proposed; none live). Approved under the grant with every ⭐; Q5 Docker step owed by Justin; Q6 held for Justin (sandbox bypass = permission), option B meanwhile. Approved copy: `evidence/86bcm901j/plan-approved.md`.
+- 2026-10-28: builder dispatched (Opus 5.5 xhigh), brief `briefs/86bcm901j-mcp-templates-builder.md`. Next: review 1 → fixer → review 2 → fixer → verifier → auditor → ac-check → finisher.
