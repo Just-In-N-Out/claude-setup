@@ -3,6 +3,19 @@
     "defaultMode": "auto"
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/setup-sync-pull.sh",
+            "timeout": 60,
+            "statusMessage": "Pulling setup files from GitHub"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "hooks": [

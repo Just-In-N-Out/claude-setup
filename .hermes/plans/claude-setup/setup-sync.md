@@ -1,6 +1,7 @@
 # setup-sync: sync Justin's Claude + Hermes setup through GitHub (Mac ⇄ Windows desktop)
 
 Status: **plan, waiting for "go"** (planner, 2026-10-25). Full pipeline. Nothing is built yet.
+Note 2026-10-28: a stopgap SessionStart hook, `~/.claude/hooks/setup-sync-pull.sh` (runs `sync.sh pull`, tests in `hooks/tests/setup-sync-pull.test.sh`), is live in `settings.json` with matcher `startup|resume|clear`. This plan's `setup-sync-pull.sh` replaces it: the planner must refresh AC17 and the settings jq so they replace that entry instead of adding a second one.
 Design approved by Justin: `/Users/justin/.claude/plans/hey-claude-i-need-floating-sundae.md`. Every decision in it is kept; the one fact that breaks one is Q2.
 
 ## Questions for Justin (the plan is written as if the ⭐ options are chosen)
