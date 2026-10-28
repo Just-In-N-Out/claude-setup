@@ -5,3 +5,4 @@
 - [Concurrent sessions share skill files](concurrent-sessions-share-skill-files.md) — re-read right before writing skills, CLAUDE.md, settings
 - [Disk full recovery](disk-full-recovery.md) — what to clear when the disk fills mid-pipeline (go clean -cache is safe; scratch/Docker need Justin)
 - [Codex CLI offline checks](codex-cli-offline-checks.md) — prompt-input/doctor/sandbox/execpolicy need no login; fake homes outside $TMPDIR; codex exec needs a probe home
+- [Update main before a Leorna worktree](leorna-update-main-before-worktree.md) — ff the main checkout's main too, not just the worktree
