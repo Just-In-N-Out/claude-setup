@@ -944,7 +944,8 @@ rules_answer_ok() { # rules_answer_ok <last.txt> <events.jsonl>: the three AC2 a
   grep -qiE '(^|[^a-z])(no|never)([^a-z]|$)' <<<"$a1" || fail "answer 1 is not no/never" || return 1
   grep -qi 'orchestrat' <<<"$a" || fail "answer 2 does not say the main session orchestrates" || return 1
   grep -qF '.hermes/skills' <<<"$a" || fail "answer 3 does not name ~/.hermes/skills" || return 1
-  types=$(jq -r 'select(.item.type? != null) | .item.type' "$2" 2>/dev/null | sort -u | tr '\n' ' ')
+  # the one "error" item allowed is Codex's notice that --dangerously-bypass-hook-trust is on (probe runs)
+  types=$(jq -r 'select(.item.type? != null) | .item | select(.type != "error" or ((.message // "") | contains("dangerously-bypass-hook-trust") | not)) | .type' "$2" 2>/dev/null | sort -u | tr '\n' ' ')
   echo "# event item types: $types"
   [ -z "$(tr ' ' '\n' <<<"$types" | grep -v '^$' | grep -vxE 'agent_message|reasoning')" ] || fail "the first turn used a tool ($types)" || return 1
 }
