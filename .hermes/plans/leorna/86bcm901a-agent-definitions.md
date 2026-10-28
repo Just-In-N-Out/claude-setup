@@ -38,6 +38,18 @@ With a, you do two things: (1) Docker Desktop → Settings → Resources → WSL
 - With b: worktree, branch, gates and evidence move to the Mac, using the macOS capture recipe in `leorna` step 4b, and AC5 runs there too.
 - With c: T0 only checks versions and stops with BLOCKED until they match.
 
+
+## Justin's answers (2026-10-28)
+
+Justin's words, before the plan arrived: "I'm gonna go shower, so just keep this running, okay? Just go with the recommended stuff the agent says, alright?" The main session took this as **go** for this plan and every ⭐ answer.
+
+- **A a:** upstream code-reviewer replaces ours, taking the name at 2.0.0.
+- **B a:** test-writer is retired; test-engineer supersedes it.
+- **C a:** AC5 runs from a sample project's `.claude/agents` with Justin's normal login and `claude --setting-sources project`.
+- **D a:** Justin turns on Docker Desktop's WSL integration for Ubuntu and runs `sudo apt-get install -y make`; agents add Go and the linters into `~/.local/leorna-toolchain`.
+  - Justin was away when the builder started. Execution order (main session, resource routing only, no design change): the builder does T0, the toolchain parts that need no Justin step (Go, golangci-lint, govulncheck, Chrome probe), T2–T7 and T9–T12 first. T8's Postgres run and every `make` or Docker gate wait until Justin's two steps are done; then the builder reports what's left.
+- **Unchanged:** never push, open a PR or post. AC5 is owed to Justin. No writes to his real `~/.claude`.
+
 ## Acceptance criteria
 
 The card's four test-backed ACs in card order, word for word, plus the card's Verify line, which Justin made a live AC. Each automated AC's test fails on the base commit `1ee7157f5dfeb24ddf2df7e3bb5363833385d50d`, with a real `--- FAIL` or a build failure of the new code where noted.

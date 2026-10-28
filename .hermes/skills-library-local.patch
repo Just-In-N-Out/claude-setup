@@ -56,7 +56,7 @@ index d6a2493..5c3b36b 100644
  
  ## Output Format
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..66b4577 100644
+index c509c64..7becc98 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,11 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -91,6 +91,15 @@ index c509c64..66b4577 100644
 +- Bind acceptance to the complete candidate, including new files. After a stale-base transplant or correction, preserve the earlier packet, prove unaffected paths unchanged (for a JSON object file such as a lock, compare entries by value: appending after the old last entry rewrites its trailing comma, so a `git diff | grep '^-'` gate fails on correct data; 9019), seal a new revision and require delta review plus complete exact-head canonical qualification. A peer source ACCEPT does not waive required local-first or native admission.
  
  Use `references/source-migration.md` for the concrete discovery, preservation, transplant and review recipe; include its relevant checks in the saved plan rather than treating the reference as execution authorization.
+ 
+@@ -90,7 +93,7 @@ Each ready code task contains:
+ 
+ Inspect whether the real test runner binds immutable tracked HEAD before proposing dirty-worktree test commands. Specify a verified owner-supported way to admit both candidate identities or block execution; do not loosen provenance or present an untested checkpoint recipe as established practice.
+ 
+-Preserve already-passing regression tests as regression coverage. Do not fabricate a RED observation or alter correct behavior merely to force failure; distinguish new-feature RED from later adversarial/falsification checks. Avoid planning future behaviors into the first implementation before their own vertical tests.
++Preserve already-passing regression tests as regression coverage, but keep story-time pins (a file "unchanged since base", an exact file count) out of a suite's default run: make them run only when named, like live tests, because after the merge they fail the next story that touches those files. Do not fabricate a RED observation or alter correct behavior merely to force failure; distinguish new-feature RED from later adversarial/falsification checks. Avoid planning future behaviors into the first implementation before their own vertical tests.
+ 
+ **Done:** every ready task is executable without guessed paths, code omissions, undefined approval-dependent values or hidden host/container assumptions.
  
 @@ -98,7 +101,7 @@ Preserve already-passing regression tests as regression coverage. Do not fabrica
  

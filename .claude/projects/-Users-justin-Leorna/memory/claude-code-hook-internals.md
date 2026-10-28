@@ -14,7 +14,7 @@ Checked in Claude Code 2.1.310 on 2026-10-23 (binary: `~/.local/share/claude/ver
 - **Stop / SubagentStop:** every hook's block reason is delivered. Claude Code ends the turn after 8 consecutive blocks (`CLAUDE_CODE_STOP_HOOK_BLOCK_CAP`).
 - **SubagentStop input:** `stop_hook_active`, `agent_id`, `agent_type`, `agent_transcript_path`, `last_assistant_message`. Background agents hand back through a `SubagentHandback` tool call, so their SubagentStop has no `last_assistant_message`.
 
-**How to check:** read the binary with Python `re` over bytes in a fixed window around a key such as `hook_event_name:"SubagentStop"` or `case"deny":if(`. `grep -a -o '.{0,400}KEY.{0,400}'` fails here with ugrep's "exceeds complexity limits".
+**How to check:** read the binary with Python `re` over bytes in a fixed window around a key such as `hook_event_name:"SubagentStop"` or `case"deny":if(`. `grep -a -o '.{0,400}KEY.{0,400}'` fails here with ugrep's "exceeds complexity limits": in Claude Code's Bash tool `grep` is a shell function running its built-in ugrep, so use `command grep` (hooks run in a plain shell and get the system grep).
 
 Related: [[zsh-bash-tool-gotchas]], [[claude-md-loads-at-session-start]]
 
