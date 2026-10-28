@@ -61,7 +61,59 @@ run() {
 
 # ---- tests: one function per AC (ac1_agents_md_loaded … ac27_codex_story_run), each in a ( subshell ) via run ----
 
-ac1_agents_md_loaded() { fail "not written"; }
+fileid() { python3 -c 'import os,sys; s=os.stat(sys.argv[1]); print(s.st_ino, s.st_mtime_ns)' "$1"; }
+user_block() { # user_block <prompt-input json>: the AGENTS.md user-instructions block Codex would send
+  jq -r '.[] | select(.role == "user") | .content[]? | .text // empty | select(startswith("# AGENTS.md instructions"))' "$1"
+}
+prompt_input() { # prompt_input <out json> [cwd]: codex debug prompt-input in the fake home (offline)
+  mkdir -p "${2:-$H/work}"
+  (cd "${2:-$H/work}" && inhome codex debug prompt-input >"$1" 2>"$1.err") || { cat "$1.err"; return 1; }
+}
+done_ok() { rm -rf "$S"; return 0; }   # remove the test folder on success (kept on failure)
+
+ac1_agents_md_loaded() {
+  local C="$SRC/.claude/setup/codex" first id1 id2
+  need "$C/build-codex.sh" && need "$C/agents-header.md" && need "$C/pipeline-model.toml" || return 1
+  newroot; echo "# test folder: $S"; install_setup
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" || fail "build-codex.sh failed" || return 1
+  # AGENTS.md = header with the pipeline model filled in + git-hash marker + CLAUDE.md byte-identical
+  python3 - "$H/.claude/setup/codex/agents-header.md" "$H/.claude/setup/codex/pipeline-model.toml" \
+    "$H/.claude/CLAUDE.md" "$H/.codex/AGENTS.md" "$(git hash-object "$H/.claude/CLAUDE.md")" <<'PY' || fail "AGENTS.md is not header + marker + CLAUDE.md" || return 1
+import sys, tomllib
+header, setting, rules, out, h = sys.argv[1:6]
+m = tomllib.load(open(setting, "rb"))
+hdr = open(header, "rb").read().replace(b"@PIPELINE_MODEL@", m["model"].encode()).replace(b"@PIPELINE_EFFORT@", m["model_reasoning_effort"].encode())
+data, cm = open(out, "rb").read(), open(rules, "rb").read()
+assert b"@PIPELINE_" not in hdr and m["model"].encode() in hdr, "model not filled in"
+assert data.startswith(hdr), "does not start with the filled header"
+marker = ("<!-- BEGIN ~/.claude/CLAUDE.md verbatim, git-hash %s -->" % h).encode()
+i = data.find(b"\n" + marker + b"\n")
+assert i >= len(hdr) - 1, "no git-hash marker line after the header"
+body = data[i + len(marker) + 2:]
+assert body.startswith(b"\n" + cm), "CLAUDE.md is not copied byte-identical after the marker"
+assert body[len(cm) + 1:] == b"\n<!-- END ~/.claude/CLAUDE.md -->\n", "unexpected tail after CLAUDE.md"
+PY
+  # a second run doesn't rewrite it
+  id1=$(fileid "$H/.codex/AGENTS.md"); sleep 1
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" || fail "second run failed" || return 1
+  id2=$(fileid "$H/.codex/AGENTS.md")
+  [ "$id1" = "$id2" ] || fail "second run rewrote AGENTS.md ($id1 -> $id2)" || return 1
+  # --check: 0 current, 1 after CLAUDE.md changes, 0 after a rebuild
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" --check || fail "--check not 0 when current" || return 1
+  echo "- a new rule line for ac1" >>"$H/.claude/CLAUDE.md"
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" --check; [ $? -eq 1 ] || fail "--check not 1 after CLAUDE.md changed" || return 1
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" && inhome bash "$H/.claude/setup/codex/build-codex.sh" --check \
+    || fail "--check not 0 after a rebuild" || return 1
+  grep -qF -- "- a new rule line for ac1" "$H/.codex/AGENTS.md" || fail "rebuild missed the new line" || return 1
+  # Codex really loads it: the user-instructions block shows the header, CLAUDE.md and the skills root
+  prompt_input "$S/pi.json" || fail "codex debug prompt-input failed" || return 1
+  user_block "$S/pi.json" >"$S/user.txt"
+  first=$(head -1 "$H/.claude/setup/codex/agents-header.md")
+  grep -qF -- "$first" "$S/user.txt" || fail "header first line not in the user-instructions block" || return 1
+  grep -qF -- "**The main session only orchestrates.**" "$S/user.txt" || fail "CLAUDE.md sentence not loaded" || return 1
+  grep -qF -- "~/.agents/skills" "$S/user.txt" || fail "~/.agents/skills not named in the loaded rules" || return 1
+  done_ok
+}
 ac2_first_turn_knows_rules() { fail "not written"; }
 ac3_session_start_rules_fresh() { fail "not written"; }
 ac4_codex_sees_claude_skills() { fail "not written"; }
