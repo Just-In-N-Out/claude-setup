@@ -1,0 +1,27 @@
+# >>> claude-setup managed: top-level >>>
+# Managed by ~/.claude/setup/codex/setup-codex.sh from ~/.claude/setup/codex/config.managed.toml (synced).
+# Edit that file and rerun the script; edits made here are replaced.
+default_permissions = "claude-setup"
+project_doc_fallback_filenames = ["CLAUDE.md"]
+project_doc_max_bytes = 262144
+# <<< claude-setup managed: top-level <<<
+# >>> claude-setup managed: tables >>>
+[permissions.claude-setup]
+description = "Justin's setup: the workspace, plus Hermes skills, plans and memory and Claude's rules and memory notes. The sync machinery stays read-only; sync.sh runs outside the sandbox through ~/.codex/rules/setup-sync.rules."
+extends = ":workspace"
+
+[permissions.claude-setup.filesystem]
+"~/.hermes" = "write"
+"~/.hermes/scripts" = "read"
+"~/.hermes/.env" = "deny"
+"~/.claude" = "write"
+"~/.claude/setup" = "read"
+"~/.claude/hooks" = "read"
+"~/.claude/settings.json" = "read"
+
+[permissions.claude-setup.filesystem.":workspace_roots"]
+".git" = "write"
+
+[permissions.claude-setup.network]
+enabled = true
+# <<< claude-setup managed: tables <<<

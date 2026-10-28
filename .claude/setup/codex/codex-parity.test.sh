@@ -143,7 +143,40 @@ PY
   done_ok
 }
 ac2_first_turn_knows_rules() { fail "not written"; }
-ac3_session_start_rules_fresh() { fail "not written"; }
+ctx_of() { jq -r '.hookSpecificOutput.additionalContext // empty' <<<"$1" 2>/dev/null; }
+msg_of() { jq -r '.systemMessage // empty' <<<"$1" 2>/dev/null; }
+session_start() { # session_start [cwd]: the Codex session-start hook on the recorded payload -> $out, $rc
+  out=$(payload SessionStart.json "${1:-$H}" | codex_hook session-start); rc=$?
+}
+ac3_session_start_rules_fresh() {
+  local B ctx
+  need "$SRC/.codex/hooks/codex-hooks.sh" && need "$SRC/.claude/setup/codex/build-codex.sh" || return 1
+  grep -q 'session-start)' "$SRC/.codex/hooks/codex-hooks.sh" || fail "no session-start mode (not built yet)" || return 1
+  newroot; echo "# test folder: $S"; install_setup; hooks_env
+  export SETUP_SYNC_GIT_DIR="$S/no-setup-repo.git"          # no setup repo: the pull part is silent
+  B="$H/.claude/setup/codex/build-codex.sh"
+  # 1. AGENTS.md current: the short pointer only
+  inhome bash "$B" || return 1
+  session_start; ctx=$(ctx_of "$out")
+  [ $rc -eq 0 ] && schema_ok SessionStart "$out" || fail "current: exit $rc or schema: $out" || return 1
+  for s in "~/.claude/CLAUDE.md" "~/.agents/skills" "~/.hermes/skills"; do
+    grep -qF -- "$s" <<<"$ctx" || fail "current: pointer lacks $s" || return 1
+  done
+  ! grep -qF "The main session only orchestrates" <<<"$ctx" && ! grep -q supersedes <<<"$ctx" || fail "current: full rules injected" || return 1
+  # 2. CLAUDE.md changed after the build: the full current text, "supersedes", and AGENTS.md rebuilt
+  printf -- '- ac3 rule added after the build\n' >>"$H/.claude/CLAUDE.md"
+  inhome bash "$B" --check; [ $? -eq 1 ] || fail "setup: --check should be stale" || return 1
+  session_start; ctx=$(ctx_of "$out")
+  [ $rc -eq 0 ] && schema_ok SessionStart "$out" || fail "stale: exit $rc or schema" || return 1
+  grep -q supersedes <<<"$ctx" && grep -qF -- "$(cat "$H/.claude/CLAUDE.md")" <<<"$ctx" || fail "stale: full current CLAUDE.md missing" || return 1
+  inhome bash "$B" --check || fail "stale: AGENTS.md not rebuilt" || return 1
+  # 3. AGENTS.md missing: the full CLAUDE.md
+  rm -f "$H/.codex/AGENTS.md"
+  session_start; ctx=$(ctx_of "$out")
+  [ $rc -eq 0 ] && schema_ok SessionStart "$out" || fail "missing: exit $rc or schema" || return 1
+  grep -qF -- "$(cat "$H/.claude/CLAUDE.md")" <<<"$ctx" || fail "missing: full CLAUDE.md not injected" || return 1
+  done_ok
+}
 LIBSKILLS="engineering-best-practices implementation-planning mutation-testing-discipline code-review-practice
 adversarial-verification-loop security-best-practices multi-tenant-auth-management api-contract-drift-guard backend-data-migrations"
 hermes_home() { # hermes_home: own skills from the checkout, a fake library (clone of $S/upstream), the lists
@@ -411,10 +444,84 @@ ac11_codex_runs_sync_outside_sandbox() { fail "not written"; }
 ac12_sync_codex_paths() { fail "not written"; }
 ac13_sync_suite_green() { fail "not written"; }
 ac14_lock_claude_and_codex_same_moment() { fail "not written"; }
-ac15_session_start_reuses_claude_pull() { fail "not written"; }
+pull_stub() { # pull_stub <exit code> <output> [extra shell line]: a fake sync.sh (setup-sync-pull.test.sh's style)
+  { printf '#!/usr/bin/env bash\n[ "$1" = pull ] || exit 9\n%s\n' "${3:-}"
+    printf 'cat <<'"'"'EOF'"'"'\n%s\nEOF\nexit %s\n' "$2" "$1"; } >"$SETUP_SYNC_SCRIPT"
+  chmod +x "$SETUP_SYNC_SCRIPT"
+}
+ac15_session_start_reuses_claude_pull() {
+  local name code text cl cmsg cctx msg ctx
+  need "$SRC/.codex/hooks/codex-hooks.sh" || return 1
+  grep -q 'session-start)' "$SRC/.codex/hooks/codex-hooks.sh" || fail "no session-start mode (not built yet)" || return 1
+  newroot; echo "# test folder: $S"; install_setup; hooks_env
+  git init -q --bare "$S/setup.git"
+  export SETUP_SYNC_GIT_DIR="$S/setup.git" SETUP_SYNC_SCRIPT="$S/sync.sh"
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" || return 1
+  while IFS='|' read -r name code text; do
+    pull_stub "$code" "$(printf '%b' "$text")"
+    cl=$(payload SessionStart.json | inhome bash "$SRC/.claude/hooks/setup-sync-pull.sh")   # Claude's own answer
+    cmsg=$(msg_of "$cl"); cctx=$(ctx_of "$cl")
+    session_start; msg=$(msg_of "$out"); ctx=$(ctx_of "$out")
+    [ $rc -eq 0 ] && schema_ok SessionStart "$out" || fail "$name: exit $rc or schema: $out" || return 1
+    [ -n "$cmsg" ] && [ "$msg" = "$cmsg" ] || fail "$name: systemMessage '$msg' != Claude's '$cmsg'" || return 1
+    [ "${ctx:0:${#cctx}}" = "$cctx" ] || fail "$name: Claude's additionalContext is not at the start" || return 1
+    echo "# $name: $msg"
+  done <<'CASES'
+up to date|0|
+pulled|0|setup-sync: pulled from GitHub:\n  .claude/CLAUDE.md\n  .hermes/skills/a/SKILL.md
+CONFLICT|1|setup-sync: CONFLICT: this machine and GitHub both changed the same file (above)
+unreachable|0|setup-sync: GitHub unreachable; changes are committed here and go up on the next sync.
+failed|1|setup-sync: gitleaks found what looks like a secret (above).
+busy|1|setup-sync: another sync is running (/x/setup-sync.lock); try again in a minute.
+CASES
+  # the pull runs before CLAUDE.md is read: a pull that rewrites it brings the full new text
+  pull_stub 0 $'setup-sync: pulled from GitHub:\n  .claude/CLAUDE.md' \
+    "printf '# Rules v2 from the other machine\\n- ac15 pulled rule\\n' >\"\$HOME/.claude/CLAUDE.md\""
+  session_start; ctx=$(ctx_of "$out")
+  schema_ok SessionStart "$out" || return 1
+  grep -qF -- "- ac15 pulled rule" <<<"$ctx" && grep -q supersedes <<<"$ctx" || fail "pulled CLAUDE.md not in the context" || return 1
+  done_ok
+}
 ac16_stop_hook_pushes_in_background() { fail "not written"; }
 ac17_codex_skill_edit_reaches_remote() { fail "not written"; }
-ac18_memory_index_injected() { fail "not written"; }
+memkey() { printf '%s' "$1" | sed 's/[^a-zA-Z0-9]/-/g'; }   # Claude's project key, computed independently
+ac18_memory_index_injected() {
+  local P K ctx i
+  need "$SRC/.codex/hooks/codex-hooks.sh" && need "$SRC/.claude/setup/codex/config.managed.toml" || return 1
+  grep -q 'session-start)' "$SRC/.codex/hooks/codex-hooks.sh" || fail "no session-start mode (not built yet)" || return 1
+  newroot; echo "# test folder: $S"; install_setup; hooks_env
+  export SETUP_SYNC_GIT_DIR="$S/no-setup-repo.git"
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" || return 1
+  P=$(cd "$H" && pwd -P)/x/proj; K=$(memkey "$P")
+  mkdir -p "$P/sub" "$H/.claude/projects/$K/memory"
+  for i in $(seq 1 250); do echo "- index line $i"; done >"$H/.claude/projects/$K/memory/MEMORY.md"
+  # a parent folder finds it (no git)
+  session_start "$P/sub"; ctx=$(ctx_of "$out")
+  schema_ok SessionStart "$out" || return 1
+  grep -qF -- "$H/.claude/projects/$K/memory" <<<"$ctx" || fail "parent: folder path missing" || return 1
+  grep -qx -- "- index line 200" <<<"$ctx" && ! grep -qx -- "- index line 201" <<<"$ctx" || fail "parent: not the first 200 lines" || return 1
+  grep -q 'MEMORY.md' <<<"$ctx" && grep -qi 'front matter' <<<"$ctx" && grep -qi 're-read' <<<"$ctx" || fail "parent: no save instructions" || return 1
+  # the git root finds it when the cwd reaches the repo through a symlink (no parent folder has a memory key)
+  inhome git -C "$P" init -q; ln -s "$P" "$H/via-link"
+  session_start "$H/via-link/sub"; ctx=$(ctx_of "$out")
+  grep -qx -- "- index line 1" <<<"$ctx" || fail "git root: memory not found" || return 1
+  # a desktop-style symlinked memory folder
+  mkdir -p "$H/desk/proj2" "$H/.claude/projects/$(memkey "$H/desk/proj2")"
+  ln -s "../$K/memory" "$H/.claude/projects/$(memkey "$H/desk/proj2")/memory"
+  session_start "$H/desk/proj2"; ctx=$(ctx_of "$out")
+  grep -qx -- "- index line 7" <<<"$ctx" || fail "symlinked memory folder not read" || return 1
+  # no memory, no memory text
+  mkdir -p "$H/elsewhere"
+  session_start "$H/elsewhere"; ctx=$(ctx_of "$out")
+  ! grep -q 'Claude memory' <<<"$ctx" && ! grep -q 'index line' <<<"$ctx" || fail "memory text without a memory folder" || return 1
+  # Codex's own memories stay off: the managed config sets no features.memories or memories.* key
+  python3 - "$SRC/.claude/setup/codex/config.managed.toml" <<'PY' || fail "managed config touches memories" || return 1
+import sys, tomllib
+d = tomllib.load(open(sys.argv[1], "rb"))
+assert "memories" not in d.get("features", {}) and "memories" not in d, d.keys()
+PY
+  done_ok
+}
 ac19_config_merge_idempotent() { fail "not written"; }
 ac20_codex_edit_reaches_other_machine() { fail "not written"; }
 ac21_pipeline_model_switch() { fail "not written"; }
