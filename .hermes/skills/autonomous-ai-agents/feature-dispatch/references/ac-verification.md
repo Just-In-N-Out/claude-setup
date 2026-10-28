@@ -18,6 +18,8 @@ The orchestrator makes a read-only copy of the approved plan, which `ac-check.sh
 mkdir -p <evidence> && install -m 444 <plan> <evidence>/plan-approved.md
 ```
 
+When Justin decides something mid-build that changes an approved AC, a planner amends the plan. It marks each changed line, adds an Amendments list at the top, names every earlier receipt that still encodes the old expectation (and the difference now expected), and says where the pre-amendment text lives (`git show <head>:<plan>`). The orchestrator then commits it, moves the old copy aside (`plan-approved-v<n>-….md`) and reinstalls it before the next reviewer or verifier (closing-cta, 2026-10-28).
+
 **AC ids are `AC1`, `AC2`…** (never `AC2a`). **`(live)`** marks an AC only Justin can check (live publish → Sync, a native menu). The planner writes it right after the AC id at the start of the AC's line: `- AC3 (live): …`, also `- AC3 (proposed) (live): …` or `- AC3 (live, proposed): …`. A `(live)` later in the text doesn't count. The plan message lists every live AC before **go**. Agents can't tag ACs live.
 
 ## Folders and the run recipe
