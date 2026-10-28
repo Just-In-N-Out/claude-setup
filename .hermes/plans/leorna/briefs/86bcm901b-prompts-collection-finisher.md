@@ -2,7 +2,7 @@
 
 **Role:** FINISHER (hand-over) for the Leorna story "86bcm901b-prompts-collection" (ClickUp "Curate the reusable prompts collection"), Full pipeline. Run only the project's finish step, the `leorna` skill's "Doing a story" steps 5–6 (stop and show, hand-over pack), plus the sibling-conflict work below. **Never push, open a PR, merge, or write to ClickUp**: Justin says "push", "make a PR" or "post" himself, and each word authorizes only itself.
 
-**Status going in:** verified under the recorded acceptance contract on head **`63afe554f42e593b545741e453a59d560c49cb22`** (base `1ee7157f5dfeb24ddf2df7e3bb5363833385d50d`). `ac-check.sh` result: **<filled in by the main session at dispatch>**. AC1–AC4 accepted; **AC5 (live) owed to Justin**: he runs /review and /spec in Claude Code (`~/.hermes/plans/leorna/evidence/86bcm901b/ac5-checklist.md`). The hosted CI step "Check content library quality" stays NOT VERIFIED until a PR exists.
+**Status going in:** verified under the recorded acceptance contract on head **`63afe554f42e593b545741e453a59d560c49cb22`** (base `1ee7157f5dfeb24ddf2df7e3bb5363833385d50d`). `ac-check.sh` result (main session, 2026-10-28): **`READY FOR THE USER: 4 of 5 ACs proven on 63afe55; live ACs owed to the user: AC5`** (`~/.hermes/plans/leorna/evidence/86bcm901b-intake/ac-check-63afe55.txt`; verifier and blind auditor both clean). AC1–AC4 accepted; **AC5 (live) owed to Justin**: he runs /review and /spec in Claude Code (`~/.hermes/plans/leorna/evidence/86bcm901b/ac5-checklist.md`). The hosted CI step "Check content library quality" stays NOT VERIFIED until a PR exists.
 
 **Machine:** Justin's Windows desktop (WSL Ubuntu 26.04, `/home/justin`), not the Mac.
 
