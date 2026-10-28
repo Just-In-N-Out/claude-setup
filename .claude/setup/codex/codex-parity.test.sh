@@ -148,7 +148,6 @@ PY
   grep -qF -- "~/.agents/skills" "$S/user.txt" || fail "~/.agents/skills not named in the loaded rules" || return 1
   done_ok
 }
-ac2_first_turn_knows_rules() { fail "not written"; }
 ctx_of() { jq -r '.hookSpecificOutput.additionalContext // empty' <<<"$1" 2>/dev/null; }
 msg_of() { jq -r '.systemMessage // empty' <<<"$1" 2>/dev/null; }
 session_start() { # session_start [cwd]: the Codex session-start hook on the recorded payload -> $out, $rc
@@ -444,7 +443,6 @@ ac8_commit_guard_blocks_ai_trailer() {
   [ -z "$(decision "$out")" ] || fail "post-tool blocked a non-commit command" || return 1
   done_ok
 }
-ac9_codex_commit_identity_no_trailer() { fail "not written"; }
 sandboxed() { # sandboxed <shell command>: run it under Codex's real sandbox with the claude-setup profile
   (cd "$H/work" && inhome codex sandbox -P claude-setup -C "$H/work" -- /bin/sh -c "$1") >"$S/sbx.out" 2>"$S/sbx.err"
 }
@@ -484,7 +482,6 @@ ac10_sandbox_profile_and_rules() {
   echo "# rules: allow for the 3 setup commands, no match for the 3 others"
   done_ok
 }
-ac11_codex_runs_sync_outside_sandbox() { fail "not written"; }
 sync_suite() { # sync_suite <out>: this checkout's sync.test.sh, with HOME a fake home that has no sync.sh
   newroot; echo "# test folder: $S"
   (cd "$S" && HOME="$H" TMPDIR="$S/tmp" GIT_CONFIG_NOSYSTEM=1 bash "$SRC/.claude/setup/sync.test.sh") >"$1" 2>&1
@@ -693,7 +690,6 @@ ac16_stop_hook_pushes_in_background() {
   remote_has .claude/CLAUDE.md "- this machine's line" && remote_has .claude/CLAUDE.md "- the other machine's line" || fail "merge not pushed" || return 1
   done_ok
 }
-ac17_codex_skill_edit_reaches_remote() { fail "not written"; }
 memkey() { printf '%s' "$1" | sed 's/[^a-zA-Z0-9]/-/g'; }   # Claude's project key, computed independently
 ac18_memory_index_injected() {
   local P K ctx i
@@ -903,7 +899,6 @@ ac21_pipeline_model_switch() {
   for r in $ROLES; do git --git-dir="$S/remote.git" show "main:.codex/agents/pipeline-$r.toml" | grep -qx 'model = "gpt-6.1-sol"' || fail "remote $r not gpt-6.1-sol" || return 1; done
   done_ok
 }
-ac22_roles_use_switched_model() { fail "not written"; }
 codex_section() { # codex_section <md file>: the text of its "Codex" section, up to the next heading as high
   awk 'BEGIN { lvl = 0 }
     /^#+ / { n = index($0, " ") - 1
@@ -939,10 +934,164 @@ ac23_docs_updated() {
   awk '/^## /{ s = ($0 ~ /^## Setup Sync/) } s' "$SRC/.claude/CLAUDE.md" | grep -qxF -- "$added" || fail "the added line is not in Setup Sync" || return 1
   echo "# CLAUDE.md: + $added"
 }
-ac24_linux_suites() { fail "not written"; }
-ac25_desktop_codex_parity() { fail "not written"; }
-ac26_mac_install_smoke() { fail "not written"; }
-ac27_codex_story_run() { fail "not written"; }
+
+# ---- probe tests (a real `codex exec` through the probe home; run only when named) ----
+AC2_PROMPT="Answer briefly, in three numbered lines: 1) May a git commit carry an AI Co-Authored-By line? 2) What does the main session do for a bug or story? 3) Where are Justin's Hermes skills?"
+rules_answer_ok() { # rules_answer_ok <last.txt> <events.jsonl>: the three AC2 answers, on the first turn, with no tool call
+  local a types
+  a=$(cat "$1" 2>/dev/null); echo "# answer: $(tr '\n' ' ' <<<"$a" | cut -c1-300)"
+  grep -qiE '(^|[^a-z])(no|never)([^a-z]|$)' <<<"$a" || fail "answer 1 is not no/never" || return 1
+  grep -qi 'orchestrat' <<<"$a" || fail "answer 2 does not say the main session orchestrates" || return 1
+  grep -qF '.hermes/skills' <<<"$a" || fail "answer 3 does not name ~/.hermes/skills" || return 1
+  types=$(jq -r 'select(.item.type? != null) | .item.type' "$2" 2>/dev/null | sort -u | tr '\n' ' ')
+  echo "# event item types: $types"
+  [ -z "$(tr ' ' '\n' <<<"$types" | grep -vxE 'agent_message|reasoning|')" ] || fail "the first turn used a tool ($types)" || return 1
+}
+probe_home_setup() { # a fake home with the built rules, hooks, managed config and linked skills
+  newroot; echo "# test folder: $S"; install_setup; hermes_home
+  HERMES_HOME="$H/.hermes" inhome bash "$H/.hermes/scripts/update-skills-library.sh" >"$S/lib.out" 2>&1 || fail "skill links" || return 1
+  cp "$SRC/.claude/setup/codex/config.managed.toml" "$H/.codex/config.toml"
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" || fail "build-codex.sh" || return 1
+  mkdir -p "$H/work" "$S/run"
+}
+ac2_first_turn_knows_rules() {
+  need "$SRC/.claude/setup/codex/build-codex.sh" && need "$SRC/.codex/hooks.json" || return 1
+  probe_ready || return 1
+  probe_home_setup || return 1
+  probe_begin "$H" || return 1; trap probe_end EXIT
+  probe_exec "$H" "$H/work" "$S/run" "$AC2_PROMPT" || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
+  rules_answer_ok "$S/run/last.txt" "$S/run/events.jsonl" || return 1
+  done_ok
+}
+ac9_codex_commit_identity_no_trailer() {
+  local r1 r2 l1 l2
+  need "$SRC/.codex/hooks/codex-hooks.sh" && need "$SRC/.claude/setup/codex/config.managed.toml" || return 1
+  probe_ready || return 1
+  probe_home_setup || return 1
+  r1="$H/Leorna/repo1"; r2="$H/proj/repo2"; mkdir -p "$r1" "$r2"
+  inhome git -C "$r1" init -q -b main; inhome git -C "$r2" init -q -b main
+  probe_begin "$H" || return 1; trap probe_end EXIT
+  probe_exec "$H" "$r1" "$S/run" "Create a file a.txt containing the word one in this repository and commit it with the message 'add a'. Then create b.txt containing the word two in $r2 and commit it there with the message 'add b'. Use plain git commands; don't change any git configuration." \
+    --add-dir "$r2" -c 'approval_policy="never"' || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
+  l1=$(inhome git -C "$r1" log -1 --format='%an <%ae>%n%B' 2>/dev/null); l2=$(inhome git -C "$r2" log -1 --format='%an <%ae>%n%B' 2>/dev/null)
+  echo "# repo1: $(head -1 <<<"$l1")   repo2: $(head -1 <<<"$l2")"
+  [ "$(head -1 <<<"$l1")" = "Test Leorna <leorna@example.test>" ] || fail "repo1 not authored by the Leorna identity" || return 1
+  [ "$(head -1 <<<"$l2")" = "Test Personal <personal@example.test>" ] || fail "repo2 not authored by the personal identity" || return 1
+  ! grep -qi 'co-authored-by' <<<"$l1$l2" || fail "a commit carries a Co-authored-by line" || return 1
+  done_ok
+}
+ac11_codex_runs_sync_outside_sandbox() {
+  local c0
+  need "$SRC/.codex/rules/setup-sync.rules" && need "$SRC/.claude/setup/codex/config.managed.toml" || return 1
+  probe_ready || return 1
+  newroot; echo "# test folder: $S"; install_setup
+  mkdir -p "$H/.hermes/skills/sd/foo" "$H/work" "$S/run"; echo "Version: v1" >"$H/.hermes/skills/sd/foo/SKILL.md"
+  attach_repo || fail "setup repo attach failed" || return 1
+  cp "$SRC/.claude/setup/codex/config.managed.toml" "$H/.codex/config.toml"
+  sed -e "s|/Users/justin|$H|g" -e "s|/home/justin|$H|g" "$SRC/.codex/rules/setup-sync.rules" >"$H/.codex/rules/setup-sync.rules"
+  rm -f "$H/.codex/hooks.json"                                  # no hooks: only Codex itself can sync
+  echo "Version: v2 (ac11)" >"$H/.hermes/skills/sd/foo/SKILL.md"; c0=$(remote_count)
+  probe_begin "$H" || return 1; trap probe_end EXIT
+  probe_exec "$H" "$H/work" "$S/run" "Run the setup sync now: run exactly $H/.claude/setup/sync.sh as one plain command, then tell me its last line." \
+    -c 'approval_policy="never"' || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
+  remote_has .hermes/skills/sd/foo/SKILL.md "Version: v2 (ac11)" && [ "$(remote_count)" -gt "$c0" ] || fail "the edit is not on the remote: $(cat "$S/run/last.txt")" || return 1
+  [ ! -e "$H/.claude-setup.git/setup-sync.lock" ] || fail "sync lock left" || return 1
+  done_ok
+}
+ac17_codex_skill_edit_reaches_remote() {
+  local c0 msg
+  push_ready || return 1
+  probe_ready || return 1
+  newroot; echo "# test folder: $S"; install_setup
+  mkdir -p "$H/.hermes/skills/sd/foo" "$H/.agents/skills" "$H/work" "$S/run"
+  printf -- '---\nname: foo\ndescription: Probe skill for the codex-parity tests.\n---\nVersion: v1\n' >"$H/.hermes/skills/sd/foo/SKILL.md"
+  ln -s "$H/.hermes/skills/sd/foo" "$H/.agents/skills/foo"
+  attach_repo || fail "setup repo attach failed" || return 1
+  cp "$SRC/.claude/setup/codex/config.managed.toml" "$H/.codex/config.toml"
+  inhome bash "$H/.claude/setup/codex/build-codex.sh" || return 1
+  export SETUP_SYNC_PUSH_WAIT=2 SETUP_SYNC_PUSH_TRIES=8; c0=$(remote_count)
+  probe_begin "$H" || return 1; trap probe_end EXIT
+  probe_exec "$H" "$H/work" "$S/run" "In the skill named foo (your skills list), change the line 'Version: v1' to 'Version: v2'. Don't run any setup sync yourself." \
+    || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
+  wait_for 90 'remote_has .hermes/skills/sd/foo/SKILL.md "Version: v2" && worker_idle' || fail "v2 not on the remote within 90 s: $(tail -5 "$(PUSHST)/worker.log" 2>/dev/null)" || return 1
+  msg=$(git --git-dir="$S/remote.git" log -1 --format='%ae%n%B' main -- .hermes/skills/sd/foo/SKILL.md)
+  [ "$(head -1 <<<"$msg")" = personal@example.test ] || fail "commit not by the fake home's identity" || return 1
+  ! grep -qi co-authored-by <<<"$msg" || fail "commit has a Co-authored-by line" || return 1
+  no_flags && worker_idle || fail "worker lock or flag left" || return 1
+  done_ok
+}
+ac22_roles_use_switched_model() {
+  local f
+  need "$SRC/.claude/setup/codex/set-pipeline-model.sh" && need "$SRC/.codex/agents/pipeline-planner.toml" || return 1
+  probe_ready || return 1
+  newroot; echo "# test folder: $S"; install_setup; mkdir -p "$H/work" "$S/run" "$S/payloads"
+  cp "$FIX/models_cache.sample.json" "$H/.codex/models_cache.json"
+  attach_repo || fail "setup repo attach failed" || return 1
+  (cd "$H" && inhome bash "$H/.claude/setup/codex/set-pipeline-model.sh" gpt-6-luna low) >"$S/switch.out" 2>&1 || { cat "$S/switch.out"; return 1; }
+  cp "$SRC/.claude/setup/codex/config.managed.toml" "$H/.codex/config.toml"
+  printf '#!/usr/bin/env bash\ncat >"%s/payloads/$(perl -MTime::HiRes=time -e '"'"'printf "%%.6f", time'"'"')-$1.json"\n' "$S" >"$S/log.sh"
+  jq --arg c "bash $S/log.sh" '.hooks.SubagentStop[0].hooks += [{type: "command", command: ($c + " SubagentStop"), timeout: 10}]
+    | .hooks.Stop[0].hooks += [{type: "command", command: ($c + " Stop"), timeout: 10}]' "$H/.codex/hooks.json" >"$S/hooks.json" && mv "$S/hooks.json" "$H/.codex/hooks.json"
+  probe_begin "$H" || return 1; trap probe_end EXIT
+  probe_exec "$H" "$H/work" "$S/run" "Spawn one pipeline_planner agent with this message: 'Probe brief: do no work. Reply with the word PLANNED, then the line skill_lessons: [] and then the line MAIN SESSION: check and save these skill_lessons now.' Wait for it, then reply with its answer." \
+    || { tail -5 "$S/run/stderr.txt"; fail "codex exec failed"; return 1; }
+  f=$(cat "$S"/payloads/*-SubagentStop.json 2>/dev/null | jq -s -c 'map(select(.agent_type == "pipeline_planner")) | first // empty')
+  echo "# planner SubagentStop: $(jq -c '{agent_type, model}' <<<"$f" 2>/dev/null)"
+  [ "$(jq -r .model <<<"$f" 2>/dev/null)" = gpt-6-luna ] || fail "the planner did not run on gpt-6-luna" || return 1
+  [ "$(cat "$S"/payloads/*-Stop.json 2>/dev/null | jq -rs 'map(.model) | first // empty')" = "$PROBE_MODEL" ] && [ "$PROBE_MODEL" != gpt-6-luna ] \
+    || fail "the parent did not run on a different model" || return 1
+  done_ok
+}
+
+# ---- live tests (the real machine; run only when named) ----
+real_checks() { # the real ~/.codex: AGENTS.md current, header + 17 skills once, no malformed role, hooks trusted, AC2 answer
+  [ "${CODEX_PARITY_REAL:-}" = 1 ] || fail "live: run on the real machine with CODEX_PARITY_REAL=1" || return 1
+  local T; T=$(mktemp -d "$ROOT/live.XXXXXX"); echo "# scratch: $T"
+  bash "$REAL_HOME/.claude/setup/codex/build-codex.sh" --check || fail "~/.codex/AGENTS.md is stale" || return 1
+  (cd "$REAL_HOME" && codex debug prompt-input >"$T/pi.json") || fail "prompt-input failed" || return 1
+  jq -r '.[] | .content[]? | .text // empty' "$T/pi.json" >"$T/pi.txt"
+  grep -qF "$(head -1 "$REAL_HOME/.claude/setup/codex/agents-header.md")" "$T/pi.txt" || fail "header not loaded" || return 1
+  skill_names "$T/pi.json" | sort >"$T/names"
+  for n in $(grep -vE '^[[:space:]]*(#|$)' "$REAL_HOME/.hermes/skills-library-claude.txt" | awk '{print $1}'); do
+    [ "$(grep -cx "$n" "$T/names")" = 1 ] || fail "skill $n listed $(grep -cx "$n" "$T/names") times" || return 1
+  done
+  [ -z "$(uniq -d "$T/names")" ] || fail "listed twice: $(uniq -d "$T/names" | tr '\n' ' ')" || return 1
+  (cd "$REAL_HOME" && codex doctor --json >"$T/doctor.json" 2>/dev/null)
+  ! grep -q 'malformed agent role' "$T/doctor.json" || fail "malformed role" || return 1
+  [ "$(grep -c 'trusted_hash' "$REAL_HOME/.codex/config.toml")" -ge 6 ] || fail "fewer than 6 trusted hooks (open codex, /hooks)" || return 1
+  (cd "$REAL_HOME" && codex exec --ephemeral --skip-git-repo-check -m gpt-6.1-sol -c 'model_reasoning_effort="low"' --json -o "$T/last.txt" "$AC2_PROMPT" >"$T/events.jsonl" 2>"$T/stderr.txt") \
+    || fail "codex exec failed: $(tail -3 "$T/stderr.txt")" || return 1
+  rules_answer_ok "$T/last.txt" "$T/events.jsonl" || return 1
+  grep -q 'Setup sync:' "$T/events.jsonl" "$T/stderr.txt" || fail "no 'Setup sync:' line at session start" || return 1
+}
+ac25_desktop_codex_parity() {
+  [ "$(uname -s)" = Linux ] || fail "live: run on the desktop (WSL Ubuntu)" || return 1
+  real_checks
+}
+ac26_mac_install_smoke() {
+  [ "$(uname -s)" = Darwin ] || fail "live: run on the Mac" || return 1
+  real_checks
+}
+ac27_codex_story_run() {
+  local E=${CODEX_STORY_EVIDENCE:-}
+  [ -n "$E" ] && [ -d "$E" ] || fail "live: set CODEX_STORY_EVIDENCE=<evidence dir of a real Codex story run>" || return 1
+  [ -f "$E/ac-check.log" ] && tail -1 "$E/ac-check.log" | grep -qE '^(ALL ACCEPTED|READY FOR THE USER)' || fail "ac-check.log does not end ALL ACCEPTED / READY FOR THE USER" || return 1
+  [ -f "$E/gate.log" ] && grep -q 'SubagentStop' "$E/gate.log" && grep -q '"decision":"block"' "$E/gate.log" || fail "gate.log shows no SubagentStop block" || return 1
+  for r in planner builder reviewer fixer verifier auditor; do
+    grep -q "pipeline_$r" "$E/gate.log" || fail "gate.log shows no pipeline_$r agent" || return 1
+  done
+}
+ac24_linux_suites() {
+  docker info >/dev/null 2>&1 || fail "live: Docker is not running" || return 1
+  docker run --rm --privileged -v "$REAL_HOME/.claude-setup.git:/repo.git:ro" ubuntu:24.04 bash -lc '
+    set -e; apt-get update -qq; apt-get install -y -qq git jq curl perl python3 bubblewrap ca-certificates >/dev/null
+    curl -fsSL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_arm64.tar.gz | tar -xz -C /usr/local/bin gitleaks
+    curl -fsSL https://github.com/openai/codex/releases/download/rust-v0.163.0/codex-aarch64-unknown-linux-musl.tar.gz | tar -xz -C /tmp && install /tmp/codex-aarch64-unknown-linux-musl /usr/local/bin/codex
+    useradd -m t; su t -c "git config --global user.name T && git config --global user.email t@example.test &&
+      git clone -q -b codex-parity /repo.git ~/wt && cd ~/wt &&
+      bash .claude/setup/codex/codex-parity.test.sh && bash .claude/setup/sync.test.sh &&
+      for f in .claude/hooks/tests/*.test.sh; do bash \$f || exit 1; done"'
+}
 
 if [ $# -gt 0 ]; then for t in "$@"; do run "$t"; done; else for t in $OFFLINE; do run "$t"; done; fi
 echo "# passed $((n - failed)), failed $failed"
