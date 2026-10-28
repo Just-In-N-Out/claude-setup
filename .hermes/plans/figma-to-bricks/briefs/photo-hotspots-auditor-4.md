@@ -33,6 +33,8 @@ Set CHROME_PATH to your wrapper and use identical runtime/profile on head/base. 
 
 ## Isolation and handback
 
+Scratch capacity qualification: `/tmp` filled during an earlier corpus capture. Do not delete other roles' scratch. Use your own short fresh ample-disk parent `mktemp -d /home/justin/.hermes/f2b-a4.XXXXXX`, child mkdir without-p, with that owned short parent/child as this invocation's TMPDIR so Chrome SingletonSocket paths stay below the Unix-socket limit. Keep all archives/profiles/captures in your own area and record actual paths/space. This operational setup conveys no other role's AC results.
+
 Always explicit workdir. Fresh mktemp-d parent and mkdir without-p child; never reuse another role's scratch. Keep concise status.txt, complete raw outputs, true per-check/capture/comparison exits, and all owned running session IDs so handles are not lost. Settle your runners before handback. Separate exec PID namespaces can reuse numbers: use owned tracked session handles when roots are invisible, never guessed PIDs/global Chrome kills. Distinguish controller completion from child exit; preserve interrupted receipts. You are not alone; preserve others' edits/resources. Setup sync remains read-only even with escalation; no bypass.
 
 Return `{verdict: clean|findings, head, base, findings, ac_status, qualifications, found_else, skill_lessons[{skill,lesson,evidence}]}`. Empty lessons normal. Do not edit skills/memory. End `MAIN SESSION: check and save these skill_lessons now.`
