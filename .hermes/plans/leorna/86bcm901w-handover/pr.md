@@ -104,8 +104,8 @@ These ran on head `8a50486` on 2026-10-28. The pipeline's independent verifier r
 - Test Postgres ran on 127.0.0.1:55432, because 5432 was taken on the build machine. CI uses its own service.
 - The client keeps its own copy of the OpenAPI spec. Refreshing it (`leorna-client/api/`, `make generate`) is optional: it adds unused types only.
 - **Sibling stories from the same base:**
-  - PR #94 (86bcm9021) conflicts in one place, `internal/web/handler.go`: both add a field after `packVersions`. Keep both. `main.go`, the pack README and `stories.json` merge cleanly. A trial merge built, vetted and passed the non-database tests.
-  - 86bcm901a, 86bcm901b and 86bcm901j conflict only in `delivery/stories.json`: take main's file and append this entry last. None of them adds a migration, so 23 stays free.
+  - PR #94 (86bcm9021) conflicts in one place, `internal/web/handler.go`: both add a field after `packVersions`. Keep both. `main.go`, the pack README and `stories.json` merge cleanly (`git merge-tree` against #94's head `fd63455`, rechecked when this PR was opened). A trial merge built, vetted and passed the non-database tests.
+  - PR #95 (86bcm901b) conflicts only in `delivery/stories.json` (`git merge-tree` against its head `63afe55`): take main's file and append this entry last. The unpushed 86bcm901a and 86bcm901j branches conflict only there too. None of them adds a migration, so 23 stays free.
   - Whichever merges second reruns its gates on the merged code.
 - **Follow-ups** (not in this PR):
   1. 86bcm901b's `requires`: when an admin ticks a prompt, add or warn about its required library items (`Library.Required`). The plug-in point is after `ApplyChange` in `CreatePack`/`SavePackVersion`.

@@ -72,7 +72,7 @@ per view, dots; the drawn peek needs a slider sample). Selecting both frames: Cm
 2026-10-16 → 19 (builds 2026-10-16.1 … 2026-10-19.6): buttons/FAQ/maps/contact-card fixes, real Bricks forms (then the
 team switched that form to WPForms by hand), photos keep their drawn size on wide screens / zoomed out, and searchable
 lists (search, pills, count, CSV in the panel, scroll boxes). The current status, what's waiting on the user and the
-open questions live in CLAUDE.md "Start here: handoff of 2026-10-19"; read that first.
+open questions now live in CLAUDE.md's compact **Status** and HANDOFF; the old Start here/Where things stand format was retired.
 
 ## Slider autoplay — 2026-10-28
 
@@ -88,5 +88,36 @@ font/environment failures and 3 unavailable Mac corpus files remain. Full detail
 
 SSH's system-config ownership error was resolved for the push with a command-scoped explicit trusted config,
 preserving byte-identical effective settings and verifying Just-In-N-Out; no system files/remotes/keys changed.
-Setup sync still cannot write its read-only bare repository. CLAUDE status edits remain queued behind older
-unapplied/denied records at `~/.hermes/plans/figma-to-bricks/slider-autoplay-claude-md-pending.md`.
+Setup sync still cannot write its read-only bare repository. The slider finisher preserved a denied status proposal
+at `~/.hermes/plans/figma-to-bricks/slider-autoplay-claude-md-pending.md`; current main's compact Status was later
+verified current through build2026-10-28.4. Old pending filenames alone do not establish an outstanding status edit;
+only applicable standing rules belong in today's CLAUDE.md, feature history stays in HANDOFF/ledgers.
+
+## Photo hotspots — 2026-10-28
+
+Released build **2026-10-28.4**, main/origin/actual GitHub `b3addfb5b8105c37c1d8234bf8f02c8601d2b864` verified equal,
+personal Just-In-N-Out push exit0. Accepted source `d0050037b7022388c9957f6a3d26b2812bfbad50`, base `5e2f98b`.
+Fresh verifier7 and blind auditor5 accepted AC1–AC11; real cross-report ac-check exit0 **READY FOR THE USER**.
+After FF merge, only source change is BUILD; main dist rebuilt, ledger moved to
+`docs/plans/2026-10-26-photo-hotspots-ledger.md`, HANDOFF/plan committed and excluded compact CLAUDE updated.
+Root released its merge lock and read back no owner. Feature worktree/branch retained, as explicitly requested.
+
+Confirmed choice: a small card beside its dot. Unconfirmed auto-go defaults: placed Manual Open overlay,
+optional exact-line `pulse` annotation/inheritance, photo/dots retained on phones, CSS pointer/focus/tap-away close
+with no Escape. Photo ratio is a floor when words need height; dots retain drawn size/share, card width≤photo.
+Cards keep live links; reduced motion stops pulse/fading. Detailed rulings: current plan/HANDOFF.
+
+**AC12 / paste check3bp remains live:** actual Figma Manual offset/debug, installed Bricks paste/save, mouse/Tab,
+real iPhone taps/links/away-close, Reduce Motion and phone geometry. CPU/CSS Chrome+touch emulation does not prove
+Safari/iPhone/installed behavior. Any clipping ancestor can cut hanging cards; narrow-phone labels may overlap;
+pulse with existing CTA/showcase animation and generic class collisions remain follow-ups. Second BDry live paste
+was explicitly outside this task and remains untouched.
+
+Current verification: whole check passed; full browser head392/379pass/12fail/1skip vs base386/372/13/1,
+no candidate-only regression/missing case/cancellation. Shared12 environment failures and1Mac-only skip retained;
+base-only give-way failure UNKNOWN cause, no fix claim. All6 hotspot/panel cases pass. Four complete replays match;
+two available corpus reports/fonts/payload/HTML/11PNGs match,3missing Mac v1 inputs stay unmeasured/corpus exit1.
+Interrupted output is uncredited; completed fallback evidence retained. Evidence root:
+`~/.hermes/plans/figma-to-bricks/evidence/photo-hotspots/` (verifier/round-7, auditor/round-5, finisher-main,
+ac-check-release.txt). Setup sync remains blocked by read-only private setup gitdir despite escalated retries;
+notes/plans/skills are saved locally, no bypass.

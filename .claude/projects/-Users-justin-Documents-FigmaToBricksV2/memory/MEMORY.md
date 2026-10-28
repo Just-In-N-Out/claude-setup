@@ -1,6 +1,6 @@
 - [User workflow](user-workflow.md) — Figma (desktop only) → own plugin → Bricks 2.3.9; plain explanations
 - [Git and parallel agents](git-and-parallel-agents.md) — private GitHub as Just-In-N-Out (not Justin-Leorna); claude -w per feature; CLAUDE.md copied via .worktreeinclude
-- [v2 rewrite](v2-rewrite.md) — rewrite/output target; autoplay released2026-10-28.3, live check3bo; current source/release evidence
+- [v2 rewrite](v2-rewrite.md) — rewrite/output target; hotspots released2026-10-28.4, live3bp; autoplay28.3/live3bo; qualified release evidence
 - [Run without stopping](run-without-stopping.md) — build straight through; when away: recommended options, research, resume limit-stopped agents, full report; ONE agent at a time; compact Status/HANDOFF records (2026-10-28)
 - [GRO phone pass](gro-phone-pass.md) — phones for free-floating designs: the user's 4 decoration choices (2026-10-07), rules must be general
 - [Site and team](site-and-team.md) — live site on Hostinger, WPForms Pro team; after a paste: regenerate code signatures, LiteSpeed Purge All
