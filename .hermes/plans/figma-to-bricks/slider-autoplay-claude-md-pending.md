@@ -1,3 +1,39 @@
+# slider-autoplay — current closeout status (2026-10-28)
+
+**Push resolved:** release commit `979c5b331cc095ed1602602fb7a49eb295fa78e0`, build2026-10-28.3, was pushed to
+main as Just-In-N-Out and read back from GitHub at that exact SHA. The existing user SSH config selected with
+`-F`, plus the original applicable global defaults, gives byte-identical effective GitHub settings. No permanent
+SSH/Git/account/transport/security change occurred. Receipts: `evidence/slider-autoplay/finisher-closeout/`.
+
+**Local B-Dry artifact created; final browser proof held:**
+`evidence/slider-autoplay/finisher-closeout/home-paste-slider-autoplay.json`, SHA256
+`f342ff5d017e78e9196a6b488d1a8eb1293a9bd6e750f9aa53ef671e4517139a`. Native three empty Block slides wrap
+the existing painted content Blocks, which fill their slides; interval7500/speed2500, loop with type omitted,
+hover/focus pause, source-colour arrows25 (phones24), no dots, gap0. Original ids/words/links/media, all non-hero
+elements and six home- classes are preserved. Payload/control checks and exact real-media layout comparisons
+pass at13 widths320–1920. Final motion/screenshots remain unverified: this Chrome also has zero animation
+frames and capture timeout on an independent blank page. All incomplete diagnostics remain retained. No live
+writes, uploads, clipboard replacement or Windows Downloads edit. AC13/AC14/check3bo still owed; AC14=5800/800.
+
+**Queue ordering unchanged.** No main CLAUDE section was edited or attempted. Apply behind all older pending
+records; the original exact pending file follows byte-for-byte as historical release text. Before applying its
+queued edits, make these status corrections (do not reinsert the obsolete blocker):
+
+- Edit1: replace the local-release/push-blocked wording with “Release commit979c5b3 was pushed as Just-In-N-Out;
+  rebuilt bundles byte-reproduced. This is not live publication.” Replace the B-Dry pending-deliverable sentence
+  with “B-Dry Home's local native-slider paste is created; final motion/screenshot proof is held by this Chrome's
+  blank-page-confirmed frame/capture failure. Exact artifact and diagnostics: finisher-closeout/.”
+- Edit2: replace the push-blocked/not-released-remotely wording with “Build commit979c5b3 pushed as Just-In-N-Out;
+  manifest bundles verified.” Replace “B-Dry paste artifact separately pending” with “B-Dry local artifact created;
+  final motion/screenshot validation held (finisher-closeout/), not published.” Keep every acceptance limit.
+- Edit4 LAST: use “**Current build `2026-10-28.3` (pushed as Just-In-N-Out).** Builds21.13–22.9 were recorded only
+  in `docs/HANDOFF.md` (their agents” with the original spacing around Builds21.13–22.9. Re-read actual BUILD
+  and preserve any newer sibling build. Never mark applied until all required queued sections actually land.
+
+No skill/memory amendment is needed; the main session already saved the confirmed autoplay rule.
+
+---
+
 # slider-autoplay — exact main CLAUDE.md edits pending
 
 Target: `/home/justin/Documents/FigmaToBricksV2/CLAUDE.md`.
