@@ -10,8 +10,9 @@
 #   - subagents (agent_id set): they are the ones who write code;
 #   - accept-edits or bypass mode, which only Justin can switch on (Shift+Tab), e.g. for "do it here";
 #   - the orchestrator's own files: any CLAUDE.md / CLAUDE.local.md, ~/.hermes/plans/** (plans, briefs,
-#     evidence, dispatch.json), ~/.hermes/skills/**/*.md, ~/.claude/projects/*/memory/**, and anything
-#     under the session's scratchpad_dir;
+#     evidence, dispatch.json), ~/.hermes/skills/**/*.md and ~/.hermes/skills-library/**/*.md (skill text
+#     and lessons; many skills are links into the library, a git clone whose scripts stay code),
+#     ~/.claude/projects/*/memory/**, and anything under the session's scratchpad_dir;
 #   - anything else (a note in ~/Documents, ~/.claude/plans/*.md).
 # Paths are compared physically: the nearest existing folder goes through `cd … && pwd -P`, so a file
 # reached through ~/.claude/skills/<name> (a link) is judged where it really lives, in ~/.hermes/skills.
@@ -59,7 +60,8 @@ fi
 # the orchestrator's own files
 case ${real##*/} in CLAUDE.md | CLAUDE.local.md) exit 0 ;; esac
 case $real in
-  "$home"/.hermes/plans/* | "$home"/.hermes/skills/*.md | "$home"/.claude/projects/*/memory/*) exit 0 ;;
+  "$home"/.hermes/plans/* | "$home"/.hermes/skills/*.md | "$home"/.hermes/skills-library/*.md | \
+    "$home"/.claude/projects/*/memory/*) exit 0 ;;
 esac
 if [[ $scratch == /* ]]; then
   sp=$(resolve "$scratch")

@@ -671,6 +671,18 @@ ac14_orchestrator_guard_quiet_for_subagents_and_own_files() {
   for j in 'not json' '' '{"tool_name": "Edit"}' '{"tool_name": "Edit", "tool_input": {"file_path": ""}}' '[]'; do
     hook "$OG" "$j"; check none '' "bad input [$j]" || return 1
   done
+  # library skills: ~/.claude/skills/<name> -> ~/.hermes/skills/<cat>/<name> -> ~/.hermes/skills-library/skills/<name>,
+  # a git clone: its .md files are skill text the main session saves lessons to; its scripts stay code
+  ing git init -q "$H/.hermes/skills-library"; mkdir -p "$H/.hermes/skills-library/skills/lib/references" \
+    "$H/.hermes/skills-library/skills/lib/scripts" "$H/.hermes/skills/cat"
+  ln -s "$H/.hermes/skills-library/skills/lib" "$H/.hermes/skills/cat/lib"; ln -s "$H/.hermes/skills/cat/lib" "$H/.claude/skills/lib"
+  for f in .claude/skills/lib/SKILL.md .claude/skills/lib/references/r.md .hermes/skills/cat/lib/SKILL.md \
+    .hermes/skills-library/skills/lib/SKILL.md .hermes/skills-library/README.md; do
+    expect_edit none '' Edit "$H/$f" || return 1
+  done
+  for f in .claude/skills/lib/scripts/x.sh .hermes/skills/cat/lib/scripts/x.sh .hermes/skills-library/skills/lib/scripts/x.sh; do
+    expect_edit ask 'only orchestrates' Edit "$H/$f" || return 1   # control: library scripts are code
+  done
   # own files stay quiet even inside a work tree: a repo copy in evidence, ~/.hermes or ~/.claude kept in git
   ing git init -q "$H/.hermes/plans/p/evidence/src-copy"
   expect_edit none '' Write "$H/.hermes/plans/p/evidence/src-copy/notes.txt" || return 1
