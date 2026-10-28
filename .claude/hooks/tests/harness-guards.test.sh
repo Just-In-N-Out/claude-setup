@@ -284,6 +284,13 @@ ac6_guard_asks_before_leorna_push() {
   expect ask "$re" "( (cd $H/code/site) ; git status ) && git push origin feat/x" "$lc" || return 1
   expect none '' "(cd ~/Leorna/leorna-client && git fetch) && git push origin main" "$H/code/site" || return 1
   expect ask "$re" "{ cd ~/Leorna/leorna-client; }; git push" "$H/code/site" || return 1
+  # ~/Leorna may be a link to the real folder: its logical and physical paths are both Leorna
+  local h0=$H; H="$S/home2"; mkdir -p "$H/work" "$S/data/Leorna/lc"; ln -s "$S/data/Leorna" "$H/Leorna"
+  expect ask "$re" "git push" "$H/Leorna/lc" || return 1
+  expect ask "$re" "git push" "$S/data/Leorna/lc" || return 1
+  expect ask "$re" "git -C ~/Leorna/lc push origin feat/x" || return 1
+  expect none '' "git push" "$S/data" || return 1
+  H=$h0
   for c in "git fetch" "git status" "git log -1" "git pull --ff-only" "git -C ~/Leorna/leorna-client fetch"; do
     expect none '' "$c" "$lc" || return 1
   done
@@ -438,6 +445,16 @@ ac9_precommit_blocks_wrong_email_by_folder() {
   ing git -C "$p" merge --abort 2>/dev/null; ing git -C "$p" reset -q --hard "$base"
   out=$(cd "$p" && ing git merge -q --no-ff -m merge side 2>&1 </dev/null); rc=$?
   passed "personal repo: merge with $PERSONAL" || return 1
+  # ~/Leorna may be a link to the real folder (git's includeIf "gitdir:~/Leorna/" still matches): so does the hook
+  rm -rf "$S"; newroot; mkdir -p "$S/data/Leorna"; ln -s "$S/data/Leorna" "$H/Leorna"; l="$H/Leorna/client"
+  gitrepo "$l" || fail "linked ~/Leorna repo setup" || return 1
+  commit_in "$l" --allow-empty -m ok; passed "linked ~/Leorna repo, $LEORNA" || return 1
+  # by its real path git's includeIf misses (it matches the logical path, through $PWD) and git picks the personal
+  # email: the repo is still in ~/Leorna, so the hook refuses it
+  commit_in "$S/data/Leorna/client" --allow-empty -m x
+  refused pre-commit "$LEORNA" "linked ~/Leorna repo by its real path (git picked $PERSONAL)" || return 1
+  out=$(cd "$l" && ing git -c user.email="$PERSONAL" commit -q --allow-empty -m x 2>&1); rc=$?
+  refused pre-commit "$LEORNA" "linked ~/Leorna repo: -c user.email=$PERSONAL" || return 1
   done_ok
 }
 
@@ -921,6 +938,7 @@ ac22_mac_activation_live() {
     case $c in /*) ;; *) c="$d/$c" ;; esac
     echo "#   $d hooksPath=[$(git -C "$d" config --local --get core.hooksPath)] own=[$(ls "$c/hooks" 2>/dev/null | grep -v '\.sample$' | tr '\n' ' ')]"
   done
+  echo "# ~/Leorna (a link is fine: both guards match its logical and physical paths): $(ls -ld "$REAL_HOME/Leorna" 2>&1)"
   echo "# Manual step: in a Claude Code session on the Mac, ask for 'git commit --no-verify -m t' in a scratch repo -> denied."
 }
 

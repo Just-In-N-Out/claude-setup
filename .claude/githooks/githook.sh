@@ -20,6 +20,8 @@ PERSONAL_EMAIL=issajustin04@gmail.com
 AI_NAMES='claude|anthropic|codex|openai|chatgpt|gpt|copilot|gemini|hermes'
 self=$(cd "$(dirname "$0")" && pwd -P)
 home=$(cd "$HOME" 2>/dev/null && pwd -P) || home=$HOME
+# ~/Leorna may be a link: git's includeIf "gitdir:~/Leorna/" matches both its paths, so the hook does too
+leorna=$(cd "$HOME/Leorna" 2>/dev/null && pwd -P) || leorna="$home/Leorna"
 common=$(cd "$(git rev-parse --git-common-dir 2>/dev/null)" 2>/dev/null && pwd -P) || common=""
 top=$(cd "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null && pwd -P) || top=$PWD
 
@@ -29,7 +31,7 @@ setup_repo() { [ -n "$common" ] && [ "$common" = "$(cd "$home/.claude-setup.git"
 email_of() { git var "GIT_$1_IDENT" 2>/dev/null | sed -n 's/.*<\([^>]*\)>.*/\1/p'; }
 check_identity() {
   local want who got
-  case "$common/" in "$home/Leorna/"*) want=$LEORNA_EMAIL ;; *) want=$PERSONAL_EMAIL ;; esac
+  case "$common/" in "$home/Leorna/"* | "$leorna/"*) want=$LEORNA_EMAIL ;; *) want=$PERSONAL_EMAIL ;; esac
   for who in AUTHOR COMMITTER; do
     got=$(email_of "$who")
     [ "$got" = "$want" ] || stop "$(echo "$who" | tr A-Z a-z) email is '$got'; this folder needs $want (CLAUDE.md, Git Commit Authorship). Don't override it: fix git config, or tell Justin (an amended commit keeps its old author)."

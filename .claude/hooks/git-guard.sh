@@ -525,11 +525,12 @@ class Guard:
                 self.deny("remote")
 
     def under_leorna(self, d):
-        if not self.rhome:
+        """d is in ~/Leorna, by its logical or its physical path (~/Leorna may be a link)."""
+        if not self.home:
             return False
-        root = os.path.join(self.rhome, "Leorna")
-        r = os.path.realpath(d)
-        return r == root or r.startswith(root + os.sep)
+        logical = os.path.normpath(os.path.join(self.home, "Leorna"))
+        roots = {logical, os.path.join(self.rhome, "Leorna"), os.path.realpath(logical)}
+        return any(p == r or p.startswith(r + os.sep) for p in (os.path.normpath(d), os.path.realpath(d)) for r in roots)
 
     def hooks_path_ok(self, v):
         if v is None:
