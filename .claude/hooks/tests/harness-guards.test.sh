@@ -366,6 +366,24 @@ ac7_guard_parses_shell_forms() {
     $'cat <<\'EOF\' | bash\ngit commit '"$nv"$' -m x\nEOF' $'cat <<\'A\' >a.txt; bash <<\'B\'\nnot a command\nA\ngit push '"$nv"$'\nB'; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
+  # a script reaches a shell (or source) through a pipe from echo/printf, a here-string or source /dev/stdin too
+  for c in "echo 'git commit $nv -m x' | bash" "bash <<< 'git commit $nv -m x'" \
+    $'source /dev/stdin <<\'X\'\ngit commit '"$nv"$' -m x\nX' "printf 'git push $nv\\n' | sh" \
+    "printf '%s\\n' 'cd /x' 'git push $nv' | bash" "echo -e 'git push \\x2d-no-verify' | /bin/bash -s" \
+    "command echo \"git commit $nv\" |& env FOO=1 bash" ". /dev/stdin <<< \"git push $nv\"" \
+    $'cat <<\'X\' | source /dev/stdin\ngit push '"$nv"$'\nX' "bash -s <<<\"\$(echo x); git commit $nv\"" \
+    "printf 'git commit %s -m x\\n' $nv | bash" "zsh <<< \$'git push $nv'" $'cat <<< \'EOF\'\ngit commit '"$nv"$'\nEOF' \
+    "echo 'git push $nv' | bash -s arg1" "bash -s -- x <<< 'git push $nv'" "echo 'git push $nv' | bash --norc"; do
+    expect deny 'skip the git hooks' "$c" || return 1
+  done
+  for c in "cat <<< 'git push $nv'" "echo 'git commit $nv' > notes.md" "echo 'git commit $nv' | cat" \
+    "grep -c x <<< 'git push $nv'" "echo 'git push $nv' | tee notes.md" "printf 'git push $nv\\n' >> notes.md" \
+    "source ./env.sh <<< 'git push $nv'" "printf -v line 'git push $nv'; echo ok | bash" "echo 'git push $nv' > f; bash f" \
+    "printf '%s\\0' 'git push $nv' | bash ./decide.sh" "echo 'git push $nv' | bash -c 'cat > f'" "bash x.sh <<< 'git push $nv'" \
+    $'bash -c \'cat > f\' <<\'EOF\'\ngit push '"$nv"$'\nEOF' $'bash ./decide.sh <<\'EOF\'\ngit push '"$nv"$'\nEOF' \
+    "echo 'git push $nv' | bash --rcfile x.rc ./decide.sh"; do
+    expect none '' "$c" || return 1
+  done
   mkdir -p "$H/Leorna/x"
   for c in $'cat >> brief.md <<\'EOF\'\n## Addendum\n- The builder\'s first task: fetch main over HTTPS (`git -c credential.helper= -c \'credential.helper=!gh auth git-credential\' fetch https://github.com/LeornaAI/leorna-control-plane.git main:refs/remotes/origin/main`), then check it.\nEOF' \
     $'python3 - <<\'EOF\'\np = "t.test.sh"\ns = open(p).read().replace("git commit -n -m x", "git commit '"$nv"$' -m x")\nopen(p, "w").write(s)\nEOF' \

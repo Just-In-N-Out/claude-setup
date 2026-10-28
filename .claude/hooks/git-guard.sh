@@ -69,6 +69,9 @@ HEREDOC_RE = re.compile(r"<<(-?)[ \t]*(?:'([^'\n]*)'|\"([^\"\n]*)\"|(\\?)([^\s;&
 SHELLS = {"bash", "sh", "zsh", "dash", "ksh"}
 PH = "\x01"  # a placeholder for a substitution or heredoc body: PH <index into subs> PH
 PH_RE = re.compile("\x01([0-9]+)\x01")
+HS = "\x02"  # marks a here-string's word in a segment (HS + the word): it is the command's stdin, not an arg
+STDIN_FILES = {"/dev/stdin", "-", "/dev/fd/0", "/proc/self/fd/0"}
+PRINTF_RE = re.compile(r"%%|%[-+ #0]*[0-9*]*(?:\.[0-9*]*)?([a-zA-Z])")
 
 
 def placeholder(subs, body):
@@ -95,7 +98,7 @@ def ansi_c(s):
         if ctrl is not None:
             return chr(ord(ctrl) & 0x1F)
         return ANSI_C.get(other, "\\" + other)
-    return ANSI_C_RE.sub(esc, s).split("\0")[0].replace(PH, "\x7f")  # PH is the guard's own marker
+    return ANSI_C_RE.sub(esc, s).split("\0")[0].replace(PH, "\x7f").replace(HS, "\x7f")  # the guard's own marks
 
 
 def ansi_c_word(cmd, i):
@@ -157,9 +160,9 @@ def normalize(cmd, i=0, subs=None, closer=False):
     - $'…' becomes the single-quoted word bash makes of it (escapes like \\x76 decoded); $"…" is a "…" string.
     - $(…) and `…` (unquoted or inside double quotes) run their body: each becomes a placeholder and the
       body goes to subs, to be scanned as a script of its own where the placeholder sits.
-    - A heredoc body is a script only when a shell or eval reads it (bash <<EOF, cat <<EOF | sh); any other
-      heredoc body (cat > f <<EOF, python3 - <<EOF, git commit -F - <<EOF) is data, except the $(…) and
-      `…` in it when its delimiter is unquoted. Its placeholder sits where the << was.
+    - A heredoc body is a script only when a shell, eval or source /dev/stdin reads it (bash <<EOF,
+      cat <<EOF | sh); any other heredoc body (cat > f <<EOF, python3 - <<EOF, git commit -F - <<EOF) is data,
+      except the $(…) and `…` in it when its delimiter is unquoted. Its placeholder sits where the << was.
     - With closer, the pass stops at the ')' that closes a $( and end is that index."""
     subs = [] if subs is None else subs
     out, n, pending, prev, start, depth = [], len(cmd), [], " ", 0, 0
@@ -206,7 +209,12 @@ def normalize(cmd, i=0, subs=None, closer=False):
             j = cmd.find("\n", i)
             i = n if j < 0 else j
             continue
-        if cmd.startswith("<<", i) and not cmd.startswith("<<<", i):
+        if cmd.startswith("<<<", i):  # a here-string: its word is not a heredoc's delimiter
+            out.append("<<<")
+            prev = "<"
+            i += 3
+            continue
+        if cmd.startswith("<<", i):
             m = HEREDOC_RE.match(cmd, i)
             if m:
                 out.append(" " + placeholder(subs, "") + " ")
@@ -246,8 +254,8 @@ def normalize(cmd, i=0, subs=None, closer=False):
 
 
 def feeds_shell(text):
-    """True when the command at the start of text (a heredoc's command, up to the end of its line) is a
-    shell or eval, or pipes into one: then the heredoc body is a script, not data."""
+    """True when the command at the start of text (a heredoc's command, up to the end of its line) runs its
+    stdin as a script (stdin_script), or pipes into one that does: then the heredoc body is a script, not data."""
     try:
         toks = lex(text)
     except ValueError:
@@ -255,16 +263,72 @@ def feeds_shell(text):
     words, nxt = [], []
     for k, t in enumerate(toks):
         if op_kind(t) == "sep":
-            if t == "|":
+            if t in ("|", "|&"):
                 nxt = toks[k + 1:]
             break
         words.append(t)
     for w in (words, nxt):
         seg = next((x for x in segments(w) if isinstance(x, list)), [])
-        rest = seg[split_prefix(seg)[1]:]
-        if rest and os.path.basename(rest[0]) in SHELLS | {"eval"}:
+        if stdin_script(command_words(seg)):
             return True
     return False
+
+
+def command_words(seg):
+    """A segment's command and its args: no here-string words, no heredoc or substitution placeholders (a
+    heredoc's sits where its << was), no leading assignments or wrappers."""
+    w = [t for t in seg if t and not t.startswith(HS) and not PH_RE.fullmatch(t)]
+    return w[split_prefix(w)[1]:]
+
+
+def stdin_script(cmd):
+    """True when cmd (a command and its args) runs what reaches its stdin as a script: a shell with no -c and no
+    script file (or with -s), eval, or source/. of /dev/stdin (also -, /dev/fd/0, or no file)."""
+    if not cmd:
+        return False
+    if os.path.basename(cmd[0]) in SHELLS:
+        return shell_stdin(cmd[1:])
+    if cmd[0] == "eval":
+        return True
+    if cmd[0] in ("source", "."):
+        args = cmd[1:]
+        while args and args[0] in ("--", "-p"):  # bash 5.3: source -p <path> <file>
+            args = args[2:] if args[0] == "-p" else args[1:]
+        return not args or args[0] in STDIN_FILES
+    return False
+
+
+def echoed(cmd):
+    """The text echo or printf (cmd: a command and its args) writes, or None for any other command."""
+    if not cmd:
+        return None
+    name, args = os.path.basename(cmd[0]), list(cmd[1:])
+    if name == "echo":
+        decode = False
+        while args and re.fullmatch(r"-[neE]+", args[0]):
+            for f in args.pop(0)[1:]:
+                decode = {"e": True, "E": False}.get(f, decode)
+        text = " ".join(args)
+        return ansi_c(text) if decode else text
+    if name != "printf":
+        return None
+    if args[:1] == ["--"]:
+        args = args[1:]
+    if not args or args[0] == "-v":  # printf -v <name>: into a variable, nothing written
+        return None
+    fmt, args, out = ansi_c(args[0]), args[1:], []
+
+    def conv(m):
+        if m.group(0) == "%%":
+            return "%"
+        a = args.pop(0) if args else ""
+        return ansi_c(a) if m.group(1) == "b" else a
+    for _ in range(100):  # the format is used again while arguments are left, as printf does
+        left = len(args)
+        out.append(PRINTF_RE.sub(conv, fmt))
+        if not args or len(args) == left:
+            break
+    return "".join(out)
 
 
 def lex(s):
@@ -276,7 +340,7 @@ def lex(s):
 
 def tokens(cmd):
     """(tokens, subs) of a command line; subs[k] is the script behind placeholder k."""
-    cmd = cmd.replace(PH, " ")
+    cmd = cmd.replace(PH, " ").replace(HS, " ")
     subs = []
     try:
         return lex(normalize(cmd, 0, subs)[0]), subs
@@ -298,13 +362,16 @@ def op_kind(tok):
 
 def segments(tokens):
     """The simple commands in tokens, split at ; & && | || ( ) and friends. Each '(' or ')' is also yielded,
-    as that one-character string, so scan() can end a subshell's cd."""
+    as that one-character string, so scan() can end a subshell's cd, and '|' after a command that pipes into the
+    next one. A here-string's word stays in its segment as HS + the word."""
     seg = []
-    skip = False
+    skip = here = False
     for t in tokens:
         if skip:
             skip = False
-            if PH in t:  # a redirect target's substitution still runs
+            if here:
+                seg.append(HS + t)
+            elif PH in t:  # a redirect target's substitution still runs
                 seg.append("".join(m.group(0) for m in PH_RE.finditer(t)))
             continue
         k = op_kind(t)
@@ -315,10 +382,13 @@ def segments(tokens):
             for c in t:
                 if c in "()":
                     yield c
+            if t in ("|", "|&"):
+                yield "|"
         elif k == "redir":
             if seg and seg[-1].isdigit():
                 seg.pop()  # the fd number of 2>&1, 2>/dev/null
             skip = True  # the redirect's target
+            here = t.endswith("<<<")
         else:
             seg.append(t)
     if seg:
@@ -336,6 +406,28 @@ def expand_home(p, home):
 
 def lower(s):
     return s.lower()
+
+
+def shell_stdin(args):
+    """True when a shell given args reads its script from stdin: no -c, and -s or no script file operand."""
+    i, s = 0, False
+    while i < len(args):
+        a = args[i]
+        if a in ("-o", "+o", "-O", "+O", "--rcfile", "--init-file"):
+            i += 2
+            continue
+        if a == "--":
+            i += 1
+            break
+        if len(a) > 1 and a[0] in "-+":
+            if a[0] == "-" and not a.startswith("--"):
+                if "c" in a[1:]:
+                    return False
+                s = s or "s" in a[1:]
+            i += 1
+            continue
+        break
+    return s or i >= len(args)
 
 
 def shell_c(args):
@@ -383,10 +475,10 @@ CONFIG_OPTS = {  # git config: legacy mode (""), then each subcommand
     "unset": long_opts(_CFG_FILE + "all value fixed-value"),
     "rename-section": long_opts(_CFG_FILE), "remove-section": long_opts(_CFG_FILE), "edit": long_opts(_CFG_FILE),
 }
-COMMIT_OPTS = long_opts("quiet verbose file author date message reedit-message reuse-message fixup squash reset-author "
-                        "signoff template edit cleanup status gpg-sign all include interactive patch only dry-run short "
-                        "branch ahead-behind porcelain long null amend untracked-files pathspec-from-file "
-                        "pathspec-file-nul",
+COMMIT_OPTS = long_opts("quiet verbose file author date message reedit-message reuse-message fixup squash "
+                        "reset-author signoff template edit cleanup status gpg-sign all include interactive patch "
+                        "only dry-run short branch ahead-behind porcelain long null amend untracked-files "
+                        "pathspec-from-file pathspec-file-nul",
                         "trailer unified inter-hunk-context no-verify verify no-post-rewrite post-rewrite allow-empty "
                         "allow-empty-message")
 
@@ -487,7 +579,8 @@ class Guard:
         shenv = {} if shenv is None else dict(shenv)
         toks, subs = tokens(cmd)
         saved = []
-        for seg in segments(toks):
+        items = list(segments(toks))
+        for k, seg in enumerate(items):
             if seg == "(":
                 saved.append((cwd, dict(shenv)))
             elif seg == ")":
@@ -495,8 +588,14 @@ class Guard:
                     cwd, env = saved.pop()
                     shenv.clear()
                     shenv.update(env)
-            else:
+            elif seg != "|":
                 cwd = self.segment(seg, cwd, depth, subs, shenv)
+                # echo/printf piped into a shell (or source /dev/stdin): what it writes is that shell's script
+                to = items[k + 2] if k + 2 < len(items) and items[k + 1] == "|" else None
+                if depth < 3 and isinstance(to, list) and stdin_script(command_words(to)):
+                    text = echoed(command_words([PH_RE.sub("", t) for t in seg]))
+                    if text:
+                        self.scan(text, cwd, depth + 1, shenv)
         return cwd
 
     def segment(self, w, cwd, depth, subs, shenv):
@@ -507,6 +606,8 @@ class Guard:
                     if depth < 3 and k < len(subs) and subs[k]:
                         self.scan(subs[k], cwd, depth + 1, shenv)
             w = [PH_RE.sub("", t) for t in w]
+        here = [t[1:] for t in w if t.startswith(HS)]
+        w = [t for t in w if not t.startswith(HS)]
         env, i = split_prefix(w)
         for k in env:
             if k in IDENTITY_ENV:
@@ -518,6 +619,9 @@ class Guard:
         self.env_rules(env)
         if not cmd:
             return cwd
+        if depth < 3 and here and stdin_script([t for t in cmd if t]):  # bash <<< 'script', . /dev/stdin <<< …
+            for h in here:
+                self.scan(h, cwd, depth + 1, env)
         name = os.path.basename(cmd[0])
         if name in ("cd", "pushd"):
             args = [a for a in cmd[1:] if not a.startswith("-")]
