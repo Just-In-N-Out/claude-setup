@@ -583,6 +583,22 @@ ac11_githooks_chain_repo_hooks() {
   [ "$rc" = 0 ] && ! grep -q "own pre-commit" "$log" || fail "a non-executable own hook ran or blocked (rc=$rc)" || return 1
   rm "$p/.git/hooks/pre-commit"
   commit_in "$p" --allow-empty -m "no own hook"; passed "no own hook" || return 1
+  # push-to-checkout replaces git's own updateInstead update, so with no own hook it does git's default:
+  # a clean target's work tree moves to the pushed tip; a dirty one refuses the push and keeps its files
+  local t="$H/code/target" c="$H/code/clone" tip
+  gitrepo "$t" && ing git -C "$t" config receive.denyCurrentBranch updateInstead && ing git clone -q "$t" "$c" \
+    || fail "push-to-checkout fixture" || return 1
+  echo v2 >"$c/seed.txt"; commit_in "$c" -am v2; passed "clone: v2" || return 1
+  out=$(ing git -C "$c" push -q origin main 2>&1); rc=$?; tip=$(ing git -C "$c" rev-parse HEAD)
+  [ "$rc" = 0 ] && [ "$(ing git -C "$t" rev-parse HEAD)" = "$tip" ] && [ "$(cat "$t/seed.txt")" = v2 ] \
+    && [ -z "$(ing git -C "$t" status --porcelain)" ] \
+    || fail "updateInstead push: rc=$rc target HEAD/work tree not the pushed tip, or not clean: seed.txt=[$(cat "$t/seed.txt")] status=[$(ing git -C "$t" status --porcelain)] out=$out" || return 1
+  echo "# push-to-checkout, no own hook: the target's work tree is the pushed tip and clean"
+  echo local-edit >"$t/seed.txt"; echo v3 >"$c/seed.txt"; commit_in "$c" -am v3; passed "clone: v3" || return 1
+  out=$(ing git -C "$c" push -q origin main 2>&1); rc=$?
+  [ "$rc" != 0 ] && [ "$(ing git -C "$t" rev-parse HEAD)" = "$tip" ] && [ "$(cat "$t/seed.txt")" = local-edit ] \
+    || fail "updateInstead push into a dirty work tree: rc=$rc, want refused with the edit kept (out: $out)" || return 1
+  echo "# push-to-checkout, no own hook: a dirty target refuses the push and keeps its edit"
   # a repo whose hooks folder is the githooks folder itself: no self-exec loop
   cp -R "$GHOOKS" "$S/gh-copy"; gitrepo "$H/code/loop" || return 1
   rm -rf "$H/code/loop/.git/hooks"; ln -s "$S/gh-copy" "$H/code/loop/.git/hooks"

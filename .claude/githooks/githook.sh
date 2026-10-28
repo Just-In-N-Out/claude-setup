@@ -8,6 +8,8 @@
 #   commit-msg        no Co-authored-by trailer naming an AI
 # Then it hands over to the repo's own <git common dir>/hooks/<name> when that is executable
 # (exec: same args, same stdin, its exit code), because a global hooks path hides the repo's own hooks.
+# push-to-checkout with no own hook does git's default updateInstead update itself, because any
+# push-to-checkout hook replaces it (as git's push-to-checkout.sample does).
 # Repos under the system temp folders are scratch (test suites): no checks, hand-over only.
 # Leorna is decided by the git common dir (like includeIf "gitdir:~/Leorna/"), so a linked worktree of a
 # Leorna repo counts as Leorna wherever it sits, and the setup repo's worktrees share its CLAUDE.md exception.
@@ -65,5 +67,12 @@ fi
 own="$common/hooks/$name"
 if [ -n "$common" ] && [ -f "$own" ] && [ -x "$own" ] && [ "$(cd "$common/hooks" && pwd -P)" != "$self" ]; then
   exec "$own" "$@"
+fi
+if [ "$name" = push-to-checkout ]; then
+  git update-index -q --ignore-submodules --refresh || stop "Up-to-date check failed"
+  git diff-files --quiet --ignore-submodules -- || stop "Working directory has unstaged changes"
+  if git cat-file -e HEAD 2>/dev/null; then head=HEAD; else head=$(git hash-object -t tree --stdin </dev/null); fi
+  git diff-index --quiet --cached --ignore-submodules "$head" -- || stop "Working directory has staged changes"
+  git read-tree -u -m "${1:-}" || stop "Could not update working tree to new HEAD"
 fi
 exit 0
