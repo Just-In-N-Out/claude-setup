@@ -1,5 +1,9 @@
 # Photo-hotspots orchestration continuation
 
+## Resume update
+
+Justin explicitly said continue after asking for status following eight hours of work. `/root/verifier_7` was restored with followup_task (same role, no replacement). The old browser controller93540 is now unavailable after the interrupted session, with no complete footer/observed exit; it is preserved and not credited. Verifier7 is running the brief's approved complete-file sequential fallback over frozen head/base package sets, retaining completed unit/check/replay work without repeating it. New tracked handle75906. Its status forecast was20–35min for remaining browser ACs/corpus/receipts; this is not a release estimate. Fresh sync first reported another sync running; after that lock cleared, the required escalated retry again failed with read-only filesystem. No lock or config was changed. Main5e2f98b and featured005003 remain clean. No question is pending for Justin.
+
 Current source **d0050037b7022388c9957f6a3d26b2812bfbad50**, branch worktree-photo-hotspots, clean after latest fixer. Worktree `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/photo-hotspots`. Integration main/base remains **5e2f98bff77fa1d214b7d76968a54a6dafa32ca6**, main clean at last check. Feature is **not accepted, merged or released yet**. Main build last observed2026-10-28.3.
 
 Active fresh role `/root/verifier_7`, brief `briefs/photo-hotspots-verifier-7.md`, evidence `evidence/photo-hotspots/verifier/round-7/`. Its task includes all ACs and whole gates, including complete current head/base browser packages. One agent at a time; no source/tests/review work in main session. Every pipeline role fresh fork_turns:none, fixed role model, no overrides.

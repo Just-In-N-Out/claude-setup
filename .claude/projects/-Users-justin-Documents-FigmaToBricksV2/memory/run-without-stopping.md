@@ -11,7 +11,7 @@ M3 then start M4 do not stop till done. Make sure you keep updating the central 
 **Why:** they'd rather do one paste check at the end than one per milestone, and they expect other agents to pick up
 the work, so the shared notes must always be current.
 **How to apply:** run each milestone (plan, native execution, opus review, fix pass) back to back without asking. After
-each milestone update CLAUDE.md "Where things stand", docs/HANDOFF.md, and [[v2-rewrite]]. Don't stop for paste checks:
+each milestone update docs/HANDOFF.md and [[v2-rewrite]]. Under the refreshed 2026-10-28 project rules, CLAUDE.md keeps only compact **Status** (build and one feature line) plus standing rules/decisions; full narratives stay in HANDOFF and the ledger. The finisher moves the ledger before the premerge commit/rebase. Don't stop for paste checks:
 pile up what each one needs in HANDOFF and hand it over at the end. Still never write a native Bricks emitter from
 memory (CLAUDE.md): work that needs a sample the user hasn't sent is listed as waiting, not guessed. See [[user-workflow]].
 
