@@ -38,6 +38,7 @@ The questions above are answered. Justin's words, before stepping away: "Okay, l
 - **Q3 → A:** Justin turns on Docker's WSL integration for Ubuntu and runs `sudo apt-get install -y make`; agents install Go, golangci-lint and govulncheck into `~/.local/leorna-toolchain/`. **Owed by Justin:** both of his steps were still undone at approval time (checked 2026-10-28: `docker` is only the Windows stub, and there's no `make`).
 - **ACs approved with this go:** AC1–AC3 from the card, plus AC4 (proposed). None is `(live)`.
 - **Main-session ruling (while Justin is away, not his):** until his two Q3 steps are done, the builder does only the B0 steps that don't need `make` or Docker (worktree check, fetch, tool installs, Chrome check), then B1 and B2. Those are pure Go, test-first with plain `go test`, no database and no `make`. Then it stops `blocked: make, docker`. B0.6 (base baseline) and B0.7 (before-screenshot) run from a detached copy at `BASE` once unblocked, so B1/B2's commits can't affect them. Every other step follows the plan unchanged.
+- **Builder 1 result (2026-10-28):** B1+B2 committed (`479211b`, `18ed1b7`), then stopped `blocked: make, docker, gcc`. **Q3 now also needs gcc:** `make test` runs `go test -race`, which needs cgo, and this Ubuntu has no C compiler. Justin's line becomes `sudo apt-get install -y make gcc` (environment only; no design change). The continuation builder's brief is `briefs/86bcm901w-create-pack-builder-2.md`.
 
 ## Acceptance criteria
 

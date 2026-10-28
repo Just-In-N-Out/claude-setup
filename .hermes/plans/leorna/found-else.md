@@ -132,3 +132,8 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - P3: the credential-key regex will be duplicated between `tile.go:143` and the new `policy.go`.
 - Info: `@modelcontextprotocol/server-github` (2025.4.8) and `server-postgres` (0.6.2) are deprecated on npm (confirmed by the main session with `npm view`).
 - Environment: the Windows desktop has no Linux Go, golangci-lint, govulncheck or Docker inside Ubuntu, and headless Chrome screenshots hang inside the agent sandbox; sibling stories hit the same.
+
+## 2026-10-28 — 86bcm901w builder
+- P2 (environment): the WSL desktop has no C compiler, so cgo is off and control-plane `make test` (`go test -race`) can't run ("-race requires cgo"; `go env CGO_ENABLED` = 0; no gcc/cc/clang). Blocks 901a/901b/901j/901w `make check` here until `sudo apt-get install -y make gcc`.
+- P3: `scripts/verify-workspace.sh:26` and `scripts/format-workspace.sh:15` `find .` excluding only `./.git` and vendor; from the main checkout they walk `.claude/worktrees/*` (`make workspace` sees extra modules, `make fmt-fix` would rewrite sibling worktrees' files).
+- P4: `~/.local/leorna-toolchain/.install.lock` didn't exist until the 901w builder's `flock` created it, so the shared-install lock the plans name wasn't shared by the first installer. Tools now verified against go.dev and CI checksums.
