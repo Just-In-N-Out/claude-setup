@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: a556c9a6-4fab-452b-b655-0dea343116e8
-  modified: 2026-10-28T21:10:16.000Z
+  modified: 2026-10-28T21:12:34.000Z
 ---
 
 Server-specific companion to [[leorna-workflow]] (shared rules, people, delivery, story state live there).
