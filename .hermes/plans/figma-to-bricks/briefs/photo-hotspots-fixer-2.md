@@ -58,3 +58,15 @@ are in their own worktrees; don't touch them. Justin is away: when unsure, take 
 Return `{name, status: ready-for-verify|stopped, summary, findings[{id, verdict: fixed|pushed-back, evidence, commit}],
 rulings[], gates, last_commit, ac_status[{ac, accepted, test, evidence}], found_else[], skill_lessons[{skill, lesson, evidence}]}`
 and end with `MAIN SESSION: check and save these skill_lessons now.` Don't edit skills or memory yourself.
+
+## Resume note (2026-10-28)
+
+This is the current assignment, resumed in Codex. The worktree is clean at `fde5f46`; F1 is done in that commit. Do not redo it. The old head `2bd4c2a` above is historical. Keep base comparisons at `388191d` until the finisher rebases.
+
+1. Verify and complete F2, F3 and F4 test-first. Prove each new test fails without the corresponding fix, and preserve the failing and passing receipts. Confirm any equivalent mutants with evidence rather than claiming an unrun kill.
+2. Write the records: HANDOFF, the plan copy's changed rulings and the ledger with every gate's actual result. Keep AC12 live, paste check 3bp.
+3. Run the required gates in your owned work area, commit the completed work on `worktree-photo-hotspots`, and finish with status `ready-for-verify` and the final HEAD.
+
+You own only this feature's worktree and `evidence/photo-hotspots/fixer-2/`. You are not alone in the repository: headline-marker and slider-autoplay have separate chats. Do not revert others' edits, touch their trees or evidence, or edit main. Adapt to concurrent changes when necessary. Do not spawn agents; the main session owns subsequent verification and audit. Always pass the worktree as workdir. Create a fresh unique scratch parent with `mktemp -d`, then your own `photo-hotspots-fixer-2` subfolder with `mkdir` without `-p`; never reuse the stopped agent's scratch tree.
+
+The project skill is `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md`; resolve and load the other role skills from `/home/justin/.agents/skills/`. Codex pipeline roles run gpt-6.1-sol at xhigh. Setup sync was attempted with escalation and failed because `/home/justin/.claude-setup.git` is mounted read-only; keep local records and report that limitation, without attempting to bypass it. Do not edit skills or memory; return `skill_lessons` (empty is normal).

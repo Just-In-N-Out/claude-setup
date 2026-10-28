@@ -71,3 +71,14 @@ R2-F1. Main has moved on to `70d5408` since; still don't rebase (the finisher do
 - Two other chats are finishing headline-marker and photo-hotspots at the same time: never touch their worktrees,
   evidence or scratch. If a browser test fails from a Chrome port or profile clash, rerun it before judging it.
 - You can't start agents: any skill step that says "spawn a subagent" is the main session's job; note it in your report.
+
+### Codex continuation (2026-10-28)
+Justin explicitly resumed this feature through the merge using `2-slider-autoplay.md`. The existing resume note
+above remains in force; the current dirty file list matches it. Keep and assess all unfinished work, prove R2-F1
+RED in a separate scratch copy, then complete R2-F2, R2-F3 and R2-F4. You own this feature's worktree and its
+`fixer-2` evidence only. You are not alone in this repository: never revert another session's changes, and adapt
+to concurrent changes at the later integration boundary. Never touch headline-marker or photo-hotspots worktrees.
+Use a newly created agent-specific `/tmp/slider-autoplay-fixer-2-XXXXXX` scratch folder rather than the historical
+scratch path above. Read the approved plan's AC1–AC14 and the current plan's Justin's answers and Rulings;
+AC13 and AC14 are live paste check 3bm, and AC14's interval is now 5800 (delay + speed), replacing 5000.
+Return all AC statuses and `skill_lessons`, commit the finished work, and end the ledger with `ready-for-verify`.
