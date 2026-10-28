@@ -262,6 +262,7 @@ ac6_guard_asks_before_leorna_push() {
   for c in "git push" "git push origin main" "git push https://github.com/Just-In-N-Out/x.git main"; do
     expect none '' "$c" "$H/code/site" || return 1
   done
+  mkdir -p "$H/Leorna-old/x"; expect none '' "git push" "$H/Leorna-old/x" || return 1
   for c in "git fetch" "git status" "git log -1" "git pull --ff-only" "git -C ~/Leorna/leorna-client fetch"; do
     expect none '' "$c" "$lc" || return 1
   done
@@ -281,7 +282,9 @@ ac7_guard_parses_shell_forms() {
     "timeout 60 git push $nv" "/usr/bin/git commit $nv -m x" "(cd /x && git commit $nv -m x)" \
     "echo \$(git commit $nv -m x)" "if true; then git commit $nv -m x; fi" "git commit $nv -m \"unterminated" \
     "echo it's here; git commit $nv -m x" "git commit -m 'a#b' $nv" "echo hi # a comment"$'\n'"git commit $nv" \
-    $'cat <<\'EOF\' >notes.txt\nit\'s a note\nEOF\ngit commit '"$nv" "git commit $nv -m x 2>&1 >/dev/null"; do
+    $'cat <<\'EOF\' >notes.txt\nit\'s a note\nEOF\ngit commit '"$nv" "git commit $nv -m x 2>&1 >/dev/null" \
+    $'cat <<\'EOF\' >n.txt\nit\'s\nEOF\ngit commit '"$nv"$' -m x\necho it\'s done' \
+    $'echo hi # don\'t worry\ngit commit '"$nv"$' -m x\necho it\'s done' "git commit -m a#b $nv"; do
     expect deny 'skip the git hooks' "$c" || return 1
   done
   # a git command only inside a quoted message, a heredoc body or a comment is not a git command
@@ -537,6 +540,7 @@ ac13_orchestrator_guard_asks_main_session_code_edit() {
     expect_edit ask "$re" NotebookEdit "$H/code/app/nb.ipynb" "" "$m" || return 1
     expect_edit ask "$re" Edit "$H/code/wt/src/x.go" "" "$m" || return 1
   done
+  expect_edit ask "$re" Edit "$H/code/app/README.md" || return 1
   for f in .claude/hooks/x.sh .claude/githooks/pre-commit .claude/settings.json .claude/settings.local.json \
     .claude/setup/sync.sh .codex/hooks/codex-hooks.sh .codex/hooks.json .codex/agents/pipeline-builder.toml \
     .hermes/scripts/x.sh .hermes/skills/a/b/scripts/x.sh .claude/skills/b/scripts/x.sh; do
@@ -579,6 +583,15 @@ ac14_orchestrator_guard_quiet_for_subagents_and_own_files() {
   for j in 'not json' '' '{"tool_name": "Edit"}' '{"tool_name": "Edit", "tool_input": {"file_path": ""}}' '[]'; do
     hook "$OG" "$j"; check none '' "bad input [$j]" || return 1
   done
+  # own files stay quiet even inside a work tree: a repo copy in evidence, ~/.hermes or ~/.claude kept in git
+  ing git init -q "$H/.hermes/plans/p/evidence/src-copy"
+  expect_edit none '' Write "$H/.hermes/plans/p/evidence/src-copy/notes.txt" || return 1
+  ing git init -q "$H/.hermes"; ing git init -q "$H/.claude"
+  for f in .hermes/plans/p/plan.md .hermes/plans/p/briefs/b-builder.md .hermes/skills/a/b/SKILL.md \
+    .claude/projects/p/memory/x.md .claude/CLAUDE.md; do
+    expect_edit none '' Edit "$H/$f" || return 1
+  done
+  expect_edit ask 'only orchestrates' Edit "$H/.hermes/notes.txt" || return 1   # control: that repo is seen
   done_ok
 }
 
