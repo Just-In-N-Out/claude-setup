@@ -938,14 +938,15 @@ ac23_docs_updated() {
 # ---- probe tests (a real `codex exec` through the probe home; run only when named) ----
 AC2_PROMPT="Answer briefly, in three numbered lines: 1) May a git commit carry an AI Co-Authored-By line? 2) What does the main session do for a bug or story? 3) Where are Justin's Hermes skills?"
 rules_answer_ok() { # rules_answer_ok <last.txt> <events.jsonl>: the three AC2 answers, on the first turn, with no tool call
-  local a types
+  local a a1 types
   a=$(cat "$1" 2>/dev/null); echo "# answer: $(tr '\n' ' ' <<<"$a" | cut -c1-300)"
-  grep -qiE '(^|[^a-z])(no|never)([^a-z]|$)' <<<"$a" || fail "answer 1 is not no/never" || return 1
+  a1=$(grep -m1 -E '^[[:space:]*#]*1[).:]' <<<"$a"); [ -n "$a1" ] || a1=$a   # answer 1's line when numbered
+  grep -qiE '(^|[^a-z])(no|never)([^a-z]|$)' <<<"$a1" || fail "answer 1 is not no/never" || return 1
   grep -qi 'orchestrat' <<<"$a" || fail "answer 2 does not say the main session orchestrates" || return 1
   grep -qF '.hermes/skills' <<<"$a" || fail "answer 3 does not name ~/.hermes/skills" || return 1
   types=$(jq -r 'select(.item.type? != null) | .item.type' "$2" 2>/dev/null | sort -u | tr '\n' ' ')
   echo "# event item types: $types"
-  [ -z "$(tr ' ' '\n' <<<"$types" | grep -vxE 'agent_message|reasoning|')" ] || fail "the first turn used a tool ($types)" || return 1
+  [ -z "$(tr ' ' '\n' <<<"$types" | grep -v '^$' | grep -vxE 'agent_message|reasoning')" ] || fail "the first turn used a tool ($types)" || return 1
 }
 probe_home_setup() { # a fake home with the built rules, hooks, managed config and linked skills
   newroot; echo "# test folder: $S"; install_setup; hermes_home
