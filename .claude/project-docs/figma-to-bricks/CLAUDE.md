@@ -356,7 +356,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     auto-go, not yet confirmed; details and rulings in HANDOFF "Photo hotspots"):
     - A designer's placed layer in a photo box with **Open overlay → Manual** opens the card beside it: While hovering
       / Mouse enter under the pointer, On click / On tap on a click; Tab/focus also opens it and its links stay live.
-      Moving away, Tab onward or a tap elsewhere closes it (CSS only; no Escape). Unsupported overlays are named.
+      A hover card closes after the pointer leaves both; moving focus onward or tapping elsewhere closes a click
+      card (CSS only; no Escape). Unsupported overlays are named.
     - **Phones keep the photo and dots.** The photo's ratio is a floor that flowing words may grow; dots keep their
       drawn size and spots, cards their width up to the photo's. Nothing in a trigger becomes a CTA or a hero button.
     - **Optional beat, only marked:** a whole-line `pulse` annotation on a layer, its corresponding main layer or an
