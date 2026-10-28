@@ -119,11 +119,13 @@ For long bodies, write the text to a file and pass `--body-file <path>`; that av
 
 ### Pushing or fetching by URL (SSH key unavailable)
 
+For LeornaAI repos only: gh's active account is Justin-Leorna, so this goes out as that account. `~/.claude/hooks/git-guard.sh` denies the inline helper for any other owner (a personal repo pushed this way would go out as the wrong account), and asks before the push.
+
 ```bash
 git -c credential.helper= -c 'credential.helper=!gh auth git-credential' \
-  push https://github.com/$OWNER/$REPO.git $BRANCH:refs/heads/$BRANCH
+  push https://github.com/LeornaAI/$REPO.git $BRANCH:refs/heads/$BRANCH
 git -c credential.helper= -c 'credential.helper=!gh auth git-credential' \
-  fetch https://github.com/$OWNER/$REPO.git $BRANCH:refs/remotes/origin/$BRANCH
+  fetch https://github.com/LeornaAI/$REPO.git $BRANCH:refs/remotes/origin/$BRANCH
 git branch --set-upstream-to=origin/$BRANCH && git rev-parse HEAD origin/$BRANCH
 ```
 

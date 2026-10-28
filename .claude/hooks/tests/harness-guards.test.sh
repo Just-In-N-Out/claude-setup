@@ -896,6 +896,15 @@ ac18_guard_docs_and_manifest() {
   grep -qF '.claude/githooks/' "$SRC/.github/README.md" || fail "README.md does not list .claude/githooks/" || return 1
   grep -qxF ':(glob).claude/githooks/**' "$SRC/.claude/setup/manifest.txt" || fail "manifest.txt lacks :(glob).claude/githooks/**" || return 1
   echo "# git-commit-rules, desktop.md, mac.md, README.md and manifest.txt updated"
+  # Codex reads CLAUDE.md through its header: the tool map says the two guards are Claude Code only
+  f="$SRC/.claude/setup/codex/agents-header.md"
+  grep -F '`git-guard.sh`' "$f" | grep -F '`orchestrator-guard.sh`' | grep -F 'Claude Code only' | grep -qF '~/.claude/githooks' \
+    || fail "agents-header.md: no tool-map row saying git-guard.sh and orchestrator-guard.sh are Claude Code only" || return 1
+  # the github skill's push/fetch by URL through gh is for LeornaAI repos only (git-guard denies any other owner)
+  f="$SRC/.hermes/skills/software-development/github/references/pr-workflow.md"
+  ! grep -qF 'github.com/$OWNER/$REPO.git $BRANCH' "$f" && grep -F 'git-guard' "$f" | grep -qF 'LeornaAI' \
+    || fail "github pr-workflow.md: the push/fetch by URL form is not limited to LeornaAI repos with git-guard named" || return 1
+  echo "# the Codex header and the github skill's by-URL form name the guards"
   need "$GHOOKS/githook.sh" || return 1
   newroot; mkdir -p "$S/m/.claude"; ing git init -q "$S/m"; cp -Rp "$GHOOKS" "$S/m/.claude/githooks"
   while IFS= read -r spec || [ -n "$spec" ]; do

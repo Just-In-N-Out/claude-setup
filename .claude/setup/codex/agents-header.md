@@ -20,6 +20,7 @@ CLAUDE.md is written for Claude Code. You are Codex: follow every rule in it, tr
 | AskUserQuestion | ask in chat: the question, numbered options, your recommendation first; then end your turn and wait |
 | SubagentHandback; `subagent-handback-gate.sh` | none: an agent's final message is its report. The SubagentStop hook runs `subagent-ac-gate.sh` and `subagent-lessons-gate.sh` and sends a report back once when it lacks `ac_status` (after a verdict) or `skill_lessons` |
 | `skill-review-nudge.sh`, `setup-sync-pull.sh` | the same scripts, run by `~/.codex/hooks/codex-hooks.sh` |
+| `git-guard.sh`, `orchestrator-guard.sh` | Claude Code only (Codex wiring is a follow-up): follow their rules from CLAUDE.md yourself; `~/.claude/githooks` still checks Codex's commits |
 | ExitWorktree / EnterWorktree | none: from the worktree, run git against the main folder (`git -C <main folder> merge --ff-only <branch>`); approve the write when Codex asks |
 | Read, Edit, Write, Bash | shell commands and `apply_patch` |
 | TaskStop | `interrupt_agent` |
