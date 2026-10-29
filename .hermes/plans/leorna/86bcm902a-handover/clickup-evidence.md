@@ -1,8 +1,10 @@
-# 86bcm902a — ClickUp closing evidence (draft; post only when Justin says "post")
+# 86bcm902a — ClickUp closing evidence (draft for bb79ec6; Justin said "post" 2026-10-29)
 
-Card: [One-click quick start (starter pack → team → sync)](https://app.clickup.com/t/86bcm902a). Checked 2026-10-29: status "to do", 0 attachments.
+Card: [One-click quick start (starter pack → team → sync)](https://app.clickup.com/t/86bcm902a). Read 2026-10-29 20:19 UTC (finisher 3): status "in progress", 0 attachments, 0 comments, no checklists. Leave the status, checkboxes and fields alone.
 
-Written for option B: Justin's "re-update main, push the PR" (2026-10-29) was taken as B, and PR #101 is open (not merged). If he meant A (86bcm901r first, then this story rebuilt on 901r's packs), this draft and its images are replaced after the rebuild. Fill in the merge date, merge SHA and the CI run on the merged head at post time; never change the card's status or checkboxes. Head facts updated 2026-10-29 19:17 UTC by finisher 2 (PR head `bb79ec6`, main `b65f797` merged in).
+Refreshed by finisher 3 for head bb79ec6 (2026-10-29 ~20:25 UTC). It replaces finisher 2's draft, which still pointed at 9a9bdec images (they're in `evidence/86bcm902a/archive-9a9bdec/` and are not attached). Acceptance on bb79ec6: `ac-check.sh --reviews` → `ALL ACCEPTED: 5 of 5 ACs on bb79ec6`, `REVIEWS CLEAN: review-4 at bb79ec6 is clean` (`evidence/86bcm902a/ac-check-reviews-bb79ec6.txt`). Decision recorded: Justin's A/B answer was taken as B for now.
+
+The "State:" line is filled from a fresh `gh pr view 101` right before posting. If the PR merged, it gets the merge SHA and main's CI run on it. If not, it says "Ready to merge; not merged yet". Merge facts are never guessed. The text actually posted is saved in `clickup-posted.md`.
 
 ## Comment text
 
@@ -10,49 +12,76 @@ Written for option B: Justin's "re-update main, push the PR" (2026-10-29) was ta
 ✅ Closing evidence — One-click quick start (starter pack → team → sync) (86bcm902a)
 
 WHAT WAS DONE
-- leorna-control-plane PR #101 (merged <date>, merge <sha7>, +3294/-10, 19 files): after setup, the setup page offers four role starter packs; the admin picks one and a team (or names a new team), and that pack becomes the team's default, so the team's engineers get it on their next sync. Skip is remembered per company and "Resume quick start" brings it back. The four packs are a stand-in for 86bcm901r's proposed mapping. No API or client change.
+leorna-control-plane PR #101: https://github.com/LeornaAI/leorna-control-plane/pull/101
+<STATE LINE: filled at post time from gh pr view 101>
+Right after setup finishes, the setup page offers a one-click quick start: four role starter packs (Backend, Frontend, Platform/DevOps, Secure coding (regulated)), each card listing its items.
+The admin picks a pack and a team, or names a new team. The quick start creates that pack from the content library and makes it the team's default pack, so the team's engineers get it on their next sync.
+"Skip for now" is remembered per company. "Resume quick start" on the setup page and on the admin home's setup banner brings it back.
+One new table (migration 000025). No OpenAPI or client change: engineers sync through the existing bundle endpoint.
+Decision (Justin, option B for now): the four packs are a stand-in. Switching to the shared packs of [Role-based starter packs](https://app.clickup.com/t/86bcm901r) is follow-up 1 on the PR.
 
-WHAT WAS VERIFIED
-| Acceptance criterion | Test / evidence | Result |
-| --- | --- | --- |
-| AC1 Given a fresh install, when I finish setup, then the quick start offers role-based starter packs | `TestQuickStartAC1FinishingSetupOffersRoleStarterPacksWithPostgres` (3 subtests) + 86bcm902a-ac1-quick-start-offered.png | ✅ |
-| AC2 Given I choose a pack and a team, then the assignment is created and engineers' next sync delivers it | `TestQuickStartAC2ChosenPackAssignedAndDeliveredOnNextSyncWithPostgres` (4 subtests: a team member's sync is empty before, then serves the pack with bodies equal to the library's) + 86bcm902a-ac2-quick-start-done.png | ✅ |
-| AC3 Given the quick start, then it can be skipped and resumed later | `TestQuickStartAC3SkipThenResumeLaterWithPostgres` (3 subtests) + 86bcm902a-ac3-skipped-resume.png | ✅ |
-| AC4 An invalid or not-allowed request is refused with a clear status and writes nothing; one company never sees or changes another's | `TestQuickStartAC4RefusedRequestsWriteNothingWithPostgres` (13 subtests) + 86bcm902a-ac4-refused-requests-test.png | ✅ |
-| AC5 Fresh install end to end: no-click setup, Backend + new team, the engineer's first desktop sync gets the pack | `TestQuickStartAC5FreshInstallEndToEndWithPostgres` + 86bcm902a-ac5-fresh-install-test.png | ✅ |
-- Each AC test ran on its own on head 9a9bdec, by the independent verifier and again by a blind auditor; each fails on the base commit (the quick start doesn't exist there). ac-check: ALL ACCEPTED, 5 of 5.
-- After main moved (#98, #99, then #100), PR head bb79ec6: migration renumbered to 000025, one test call updated for #99's SaveVersion; make check ✅ · test-module-add ✅ · Postgres tests 604 pass, 0 fail, only the 4 allowed skips ✅ · story gate ✅ · gitleaks ✅ · the five AC tests ✅ (finisher's run). <Review, verifier, blind auditor and ac-check on bb79ec6: fill in when they finish.>
-- Gates on 9a9bdec (verifier's own run): make check ✅ (fmt, vet, go test -race, golangci-lint 0 issues, govulncheck, gitleaks, library gate) · test-module-add ✅ · Postgres tests 501 pass, 0 fail, only the 4 allowed skips ✅ · story gate ✅ · gitleaks on the branch ✅ · image build ✅
-- Mutation checks: verifier 27/27 killed; blind auditor 15/16 killed (the survivor is a test-strength follow-up, not a defect).
-- CI: "Go quality gates" ✅ on PR head bb79ec6 — https://github.com/LeornaAI/leorna-control-plane/actions/runs/40936750079 <replace with the merged head's run at post time>
-- Recorded demo (the card's Verify line), 2026-10-29: the real control-plane binary at 9a9bdec on an empty database with auto setup, run by the verifier and again by the auditor: setup finished with no clicks → four starter cards → Skip → Resume → Backend + new team → done → Pack Assignments shows the team default → project added → desktop device sign-in → first sync assigned "Backend starter pack" (26 files, 16 items, each body equal to the library's). 86bcm902a-verify-real-binary-demo.png
-- Live run: none needed; no AC is a live check.
+WHAT WAS VERIFIED (all on head bb79ec6)
+
+AC1: Given a fresh install, when I finish setup, then the quick start offers role-based starter packs
+Test: TestQuickStartAC1FinishingSetupOffersRoleStarterPacksWithPostgres (3 subtests)
+Screenshot: 86bcm902a-ac1-setup-done-quick-start-offered-bb79ec6.png (setup page "3 of 3 steps done · Your workspace is ready", then the quick start with the four role packs and their items)
+Result: ✅ pass
+
+AC2: Given I choose a pack and a team, then the assignment is created and engineers' next sync delivers it
+Test: TestQuickStartAC2ChosenPackAssignedAndDeliveredOnNextSyncWithPostgres (4 subtests). A team member's sync is empty before the pick. After it, the sync serves "Backend starter pack" (26 files, 16 items), each body equal to the shipped library's.
+Screenshot: 86bcm902a-ac2-pack-assigned-to-team-bb79ec6.png ("Done: Backend starter pack (version 1) was made the default pack for Backend team. Engineers in that team get it on their next sync.")
+Result: ✅ pass
+
+AC3: Given the quick start, then it can be skipped and resumed later
+Test: TestQuickStartAC3SkipThenResumeLaterWithPostgres (3 subtests)
+Screenshots: 86bcm902a-ac3-skipped-resume-offered-bb79ec6.png (after "Skip for now": "You skipped the quick start. You can pick it up any time." with "Resume quick start") → 86bcm902a-ac3-resumed-later-bb79ec6.png (after Resume: "You skipped this earlier. Pick a pack to finish it." with the four packs)
+Result: ✅ pass
+
+AC4 (proposed, approved with the plan): Given a quick-start request that is invalid or not allowed, then it is refused with a clear status and nothing is written, and one company's quick start never shows or changes another's
+Test: TestQuickStartAC4RefusedRequestsWriteNothingWithPostgres (13 subtests): unknown starter, no team, blank new team name, both a team and a new name, unknown team, another company's team, team name already used, setup not finished, a member, bad CSRF token, signed out, setup lock busy, another company's state kept separate. Each refusal leaves teams, packs, versions, assignments, quick-start rows and audit records unchanged.
+Screenshot: 86bcm902a-ac4-refused-requests-test-log-bb79ec6.png (local rendering of the test log: 13 subtests pass, EXIT=0; this AC has nothing visual)
+Result: ✅ pass
+
+AC5 (proposed, approved with the plan): Given a fresh install (empty database, auto setup), when the admin signs in for the first time, picks Backend and names a new team, then setup finishes with no clicks, the team's default pack is created, and an engineer in that team gets the pack's files on their first sync
+Test: TestQuickStartAC5FreshInstallEndToEndWithPostgres
+Screenshot: 86bcm902a-ac5-fresh-install-test-log-bb79ec6.png (local rendering of the test log: the engineer's sync gets "Backend starter pack", 26 files, 16 items equal to the shipped library, EXIT=0)
+Result: ✅ pass
+
+Verify (card): end-to-end demo on a fresh install (recorded)
+An agent recorded it on the real control-plane binary built at bb79ec6, on an empty database with auto setup, run locally in dev mode: first sign-in with no setup click → four starter packs → Skip → Resume → Backend + new team "Backend team" → done → the client's device sign-in and first sync get "Backend starter pack" (26 files, 16 items, each body equal to the shipped library's). The demo client signs in as the dev admin (dev mode has one user); the team member's sync is proven by the AC5 test.
+Screenshot: 86bcm902a-verify-real-binary-demo-bb79ec6.png (local rendering of the demo log; no token, device code or tenant id was recorded)
+
+Gates and checks
+Local gates on bb79ec6: make check ✅ (fmt, vet, go test -race, golangci-lint 0 issues, govulncheck no vulnerabilities, gitleaks no leaks, library gate passed) · test-module-add ✅ · Postgres tests 604 pass, 0 fail, only the 4 known environment skips ✅ · story gate ✅ · gitleaks on the branch ✅ · container image build ✅
+Each AC test fails on main before this change (b65f797, where the quick start doesn't exist) and passes on bb79ec6.
+Four fresh code reviews; the last (review 4, on bb79ec6) is clean. An independent verifier and a blind auditor each accepted 5 of 5 ACs on bb79ec6.
+Mutation checks: the auditor's 25 mutants, 23 killed by the AC tests. The 2 survivors are test-strength follow-ups; the code is right in both (the auditor's own probe kills one). The verifier's 5 targeted mutants all behaved as expected.
+<CI LINE: PR head run 40936750079, or main's run on the merge SHA when merged>
+Console run (2026-10-29): the console screenshots come from a server built at bb79ec6, run locally in dev mode on a throwaway database.
+Live run: none needed, no AC is live. AC5's recorded fresh-install demo is an agent-recorded screenshot series on the real head binary.
+
+Follow-ups (listed on the PR, not part of this card): the switch to the shared starter packs above, plus test-strength and UX items.
 
 NOT VERIFIED
-- Nothing left.
+Nothing left for the acceptance criteria. No desktop app Sync was run against a deployed server: delivery is proven by the AC2 and AC5 tests and the recorded demo's client sync.
 ```
 
-Before posting, replace the CI line with the merge facts. If CI still hasn't run, keep it as an honest "CI: not run" line and add it under NOT VERIFIED.
+## Files to attach (images only; one per AC, two for AC3, plus one for the card's Verify line)
 
-## Files to attach (images only; one per AC, plus one optional for the Verify line)
+All are from the bb79ec6 sets. Each was opened and inspected by finisher 3 on 2026-10-29; the tall ones were viewed in bands of 1,250 px or less, cut with a pure-Python band cropper in `~/.cache/86bcm902a-post/`. None shows a URL bar, server domain, tenant ID, token, device code, auth-item id or email. None of the chosen images shows a `*.leorna.invalid` placeholder either.
 
-Every image was opened and inspected on 2026-10-29. Tall ones were cut into bands with headless Chrome and each band viewed. No URL bar, server domain, tenant ID, token, device code or email is visible in any of them.
-
-| AC | Local file (absolute path) | Bytes | Upload as (`file_name`) | Inspected: what it shows | Caption notes |
+| AC | Local file (absolute path) | Bytes | Upload as (`file_name`) | Inspected: what it shows | Traced to its bb79ec6 run |
 | --- | --- | --- | --- | --- | --- |
-| AC1 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac1-quick-start-offered.png` | 301314 | `86bcm902a-ac1-quick-start-offered.png` | 1440×2726, viewed in 3 bands. The real setup page on the head binary after auto setup: "3 of 3 steps done", "Your workspace is ready", then "Quick start: give a team a starter pack" with the four role cards (Backend 16 items, Frontend 5, Platform/DevOps 6, Secure coding (regulated) 8), each listing its items, "Name a new team", "Assign the starter pack" and "Skip for now" | `demo.leorna.invalid` in the domain box is an RFC 2606 reserved placeholder name that resolves nowhere. "Dev Admin" is the dev-mode workspace name |
-| AC2 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac2-quick-start-done.png` | 215248 | `86bcm902a-ac2-quick-start-done.png` | 1440×1684, viewed whole. `/admin/quick-start` after the pick: "Done: **Backend starter pack** (version 1) was made the default pack for **Backend team**. Engineers in that team get it on their next sync." Links to assignments, team and project, and the form to give another team a pack | The page renders the same bytes in every run (no version id or time on it), so the verifier's capture is byte-identical |
-| AC3 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac3-skipped-resume.png` | 127759 | `86bcm902a-ac3-skipped-resume.png` | 1440×1523, viewed whole. Setup page after "Skip for now": "You skipped the quick start. You can pick it up any time." with "Resume quick start →" | Same placeholder domain as AC1 |
-| AC4 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac4-refused-terminal.png` | 212921 | `86bcm902a-ac4-refused-requests-test.png` | 1400×663, viewed whole. Local rendering of the auditor's head log: `HEAD=9a9bdec…`, the `go test -v -run '^TestQuickStartAC4…$'` command, the 13 subtests passing, `EXIT=0`. Matches `auditor/ac4-9a9bdec.log` (EXIT=0) | Label it "local rendering of the test log" (nothing visual in this AC) |
-| AC5 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac5-fresh-install-terminal.png` | 78446 | `86bcm902a-ac5-fresh-install-test.png` | 1400×404, viewed whole. Local rendering of the auditor's head log: the engineer's sync `status=assigned pack="Backend starter pack" … files=26`, 16 items with bodies equal to the shipped library's, PASS, `EXIT=0`. Matches `auditor/ac5-9a9bdec.log` (EXIT=0) | The `v2026…Z` version id was generated in that test's throwaway database |
-| Verify (optional) | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac5-real-binary-desktop-sync.png` | 878065 | `86bcm902a-verify-real-binary-demo.png` | 1400×2170, viewed in 3 bands (one re-cut where Chrome left a tile unpainted). Local rendering of the auditor's demo log on the real binary: every step from first sign-in to the first sync, the files with their sha256, and the "team name already exists" alert | Paths like `/admin/setup` are page paths, not a server address. The header says the token, tenant id and user code were never recorded. Version id and lockfile digest come from a throwaway database |
+| AC1 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/verifier/ac1-setup-ready-quick-start-offered.png` | 263959 | `86bcm902a-ac1-setup-done-quick-start-offered-bb79ec6.png` | 1440×2459, 3 bands. Header "Leorna Control Plane — back to admin", "Set up your workspace · 3 of 3 steps done · Your workspace is ready", then the quick start with Backend (16 items), Frontend (5), Platform/DevOps (6), Secure coding (regulated) (8) and their items, "Name a new team", "Assign the starter pack", "Skip for now", and the three done steps ("Signed in with Google." text only) | `verifier/console-run-bb79ec6.log` line 10 (263959 bytes; server "built from bb79ec6") |
+| AC2 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/verifier/ac2-quick-start-done.png` | 215248 | `86bcm902a-ac2-pack-assigned-to-team-bb79ec6.png` | 1440×1684, 2 bands. "Quick start": "Done: **Backend starter pack** (version 1) was made the default pack for **Backend team**. Engineers in that team get it on their next sync." plus links and the "Give another team a starter pack" form | console-run line 24 (215248 bytes). The page has no id or time on it, so it is byte-identical across runs |
+| AC3 (skip) | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/verifier/ac3-skipped-resume-offered.png` | 90695 | `86bcm902a-ac3-skipped-resume-offered-bb79ec6.png` | 1440×1256, whole. Setup page "3 of 3 steps done", quick start "You skipped the quick start. You can pick it up any time." with "Resume quick start →" | console-run line 13 |
+| AC3 (resume) | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/verifier/ac3-resumed-offer.png` | 188806 | `86bcm902a-ac3-resumed-later-bb79ec6.png` | 1440×1469, 2 bands. "Quick start · You skipped this earlier. Pick a pack to finish it." with the four packs, "Name a new team", Assign / Skip | console-run line 19 |
+| AC4 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac4-refused-terminal.png` | 212074 | `86bcm902a-ac4-refused-requests-test-log-bb79ec6.png` | 1400×700, whole. Labelled "Local rendering (auditor 2) of ac4-bb79ec6.log": `HEAD=bb79ec6…`, the `go test -v -count=1 -run '^TestQuickStartAC4…$' ./internal/web/` command, 13 subtests PASS, `EXIT=0` | `auditor/ac4-bb79ec6.log`: HEAD=bb79ec6, EXIT=0 |
+| AC5 | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac5-test-terminal.png` | 80372 | `86bcm902a-ac5-fresh-install-test-log-bb79ec6.png` | 1400×700, whole. Labelled local rendering of ac5-bb79ec6.log: `status=assigned pack="Backend starter pack" … files=26`, 16 items each equal to the shipped library, PASS, `EXIT=0` | `auditor/ac5-bb79ec6.log`: HEAD=bb79ec6, EXIT=0. The `v2026…Z` version id comes from the test's throwaway DB |
+| Verify | `/home/justin/.hermes/plans/leorna/evidence/86bcm902a/auditor/ac5-08-desktop-first-sync.png` | 871084 | `86bcm902a-verify-real-binary-demo-bb79ec6.png` | 1400×2514, 3 bands. Labelled local rendering of ac5-demo-bb79ec6.log: steps 1–12 from first sign-in to first sync. Page and API paths only (`/admin/setup`, `/v1/client/token`, `GET …/bundle`); "token, code and tenant id kept in memory only"; the approval page not captured; sha256 of public library files; the "team name already exists" alert | `auditor/ac.json` AC5 screenshot. The lockfile digest and version id come from a throwaway DB |
 
 Checked and not chosen:
-- `verifier/ac5-real-binary-first-sync-9a9bdec.png` (451578 bytes): clean of secrets, but it shows a reserved public URL (`https://verify1.leorna.invalid`) and a throwaway project UUID; the auditor's rendering above shows the same run without them.
-- `verifier/ac1-…`, `ac3-…` and `ac4-…`: equivalent to the auditor's; one set is enough.
-
-Not available: there is no gates screenshot (`gates-9a9bdec.png`) in the verified sets; the gates line cites the verifier's log `verifier/gates-9a9bdec.txt` (EXIT=0), which stays local. That log was checked and is clean (no URL, token, email or DB address), so a local rendering can be made before posting if Justin wants one.
-
-## How to post (on "post")
-
-Request one upload ticket per file with `clickup_request_attachment_upload(task_id=86bcm902a, file_name=<Upload as>)`, all tickets first, and stop on any denial so the card never gets a partial set. Upload each with `curl -sS -X POST <upload_url> -H 'X-Upload-Ticket: <ticket>' -F 'attachment=@<path>;filename=<name>;type=image/png'` inside the ticket's ~3 minutes. Then add the comment with `clickup_create_comment(entity_type=task, entity_id=86bcm902a, …)`. Read both back: `clickup_get_task include=[attachments]` shows the titles, and the sizes equal the bytes above; `clickup_get_task_comments` shows the comment (compare word by word, since tables come back as plain text).
+- `verifier/ac2-assignment-created.png`: clean, but its form dropdown shows the blank-form default "Leorna starter pack - 1.2.0", and the saved row shows only a version id. A reader could take the default as what was assigned. The AC2 done page names the pack and team instead.
+- The auditor's element crops `ac1-quick-start-offered.png`, `ac2-quick-start-done.png` and `ac3-skipped-with-resume.png`: clean, but the verifier's full pages show the same states with the setup context.
+- `verifier/ac4-head-log-rendering.png`, `verifier/ac5-head-log-rendering.png`: equivalent to the auditor's; one set is enough.
+- Gate logs stay local as receipts (`verifier/gates-SUMMARY-bb79ec6.txt`, `pg-bb79ec6-summary.txt`, etc.). No `.log` or `.txt` file is uploaded.
