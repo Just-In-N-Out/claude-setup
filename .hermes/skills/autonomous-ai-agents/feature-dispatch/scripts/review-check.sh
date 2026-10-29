@@ -148,9 +148,9 @@ fi
 # The latest full round (review-<FK>, from FF) is the root of every delta round after it: each starts at
 # the round before's head (VALIDATE), so together they cover FF..review-n's head. That covers the story
 # only when FF is --base or an older commit of it (a rebase moves --base forward past it). Otherwise
-# (a range recorded from inside the story, a base commit sync.sh's rebase rewrote, a from that is no
-# longer a commit) the records are true but the story isn't covered: whatever the delta rounds after it
-# say, the next review is a full one from --base.
+# (a range recorded from inside the story, a base commit sync.sh's rebase rewrote, an earlier full
+# round's from that is no longer a commit) the records are true but the story isn't covered: whatever
+# the delta rounds after it say, the next review is a full one from --base.
 FK=$(jq -r '[range(0; .rounds | length) as $i | select(.rounds[$i].scope == "full") | $i + 1] | last' <<<"$in")
 FF=$(jq -r ".rounds[$((FK - 1))].from" <<<"$in")
 offbase=0

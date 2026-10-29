@@ -29,7 +29,7 @@ Review → fix repeats until a fresh reviewer's review is clean: no P0, P1 or P2
   - **P0/P1:** a security hole, a guard bypass, a false AC, or a wrong block that breaks normal work.
   - **P2:** a bug a real person or agent could plausibly hit, realistic edge cases included (inputs, configs, git operations, macOS and WSL); anything that breaks an AC or the UI; a test that can't fail.
   - **P3:** cosmetic, docs, a hole only a deliberate evasion would hit, or a setup none of Justin's machines has. P3s go on the story's follow-up list (`<evidence>/follow-ups.md`), not to a fixer.
-- **Scope:** rounds 1 and 2 review the whole story (Mini: round 1); from round 3, only the fix commits since the last review and what they touch. Anything else a delta reviewer notices is P3.
+- **Scope:** rounds 1 and 2 review the whole story (Mini: round 1); from round 3, only the fix commits since the last review and what they touch (unless `review-check.sh` says run a full review from `<base>`). Anything else a delta reviewer notices is P3.
 - **Brakes, so it always ends** (`feature-dispatch/scripts/review-check.sh` applies a, c and d):
   - (a) every P0–P2 names a concrete real-use scenario (5+ words: who does what, and what goes wrong); with none, it counts as P3;
   - (b) the scope rule above;

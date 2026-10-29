@@ -767,14 +767,15 @@ ac12_docs_name_the_review_loop() {
   f="$SRC/.claude/CLAUDE.md"; need "$f" || return 1
   blk=$(step 5 "$f"); [ -n "$blk" ] || fail "CLAUDE.md has no step 5" || return 1
   names "$blk" "CLAUDE.md step 5" review-check.sh 'REVIEW AGAIN' 'MOVE ON' 'ASK JUSTIN' P0 P1 P2 P3 scenario 'no fewer' \
-    'new fact' 'round 3' 'No round cap' 'Mini: round 1 only' || return 1
+    'new fact' 'round 3' 'No round cap' 'Mini: round 1 only' 'unless `review-check.sh` says run a full review from `<base>`' || return 1
   names "$(step 6 "$f")" "CLAUDE.md step 6" 'MOVE ON' '--reviews <evidence>' || return 1
   lacks "$f" 'a second fresh reviewer of the corrected code, then a fixer for its valid findings' || return 1
   echo "# CLAUDE.md steps 5 and 6"
   f="$SRC/.hermes/skills/software-development/review-fix-cadence/SKILL.md"; need "$f" || return 1
   sec=$(awk 'index($0, "## ") == 1 { s = (index($0, "## Loop until a review is clean") == 1) } s' "$f")
   [ -n "$sec" ] || fail "review-fix-cadence has no '## Loop until a review is clean' section" || return 1
-  names "$sec" "review-fix-cadence's loop section" P0 P1 P2 P3 scenario 'no fewer' 'new fact' 'fix commits' review-check.sh 'MOVE ON' || return 1
+  names "$sec" "review-fix-cadence's loop section" P0 P1 P2 P3 scenario 'no fewer' 'new fact' 'fix commits' review-check.sh 'MOVE ON' \
+    'unless `review-check.sh` says run a full review from `<base>`' || return 1
   lacks "$f" 'looping fixer → verifier' || return 1
   echo "# review-fix-cadence"
   f="$FD/SKILL.md"; need "$f" || return 1
@@ -782,11 +783,17 @@ ac12_docs_name_the_review_loop() {
   lacks "$f" 'two in order' && lacks "$f" 'second fresh full review of the corrected candidate → fixer for its valid findings' || return 1
   # every fix gets a fresh review: no path that sends a fix straight to the verifier
   lacks "$f" 'Otherwise dispatch the verifier' && lacks "$f" 'New behavioral fixes still require fresh re-review' || return 1
+  for w in '**Reviewer returns:**' '**From round 3 a review is focused:**'; do
+    grep -F -- "$w" "$f" | grep -qF 'unless `review-check.sh` says run a full review from `<base>`' \
+      || fail "feature-dispatch's [$w] line lacks the full-review exception" || return 1
+  done
+  lacks "$f" "push back on the rest with evidence, then run the project skill's finish step" || return 1
   f="$FD/references/review-loop.md"; need "$f" || return 1
   names "$(cat "$f")" "references/review-loop.md" review.json justin.json repeats new_fact scenario follow-ups.md \
     'REVIEW AGAIN' 'MOVE ON' 'ASK JUSTIN' || return 1
   # a Full story's round 2 reviews the whole story, whatever round 1's REVIEW AGAIN was for (R5-1)
-  names "$(cat "$f")" "references/review-loop.md" "(Full's round 2: full, \`from\` = \`--base\`)" || return 1
+  names "$(cat "$f")" "references/review-loop.md" "(Full's round 2: full, \`from\` = \`--base\`)" \
+    'A delta reviewer also judges each P0–P2 the fixer rejected' 'for an earlier full round, a commit that no longer exists' || return 1
   names "$(cat "$FD/references/ac-verification.md")" "references/ac-verification.md" 'MOVE ON' --reviews || return 1
   f="$FD/references/mini-pipeline.md"
   names "$(cat "$f")" "references/mini-pipeline.md" review-check.sh 'MOVE ON' || return 1
@@ -795,13 +802,15 @@ ac12_docs_name_the_review_loop() {
   f="$SRC/.hermes/skills/software-development/leorna/SKILL.md"; need "$f" || return 1
   names "$(cat "$f")" "leorna SKILL.md" review-check.sh || return 1
   lacks "$f" 'fresh Opus full review 2 of the corrected candidate → fresh Opus fixer for valid findings → fresh Opus verifier' || return 1
+  lacks "$f" 'otherwise another fresh fixer and verifier round runs' || return 1
   echo "# leorna SKILL.md"
 }
 
 ac13_codex_roles_name_the_review_loop() {
   local f n=0 w
   f="$SRC/.codex/agents/pipeline-reviewer.toml"; need "$f" || return 1
-  for w in review.json review-loop.md P0 P3 scenario repeats verdict ac_status 'never edit' 'skill_lessons[{skill, lesson, evidence, enforce}]'; do
+  for w in review.json review-loop.md P0 P3 scenario repeats verdict ac_status 'never edit' 'skill_lessons[{skill, lesson, evidence, enforce}]' \
+    'Mini: round 1 only'; do
     grep -qF -- "$w" "$f" || fail "pipeline-reviewer.toml does not name [$w]" || return 1
   done
   f="$SRC/.codex/agents/pipeline-fixer.toml"; need "$f" || return 1
