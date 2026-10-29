@@ -201,3 +201,9 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Low (86bcm901a bring-main-in, 2026-10-28): on main `db3406e`, `delivery/stories.json` lists `86bcm901b` and `86bcm9019` with empty PR lists although #95 and #92 merged; `check-story-shippable` passes vacuously on an empty list. Belongs to 901b/9019 bookkeeping.
 - Low, plan text only (86bcm901w auditor 2): plan E2's capture steps tick `code-review-checklist` and `commit-message-style`, which aren't in the content library this head ships (32 items); a capture followed word for word stops at the tick step.
 - Low (86bcm901a push, 2026-10-28): PR #96 (901w, `8a50486`) now conflicts with main `da8a4b0` itself in `internal/web/handler.go` (from #94) and `delivery/stories.json`; for 901w's owner. Evidence: `evidence/86bcm901a/push-829fa9c/sibling-96-merge-tree.txt`.
+
+## 86bcm901w bring-main-in fixer (2026-10-28, head 5a9aa2f)
+- Medium-low: cmd/control-plane/main.go wiring is untested: dropping application.SetPackBuilder(...) (M5) or SetItemBuilder(...) (M6v2) still passes go test ./cmd/control-plane/ and every gate. Pre-existing on both sides. Evidence: evidence/86bcm901w/mainin/mutants-5a9aa2f.txt.
+- Low: main's internal/library/library.go comment on Requires (#95) says the pack builder (86bcm901w) reads it through Library.Required; 901w's builder doesn't (AC1 "exactly the ticked items"). Ticking a prompt without its required skills gives a pack missing them. Product question for 901b/901r.
+- Low-medium: CreateVersion paths write no audit record (fork, single-item edit, and now #94's create-from-scratch); builder saves do. Extends the earlier P2 Fork/SaveEditedVersion audit gap.
+- Low: main's delivery/stories.json lists 86bcm901b with "prs": [] though #95 merged, so check-story-shippable.py 86bcm901b passes vacuously.
