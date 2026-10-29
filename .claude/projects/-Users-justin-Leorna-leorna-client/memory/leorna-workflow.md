@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 2fe303d7-90b7-4c97-a578-b1d2535f94fa
-  modified: 2026-10-29T07:35:18.000Z
+  modified: 2026-10-29T07:39:39.000Z
 ---
 
 **This folder serves both repos.** `~/.claude/projects/-Users-justin-Leorna-leorna-control-plane/memory` is a symlink to the client project's memory folder, so a session in either repo reads and writes the same files. It lives under `~/.claude` on Justin's Mac, outside both git repos, and is never committed or pushed. Control-plane testing details are in [[leorna-control-plane-workflow]]. Hermes Agent (Justin's WhatsApp assistant on this Mac) also reads and edits this folder through its `leorna` skill, with Justin's standing OK (2026-10-20). `~/Leorna` has no workspace AGENTS.md, although the client AGENTS.md says "See workspace AGENTS.md".
@@ -143,7 +143,9 @@ metadata:
 
 ## PI-2: Content, Packs & Insights v0.2 (ClickUp)
 
-**Status 2026-10-28 evening (Claude Code, Linux desktop, live `clickup` MCP; newest):** assignee 240157212, tag `pi-2`, open only, has_more=false: 9 open. Now **in progress**: 901w, 901j, 901b, 901a; the other 5 to do. Every prerequisite owned by someone else is complete (Christian's 9018 and 902h); Justin's earlier 901v/9019/9016/901u/945u complete. Only self-blocks: 901y on 901w; 902a on 901r + 901w. Yan Xu (240259898) waits on Justin's 901w for 9026 preview per tool + diff and 902d manage many packs.
+**Status 2026-10-29 03:40 EDT (Claude Code, WSL desktop, live `clickup` MCP; newest):** assignee "me" (240157212), open only, has_more=false: 6 open = 901j in progress (PR #98) + **5 to do**: 901z, 902w, 902a, 901r, 901y. `86bcm901w` is now **complete** in ClickUp, so 901y is Ready and 902a waits only on Justin's own 901r. Difficulty ranking given to Justin (card text only, no code read): 901z (L, variant lineage + upstream diff/merge) > 902w (both repos, spike with unknown per-tool feasibility) > 902a (wizard + skip/resume + recorded fresh-install demo) > 901r (content curation + 3-tool sync; mapping 'to confirm') > 901y (S; card title says reorder but ACs cover remove only).
+
+**Status 2026-10-28 evening (Claude Code, Linux desktop, live `clickup` MCP):** assignee 240157212, tag `pi-2`, open only, has_more=false: 9 open. Now **in progress**: 901w, 901j, 901b, 901a; the other 5 to do. Every prerequisite owned by someone else is complete (Christian's 9018 and 902h); Justin's earlier 901v/9019/9016/901u/945u complete. Only self-blocks: 901y on 901w; 902a on 901r + 901w. Yan Xu (240259898) waits on Justin's 901w for 9026 preview per tool + diff and 902d manage many packs.
 
 **Status 2026-10-28 13:45 EDT (Claude Code, Linux desktop, live `clickup` MCP):** assignee 240157212 (justin@leorna.com), include_closed=true, has_more=false: 23 cards, 9 open. All five earlier PI-2 cards (9016, 901u, 901v, 945u, 9019) are now **complete** in ClickUp. Justin was newly assigned **9 to-do PI-2 cards** (~2026-10-27). Dependencies read live (edges where task_id = the card): **Ready:** `86bcm901w` create pack by picking items (CP, M, high; 901v complete; blocks 901y, 902a, 9026, 902d), `86bcm901r` role starter packs (content, M, high; 9018+9019 complete), `86bcm901z` company variant (CP, L, high; 901v), `86bcm901j` MCP templates (content, M; 9018), `86bcm901b` prompts collection (content, M; 9016/901u/945u), `86bcm901a` agent definitions (content, M; 9018/901u/945u), `86bcm902w` usage analytics (both, M; 902h complete; spike first). **Waiting:** `86bcm901y` remove/reorder (CP, S) on 901w; `86bcm902a` one-click quick start (CP, M, high) on 901r + 901w (both Justin's). Whether 9019 PR #92 is merged was not rechecked (ClickUp closed it 2026-10-26).
 
