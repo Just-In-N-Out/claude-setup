@@ -1,6 +1,8 @@
 # 86bcm901z — Customise a shipped item (company variant) (control plane)
 
-## Questions for Justin (⭐ = recommended; the plan is written as if every ⭐ is chosen, so **go** needs no re-plan)
+**Status: Approved by Justin 2026-10-29 with every ⭐ answer (Q1 A, Q2 A, Q3 A, Q4 A; AC4 approved as proposed). The questions below are answered; see "Justin's answers" at the end.**
+
+## Questions for Justin (answered 2026-10-29: every ⭐)
 
 **Q1. What is a variant called in packs and in engineers' tools?**
 - **A ⭐ Its own name (prefilled `<name>-custom`)**
@@ -1377,3 +1379,13 @@ Open PRs: only **#101** (902a quick start, head `bb79ec6`, base `b65f797`). Work
 
 - **Builder:** stops at `ready-for-review` (B17) with every AC's test passing on the head and failing on base, every PNG named above, mutants M1–M18 recorded, and every gate `EXIT=0` (or a baseline-identical failure explained).
 - **Then:** fresh review → fix rounds until `review-check.sh` prints MOVE ON → verifier → blind auditor → `ac-check.sh --reviews` → finisher hand-over (PR text, review prompt, ClickUp evidence draft, team message), with no push or post until Justin says the word.
+
+## Justin's answers (2026-10-29)
+
+Justin's words: "Just go with the recommended and the star one for each."
+
+- Q1 → A: a variant has its own name (prefilled `<name>-custom`).
+- Q2 → A: Merge is a three-way line merge; conflicts are resolved in a text box.
+- Q3 → A: Ignore records that version only; a newer release shows the notice again.
+- Q4 → A: the admin edits the description and main text; supporting files follow upstream.
+- The proposed fourth acceptance criterion (refusals write nothing and stay inside the tenant) is approved as written. No criterion is live.

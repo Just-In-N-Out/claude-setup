@@ -1,8 +1,12 @@
 # 86bcm902w — Content usage analytics (which items get used)
 
-**Status:** plan only, waiting for Justin's **go**. Written 2026-10-29 ~19:30 UTC by the Opus planner.
+**Status:** approved by Justin 2026-10-29 (~19:40 UTC): **go** with every ⭐ answer. Written 2026-10-29 ~19:30 UTC by the Opus planner.
 **Bases:** control plane `b65f797ff6cdc56a802dfaf417b0adec96463317` (GitHub `main`, includes #99 901y and #100 9023); client `f105e27814b6efbec67059687963e722933acec2` (GitHub `main`). Both local `main` checkouts already equalled GitHub (`main` = `origin/main` = base); no fast-forward was needed. Rechecked 19:23 UTC.
 **Card:** [Content usage analytics (which items get used)](https://app.clickup.com/t/86bcm902w) · both repos · M · PI-2 · depends on 86bcm902h (complete, control-plane #83 + client #18).
+
+## Justin's answers (2026-10-29)
+
+"Yeah, just go with the recommended star options." → **go** with Q1 a (explicit import command), Q2 a (only items the last Sync installed leave the machine), Q3 a (every pack holding an item shows its full count), Q4 a (disposable ClickHouse container from CI's pinned image). The plan below is written for exactly these answers; AC4 and AC5 (proposed) are approved with it.
 
 ## Questions (answer with letters; **go** alone takes every ⭐)
 
