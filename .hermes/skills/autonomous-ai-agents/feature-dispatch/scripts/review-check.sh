@@ -133,7 +133,8 @@ for ((k = 1; k <= n; k++)); do
   fi
   rounds="$rounds$sep$r" justin="$justin$sep$j" sep=,
 done
-in=$(jq -nc --argjson r "$rounds]" --argjson j "$justin]" '{rounds: $r, justin: $j}') || die "can't read the review records"
+# through stdin, not --argjson: Linux caps one command-line argument at 128 KiB, and a long story's records pass it
+in=$(printf '%s]\n%s]\n' "$rounds" "$justin" | jq -sc '{rounds: .[0], justin: .[1]}') || die "can't read the review records"
 bad=$(jq -r "$VALIDATE" <<<"$in" 2>&1) || die "can't check the review records: $bad"
 [[ -z $bad ]] || die "$(head -n 1 <<<"$bad")"
 # only the latest round's commits must exist: older heads may be gone after a rebase

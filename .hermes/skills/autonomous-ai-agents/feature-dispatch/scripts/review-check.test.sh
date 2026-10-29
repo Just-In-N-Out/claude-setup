@@ -132,6 +132,7 @@ reject_ac1() { jq '.ac_status[0].accepted = false' "$E/auditor/ac.json" >"$S/a.j
 # ============================== the referee ==============================
 
 ac1_referee_moves_on_when_clean() {
+  local sz
   need "$RC" || return 1
   newroot; mkrepo || fail "fixture repo" || return 1
   rev 1 full "$BASE" "$C2"; judge
@@ -148,6 +149,11 @@ ac1_referee_moves_on_when_clean() {
   want 0 "MOVE ON: review-2 at ${C2:0:7} is clean" "review-2 clean after review-1's findings" || return 1
   has "R2-1  P3  lib/x.sh:R2-1  claim of R2-1" "review-2's P3" || return 1
   if printf '%s\n' "$out" | grep -q 'R1-'; then fail "printed review-1's findings: $out"; return 1; fi
+  # records past 128 KiB, Linux's limit on one command-line argument, give the same outcome (R5-4)
+  edit 1 '.findings[0].claim = ([range(0; 7000) | "a long claim "] | add)' && edit 2 '.findings[0].claim |= (. as $c | [range(0; 7000) | $c] | add)' \
+    && sz=$(( $(cat "$E"/review-*/review.json | wc -c) )) && [ "$sz" -gt 140000 ] || fail "the long records: $sz bytes" || return 1
+  judge; want 0 "MOVE ON: review-2 at ${C2:0:7} is clean" "records of $sz bytes" || return 1
+  printf '%s\n' "$out" | grep -q '^R2-1  P3  lib/x\.sh:R2-1  claim of R2-1claim of R2-1' || fail "the long P3's line: $(printf '%s' "$out" | cut -c1-80)" || return 1
   done_ok
 }
 
