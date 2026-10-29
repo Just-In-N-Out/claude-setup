@@ -19,10 +19,14 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
 - **Reviewer 3: CLEAN** at `e4469c0`; its P3s are in follow-ups.
 - **Verifier 2: CLEAN** at `e4469c0` (`evidence/harness-guards/verifier/ac.json`; its own self-check gave READY FOR THE USER, 20/22).
 - **Auditor: CLEAN.** `ac-check.sh` on e4469c0 gave READY FOR THE USER, 20/22 (live AC21 and AC22 owed to Justin).
-- **Running:** finisher step 1 (brief `briefs/harness-guards-finisher-1.md`): rebase onto main and run the gates. No merge.
-- **Problem:** `main` moves every few minutes. Peer sessions `leorna-0f` and `closing-cta-33` are syncing, about 30 commits since the base. A rebase changes HEAD, which by the rule needs verifier → auditor → `ac-check` again.
-  - **Plan:** one full re-verify on the rebased head, then try the `--ff-only` merge at once.
-  - **If `main` moved again in the meantime:** don't loop. Ask Justin. Options: pause the peer sessions' syncs for the merge window, or accept a base-only rebase without re-verifying when `range-diff` shows no story patch changed and `main`'s new commits touch no story file.
+- **Finisher step 1 done:** rebased onto `80ef3a8`, new head `6b57a5b` (range-diff all `=`, no conflicts, every gate green). `main` had already moved again by then (e2479ef, no story files).
+- **Running:** verifier 3 on `6b57a5b` (brief `briefs/harness-guards-verifier-3.md`). Then blind auditor 2 (`briefs/harness-guards-auditor-2.md`) → `ac-check.sh` with `--base 80ef3a8e6979abe6c2754b06d2acd61850f1ac5d`.
+- **Old rounds' folders:** `verifier-round1-dccc042`, `verifier-round2-e4469c0`, `auditor-round1-e4469c0`.
+- **Merge blocker (Justin's call):**
+  - Peer sessions keep moving `main` (my own synced edits get swept into their syncs too), so `--ff-only` needs yet another rebase, and the rule then needs another re-verify.
+  - Ask Justin to pick:
+    - (A) a base-only rebase may merge without re-verify when `range-diff` is all `=`, `main`'s new commits touch no story file, and the gates pass. Recommended, because it's mechanical and leaves the other sessions alone.
+    - (B) pause the peer sessions' syncs for the merge window.
 - **Next:**
   1. Verifier clean → blind auditor (`evidence/harness-guards/auditor/`, given only the plan, worktree, head and base) → `ac-check.sh`. Not clean → fixer → fresh reviewer on the fix → verifier.
   3. **Finisher:**

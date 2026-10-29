@@ -40,36 +40,54 @@ ClickUp: [Create a pack by picking library items](https://app.clickup.com/t/86bc
   - unit tests in `internal/pack/builder_test.go`;
   - `TestMigrationRoundTrip` knows the new table and function;
   - `contract_kinds_test.go` pins `PackItemKind`.
-- `delivery/stories.json`: the 86bcm901w entry (PR list filled in once this PR has a number).
+- `delivery/stories.json`: the 86bcm901w entry, listing this PR (#96).
 
 ## Test Plan
 
-Everything below ran on head `8a50486`, the pushed head, on 2026-10-28. The gates were run again when this PR was opened, in a detached copy of that exact head with its own `_test` database. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 and gitleaks 8.30.1 (CI's pins), PostgreSQL 18.6 (CI's image). The mutation checks and the console run were done on the same head by the pipeline's independent verifier and blind AC auditor.
+Everything below ran on head `5a9aa2f` on 2026-10-28. That head is the branch with GitHub `main` (`a8d1465`, after #95, #94 and #97) merged in. The gates ran twice on it, once by the fixer that made the merge and once by the pipeline's independent verifier. Each run used a detached copy of that exact head and its own `_test` database. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 and gitleaks 8.30.1 (CI's pins), and PostgreSQL 18.6. The verifier and a blind AC auditor did the console runs and mutation checks on the same head.
 
-- [x] `make check`, exit 0:
+- [x] `make check`, exit 0 (both runs):
   - workspace, contracts-check, fmt, vet;
   - `go test -race -count=1` on every package;
   - lint 0 issues in both modules;
-  - govulncheck: no called vulnerability (the "1 vulnerability in modules you require" note is the same on main `1ee7157`);
-  - gitleaks: no leaks in the repository's 401 commits;
-  - library gate PASSED (32 items);
+  - govulncheck: no called vulnerability. The "1 vulnerability in modules you require" note comes from main's dependencies: this branch changes no `go.mod` or `go.sum`.
+  - gitleaks: no leaks in the repository's 410 commits;
+  - library gate PASSED (43 items);
   - build.
-- [x] `scripts/test-module-add.sh`: exit 0
-- [x] Postgres tests (`go test -json` over `internal/pack`, `internal/store/postgres`, `internal/web` and `internal/cloud/dbcheck`, read per test): 536 pass, 0 fail, 0 missing. The only 4 skips are the accepted ones: the two ClickHouse subtests of `TestTeamsAPIWithPostgres`, the live Scaleway test and the opt-in evidence-dir test. All 55 `TestPackBuilder*`/`TestMigrationRoundTrip` entries pass.
+- [x] `scripts/test-module-add.sh`: exit 0 (both runs)
+- [x] Postgres tests (`go test -json` over `internal/pack`, `internal/store/postgres`, `internal/web` and `internal/cloud/dbcheck`, read per test, both runs):
+  - 558 results: 554 pass, 0 fail; all 289 declared top-level tests ran.
+  - The only 4 skips are the accepted ones: the two ClickHouse subtests of `TestTeamsAPIWithPostgres`, the live Scaleway test and the opt-in evidence-dir test. No skip names `LEORNA_TEST_DATABASE_URL`.
+  - All 55 `TestPackBuilder*`/`TestMigrationRoundTrip` entries pass.
 - [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: OK (5 tests)
-- [x] gitleaks over the branch's 18 commits: no leaks.
-- [x] Scope: no `.github` change, no existing migration changed (only `000023` added), all 18 commits by the Leorna identity with no AI attribution lines.
+- [x] gitleaks: no leaks in either scan.
+  - `gitleaks git` over `a8d1465..5a9aa2f` scanned 19 commits. It skips a merge commit's own content.
+  - So `gitleaks dir` also scanned the four files both sides changed, as merged.
+- [x] Scope:
+  - no `.github` change;
+  - no existing migration changed: only `000023` is added, and main's newest is still `000022`;
+  - all 20 commits by the Leorna identity, with no AI attribution lines.
+- [x] Merge check (verifier):
+  - Every file only one side changed equals that side's version (113 paths, 0 mismatches).
+  - The story's 20 own files are byte-identical to the pre-merge head `5e29c56`.
+  - Only `internal/web/handler.go` and `delivery/stories.json` were resolved by hand.
 - [x] `TestPackBuilderAC1NewPackVersion1HasExactlyTheTickedItemsWithPostgres` (3 subtests): pass
 - [x] `TestPackBuilderAC2AddRemoveSavesImmutableVersionWithParentWithPostgres` (4 subtests): pass
 - [x] `TestPackBuilderAC3EverySaveWritesAuditRecordWithPostgres` (6 subtests): pass
 - [x] `TestPackBuilderAC4RefusedSavesWriteNothingWithPostgres` (15 subtests: no name, no items, unknown/malformed/repeated item, name taken, nothing changed, pack left empty, outdated version, member, bad CSRF, another company's pack, malformed pack id, signed out, strict JSON): pass
-- [x] Each AC test fails on base `1ee7157` (build failure: the builder, routes and contract types don't exist there), checked by the verifier and the auditor.
+- [x] The verifier and the auditor each ran every AC test on its own on `5a9aa2f`. Each test also fails on base `a8d1465` with the head's test file copied in: the build fails because the builder, routes and contract types don't exist there.
+- [x] `ac-check.sh` over the verifier's and the auditor's AC reports: `ALL ACCEPTED: 4 of 4 ACs on 5a9aa2f`.
 - [x] Mutation checks on this head:
-  - the verifier: 39 mutants, all killed. They cover the triggers, admin and tenant checks, CSRF, the stale-parent check, the unique name, audit atomicity, the diff and the tick handling.
-  - the blind auditor: 15 mutants, all killed.
-  - Two builder mutants are documented equivalents: M2 (the tenant key on one lock query, also enforced by the composite FK) and M6 (an ignored audit error, also caught because Postgres aborts the transaction).
-- [x] Admin console in dev mode on a throwaway database, with a binary built at `8a50486` (auditor): tick 4 items and Create pack gives "version 1" with those 4 ticked; untick one and tick another gives "version 2 … from version 1"; the change history for the pack shows `pack.create` and `pack.version.create` with actor and diff; the same name in other case gives the inline 409 alert.
-- [x] Hosted CI on `8a50486` (run 40787263343, `pull_request`): "Go quality gates" success; "Publish control-plane image" success (build and Trivy scan; the push steps are skipped on a PR); "Package admin-portal distribution" success.
+  - The fixer and the verifier dropped each side's `handler.go` hunk (overlay mutants). Dropping this story's routes fails the four AC tests; dropping #94's routes fails #94's item-builder tests.
+  - The blind auditor ran 20 mutants, all killed by the AC tests' own assertions. They cover version numbering, ticked items, parent version, the immutability triggers, the audit diff, action and actor, audit atomicity, the tenant filter, `requireAdmin`, CSRF, the unique name and the stale-parent check.
+  - Earlier, on head `8a50486` (before main was merged in), the verifier's 39 mutants and the auditor's 15 were all killed. Two builder mutants there were documented equivalents. M2 is the tenant key on one lock query, which the composite FK also enforces. M6 is an ignored audit error, which is also caught because Postgres aborts the transaction.
+- [x] Admin console in dev mode on a throwaway database, with a binary built at `5a9aa2f` (verifier and auditor):
+  - ticking items (4 in the auditor's run; 5 in the verifier's, including items that #95 and #97 added to main) and pressing Create pack gives "version 1" with exactly those items ticked;
+  - unticking one and ticking another gives "version 2 … from version 1";
+  - the pack's change history shows `pack.create` and `pack.version.create` with actor and diff.
+  - The same name in another case gave the inline 409 alert in the console on `8a50486`. On `5a9aa2f`, AC4's "name taken" subtest covers it.
+- [ ] Hosted CI on `5a9aa2f`: pending until this head is pushed (see Evidence).
+- History: hosted CI on the previous head `8a50486` (run 40787263343, `pull_request`): "Go quality gates" success; "Publish control-plane image" success (build and Trivy scan; the push steps are skipped on a PR); "Package admin-portal distribution" success.
 
 ## Security, migration, rollback
 
@@ -104,23 +122,27 @@ Everything below ran on head `8a50486`, the pushed head, on 2026-10-28. The gate
 - Through the JSON API, adding an item already in the pack is refused. Removing and adding it in one call replaces it, and the diff records that as "changed".
 - Test Postgres ran on 127.0.0.1:55432, because 5432 was taken on the build machine. CI uses its own service.
 - The client keeps its own copy of the OpenAPI spec. Refreshing it (`leorna-client/api/`, `make generate`) is optional: it adds unused types only.
-- **Sibling stories from the same base:**
-  - PR #94 (86bcm9021) conflicts in one place, `internal/web/handler.go`: both add a field after `packVersions`. Keep both. `main.go`, the pack README and `stories.json` merge cleanly (`git merge-tree` against #94's head `fd63455`, rechecked when this PR was opened). A trial merge built, vetted and passed the non-database tests.
-  - PR #95 (86bcm901b) conflicts only in `delivery/stories.json` (`git merge-tree` against its head `63afe55`): take main's file and append this entry last. PR #97 (86bcm901a, head `9c13e02`) and the unpushed 86bcm901j branch conflict only there too. None of them adds a migration, so 23 stays free.
-  - Whichever merges second reruns its gates on the merged code.
+- Main was merged in after #95, #94 and #97 (`handler.go`: kept both the pack-builder and item-builder wiring; `stories.json`: this story's entry appended last).
 - **Follow-ups** (not in this PR):
   1. 86bcm901b's `requires`: when an admin ticks a prompt, add or warn about its required library items (`Library.Required`). The plug-in point is after `ApplyChange` in `CreatePack`/`SavePackVersion`.
   2. 86bcm901y: reorder items (stored position), remove items that didn't come from the library, and the client's matching removal.
   3. Fork, SaveEditedVersion and add-library-item (and #94's `CreateItem`) create pack versions without a change record. This is pre-existing; `internal/audit/README.md` says every mutation must call `appendAudit`.
-  4. Add a **Pack** entry to `GLOSSARY.md` once #94 lands.
+  4. Add a **Pack** entry to `GLOSSARY.md`. #94 has landed, and the glossary still has only "Pack version".
   5. Carry a script approval forward when an item's script is unchanged.
   6. 86bcm902d: show "pack name · version N" on Assignments and Pack Versions, plus rename and delete.
-  7. The JSON API accepts any stored library item id, including older versions the catalog no longer lists (the page only offers the newest). Decide whether to refuse superseded ids once 86bcm901a's code-reviewer 2.0.0 lands.
+  7. The JSON API accepts any stored library item id, including older versions the catalog no longer lists (the page only offers the newest). Decide whether to refuse superseded ids, now that 86bcm901a's code-reviewer 2.0.0 is on main (#97).
   8. By code reading (not yet probed), team and project console actions file change records under the raw path id, so a save from an upper-case UUID URL may be missing from that item's history. It is the same pattern this PR fixes for packs, pre-existing on main (`internal/store/postgres/teams.go`, `projects.go`).
 
 ## Evidence
 
-- Head: `8a5048694d40ee975c7b3c276ca1b8af521cae5d` (base `1ee7157`, GitHub `main` when this PR was opened)
+- Head: `5a9aa2f6c4c219234b49d9f9bd17e83942790437`. It merges GitHub `main` `a8d1465` into the branch; the branch started from `1ee7157`.
 - Required check: "Go quality gates"
-- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40787263343 (CI, `pull_request` on `8a50486`, conclusion success: "Go quality gates", "Publish control-plane image" and "Package admin-portal distribution" all success)
-- Local gates on this head (2026-10-28): `make check`, `test-module-add.sh`, the Postgres `go test -json` stream read per test, the story gate, gitleaks and the scope checks, each exit 0 (one log per gate plus a `SUMMARY.txt`, kept with the story's evidence).
+- Actions run on `5a9aa2f`: pending until this head is pushed.
+- Previous head `8a50486`: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40787263343 (CI, `pull_request`, conclusion success: "Go quality gates", "Publish control-plane image" and "Package admin-portal distribution" all success)
+- Local gates on this head (2026-10-28), run by both the fixer and the verifier, each exit 0 and kept with the story's evidence (one log per gate plus a `SUMMARY-gates-5a9aa2f.txt`):
+  - `make check` and `test-module-add.sh`;
+  - the Postgres `go test -json` stream, read per test;
+  - the story gate;
+  - gitleaks (the commit range, plus the files both sides changed);
+  - the scope checks.
+- AC reports on this head: the verifier's and the blind auditor's. `ac-check.sh` over both: `ALL ACCEPTED: 4 of 4 ACs on 5a9aa2f`.
