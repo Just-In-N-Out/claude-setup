@@ -33,3 +33,5 @@ them: on 2026-10-28, asked two "should this case get the even space too?" questi
 answer these … put it in a way where it looks more aesthetic". For such cases, pick what looks better yourself, say
 what it will look like, and keep questions for real trade-offs, with a preview. Their team uses WPForms; the live site and its
 post-paste steps are in [[site-and-team]].
+
+Screenshots Justin sends may be taken at browser zoom (on 2026-10-29 two were at about 75%, a ~2560px CSS window): before measuring sizes from a shot, solve the zoom from two or three known sizes in it.

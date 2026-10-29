@@ -69,3 +69,5 @@ to the service page) and the 3 photo dots opening cards (words from popups 1458/
 changed from v2. The plugin's arrow clearance was left out (it pushed v2's heading onto a third line at 390). Chrome
 motion was seen; Bricks/iPhone live checks 3bo/3bn/3bp owed. Scripts in `v3/scripts/` (`build-v3.ts`). Supersedes v2
 and the slider-only draft.
+
+The `bdry-source/tree-*.json` captures recorded lazy Elementor images unloaded at 767/390 (24px tall, e.g. the Fee picture): a live re-measure must scroll each image into view, set loading=eager and wait for load. Justin's live pages for checks: https://bdryswi.com/ and https://bdry.staging.growithgro.com/homev2/?bricks_preview=1793276386 (our paste is on /homev2/, page 155; his combined header+Home paste is Downloads/bdry-home-with-header.json = header-v1 + v4).
