@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: f7a3c41a-53da-4665-b4dd-957fb80b6724
-  modified: 2026-10-29T03:15:14.925Z
+  modified: 2026-10-29T07:01:37.282Z
 ---
 
 v2 rewrite of the user's Figma→Bricks plugin lives in ~/Documents/FigmaToBricksV2 (spec docs/specs/2026-10-06-v2-design.md,
@@ -99,7 +99,9 @@ only applicable standing rules belong in today's CLAUDE.md, feature history stay
 Released build **2026-10-28.5**, main = origin/main `a3a008e`, pushed as Just-In-N-Out. Accepted head `9405a95` (rebased
 on photo-hotspots `b3addfb`); round-2 verifier and blind auditor clean, ac-check READY FOR THE USER. **AC12 / paste
 check 3bq live:** Justin re-pastes Home with the ticks on. Follow-ups (a)–(h) and every unconfirmed ruling: HANDOFF.
-Worktree and branch kept.
+Worktree and branch kept. Home paste for 3bq: `evidence/home-paste-media/build-28.5/make.mjs` converts Home with current
+main and adds the site's photos (native Image, each copy's own), page links and the five FAQ answers; rerun it after a
+later build. Delivered 2026-10-29 to the Windows clipboard (readback identical) and Downloads (sha 62daa4e9…).
 
 ## Photo hotspots — 2026-10-28
 
