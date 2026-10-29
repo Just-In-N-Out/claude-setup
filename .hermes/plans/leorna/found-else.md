@@ -256,3 +256,5 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 
 ## 86bcm902a review 3 on 9a9bdec (2026-10-29)
 - P3, pre-existing, outside the story (internal/store/postgres/setup_lock.go:41, story 86bbu3xr4): the deferred unlock runs on context.WithoutCancel(ctx), which drops the 30 s deadline; if the database stalls, the unlock and the request can hang with the setup slot held (source reading only, not executed).
+- 2026-10-29 86bcm901y PR #99 verifier (008c612) | P3 test gap: `TestPackItemOrderStoreWithPostgres/positions_are_unique_and_never_negative` repeats a position only at 2, so narrowing the partial unique index to `WHERE position > 1` survives (mutant V14b; receipt `evidence/86bcm901y/verifier-pr/mutations-008c612.txt`). No real path reaches it (insertVersionItems writes 1..n in one transaction); a second insert at position 1 would close it.
+- 2026-10-29 86bcm901y PR #99 verifier | info: local no-cache docker build (plan G9) not rerun on 008c612; CI's "Publish control-plane image" job passed on 008c612.

@@ -18,6 +18,7 @@ Justin, 2026-10-28. The rule (severities, brakes, order) lives in `review-fix-ca
 - **Repeats:** when a finding is the same defect as an earlier round's, set `"repeats": "<earlier id>"`, and `"new_fact"` (5+ words) when you have one, such as "the round-2 fix covers --no-verify but not its =value form". A repeat with no new fact asks Justin.
 - **`review.json` is the referee's input**, like `ac.json` is `ac-check.sh`'s, so writing it is allowed: it is not a report file.
 - **Self-check** before handing back: run `review-check.sh` on the evidence folder. Exit 2 means your file is wrong: fix it. Exit 0, 1 or 3 is the referee's verdict, not yours to act on. The referee stops at the first missing earlier record, so when the main session backfills several rounds' records (rounds that ran before this format), it asks for them in round order, not in parallel (902a: review 2's self-check hit "review-1/review.json is missing").
+- **Three trees per probe** (delta rounds): convert each probe with base, the previous round's head and head, in one script importing each tree's `src/`. That tells a regression this fix caused from an earlier finding left open or base behaviour, which sets `repeats`/`new_fact` and severity (header-bar review 3).
 - Return the usual report as well: `verdict`, the findings, `ac_status` and `skill_lessons`.
 
 ## Records
