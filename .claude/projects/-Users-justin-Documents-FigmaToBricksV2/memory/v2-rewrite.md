@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: f7a3c41a-53da-4665-b4dd-957fb80b6724
-  modified: 2026-10-29T07:01:37.282Z
+  modified: 2026-10-29T08:23:34.767Z
 ---
 
 v2 rewrite of the user's Figma→Bricks plugin lives in ~/Documents/FigmaToBricksV2 (spec docs/specs/2026-10-06-v2-design.md,
@@ -74,6 +74,19 @@ per view, dots; the drawn peek needs a slider sample). Selecting both frames: Cm
 team switched that form to WPForms by hand), photos keep their drawn size on wide screens / zoomed out, and searchable
 lists (search, pills, count, CSV in the panel, scroll boxes). The current status, what's waiting on the user and the
 open questions now live in CLAUDE.md's compact **Status** and HANDOFF; the old Start here/Where things stand format was retired.
+
+## Headline marker — 2026-10-29
+
+Released **2026-10-29.1**, local main/origin/fresh remote `dea6296a7a4536d986cd47faf49aa7adff3abf81` verified equal;
+main dist rebuilt and hashes checked. Feature merged at `7d4f20f` on section-rhythm build28.5. Justin explicitly said
+"just merge it" after the remaining phone defect/script choice was disclosed; this release does **not** claim new AC acceptance.
+P1A/C1 shipped; later P2–P5 prototypes and the runtime proposal remain unimplemented. Drawn-phone fitting and
+exact-design-width turned-ring overflow remain open. **AC13 / paste3br is live:** actual Figma Trim/export,
+installed Bricks retention/Preview/live and Safari/real iPhone. Full rulings, compatibility limits and checks:
+HANDOFF and `docs/plans/2026-10-26-headline-marker-ledger.md`. Check passed; browser head392pass/12fail/1skip,
+all12 failures also on current main; three legacy Mac corpus inputs unavailable, available outputs match.
+Merge worktree/branch retained. Setup sync remains read-only; detailed release evidence is under
+`~/.hermes/plans/figma-to-bricks/evidence/headline-marker/finisher-release-now/` and root final-verification receipts.
 
 ## Slider autoplay — 2026-10-28
 
