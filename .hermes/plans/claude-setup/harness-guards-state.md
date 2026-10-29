@@ -17,7 +17,9 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
 - **Done:** build; review 1 → fix 1; review 2 → fix 2; verifier 1 → fix 3 (V1 plus the rebase onto main, new base `3864d61`, head `d82956d`).
 - **Fix 4 done:** head `e4469c0`, base `3864d61`. The LeornaAI fallback is a strict one-name URL; `$TMPDIR` counts as a temp folder.
 - **Reviewer 3: CLEAN** at `e4469c0`; its P3s are in follow-ups.
-- **Running:** verifier 2 (brief `briefs/harness-guards-verifier-2.md`). Round 1's folder was moved to `evidence/harness-guards/verifier-round1-dccc042/`.
+- **Verifier 2: CLEAN** at `e4469c0` (`evidence/harness-guards/verifier/ac.json`; its own self-check gave READY FOR THE USER, 20/22).
+- **Running:** the blind auditor (brief `briefs/harness-guards-auditor-1.md`), writing `evidence/harness-guards/auditor/ac.json`.
+- **When it returns:** run `ac-check.sh --repo ~/.claude-setup-wt/harness-guards --base 3864d61abe128113f5fd6aeda8a55b02df46377d --plan evidence/harness-guards/plan-approved.md evidence/harness-guards/verifier/ac.json evidence/harness-guards/auditor/ac.json`.
 - **Next:**
   1. Verifier clean → blind auditor (`evidence/harness-guards/auditor/`, given only the plan, worktree, head and base) → `ac-check.sh`. Not clean → fixer → fresh reviewer on the fix → verifier.
   3. **Finisher:**

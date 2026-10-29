@@ -33,7 +33,7 @@ When Justin decides something mid-build that changes an approved AC, a planner a
   ( set -o pipefail; echo "HEAD=$(git -C <worktree> rev-parse HEAD)"; <command>; echo "EXIT=$?" ) > <folder>/ac<n>-<head7>.log 2>&1
   ```
 
-- **Run it on the base commit** (`git -C <worktree> merge-base HEAD <integration branch>`: Leorna `origin/main`, local-merge projects `main`) in a separate copy, never in the builder's worktree, with head's versions of the test files:
+- **Run it on the base commit** (`git -C <worktree> merge-base HEAD <integration branch>`: Leorna `origin/main`, local-merge projects `main`) in a separate copy, never in the builder's worktree, with head's versions of the test files. Where the brief forbids writing the repo's admin files (the setup repo `~/.claude-setup.git`), make that copy with `git clone -q <gitdir> <scratch>/base && git -C <scratch>/base checkout -q --detach <base>` instead of `worktree add` (harness-guards verifier 2):
 
   ```
   git -C <worktree> worktree add --detach <scratch>/base-<base7> <base>
