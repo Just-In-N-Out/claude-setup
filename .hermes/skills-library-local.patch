@@ -145,7 +145,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..5d36adb 100644
+index f2d882d..0eab0aa 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,29 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -309,7 +309,7 @@ index f2d882d..5d36adb 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -290,7 +359,50 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +359,54 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -338,6 +338,10 @@ index f2d882d..5d36adb 100644
 +    masked when production is broken, because an earlier assertion fails first:
 +    overlay the legitimate future change instead (the tripwire must fire) and pair it
 +    with a control that also updates the list (the test must pass) (901a M3c/M3d).
++    Likewise, when a validator or a gate's exit code stops a data mutant before
++    the test's own clause check, rerun it with that guard switched off by
++    overlay so the test's own line must catch it; keep the guarded run as the
++    realistic result (901a auditor 3).
 +12. **A path-traversal test can be unable to fail.** When the guarded path is
 +    `<dir>/<prefix>.<id>`, an `../../evil` id makes `<prefix>.` a missing
 +    folder, so the OS refuses the path even with the sanitizer deleted. Create
