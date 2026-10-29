@@ -2,7 +2,7 @@
 
 Card: [One-click quick start (starter pack → team → sync)](https://app.clickup.com/t/86bcm902a). Checked 2026-10-29: status "to do", 0 attachments.
 
-Written for the branch as it is (option B). If Justin picks A (86bcm901r first, then this story rebuilt on 901r's packs), this draft and its images are replaced after the rebuild. Fill in the PR number, merge date, merge SHA, +/- and the CI run at post time; never change the card's status or checkboxes.
+Written for option B: Justin's "re-update main, push the PR" (2026-10-29) was taken as B, and PR #101 is open (not merged). If he meant A (86bcm901r first, then this story rebuilt on 901r's packs), this draft and its images are replaced after the rebuild. Fill in the merge date, merge SHA and the CI run on the merged head at post time; never change the card's status or checkboxes. Head facts updated 2026-10-29 19:17 UTC by finisher 2 (PR head `bb79ec6`, main `b65f797` merged in).
 
 ## Comment text
 
@@ -10,7 +10,7 @@ Written for the branch as it is (option B). If Justin picks A (86bcm901r first, 
 ✅ Closing evidence — One-click quick start (starter pack → team → sync) (86bcm902a)
 
 WHAT WAS DONE
-- leorna-control-plane PR #<n> (merged <date>, merge <sha7>, +3294/-10, 19 files): after setup, the setup page offers four role starter packs; the admin picks one and a team (or names a new team), and that pack becomes the team's default, so the team's engineers get it on their next sync. Skip is remembered per company and "Resume quick start" brings it back. The four packs are a stand-in for 86bcm901r's proposed mapping. No API or client change.
+- leorna-control-plane PR #101 (merged <date>, merge <sha7>, +3294/-10, 19 files): after setup, the setup page offers four role starter packs; the admin picks one and a team (or names a new team), and that pack becomes the team's default, so the team's engineers get it on their next sync. Skip is remembered per company and "Resume quick start" brings it back. The four packs are a stand-in for 86bcm901r's proposed mapping. No API or client change.
 
 WHAT WAS VERIFIED
 | Acceptance criterion | Test / evidence | Result |
@@ -21,9 +21,10 @@ WHAT WAS VERIFIED
 | AC4 An invalid or not-allowed request is refused with a clear status and writes nothing; one company never sees or changes another's | `TestQuickStartAC4RefusedRequestsWriteNothingWithPostgres` (13 subtests) + 86bcm902a-ac4-refused-requests-test.png | ✅ |
 | AC5 Fresh install end to end: no-click setup, Backend + new team, the engineer's first desktop sync gets the pack | `TestQuickStartAC5FreshInstallEndToEndWithPostgres` + 86bcm902a-ac5-fresh-install-test.png | ✅ |
 - Each AC test ran on its own on head 9a9bdec, by the independent verifier and again by a blind auditor; each fails on the base commit (the quick start doesn't exist there). ac-check: ALL ACCEPTED, 5 of 5.
+- After main moved (#98, #99, then #100), PR head bb79ec6: migration renumbered to 000025, one test call updated for #99's SaveVersion; make check ✅ · test-module-add ✅ · Postgres tests 604 pass, 0 fail, only the 4 allowed skips ✅ · story gate ✅ · gitleaks ✅ · the five AC tests ✅ (finisher's run). <Review, verifier, blind auditor and ac-check on bb79ec6: fill in when they finish.>
 - Gates on 9a9bdec (verifier's own run): make check ✅ (fmt, vet, go test -race, golangci-lint 0 issues, govulncheck, gitleaks, library gate) · test-module-add ✅ · Postgres tests 501 pass, 0 fail, only the 4 allowed skips ✅ · story gate ✅ · gitleaks on the branch ✅ · image build ✅
 - Mutation checks: verifier 27/27 killed; blind auditor 15/16 killed (the survivor is a test-strength follow-up, not a defect).
-- CI: <"Go quality gates" ✅ — Actions run URL> (not run yet: not pushed when this was written)
+- CI: "Go quality gates" ✅ on PR head bb79ec6 — https://github.com/LeornaAI/leorna-control-plane/actions/runs/40936750079 <replace with the merged head's run at post time>
 - Recorded demo (the card's Verify line), 2026-10-29: the real control-plane binary at 9a9bdec on an empty database with auto setup, run by the verifier and again by the auditor: setup finished with no clicks → four starter cards → Skip → Resume → Backend + new team → done → Pack Assignments shows the team default → project added → desktop device sign-in → first sync assigned "Backend starter pack" (26 files, 16 items, each body equal to the library's). 86bcm902a-verify-real-binary-demo.png
 - Live run: none needed; no AC is a live check.
 

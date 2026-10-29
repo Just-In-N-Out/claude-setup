@@ -1,8 +1,8 @@
-# 86bcm902a — stop and show (diff at `72ae141`)
+# 86bcm902a — stop and show (diff at `bb79ec6`)
 
-Branch `feat/86bcm902a-quick-start`, head `72ae14193df3414ef5d4ffb197558e28daf9fbc6`, pushed (`origin/feat/86bcm902a-quick-start` = head), PR #101. GitHub `main` = `b985422cd78a961b8c8e70a9e56fecc51d487858` (#98 and #99), merged into the branch in `7360fca`; re-checked 2026-10-29 18:51 UTC. `git status --porcelain`: 0 lines.
+Branch `feat/86bcm902a-quick-start`, head `bb79ec683832542bca271307b7a3fb31085664d0`, pushed (`origin/feat/86bcm902a-quick-start` = head), PR #101. GitHub `main` = `b65f797ff6cdc56a802dfaf417b0adec96463317` (#100 merged on top of #98 and #99); re-checked 2026-10-29 19:05 UTC. `git status --porcelain`: 0 lines.
 
-Since the accepted head `9a9bdec`: the merge of main (`7360fca`, only `delivery/stories.json` hand-resolved), the migration renumber 000024 → 000025 (`58f2bff`), the `SaveVersion(…, pack.VersionChange)` test call (`be31bad`) and the PR number in `delivery/stories.json` (`72ae141`).
+Since the accepted head `9a9bdec`: merge of main `b985422` (`7360fca`, only `delivery/stories.json` hand-resolved), the migration renumber 000024 → 000025 (`58f2bff`), the `SaveVersion(…, pack.VersionChange)` test call (`be31bad`), the PR number in `delivery/stories.json` (`72ae141`), and merge of main `b65f797` with #100 (`bb79ec6`, no conflict).
 
 ## Stat (`git diff --stat origin/main...HEAD`)
 
@@ -33,11 +33,11 @@ Since the accepted head `9a9bdec`: the merge of main (`7360fca`, only `delivery/
 
 - `git diff --name-only origin/main...HEAD -- .github/`: **empty** (0 paths). No CI change.
 - OpenAPI / contracts: **no change** (0 paths). No client change.
-- Migration versions duplicated: **none** (`ls internal/store/postgres/migrations | grep '\.up\.sql$' | cut -d_ -f1 | sort | uniq -d` empty; newest 000024 `pack_item_order` from #99, then 000025 `quick_starts`).
-- Branch's own commits (`HEAD ^6c1709e ^origin/main`): 25; authors: Justin Issa <justin@leorna.com> (1 identity); committers: Justin Issa <justin@leorna.com>.
+- Migration versions duplicated: **none** (`ls internal/store/postgres/migrations | grep '\.up\.sql$' | cut -d_ -f1 | sort | uniq -d` empty; newest 000024 `pack_item_order` from #99, then 000025 `quick_starts`; #100 adds none).
+- Branch's own commits (`HEAD ^6c1709e ^origin/main`): 26; authors: Justin Issa <justin@leorna.com> (1 identity); committers: Justin Issa <justin@leorna.com>.
 - Commit bodies matching `^co-authored-by:|generated with|noreply@anthropic|🤖` (case-insensitive): 0.
 - `git merge-tree --write-tree --name-only HEAD origin/main`: EXIT=0.
-- Merge check (`evidence/86bcm902a/finisher2/merge-check-7360fca.txt`): one-side files equal that side's blob (16 + 38); differs-from-both = both-sides set (`delivery/stories.json`, `internal/web/README.md`, `internal/web/handler.go`); the two auto-merged files equal a fresh 3-way merge; `stories.json` equals the resolver's output (42 main entries unchanged by value, 86bcm902a appended last).
+- Merge checks (`evidence/86bcm902a/finisher2/merge-check-7360fca.txt`, `merge-check-bb79ec6.txt`): one-side files equal that side's blob; differs-from-both = both-sides set (`delivery/stories.json`, `internal/web/README.md`, `internal/web/handler.go`) in both; every auto-merged file equals a fresh 3-way merge; `7360fca`'s stories.json equals the resolver's output; after `bb79ec6` main's 43 entries are unchanged by value and in order, 86bcm902a last with `[101]`.
 
 ## Commits (`git log --topo-order --reverse HEAD ^origin/main`)
 
@@ -67,12 +67,13 @@ f5c12fa fix(86bcm902a): pin the routes' own admin check and the quick start's te
 58f2bff fix(86bcm902a): renumber the quick_starts migration to 000025 after #99
 be31bad fix(86bcm902a): pass pack.VersionChange to SaveVersion after #99
 72ae141 docs(86bcm902a): record PR #101 in the delivery inventory
+bb79ec6 Merge branch 'main' into feat/86bcm902a-quick-start
 ```
 
-## Gates on `be31bad` (finisher 2, `evidence/86bcm902a/finisher2/`)
+## Gates on `bb79ec6` (finisher 2, `evidence/86bcm902a/finisher2/`)
 
 ```
-HEAD=be31bad22b24ceb4c39451c81f32faf64b341e5e start=2026-10-29T18:37:04.469+00:00
+HEAD=bb79ec683832542bca271307b7a3fb31085664d0 start=2026-10-29T19:01:53.807+00:00
 make-check EXIT=0
 module-add EXIT=0
 pg-go-test EXIT=0
@@ -88,11 +89,11 @@ ac3 EXIT=0 pass=4 fails=0 skips=0
 ac4 EXIT=0 pass=14 fails=0 skips=0
 ac5 EXIT=0 pass=1 fails=0 skips=0
 porcelain after: 0
-end=2026-10-29T18:39:03.765+00:00
+end=2026-10-29T19:03:38.814+00:00
 ALLDONE
 ```
 
-The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted skips only, no skip naming `LEORNA_TEST_DATABASE_URL`, all 267 declared top-level tests have a result, all 50 `TestQuickStart*` results pass. `72ae141` (stories.json only): story gate OK (`story-gate-72ae141.txt`). Review, verifier and blind auditor on the new head run after the PR opens; the earlier `ALL ACCEPTED: 5 of 5 ACs` was on `9a9bdec`.
+The Postgres stream (`pg-bb79ec6-summary.txt`): 604 pass, 0 fail, the 4 accepted skips only, no skip naming `LEORNA_TEST_DATABASE_URL`, all 287 declared top-level tests have a result, all 50 `TestQuickStart*` results pass. Earlier heads: `be31bad` gates all EXIT=0 (`SUMMARY-be31bad.txt`); hosted CI on `72ae141` success (run 40934127145). Review, verifier and blind auditor on `bb79ec6` run after this; the earlier `ALL ACCEPTED: 5 of 5 ACs` was on `9a9bdec`.
 
 ## Key hunks (against `origin/main`)
 
@@ -137,7 +138,6 @@ The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted
 ### `cmd/control-plane/main.go`
 
 ```diff
-+++ b/cmd/control-plane/main.go
 @@ -28,6 +28,7 @@ import (
  	"github.com/LeornaAI/leorna-control-plane/internal/library"
  	"github.com/LeornaAI/leorna-control-plane/internal/library/gate"
@@ -166,7 +166,6 @@ The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted
 ### `internal/web/handler.go`
 
 ```diff
-+++ b/internal/web/handler.go
 @@ -102,6 +102,8 @@ type Handler struct {
  	bundleServer                  bundleResolver
  	setupDatabases                setupDatabases
@@ -176,7 +175,7 @@ The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted
  	devLogin                      bool
  	autoSetup                     bool
  	bootstrapLoader               func(ctx context.Context, tenantID store.TenantID) error
-@@ -291,6 +293,9 @@ func (handler *Handler) Routes() http.Handler {
+@@ -294,6 +296,9 @@ func (handler *Handler) Routes() http.Handler {
  	routes.Handle("POST /admin/setup/database", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.setupDatabase)), false))
  	routes.Handle("POST /admin/setup/database/existing", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.setupExistingDatabase)), false))
  	routes.Handle("POST /admin/setup/pack", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.setupPack)), false))
@@ -186,7 +185,7 @@ The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted
  	routes.Handle("GET /v1/audit", handler.requireSession(handler.requireAdmin(api), false))
  	routes.Handle("GET /admin/audit", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.auditView)), true))
  	routes.Handle("GET /admin/third-party-content", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.thirdPartyContentView)), true))
-@@ -528,7 +533,8 @@ type adminPageData struct {
+@@ -531,7 +536,8 @@ type adminPageData struct {
  	TenantID    store.TenantID
  	CSRFToken   string
  	Setup       *onboarding.Progress
@@ -196,7 +195,7 @@ The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted
  }
  
  func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
-@@ -558,6 +564,14 @@ func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
+@@ -561,6 +567,14 @@ func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
  			handler.logger.Warn("setup banner unavailable", "error", err)
  		}
  	}
@@ -211,7 +210,7 @@ The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted
  
  	var page bytes.Buffer
  	if err := handler.template.Execute(&page, adminPageData{
-@@ -567,6 +581,7 @@ func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
+@@ -570,6 +584,7 @@ func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
  		TenantID:    session.Principal.TenantID,
  		CSRFToken:   csrfCookie.Value,
  		Setup:       setup,
@@ -219,7 +218,7 @@ The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted
  		Client:      handler.clientConnectStatus(r.Context()),
  	}); err != nil {
  		handler.writeProblem(w, r, http.StatusInternalServerError, "RENDER_FAILED", "The admin page could not be rendered", err)
-@@ -753,7 +768,7 @@ const adminTemplate = `<!doctype html>
+@@ -756,7 +771,7 @@ const adminTemplate = `<!doctype html>
      <p>Your Google identity is connected to one server-resolved tenant.</p>
      ` + clientURLCardHTML + `
      {{if .Setup}}<section class="card" id="setup-banner">
@@ -233,7 +232,6 @@ The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted
 ### `internal/web/setup.go`
 
 ```diff
-+++ b/internal/web/setup.go
 @@ -153,6 +153,16 @@ func (handler *Handler) renderSetupPage(w http.ResponseWriter, r *http.Request,
  		}
  		autoRefresh = setupIsAdvancing(progress)
@@ -577,5 +575,5 @@ func quickStartFailure(err error) (int, string) {
 ### Docs and tests (not shown)
 
 - Docs: root `README.md` (+4: authorization row, setup sentence), `internal/onboarding/README.md` (+42/-1: "Quick start (86bcm902a)" section, "(migration 25)"; the intro now says the quick start answer is the one stored fact), `internal/web/README.md` (+9: three routes, the panel and the banner link), `internal/audit/README.md` (+6: `quickstart.skip`, `quickstart.complete`).
-- Tests: `internal/web/quick_start_test.go` (+1300: the five AC tests plus done-sentence, browser-gone, time-bound and same-pick-again tests; line 1146 now passes `pack.VersionChange{AddLibraryItemIDs: …}` after #99), `internal/onboarding/quickstart_test.go` (+476), `internal/onboarding/starters_test.go` (+53), `internal/store/postgres/quick_starts_test.go` (+377), `store_test.go` (`quick_starts` added to both round-trip table lists and the reset drop list).
-- `delivery/stories.json`: `86bcm902a` appended last with `prs: [101]` (main's 42 earlier entries unchanged by value).
+- Tests: `internal/web/quick_start_test.go` (+1300: the five AC tests plus done-sentence, browser-gone, time-bound and same-pick-again tests; line 1146 passes `pack.VersionChange{AddLibraryItemIDs: …}` after #99), `internal/onboarding/quickstart_test.go` (+476), `internal/onboarding/starters_test.go` (+53), `internal/store/postgres/quick_starts_test.go` (+377), `store_test.go` (`quick_starts` added to both round-trip table lists and the reset drop list).
+- `delivery/stories.json`: `86bcm902a` appended last with `prs: [101]` (main's 43 earlier entries unchanged by value).
