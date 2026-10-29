@@ -1,0 +1,66 @@
+# VERIFIER brief (read only, round 2): 86bcm901r-starter-packs [leorna]
+
+**Role:** VERIFIER (read only) for the Leorna story "86bcm901r-starter-packs" (ClickUp **86bcm901r "Role-based starter packs"**). You are a fresh agent that never saw the build: the independent verifier of the Agent Defect Loop (`backend-data-migrations`) and the first of the two AC proofs (`~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` → VERIFIER). If you return `clean`, a blind AC auditor proves every AC again without seeing your work, and `ac-check.sh` compares your two reports.
+
+**Source is read only for you:** no commit, push, merge or file edit in the worktree; restore anything you touch. You write only into **`~/.hermes/plans/leorna/evidence/86bcm901r/verifier-abc60dc/`** (create it fresh with `mkdir`, no `-p`; stop if it exists). The older `verifier/` folder is a previous round's, on `398af64`: don't write there, and don't cite it as your receipt.
+
+**Machine:** Justin's Windows desktop (WSL Ubuntu, `/home/justin`), not the Mac. Screenshots of logs use `ac-verification.md`'s WSL method (a log rendered in a `<pre>` page, captured with Chrome for Testing: `~/.cache/chrome-for-testing/chrome-linux64/chrome`, `LD_LIBRARY_PATH=~/.cache/chrome-libs/root/usr/lib/x86_64-linux-gnu`, `env -u DISPLAY -u WAYLAND_DISPLAY`, `--headless=new --no-sandbox --disable-gpu --disable-software-rasterizer`).
+
+## What changed since the last verification (on `398af64`)
+
+1. GitHub `main` moved to `dd006b7` (PR #98, 86bcm901j: library 0.8.0, MCP templates). A fixer merged it into the branch (merge commit `4ea7548`: `delivery/stories.json` main's file + this story's entry last; `internal/library/README.md` both kept), then `abc60dc` reworded one README sentence from #98 that said the seed changes "until 86bcm901r" (false under Q4 A).
+2. **AC4 was amended** (Justin, 2026-10-29: "Agent does it, counts", then "Go"): it is no longer Justin's live check but an agent-run check, `ac4_starter_pack_desktop_sync`, recipe in the plan ("AC4's check") with files in `~/.hermes/plans/leorna/86bcm901r-ac4/` (read only to you).
+3. A fresh full review (`review-1/`, from `dd006b7` to `abc60dc`) came back clean with three P3s (`follow-ups.md`). The referee says `MOVE ON: review-1 at abc60dc is clean`.
+
+## What you verify
+
+- **Worktree:** `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bcm901r-starter-packs`, branch `feat/86bcm901r-starter-packs`.
+- **Head:** `abc60dc74fc898c43cc9f010aed40e5cb6c29e54`. **Base:** `dd006b79f9908976e853c57489032bd5d9d471df` (= `git merge-base HEAD <GitHub main>`; the story's first base was `6c1709e`). First confirm HEAD is `abc60dc` and `git status --porcelain` is empty; if not, stop and report. Re-check GitHub `main` with `gh api repos/LeornaAI/leorna-control-plane/commits/main --jq .sha`; if it moved past `dd006b7`, say so in your report (don't merge anything).
+- **Approved plan (the contract, read-only copy, reinstalled with the amendment):** `~/.hermes/plans/leorna/evidence/86bcm901r/plan-approved.md`. Read its top (status, Amendments, QA1), the AC lines, T7 including "AC4's check", and "Notes for later roles".
+
+## Acceptance criteria (each needs its own head log, a base log and a screenshot in YOUR folder)
+
+- **AC1:** fresh install → the agreed starter packs are in the catalog. Test `TestStarterPacksAC1FreshInstallListsTheAgreedPacksInTheCatalogWithPostgres` (`./internal/web`).
+- **AC2:** assigned to a team → engineers sync it in all three tools. Test `TestStarterPacksAC2AssignedPackSyncsIntoClaudeCodeCodexAndCursorWithPostgres` (`./internal/web`).
+- **AC3:** library item update → starter packs pick up the new version on the next library release. Test `TestStarterPacksAC3NextLibraryReleasePicksUpTheNewItemVersionWithPostgres` (`./internal/store/postgres`).
+- **AC4 (amended, agent-run):** the plan's AC4 line and "AC4's check". Run `bash ~/.hermes/plans/leorna/86bcm901r-ac4/run.sh` exactly as the plan says, on head (a checkout of `abc60dc`) and on base (a checkout of `dd006b7`), each with its own new work folder, out folder and database. It must print `ok 1 - ac4_starter_pack_desktop_sync` on head and `not ok 1` on base, each failing on its own lines. **Before the first run, read `run.sh` and `client-sync.go` yourself and confirm every client path resolves inside the work folder and the real-home fingerprint check runs**: the client's Sync must never write into the real `/home/justin` (`~/.claude`, `~/.agents`, `~/.cursor`, `~/.codex`, `~/.config/Leorna`). If you find a way it could, stop and report; don't run it. Check its result against every clause of the AC line yourself (the catalog, both assignments, Sync success in all three tools, the 26/21/26 Backend file lists, Codex prompts skipped with the reason, the agent not installed and no agent file, the real home unchanged), not just the `ok` line. Its screenshots (`ac4-sync.png`, plus the catalog and assignment captures) go in your folder; inspect them.
+- **AC5:** a bad definition or failed write stops the load, writes nothing, a retry works. Test `TestStarterPacksAC5AFailedLoadNamesThePackOrStepAndWritesNothingWithPostgres` (`./internal/store/postgres`).
+
+Follow `ac-verification.md` exactly: run each Go AC test **by its own name** (`go test -v -count=1 -run '^<Name>$' <pkg>`) on head from the worktree (`go test` alone is safe there), saving `verifier-abc60dc/ac<n>-abc60dc.log` with first line `HEAD=<sha>` and last line `EXIT=<code>`; then on base in a **separate detached worktree** at `dd006b7` with head's AC test file copied in (plus the test files of any package the story creates that the test imports, and nothing else), saving `verifier-abc60dc/ac<n>-base-dd006b7.log`; it must fail to build or fail there. AC4's logs follow the same naming. One screenshot per AC in your folder, taken by you: AC1 a real capture of the Content library page's Starter packs section from a binary you build at `abc60dc` on a fresh database of your own (the memory note's recipe, `$MEM/leorna-control-plane-workflow.md`, search "admin console screenshots work"; chromedp's element screenshot or the crop fallback); AC2, AC3, AC5 a rendered capture of your own log; AC4 the check's own captures. Every receipt you cite must be inside `verifier-abc60dc/`. Inspect each image (tall ones in bands ≤ 1,300 px): no URL bar, domain, tenant ID, token or email may show.
+
+Write **`verifier-abc60dc/ac.json`** in the format at the top of `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh` (`head`, then `ac_status[]` with `ac`, `accepted`, `test`, `log`, `base_log`, `screenshot`, `evidence`), with AC4's `test` exactly as the plan names it. Before handing back, self-check it as `ac-verification.md` says: `cp` (not `ln`) your `ac.json`, logs and images into a scratch folder outside the evidence tree, run `ac-check.sh --repo <worktree> --base dd006b79f9908976e853c57489032bd5d9d471df --plan ~/.hermes/plans/leorna/evidence/86bcm901r/plan-approved.md <your ac.json> <scratch>/ac.json`, read its last line (with no live AC left it should be `ALL ACCEPTED`), then delete the copy. Fix any format, path, head or pass-line slip it shows.
+
+## Gates and the loop's validation (run them yourself)
+
+- In a **detached copy** at `abc60dc` (`git -C <worktree> worktree add --detach ~/.cache/86bcm901r-verify2/head abc60dc`; `make check` and `test-module-add.sh` write into their tree): `make check` with CI's tools bound by absolute path (`~/.local/leorna-toolchain`: Go 1.27.3, `GOLANGCI_LINT`, `GOVULNCHECK`; task-local PATH), `bash ./scripts/test-module-add.sh`, the Postgres skip check from a `go test -json` stream over `./internal/cloud/dbcheck ./internal/store/postgres ./internal/web` (`leorna` step 4: only the four allowed skips; every story test ran), and the production image (`docker build --no-cache --file Containerfile --tag 86bcm901r-verify2 .`, both `go build` steps DONE not CACHED, then `docker run --rm --entrypoint /usr/local/bin/gitleaks 86bcm901r-verify2 version` prints `8.30.1`; remove the tag after). Save logs in `verifier-abc60dc/gates-abc60dc.txt`, and read each exit code.
+- `backend-data-migrations`' Required Validation Gates for migration 24: up/down/up on a fresh database, `TestMigrationRoundTrip`, the CHECKs and UNIQUE key, and that the down file leaves shared rows sane; also that main's migrations and 24 apply in order on a fresh database (no duplicate version).
+- Pre-flight: no `.github/`, `contracts/` or `packages/contracts/` path in `git diff --name-only dd006b7...abc60dc`; the branch's own commits (`git log HEAD ^6c1709e ^dd006b7`) all have the Leorna author and committer (report it as a result, **never print the address**); no AI attribution lines (`^co-authored-by:|generated with|noreply@anthropic|🤖`, case-insensitive); no tracked `CLAUDE.md`.
+
+## Look for regressions
+
+Re-read the whole `dd006b7...abc60dc` diff with fresh eyes, and the merge: does #98's library 0.8.0 or its other changes alter anything a starter pack holds, resolves or shows? Is any README or record claim now false after the merge or the AC4 amendment (the known ones are in `follow-ups.md`: list any new one)? Earlier receipts (`INVENTORY.md`, `reviewer1/`, `reviewer2/`, `fixer1/`, `fixer2/`, `verifier/`, `main-in/`, `review-1/`) are claims to check, not proof. For anything you doubt, write your own mutant (overlay or a detached copy, never the story worktree) and say whether it died.
+
+## Database, scratch, siblings
+
+- **Databases:** your own only, prefix `leorna_86bcm901r_verify2_`, ending `_test` (e.g. `…_verify2_test`, `…_verify2_base_test`, `…_verify2_demo_test`, `…_verify2_ac4_test`, `…_verify2_ac4_base_test`), in `leorna-test-pg`. The password never goes on a command line or into a log. Never another role's, a sibling's or `leorna-pg`. Drop all of yours at the end.
+- **Scratch:** everything (detached copies, TMPDIR, GOTMPDIR, caches, binaries, Chrome profiles, AC4 work folders) in `~/.cache/86bcm901r-verify2/`, made fresh with `mkdir` (no `-p`). Nothing big on `/tmp`. At the end remove your detached worktrees with `git worktree remove`, stop any server you started by its verified PID, and `rm -r /home/justin/.cache/86bcm901r-verify2` by that literal path.
+- Siblings: PR #99 (86bcm901y) is open; integration with it is not your job. Never touch another story's worktree, branch, database or evidence folder.
+- Long commands: a foreground Bash command moves to the background after about 180 s. Don't end your turn to wait (that counts as finishing); poll its log in the foreground in waits under 3 minutes each.
+
+## Skills to load first, in this order (say so in your first steps)
+
+1. `leorna` (VERIFIER role; skip its Step 1 full context load; read `$MEM/leorna-control-plane-workflow.md`, `$MEM` = `~/.claude/projects/-Users-justin-Leorna-leorna-client/memory`).
+2. `engineering-best-practices`.
+3. `backend-data-migrations` (the loop skill: run its Required Validation Gates), `mutation-testing-discipline`, `security-best-practices`, `multi-tenant-auth-management`.
+4. Read `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` in full before the AC work. Any loaded skill's "spawn a subagent" step is the main session's job, not yours.
+
+## Rules
+
+- You can't ask Justin anything.
+- `verdict: clean` requires every AC (AC1–AC5, AC4 included) accepted on `abc60dc` with its test, head log, base log and screenshot in your folder, the gates green, and no P0, P1 or P2 finding open. Otherwise `findings`, each with severity P0–P3 (CLAUDE.md: **P0/P1** a security hole, a guard bypass, a false AC, or a wrong block that breaks normal work; **P2** a bug a real person or agent could plausibly hit, anything that breaks an AC or the UI, or a test that can't fail; **P3** cosmetic, docs, a hole only a deliberate evasion hits, or a setup none of Justin's machines has), `introduced`, claim, a concrete real-use scenario for P0–P2, and evidence.
+- If you find any other bug or problem outside this story's diff, list it in `found_else` (one line each, evidence, severity).
+- If you learn something reusable (a gotcha, an approach that worked after one failed, a skill step that was wrong, missing or stale), don't edit any skill or memory file: list it in `skill_lessons[{skill, lesson, evidence, enforce}]` and a "Skill lessons" section, naming the skill (or `memory`). `enforce` is `none`, or, when the lesson is about a rule that was broken or nearly broken, a one-line proposal for a check that would have caught it: its kind (Claude Code hook, git hook, test, lint, script), what it checks and where it runs. An empty list is the normal answer. End your report with the line `MAIN SESSION: check and save these skill_lessons now.`
+
+## Output (final message)
+
+Return JSON: `{verdict: clean|findings, head, base, github_main, findings[{id, severity, introduced, claim, scenario, evidence}], ac_status[{ac, accepted, test, screenshot, evidence, not_run}], ac_json, ac_check_self_test, ac4_home_isolation, gates[{gate, log, exit}], mutants[], found_else[], skill_lessons[]}`. `verdict`, `head`, `findings`, `ac_status` and `ac_json` are required. Plain words.
