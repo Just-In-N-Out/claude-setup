@@ -67,6 +67,35 @@ def sha: type == "string" and test("^[0-9a-f]{40}$");
   end
 JQ
 )
+# the latest round's verdict: effective severities, its finding lines, and clean / again / ask
+JUDGE=$(cat <<'JQ'
+def words: [splits("[[:space:]]+") | select(length > 0)] | length;
+def serious: . == "P0" or . == "P1" or . == "P2";
+def oneline: tostring | gsub("[[:cntrl:]]+"; " ");
+.rounds as $r | .justin as $j | ($r | length - 1) as $L
+| (reduce range(0; $r | length) as $i ([];
+     . as $acc | ($j[$i].accept // []) as $a
+     | $acc + [ $r[$i].findings[]
+                | select(.id as $id | any($a[]; . == $id)
+                         or ((.repeats // "") as $p | $p != "" and any($acc[]; . == $p)))
+                | .id ])) as $accepted
+| [ $r[] | [ .findings[]
+              | . + {eff: (if (.id as $id | any($accepted[]; . == $id)) then "ACCEPTED"
+                           elif (.severity | serious) and ((.scenario // "") | words) < 5 then "P3 (no scenario)"
+                           else .severity end)} ] ] as $e
+| [ $e[$L][] | select(.eff | serious) ] as $now
+| (if $L > 0 then [ $e[$L - 1][] | select(.eff | serious) ] | length else 0 end) as $prev
+| [ $now[] | . as $f | select((.repeats // "") != "")
+    | select(any($e[0:$L][][]; .id == $f.repeats and (.eff | serious)))
+    | select(((.new_fact // "") | words) < 5) | "\(.id) repeats \(.repeats)" ] as $stalled
+| { round: ($L + 1), now: ($now | length), prev: $prev, stalled: $stalled,
+    lines: [ $e[$L][] | "\(.id | oneline)  \(.eff)  \(.file_line | oneline)  \(.claim | oneline)\(if (.repeats // "") != "" then "  (repeats \(.repeats | oneline))" else "" end)" ],
+    outcome: (if ($now | length) == 0 then "clean"
+              elif $j[$L].continue == true then "again"
+              elif ($stalled | length) > 0 or ($prev > 0 and ($now | length) >= $prev) then "ask"
+              else "again" end) }
+JQ
+)
 
 # the rounds: review-1 … review-<n>, with no gaps
 n=0
@@ -97,4 +126,21 @@ if [[ $(jq -r ".rounds[$((n - 1))].scope" <<<"$in") == full ]]; then
   git -C "$repo" merge-base --is-ancestor "$RF" "$RH" 2>/dev/null && [[ $RF != "$RH" ]] \
     || die "review-$n is a full review, but its from ${RF:0:7} is not an older commit of its head ${RH:0:7}"
 fi
-die "not judged yet"
+
+v=$(jq -c "$JUDGE" <<<"$in") || die "can't judge the review records"
+jq -r '.lines[]' <<<"$v"
+outcome=$(jq -r .outcome <<<"$v") now=$(jq -r .now <<<"$v")
+case $outcome in
+  clean)
+    if [[ $RH == "$HEADSHA" ]]; then echo "MOVE ON: review-$n at ${RH:0:7} is clean"; exit 0; fi
+    echo "REVIEW AGAIN: HEAD ${HEADSHA:0:7} is not review-$n's head ${RH:0:7}: review what changed since ${RH:0:7}"
+    exit 1 ;;
+  again)
+    echo "REVIEW AGAIN: $now P0-P2 finding(s) in review-$n at ${RH:0:7}: fix them, then review the fix commits"; exit 1 ;;
+  ask)
+    why=$(jq -r '[ (if (.stalled | length) > 0 then "repeats with no new fact: \(.stalled | join(", "))" else empty end),
+                   (if .prev > 0 and .now >= .prev then "\(.now) P0-P2, no fewer than review-\(.round - 1)'"'"'s \(.prev)" else empty end) ]
+                 | join("; ")' <<<"$v")
+    echo "ASK JUSTIN: review-$n: $why"; exit 3 ;;
+esac
+die "unknown outcome $outcome"
