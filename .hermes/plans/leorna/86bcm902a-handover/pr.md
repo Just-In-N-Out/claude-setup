@@ -71,7 +71,7 @@ Everything below ran on 2026-10-29 on head `bb79ec6`, after GitHub `main` moved 
   - migration versions have no duplicate (newest: 000024 from #99, then 000025 here);
   - all 26 branch commits (21 story commits, two merges, two fixes and the PR number) are by the Leorna identity, with no AI attribution lines;
   - `git merge-tree` against main is clean.
-- [ ] The review round, the independent verifier and the blind AC auditor on this head run after this PR opens. Their earlier acceptance (`ALL ACCEPTED: 5 of 5 ACs`, with mutation checks and a real-binary sync demo) was on `9a9bdec`, before main came in.
+- [x] Re-verified on `bb79ec6` after this PR opened: a fresh review of both merges and the fixes since `9a9bdec` (clean, one P3 note), a fresh verifier (gates, merge checks, migration 25 up/down/up on filled rows, a real-binary sync) and a blind AC auditor (25 mutants, real-console screenshots, a real-binary first sync). `ac-check.sh --reviews`: `ALL ACCEPTED: 5 of 5 ACs on bb79ec6`, reviews clean. The first acceptance was on `9a9bdec`, before main came in.
 - [x] Hosted CI "Go quality gates" on `bb79ec6`: pass (see Evidence).
 
 ## Security, migration, rollback
@@ -111,6 +111,7 @@ Everything below ran on 2026-10-29 on head `bb79ec6`, after GitHub `main` moved 
   8. Pre-existing: `TrySetupLock` returns the same "not run" for "another setup step is running" and "every pool slot is busy".
   9. UX nit: a resubmit after a pick whose browser went away shows the done sentence with the 409 "team name already exists" alert above it.
   10. Test helper `readBody` (`internal/web/handler_test.go`) caps replies at 64 KiB, too small for a starter pack's `/content` (~290 KB). The AC tests read it with their own 8 MiB bound.
+  11. Test strength, production code correct in each: the "same pick again" check with several assignment rows; the bounded-pick lock checked from a fresh database session; an unknown starter sent together with a new team name (AC4).
 
 ## Evidence
 
