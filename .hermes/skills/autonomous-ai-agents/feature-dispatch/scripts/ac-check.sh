@@ -3,7 +3,7 @@
 # criterion (AC) is really accepted, before a story's finish step.
 #
 #   ac-check.sh --repo <worktree> --base <base commit> --plan <approved plan> \
-#     <verifier report> <auditor report>
+#     [--reviews <evidence folder>] <verifier report> <auditor report>
 #
 # --base is the commit the branch started from (git merge-base HEAD <integration
 # branch>). The verifier and the blind AC auditor each write a report in their
@@ -38,6 +38,13 @@
 # planner's tag, approved by the user with the plan) is one only the user can
 # check: proven by both → ACCEPTED; not_run by an agent and failed by neither →
 # owed to the user; failed by either → NOT ACCEPTED. not_run excuses no other AC.
+# --reviews <evidence folder> (the orchestrator's command; the verifier's and the auditor's
+# self-checks leave it out) also runs review-check.sh, beside this script, on the review rounds
+# <evidence>/review-<n>/ (references/review-loop.md). The head counts as reviewed only when it
+# prints MOVE ON: the latest round is clean and its head is HEAD, or HEAD is a pure rebase of it.
+# After the AC lines a "REVIEWS  CLEAN: …" or "REVIEWS  NOT ACCEPTED: <its last line>" line; a
+# head no clean review covers is NOT ACCEPTED (exit 1); bad review records exit 2. Without
+# --reviews nothing about reviews is checked or printed.
 # Exit 0: ALL ACCEPTED, or READY FOR THE USER (all proven except owed live ACs).
 # Exit 1: NOT ACCEPTED (one line per AC says why). Exit 2: bad usage or input.
 # Runs on macOS bash 3.2. Tests: ac-check.test.sh
@@ -45,12 +52,13 @@ set -uo pipefail
 
 usage() { echo "usage: ac-check.sh --repo <worktree> --base <base commit> --plan <approved plan> <verifier report> <auditor report>" >&2; exit 2; }
 die() { echo "error: $*" >&2; exit 2; }
-repo="" base="" plan=""
+repo="" base="" plan="" reviews="" withrev=0
 while (($#)); do
   case $1 in
     --repo) (($# >= 2)) || usage; repo=$2; shift 2 ;;
     --base) (($# >= 2)) || usage; base=$2; shift 2 ;;
     --plan) (($# >= 2)) || usage; plan=$2; shift 2 ;;
+    --reviews) (($# >= 2)) || usage; reviews=$2; withrev=1; shift 2 ;;
     -*) usage ;;
     *) break ;;
   esac
@@ -87,6 +95,20 @@ dirty=$(git -C "$repo" status --porcelain 2>/dev/null | head -3 | cut -c4- | tr 
 if [[ -n $dirty ]]; then
   echo "NOT ACCEPTED: the worktree has uncommitted changes (${dirty% }); commit them, or remove tool scratch, and verify again"
   exit 1
+fi
+
+# --reviews: is HEAD covered by a clean review? The referee's last line says (MOVE ON = covered).
+covered=1 rlast=""
+if ((withrev)); then
+  rcheck="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/review-check.sh"
+  [[ -f $rcheck ]] || die "--reviews: no review-check.sh beside ac-check.sh ($rcheck)"
+  rout=$(bash "$rcheck" --repo "$repo" --base "$base" "$reviews" 2>&1); rrc=$?
+  rlast=$(awk 'NF { l = $0 } END { print l }' <<<"$rout")
+  if ((rrc == 2)); then
+    x=$(grep '^error: ' <<<"$rout" | head -1); x=${x#error: }
+    die "--reviews: ${x:-$rlast}"
+  fi
+  [[ $rrc == 0 && $rlast == "MOVE ON"* ]] || covered=0
 fi
 
 exit_re='^EXIT=-?[0-9]+$'
@@ -234,7 +256,12 @@ while IFS= read -r ac; do
   fi
 done <<<"$acs"
 
-if ((bad)); then echo "NOT ACCEPTED: $bad of $total ACs on ${HEADSHA:0:7}"; exit 1; fi
+if ((withrev)); then
+  if ((covered)); then echo "REVIEWS  CLEAN: ${rlast#MOVE ON: }"; else echo "REVIEWS  NOT ACCEPTED: $rlast"; fi
+fi
+unreviewed=""; ((covered)) || unreviewed="; and the head isn't covered by a clean review"
+if ((bad)); then echo "NOT ACCEPTED: $bad of $total ACs on ${HEADSHA:0:7}$unreviewed"; exit 1; fi
+if ((!covered)); then echo "NOT ACCEPTED: the head ${HEADSHA:0:7} isn't covered by a clean review ($rlast)"; exit 1; fi
 if ((${#owed[@]})); then
   echo "READY FOR THE USER: $proven of $total ACs proven on ${HEADSHA:0:7}; live ACs owed to the user: ${owed[*]}"
   exit 0
