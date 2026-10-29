@@ -79,3 +79,8 @@ review in its own worktree: leave it alone.
 new_fact, evidence}], fixes_closed[{id, closed, evidence}], ac_status[{ac, accepted, test, evidence}], referee_line,
 found_else[], skill_lessons[{skill, lesson, evidence, enforce}]}`. Never edit skills or memory. End with
 `MAIN SESSION: check and save these skill_lessons now.`
+
+## Live pages (Justin, 2026-10-29)
+- The site we copy: https://bdryswi.com/
+- Our page as Justin pasted it: https://bdry.staging.growithgro.com/homev2/?bricks_preview=1793276386
+Read both over HTTP or in your own headless Chrome as needed (add `&f2b=<random>` / `?f2b=<random>` to get past any cache). Read only: never log in, never submit a form, never change anything on either site.

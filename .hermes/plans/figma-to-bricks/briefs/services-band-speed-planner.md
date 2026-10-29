@@ -68,3 +68,8 @@ mini_ok, found_else[], skill_lessons[]}`. End with the line `MAIN SESSION: check
 "Okay, there are a couple of issues I need you to give to an orchestrator agent… pass them to planner agents… Whatever
 the planner agent says, just go with the recommended stuff, all right. The first one here is that the animation on the
 service one is too fast. We need to slow it down a bit. It doesn't match what we have on the official site."
+
+## Live pages (Justin, 2026-10-29)
+- The site we copy: https://bdryswi.com/
+- Our page as Justin pasted it: https://bdry.staging.growithgro.com/homev2/?bricks_preview=1793276386
+Read both over HTTP or in your own headless Chrome as needed (add `&f2b=<random>` / `?f2b=<random>` to get past any cache). Read only: never log in, never submit a form, never change anything on either site.

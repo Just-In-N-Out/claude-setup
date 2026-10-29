@@ -34,3 +34,8 @@ included).
 - Another job (`header-bar`) is under review in its own worktree: leave it alone.
 
 Return the JSON in the round-1 brief, ending with the line `MAIN SESSION: check and save these skill_lessons now.`
+
+## Live pages (Justin, 2026-10-29)
+- The site we copy: https://bdryswi.com/
+- Our page as Justin pasted it: https://bdry.staging.growithgro.com/homev2/?bricks_preview=1793276386
+Read both over HTTP or in your own headless Chrome as needed (add `&f2b=<random>` / `?f2b=<random>` to get past any cache). Read only: never log in, never submit a form, never change anything on either site.
