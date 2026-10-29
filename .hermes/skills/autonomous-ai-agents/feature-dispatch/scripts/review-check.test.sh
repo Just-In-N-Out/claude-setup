@@ -358,13 +358,15 @@ ac7_referee_checks_head_coverage() {
   replay "$C1" "$C2" "$CE" "$C3" || fail "replay" || return 1; NH=$(head_); judge "$M1"
   want 0 "MOVE ON: review-1 at ${C3:0:7} is clean, and HEAD ${NH:0:7} is a pure rebase of it" "the same commits picked onto main" || return 1
   # patch-ids git can't compute are an error, not empty ids that compare equal: a git older than 2.39
-  # (no patch-id --verbatim), or diff-tree failing on one commit of either side
-  mkdir -p "$S/fakegit" && cat >"$S/fakegit/git" <<'SH' && chmod +x "$S/fakegit/git" || fail "fake git" || return 1
+  # (no patch-id --verbatim), or diff-tree failing on one commit of either side (a missing object)
+  mkdir -p "$S/fakegit" "$S/tmp" && cat >"$S/fakegit/git" <<'SH' && chmod +x "$S/fakegit/git" || fail "fake git" || return 1
 #!/bin/sh
 [ -x "${REAL_GIT-}" ] && [ "$REAL_GIT" != "$0" ] || { echo "fake git: REAL_GIT is not the real git" >&2; exit 125; }
 case " $* " in
-  *" patch-id "*) if [ -n "${FAKE_OLD_GIT-}" ]; then echo "error: unknown option verbatim" >&2; exit 129; fi ;;
-  *" diff-tree "*" ${FAKE_BAD_COMMIT-none} "*) echo "fatal: bad object ${FAKE_BAD_COMMIT-}" >&2; exit 128 ;;
+  *" patch-id "*) if [ -n "${FAKE_OLD_GIT-}" ]; then
+      printf '%s\n' 'error: unknown option `verbatim'"'" 'usage: git patch-id [--stable | --unstable]' >&2; exit 129
+    fi ;;
+  *" diff-tree "*" ${FAKE_BAD_COMMIT-none} "*) printf '%s\n' "fatal: bad object ${FAKE_BAD_COMMIT-}" 'fake git: a second line' >&2; exit 128 ;;
 esac
 exec "$REAL_GIT" "$@"
 SH
@@ -372,17 +374,26 @@ SH
     local g; g=$(command -v git) || return 1
     PATH="$S/fakegit:$PATH" REAL_GIT=$g "$@"
   }
-  FAKE_OLD_GIT=1 fakegit judge "$M1"; bad2 "can't compute the patch-ids" "git patch-id fails" || return 1
-  [ "$err" = "$(printf '%s\n' "$err" | grep "^error: can't compute the patch-ids")" ] \
-    || fail "stderr holds more than the referee's error line (ac-check.sh reports the first error: line): $err" || return 1
-  FAKE_BAD_COMMIT=$NH fakegit judge "$M1"; bad2 "can't compute the patch-ids" "diff-tree fails on HEAD's side" || return 1
-  FAKE_BAD_COMMIT=$C3 fakegit judge "$M1"; bad2 "can't compute the patch-ids" "diff-tree fails on the reviewed side" || return 1
-  fakegit judge "$M1"
+  notmp() { [ -z "$(ls -A "$S/tmp")" ] || fail "$1: the referee left files in its TMPDIR: $(ls -A "$S/tmp")"; }   # notmp <what>
+  gitfailed() { # gitfailed <git's first stderr line> <what>: exit 2, and stderr is only the referee's error
+                # line, naming git's first line (ac-check.sh reports the first error: line)
+    local want="error: can't compute the patch-ids that compare HEAD $(head_ | cut -c1-7) with review-1's head ${C3:0:7} (git diff-tree | git patch-id --verbatim failed: $1)"
+    bad2 "can't compute the patch-ids" "$2" || return 1
+    [ "$err" = "$want" ] || fail "$2: want stderr to be just [$want], got [$err]" || return 1
+    notmp "$2"
+  }
+  FAKE_OLD_GIT=1 TMPDIR="$S/tmp" fakegit judge "$M1"; gitfailed "error: unknown option \`verbatim'" "git patch-id fails" || return 1
+  FAKE_BAD_COMMIT=$NH TMPDIR="$S/tmp" fakegit judge "$M1"; gitfailed "fatal: bad object $NH" "diff-tree fails on HEAD's side" || return 1
+  FAKE_BAD_COMMIT=$C3 TMPDIR="$S/tmp" fakegit judge "$M1"; gitfailed "fatal: bad object $C3" "diff-tree fails on the reviewed side" || return 1
+  TMPDIR="$S/tmp" fakegit judge "$M1"
   want 0 "MOVE ON: review-1 at ${C3:0:7} is clean, and HEAD ${NH:0:7} is a pure rebase of it" "control: the fake git, nothing failing" || return 1
+  notmp "a pure rebase" || return 1
   replay "$C1" "$C2" "$CE" || fail "replay" || return 1
   printf 'x="a  b"\n' >"$R/d.sh" && ing git -C "$R" add d.sh && ing git -C "$R" commit -q -m three || fail "commit" || return 1
-  again "a patch changed only in whitespace" || return 1
-  FAKE_OLD_GIT=1 fakegit judge "$M1"; bad2 "can't compute the patch-ids" "a whitespace-changed patch, git patch-id failing" || return 1
+  TMPDIR="$S/tmp" again "a patch changed only in whitespace" || return 1
+  notmp "a patch changed only in whitespace" || return 1
+  FAKE_OLD_GIT=1 TMPDIR="$S/tmp" fakegit judge "$M1"
+  gitfailed "error: unknown option \`verbatim'" "a whitespace-changed patch, git patch-id failing" || return 1
   replay "$C1" || fail "replay" || return 1
   cm c.txt 'two!' two >/dev/null && ing git -C "$R" cherry-pick --allow-empty "$CE" "$C3" >/dev/null 2>&1 || fail "replay" || return 1
   again "a patch changed, same subject" || return 1

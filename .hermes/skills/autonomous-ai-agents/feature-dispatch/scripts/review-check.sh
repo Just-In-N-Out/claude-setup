@@ -155,11 +155,11 @@ outcome=$(jq -r .outcome <<<"$v") now=$(jq -r .now <<<"$v")
 pids() { # pids <from> <to>: a patch-id per non-merge commit, oldest first ("empty:<subject>" for no diff).
   # Plumbing diff-tree ignores colour, external-diff and textconv settings; --verbatim keeps whitespace
   # changes (a re-indented line is a different patch). Fails when any git step fails: an empty id
-  # from an error would compare equal to an empty commit's.
+  # from an error would compare equal to an empty commit's. The caller sends git's stderr to a file.
   local c p
   git -C "$repo" rev-list --reverse --topo-order --no-merges "$1..$2" | while IFS= read -r c; do
-    p=$(git -C "$repo" diff-tree -p --no-commit-id --full-index "$c" 2>/dev/null \
-        | git -C "$repo" patch-id --verbatim 2>/dev/null | cut -d' ' -f1) || exit 1
+    p=$(git -C "$repo" diff-tree -p --no-commit-id --full-index "$c" \
+        | git -C "$repo" patch-id --verbatim | cut -d' ' -f1) || exit 1
     echo "${p:-empty:$(git -C "$repo" log -1 --format=%s "$c")}"
   done
 }
@@ -176,8 +176,13 @@ case $outcome in
     fi
     # a pure rebase: the reviewed commits' patches, in the same order, now on --base, with no merge
     if mb=$(git -C "$repo" merge-base "$RH" "$HEADSHA" 2>/dev/null) && [[ -n $mb ]]; then
-      a=$(pids "$mb" "$RH") && b=$(pids "$BASESHA" "$HEADSHA") \
-        || die "can't compute the patch-ids that compare HEAD ${HEADSHA:0:7} with review-$n's head ${RH:0:7} (git diff-tree | git patch-id --verbatim failed; it needs git 2.39+)"
+      # git's stderr goes to a file, so its first line joins the one error: line ac-check.sh reports
+      gerr=$(mktemp "${TMPDIR:-/tmp}/review-check.XXXXXX") || die "can't make a temporary file in ${TMPDIR:-/tmp}"
+      trap 'rm -f "$gerr"' EXIT
+      a=$(pids "$mb" "$RH" 2>"$gerr") && b=$(pids "$BASESHA" "$HEADSHA" 2>"$gerr") || {
+        said=$(awk 'NF { print; exit }' "$gerr")
+        die "can't compute the patch-ids that compare HEAD ${HEADSHA:0:7} with review-$n's head ${RH:0:7} (git diff-tree | git patch-id --verbatim failed: ${said:-git printed no message})"
+      }
       if [[ -n $a && $a == "$b" && $(git -C "$repo" rev-list --count --merges "$BASESHA..$HEADSHA") == 0 ]]; then
         echo "MOVE ON: review-$n at ${RH:0:7} is clean, and HEAD ${HEADSHA:0:7} is a pure rebase of it"; exit 0
       fi
