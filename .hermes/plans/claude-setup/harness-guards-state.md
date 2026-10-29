@@ -21,7 +21,8 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
 - **Auditor: CLEAN.** `ac-check.sh` on e4469c0 gave READY FOR THE USER, 20/22 (live AC21 and AC22 owed to Justin).
 - **Finisher step 1 done:** rebased onto `80ef3a8`, new head `6b57a5b` (range-diff all `=`, no conflicts, every gate green). `main` had already moved again by then (e2479ef, no story files).
 - **Verifier 3 and auditor 2: CLEAN.** `ac-check.sh` on `6b57a5b` (base `80ef3a8`) gave READY FOR THE USER, 20/22 (live AC21 and AC22).
-- **WAITING ON JUSTIN** for the merge decision below. `main` is 4+ commits past, and none touch story files.
+- **Justin chose (A), 2026-10-29 02:59:** a base-only rebase may merge without re-verify when `range-diff` vs `6b57a5b` is all `=`, `main`'s commits since `80ef3a8` touch no story file, and every gate passes on the new head. If any check fails, re-verify fully.
+- **Running:** finisher step 1b (`briefs/harness-guards-finisher-2.md`). Then the main session runs the `--ff-only` merge at once, then the after-merge finisher (core.hooksPath, `sync.sh` push).
 - **Old rounds' folders:** `verifier-round1-dccc042`, `verifier-round2-e4469c0`, `auditor-round1-e4469c0`.
 - **Merge blocker (Justin's call):**
   - Peer sessions keep moving `main` (my own synced edits get swept into their syncs too), so `--ff-only` needs yet another rebase, and the rule then needs another re-verify.
