@@ -1,4 +1,40 @@
-# 86bcm902a — integration check (finisher, read-only)
+# 86bcm902a — integration (finisher 2, 2026-10-29: main brought in, PR #101 opened)
+
+Branch `feat/86bcm902a-quick-start`, pushed, PR #101. All refs below were read through gh/HTTPS; times are UTC.
+
+## GitHub `main` and what was merged
+
+| When (UTC) | GitHub `main` | What | Result |
+| --- | --- | --- | --- |
+| 18:33:07 | `b985422cd78a961b8c8e70a9e56fecc51d487858` (#98, #99) | `git merge --no-ff main` into `9a9bdec` → merge `7360fca` | text conflict in `delivery/stories.json` only (resolved with `integration-receipts/resolve_stories.py`: main's 42 entries unchanged by value, 86bcm902a appended last); `internal/web/README.md`, `internal/web/handler.go` auto-merged. `merge-check-7360fca.txt`: one-side files = that side's blob (16 + 38), differs-from-both = both-sides set, auto-merged files = fresh 3-way `merge-file`, stories.json = resolver output; EXIT=0 |
+| (after the merge) | — | `58f2bff` renumber `000024_quick_starts` → `000025` (rename only) + `internal/onboarding/README.md` "(migration 25)"; `be31bad` `SaveVersion(…, pack.VersionChange{AddLibraryItemIDs: …})` at `internal/web/quick_start_test.go:1146` | before the fix `go vet ./internal/web/` failed exactly as predicted (too many arguments); after: gofmt, vet, build EXIT=0 |
+| 18:41:59 | `b985422` (unchanged) | gates on `be31bad` (`SUMMARY-be31bad.txt`: all EXIT=0), pushed `be31bad`, PR #101 opened, `72ae141` PR number in stories.json, pushed | CI run 40933681482 on `be31bad` cancelled (superseded); run 40934127145 on `72ae141`: "Go quality gates" success |
+| 19:01:11 | **`b65f797ff6cdc56a802dfaf417b0adec96463317`** (#100 "Item editor with live preview" merged) | `git merge --no-ff origin/main` into `72ae141` → merge `bb79ec6` (local `main` was still `b985422` and was not touched) | no text conflict; `delivery/stories.json`, `internal/web/README.md`, `internal/web/handler.go` auto-merged. `merge-check-bb79ec6.txt`: one-side files = that side's blob (16 + 22), differs-from-both = both-sides set, all three = fresh 3-way `merge-file`; stories.json by value: main's 43 entries unchanged and in order, 86bcm902a last with `[101]`; EXIT=0 |
+
+Migrations after both merges: newest `000024_pack_item_order` (#99), then `000025_quick_starts` (this story); `uniq -d` empty. Stale wording: none of this story's own lines named #98/#99/#100 or "until/once … merges"; the only "when it merges" line (`internal/onboarding/starters_test.go:12`) is about the unmerged "Role-based starter packs" branch and is still true.
+
+## Open siblings (re-read at 19:03:15 UTC)
+
+| Against | Head (read at) | merge-tree vs this branch | Text conflicts | Migration dupes on the merged tree | Trial (prediction, not a gate) |
+| --- | --- | --- | --- | --- | --- |
+| PR #100 `feat/86bcm9023-item-editor-live-preview` | `e0a07d6` (18:37:21, `FETCH_HEAD` = gh headRefOid) then `1c2f814` (18:54:47, same check) | EXIT=0 (vs `be31bad`: tree `27b5480`; vs `72ae141`: tree `d126377`, differing from `27b5480` only in stories.json) | none | none (#100 adds no migration) | on `27b5480`: gofmt, build, vet, non-DB tests EXIT=0 (`trial-pr100-be31bad.txt`). **#100 then merged into main at `b65f797` and is in this branch since `bb79ec6`.** |
+| local `feat/86bcm901r-starter-packs` (no PR) | `abc60dc` (18:37:51), `805b6cd` (18:54:53, 19:03:15; it has merged `b985422` and renumbered its pair to `000025_starter_packs`) | EXIT=1 (vs `72ae141`: tree `d041c77`; vs `bb79ec6`: tree `5b34485`) | `delivery/stories.json` only | **`000025`** (`000025_starter_packs` + `000025_quick_starts`) | on `d041c77`: gofmt, build, vet EXIT=0; `go test` FAILS `TestValidateReleasedMigrationsRejectsMissingRelease` ("migration version 25 is duplicated", no DB needed); with `000025_quick_starts` renamed to `000026`: dupes none, `internal/store/postgres`, `internal/onboarding`, `internal/web` non-DB tests EXIT=0 (`trial-901r-72ae141.txt`) |
+
+`git merge-tree origin/main 805b6cd` EXIT=0 (the starter-packs branch merges cleanly with `b65f797`). 901j and 901y are merged (#98, #99); no other open PR.
+
+## How whoever merges second resolves "Role-based starter packs" × this story
+
+1. `delivery/stories.json`: take the first-merged file unchanged and append the second story's entry last, as text; check every earlier entry by value.
+2. Migration `000025`: the later story renames its pair to `000026` (rename only) and its "migration 25" doc line (for this story: `internal/onboarding/README.md`).
+3. Product overlap (option A/B): Justin's "push the PR" was taken as B; the switch to the shared starter versions is PR follow-up 1.
+4. The second merger reruns its gates on the merged tree.
+
+Receipts: `~/.hermes/plans/leorna/evidence/86bcm902a/finisher2/` (`merge-check-*.txt`, `SUMMARY-<sha7>.txt`, `gates-*`, `pg-*`, `ac<N>-*`, `checks-*`, `gitleaks-*`, `trial-*`).
+
+---
+
+# Earlier check (finisher 1, before main moved; superseded above)
+
 
 Story head: `9a9bdecc2f6ab53356fddddbc62b06b6533a4867` (`feat/86bcm902a-quick-start`, 21 commits on `6c1709e`, clean, not pushed).
 Checked 2026-10-29 15:39–15:46 UTC; every ref below re-read at 15:46:31 UTC and unchanged.
