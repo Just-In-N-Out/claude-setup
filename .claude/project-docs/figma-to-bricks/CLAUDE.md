@@ -7,8 +7,12 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-28)
 
-- **Current build `2026-10-28.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-28.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **28.5 closing-cta (section rhythm):** between every two sections the page's section space (the space most
+    sections draw) separates their words, stepping down on tablets and phones; no divider lines between them; buttons
+    always get that space under them; the space beside a left-out site header/footer stays. Paste check **3bq** owed
+    (re-paste Home with the ticks on).
   - **28.4 photo-hotspots:** Manual Open overlay makes a card beside its dot; optional `pulse` annotation. Paste check
     **3bp** owed (AC12: Figma Manual offset, Bricks, mouse/Tab, real iPhone and Reduce Motion).
   - **28.3 slider-autoplay:** a component whose variants loop After delay becomes a Slider (Nestable) that plays by
@@ -19,8 +23,8 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
     Reduce Motion).
   - **26.1 faq-answer-space:** space under an open FAQ answer. Paste check **3bl** owed.
 - **Paste checks owed:** HANDOFF "End-of-run check list" (3c onward); each feature's HANDOFF heading names its check.
-  3bj, 3bl and 3bm all empty Home and re-paste "Home Page Final" with the header/footer ticks as on the site: copy the
-  FAQ answers Justin typed in Bricks first and type them back after. Several older pages need a re-paste too (3ac).
+  3bj, 3bl, 3bm and 3bq all empty Home and re-paste "Home Page Final" with the header/footer ticks as on the site: copy
+  the FAQ answers Justin typed in Bricks first and type them back after. Several older pages need a re-paste too (3ac).
 - **Milestones:** M0–M4b of the design (`docs/specs/2026-10-06-v2-design.md`) are done. Next: the user's end-of-run
   check, then the sample-bound parts (M2d phone menu, Tabs, Dropdown, Offcanvas, pop-ups).
 - **Corpus:** 17 results are worse than v1, all from Bricks' cap of every element at its parent's width (live-site
@@ -64,6 +68,8 @@ header spacer) the user runs Bricks → Settings → Custom code → **Regenerat
   fade-in); a divided row of flip cards keeps its lines on tablets and phones.
 - **Photo hotspots:** any clipping ancestor can cut a hanging card; long labels may meet on narrow phones. Combining
   `pulse` with CTA/product animations and the generic class name's possible site collision remain follow-ups.
+- **Section rhythm:** a drawing pinned beside a closing's buttons or to its top can land on full-width phone buttons or
+  a wrapped heading from 478 down (base too; HANDOFF follow-ups).
 - **Header tick:** GRO's and brainstorm's nav drawn inside the hero stays in the paste.
 - **Fonts:** fonts may load twice (needs a live paste proof); `localeCompare` may sort fonts differently under Figma's
   SES.
@@ -143,6 +149,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **A size change made after Figma must reach the layout plan as a planned width.** Shares and row shapes read
   drawn widths unless the earlier pass records growth (`IRNode.giveWay`, `grownAlong`, `plannedWidth`, `rowGapAt`).
   Counting grown words only in `least()` can make laptops wrap rows tablets keep (label-floor, GRO's hero).
+- **Space drawn next to a part the site already has stays** (`designs.ts` `keepBeside`): leaving the header or footer
+  out never takes the gap beside it.
 - **Git, with a private GitHub copy** (user, 2026-10-19; this replaces the earlier "no git"):
   `github.com/Just-In-N-Out/FigmaToBricksV2`, branch `main`. The main folder stays on `main`, and it's the copy Figma
   loads (`manifest.json` → `dist/`).
@@ -479,6 +487,17 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     equal gaps up to half each screen's step, then widens into column room; nested hugging rows hand growth to an
     ancestor that can decide. Without room its words keep drawn sizes and the panel names the row
     (`understand/give-way.ts`). From design width through laptops and tablets where the row stays on one line.
+  - **The same space between every two sections** (Justin, 2026-10-28: "Do it for every section, like in the photo …
+    including the gap between sections … every call-to-action button"; build `2026-10-28.5`): between two sections,
+    the space from one section's words to the next one's is the page's section space S (the space most of its sections
+    draw), stepping down like section padding, with no divider line there. A painted section keeps its padding inside
+    its paint. These keep their own spacing: the page's top (its bars and the hero), painted bands that touch, tight
+    strips without a call to action, and sections drawn without auto layout or at a fixed height.
+    - **Buttons always get S under them** (Justin: "put it in a way where it looks more aesthetic"). A bar holding a
+      call to action is never a tight strip. A section with a layer placed on it still gets S under its ending buttons,
+      unless the layer would land on them or leave its edge (`understand/rhythm-buttons.ts`).
+    - A page with no shared space converts as drawn (`understand/rhythm.ts`). The rulings are not yet confirmed
+      (HANDOFF).
   - **Designs wider than 1440 keep the 1440 Container** (confirmed 2026-10-06, after M1b): their content is squeezed to
     1312 on desktop rather than kept at the design's width. A Figma wrapper's own max width still widens its Container.
   - **Boxes drawn the same height stay the same height** (user, 2026-10-20, "1A 2A 3B" then "4A"; build
@@ -572,7 +591,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **A sideways label beside a heading** turns upright, a small line above it (where its row stacks; where the row
     keeps its line, the label keeps running beside it, M2b).
 - **Website rules** (2026-10-02: HTML5 semantics, WCAG 2.2 AA, search and speed basics; the user means technical
-  rules, not laws). The design stays as drawn except for the two label minimums below:
+  rules, not laws). The design stays as drawn except for the two label minimums below and the section rhythm
+  (Layout):
   - **The design breaks a rule** (faint text, small targets, tiny text): never recolour or resize, except Justin's
     two minimums (2026-10-26, Sai Varsha's "too tiny"): pill words at least 13px, Learn-more-style links at least 15px
     (`understand/min-font.ts`, exclusions in HANDOFF). Other text stays drawn. The design-check findings list is

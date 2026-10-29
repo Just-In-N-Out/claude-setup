@@ -5,6 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: f7a3c41a-53da-4665-b4dd-957fb80b6724
+  modified: 2026-10-29T03:15:14.925Z
 ---
 
 v2 rewrite of the user's Figma→Bricks plugin lives in ~/Documents/FigmaToBricksV2 (spec docs/specs/2026-10-06-v2-design.md,
@@ -92,6 +93,13 @@ Setup sync still cannot write its read-only bare repository. The slider finisher
 at `~/.hermes/plans/figma-to-bricks/slider-autoplay-claude-md-pending.md`; current main's compact Status was later
 verified current through build2026-10-28.4. Old pending filenames alone do not establish an outstanding status edit;
 only applicable standing rules belong in today's CLAUDE.md, feature history stays in HANDOFF/ledgers.
+
+## Section rhythm (closing-cta) — 2026-10-28
+
+Released build **2026-10-28.5**, main = origin/main `a3a008e`, pushed as Just-In-N-Out. Accepted head `9405a95` (rebased
+on photo-hotspots `b3addfb`); round-2 verifier and blind auditor clean, ac-check READY FOR THE USER. **AC12 / paste
+check 3bq live:** Justin re-pastes Home with the ticks on. Follow-ups (a)–(h) and every unconfirmed ruling: HANDOFF.
+Worktree and branch kept.
 
 ## Photo hotspots — 2026-10-28
 
