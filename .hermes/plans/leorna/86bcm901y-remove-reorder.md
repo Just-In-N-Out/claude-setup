@@ -709,6 +709,8 @@ func (handler *Handler) packItemsForm(w http.ResponseWriter, r *http.Request) {
 
 One action for every save keeps 902d's future history reader simple. A failed audit insert still rolls the whole save back (901w's AC3 subtest `a_failed_audit_write_saves_nothing` covers the shared path).
 
+**Fixer 1 note (2026-10-29, review 1 R1-F4; my ruling, not yet confirmed):** the `order` keys now follow the request, not `diff.reordered`. A save whose request names an `order` records both orders, even when the order only places added items (parent A, add B and D, order A, D, B: no reorder in the diff, and `diff.added` is sorted, so the record couldn't show the saved order). Every reorder names an order, so the second table row is unchanged. The first row now reads "Remove and/or add **without an `order`**". Saves without an `order` (the ticks form, Remove, a JSON save with no `order`) keep 901w's shape exactly. `diff.reordered` keeps its meaning (a kept item moved, or an added item went ahead of one). Commit `bc5b410`, store subtest `a_save_that_names_an_order_is_audited_with_both_orders`. Also from review 1: an empty `order` is refused even beside other changes (R1-F1, `minItems: 1`, AC4 `empty_order_beside_a_removal`). No AC or AC test name changed.
+
 ### D8. Immutability
 
 Unchanged layers: no code path updates or deletes versions or items; `ApplyChange` copies; migration 23's triggers. Positions are written only by `INSERT`. Migration 24 adds no `UPDATE`.
