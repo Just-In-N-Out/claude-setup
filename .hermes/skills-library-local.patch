@@ -162,7 +162,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..7d8b305 100644
+index f2d882d..d730573 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,35 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -398,7 +398,7 @@ index f2d882d..7d8b305 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +400,57 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +400,63 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -425,7 +425,13 @@ index f2d882d..7d8b305 100644
 +    run only the failure subtest; no test hook in production (9019). A subtest
 +    run alone (`-run 'Parent$/^sub$'`) skips the siblings that build shared
 +    state, so its RED, GREEN and mutant runs fail or pass for the wrong reason
-+    unless it builds its own fixtures (901w fixer 1).
++    unless it builds its own fixtures (901w fixer 1). The reverse also holds: in a
++    full run, an earlier sibling's write under the mutant can change what a later
++    subtest reaches, so before grading a subtest a survivor, run it alone and see
++    which earlier sibling already killed it (902a verifier, V11). When quoting the
++    kill line, `t.Logf` lines carry the same `file_test.go:NN:` prefix as
++    `t.Fatalf`: take the last such line before the test's `--- FAIL`, or match the
++    expected failure text (902a verifier: V12/V20/V22 first graded on a log line).
 +    A consistency tripwire (a test-side list that must match production) is often
 +    masked when production is broken, because an earlier assertion fails first:
 +    overlay the legitimate future change instead (the tripwire must fire) and pair it
