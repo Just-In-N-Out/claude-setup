@@ -9,7 +9,7 @@ metadata:
 ---
 
 On 2026-10-26 Justin asked for bdryswi.com's home page (WordPress.com + Elementor) as a Bricks paste for the new
-B-Dry site `bdry.staging.growithgro.com` (WP user `Justin_GRO`; Home is page 14). This is not the All Type hydraulics
+B-Dry site `bdry.staging.growithgro.com` (WP user `Justin_GRO`; page 14 is the team's own hand-built Home with placeholder FAQ text; our pastes go on /homev2/, page 155). This is not the All Type hydraulics
 site ([[old-site-gallery]] is that one). The new site's header is not fixed, so the paste needs no `site-header-room`
 spacer. It already has global classes named `section`, `container`, `h1`, `h2`, `h3`, `h4`, `text1`,
 `cta-btn-orange`, and on Home `flip-box`, `flip-inner`, `flip-front`, `flip-back`, `circle`, `line`, `horizontal`,
@@ -37,7 +37,7 @@ chats, one each. Their prompts are in `C:\Users\Admin\Downloads\codex-prompts\` 
 next step). Before continuing any of them here, check `git log` in its worktree: Codex may have moved it on or merged
 it.
 
-**Capture coverage (checked 2026-10-29):** `tree-*.json` walks only the page (Elementor post 9, ending at the FAQ). The header template (32), the footer template (35: "Schedule A Consultation", the 5 contact steps, "Customer Reviews") and the popups (27 = the ☰ menu; 1453/1458/1542/1731) exist only in `home.html`, so v1–v3 never had them. Staging: header template = post 11 (hand-built in September, logo media 23, not plugin output), footer template = post 41, `/` is the blog list (no front page set), the v3 paste is on homev2 (page 155).
+**Capture coverage (checked 2026-10-29):** `tree-*.json` walks only the page (Elementor post 9, ending at the FAQ). The header template (32), the footer template (35: "Schedule A Consultation", the 5 contact steps, "Customer Reviews") and the popups (27 = the ☰ menu; 1453/1458/1542/1731) exist only in `home.html`, so v1–v3 never had them. Staging: header template = post 11 (hand-built in September, logo media 23, not plugin output), footer template = post 41, `/` is the blog list (no front page set), the v3 paste is on homev2 (page 155). The reviews are a Trustindex widget (`cdn.trustindex.io/loader.js?0ba3c27414da21862f7681d05e9`): it loads only after a first mouse move, key, wheel or touch (headless captures must move the mouse), renders on any origin and stops sliding under reduced motion.
 
 **How to apply:** after Justin pastes, read the live Home fresh and compare it with the source shots; once each
 feature merges, rebuild those parts of the paste exactly as the plugin emits them. The headline-marker and
