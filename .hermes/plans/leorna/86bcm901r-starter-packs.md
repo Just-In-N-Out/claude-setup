@@ -3,6 +3,8 @@
 ClickUp [Role-based starter packs](https://app.clickup.com/t/86bcm901r) · PI-2 · E10 Content Library · Size M · p1-high · Justin · "to do".
 Repo: **`leorna-control-plane` only** (no client change). Pipeline: **Full** (away grant). Planned 2026-10-29 by a fresh Opus 5.5 xhigh planner against GitHub `main` **`6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f`** (= `origin/main` after the planner's HTTPS fetch through `gh`, checked equal to `gh api …/commits/main`; client `main` `f105e27814b6efbec67059687963e722933acec2`, read only).
 
+**Status: approved 2026-10-29 under Justin's away grant** ("just keep everything going and follow what the recommended agent says"). Justin's answers: **Q1 A, Q2 A, Q3 A, Q4 A, Q5 A, Q6 A** (every ⭐), including the proposed AC4 (live) and AC5. The grant covers this story up to the hand-over only: no push, PR, merge, ClickUp post, CI or credential change. AC4 stays owed to Justin.
+
 ## Open questions (answered by Justin's away grant, 2026-10-29: every ⭐; the plan is written as if each ⭐ was chosen)
 
 **Flags (⭐ answers that touch a recorded decision):**
