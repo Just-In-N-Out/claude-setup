@@ -41,6 +41,7 @@ IDENTITY_KEYS = {"user.email", "user.name", "author.email", "author.name", "comm
 IDENTITY_ENV = {"GIT_AUTHOR_EMAIL", "GIT_AUTHOR_NAME", "GIT_COMMITTER_EMAIL", "GIT_COMMITTER_NAME"}
 FALLBACK_HELPERS = {"", "!gh auth git-credential"}
 FALLBACK_URL = "https://github.com/LeornaAI/"
+REWRITE_KEYS = ("url.", "include.", "includeif.")  # config that can rewrite the fallback URL (lower case)
 # the fallback URL's one repo name: GitHub's name characters, or a plain $NAME / ${NAME} whose value isn't known
 REPO_NAME_RE = re.compile(r"(?:[A-Za-z0-9_.-]|\$[A-Za-z_][A-Za-z0-9_]*|\$\{[A-Za-z_][A-Za-z0-9_]*\})+")
 VAR_RE = re.compile(r"\$(?:([A-Za-z_][A-Za-z0-9_]*)|\{([A-Za-z_][A-Za-z0-9_]*)\})")
@@ -817,8 +818,10 @@ class Guard:
         return out
 
     def leorna_fallback(self, configs, sub, rest, env):
-        for k, v, how in configs:
+        for k, v, how in configs + self.env_configs(env):
             kl = lower(k)
+            if kl.startswith(REWRITE_KEYS):  # url.<base>.insteadOf, or a file that sets it: git goes elsewhere
+                return False
             if not kl.startswith("credential."):
                 continue
             if how != "-c" or kl != "credential.helper" or v not in FALLBACK_HELPERS:

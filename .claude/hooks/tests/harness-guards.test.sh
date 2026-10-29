@@ -357,6 +357,19 @@ ac5_guard_allows_leorna_https_fallback() {
     "fetch $L main --depth 1"; do
     expect none '' "$fb $c" || return 1
   done
+  # config in the same command that rewrites the URL (url.<base>.insteadOf, or a file loaded by include.path or
+  # includeIf) sends the LeornaAI URL to another owner (fix 4 probe), inline or through the GIT_CONFIG_* environment
+  local J=https://github.com/Just-In-N-Out/ LA=https://github.com/LeornaAI/
+  for c in "git -c url.$J.insteadOf=$LA -c credential.helper= -c 'credential.helper=!gh auth git-credential' push ${LA}claude-setup.git main" \
+    "$fb -c url.$J.pushInsteadOf=$LA push ${LA}claude-setup.git main" "$fb -c URL.$J.INSTEADOF=$LA fetch ${LA}claude-setup.git main" \
+    "$fb -c include.path=/x/inc.cfg fetch $L main" "$fb -c includeIf.gitdir:/.path=/x/inc.cfg fetch $L main" \
+    "$fb --config-env=url.$J.insteadOf=V fetch ${LA}claude-setup.git main" \
+    "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=url.$J.insteadOf GIT_CONFIG_VALUE_0=$LA; $fb fetch ${LA}claude-setup.git main" \
+    "GIT_CONFIG_PARAMETERS=\"'include.path'='/x/inc.cfg'\" $fb push $L feat/x"; do
+    expect deny 'credential helper' "$c" || return 1
+  done
+  expect none '' "$fb -c color.ui=never fetch $L main" || return 1
+  expect none '' "export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=color.ui GIT_CONFIG_VALUE_0=never; $fb fetch $L main" || return 1
   done_ok
 }
 
