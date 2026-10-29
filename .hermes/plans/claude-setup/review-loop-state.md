@@ -41,7 +41,8 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 
   This holds even if other chats edited other parts of the same files.
 - **Finisher 3:** all three conditions passed on `a489a1e`, but `main` moved during the gates (syncs every 1–6 min).
-- **Running:** finisher 4 (`briefs/review-loop-finisher-4.md`): loops rounds and merges by itself as soon as a round ends with `main` unchanged (up to 8 rounds or 60 min).
+- **MERGED 2026-10-29 12:23:** local `main` = `1dcf60c` (finisher 4, first round, all decision-A checks passed). The memory note is retired; the rule now lives in CLAUDE.md, feature-dispatch, `review-loop.md` and the referee.
+- **Justin's check:** `review-loop-your-checks.md` (AC18 on the Mac).
 - **After it:** the main session runs `sync.sh` and reports to Justin.
 - **Lesson held (feature-dispatch is a story file):** a finisher round should be one script that checks `main` at the end and merges at once.
 - **After the merge:** update feature-dispatch's "Setup repo" merge-policy line with this extended rule (as used for review-loop; ask before reusing), and add the "pure rebase hashes context" note to `review-loop.md`.
