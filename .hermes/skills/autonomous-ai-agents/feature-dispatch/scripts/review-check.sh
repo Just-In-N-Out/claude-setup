@@ -176,12 +176,14 @@ case $outcome in
     fi
     # a pure rebase: the reviewed commits' patches, in the same order, now on --base, with no merge
     if mb=$(git -C "$repo" merge-base "$RH" "$HEADSHA" 2>/dev/null) && [[ -n $mb ]]; then
-      # git's stderr goes to a file, so its first line joins the one error: line ac-check.sh reports
-      gerr=$(mktemp "${TMPDIR:-/tmp}/review-check.XXXXXX") || die "can't make a temporary file in ${TMPDIR:-/tmp}"
-      trap 'rm -f "$gerr"' EXIT
+      # git's stderr goes to a file, so its first line joins the one error: line ac-check.sh reports;
+      # with no temporary file (TMPDIR a missing folder) the comparison still runs, and only git's message is lost
+      nomsg="git printed no message"
+      if gerr=$(mktemp "${TMPDIR:-/tmp}/review-check.XXXXXX" 2>/dev/null); then trap 'rm -f "$gerr"' EXIT
+      else gerr=/dev/null nomsg="git's message was lost (no temporary file in ${TMPDIR:-/tmp})"; fi
       a=$(pids "$mb" "$RH" 2>"$gerr") && b=$(pids "$BASESHA" "$HEADSHA" 2>"$gerr") || {
         said=$(awk 'NF { print; exit }' "$gerr")
-        die "can't compute the patch-ids that compare HEAD ${HEADSHA:0:7} with review-$n's head ${RH:0:7} (git diff-tree | git patch-id --verbatim failed: ${said:-git printed no message})"
+        die "can't compute the patch-ids that compare HEAD ${HEADSHA:0:7} with review-$n's head ${RH:0:7} (git diff-tree | git patch-id --verbatim failed: ${said:-$nomsg})"
       }
       if [[ -n $a && $a == "$b" && $(git -C "$repo" rev-list --count --merges "$BASESHA..$HEADSHA") == 0 ]]; then
         echo "MOVE ON: review-$n at ${RH:0:7} is clean, and HEAD ${HEADSHA:0:7} is a pure rebase of it"; exit 0

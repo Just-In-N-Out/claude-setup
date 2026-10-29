@@ -330,6 +330,8 @@ ac7_referee_checks_head_coverage() {
   local CE C3 C4 C5 M1 M2 NH O1 O2 L P A B0 B0N S1 S2
   need "$RC" || return 1
   newroot; mkrepo || fail "fixture repo" || return 1
+  # every referee run in this test makes its temporary files here, so notmp sees all of them
+  mkdir -p "$S/tmp" && TMPDIR="$S/tmp" && export TMPDIR || fail "TMPDIR" || return 1
   ing git -C "$R" config color.ui always   # a colour setting must not change what the referee compares
   CE=$(empty records) && C3=$(printf 'x="a b"\n' >"$R/d.sh" && ing git -C "$R" add d.sh && ing git -C "$R" commit -q -m three && head_) \
     || fail "fixture commits" || return 1
@@ -359,7 +361,7 @@ ac7_referee_checks_head_coverage() {
   want 0 "MOVE ON: review-1 at ${C3:0:7} is clean, and HEAD ${NH:0:7} is a pure rebase of it" "the same commits picked onto main" || return 1
   # patch-ids git can't compute are an error, not empty ids that compare equal: a git older than 2.39
   # (no patch-id --verbatim), or diff-tree failing on one commit of either side (a missing object)
-  mkdir -p "$S/fakegit" "$S/tmp" && cat >"$S/fakegit/git" <<'SH' && chmod +x "$S/fakegit/git" || fail "fake git" || return 1
+  mkdir -p "$S/fakegit" && cat >"$S/fakegit/git" <<'SH' && chmod +x "$S/fakegit/git" || fail "fake git" || return 1
 #!/bin/sh
 [ -x "${REAL_GIT-}" ] && [ "$REAL_GIT" != "$0" ] || { echo "fake git: REAL_GIT is not the real git" >&2; exit 125; }
 case " $* " in
@@ -382,17 +384,24 @@ SH
     [ "$err" = "$want" ] || fail "$2: want stderr to be just [$want], got [$err]" || return 1
     notmp "$2"
   }
-  FAKE_OLD_GIT=1 TMPDIR="$S/tmp" fakegit judge "$M1"; gitfailed "error: unknown option \`verbatim'" "git patch-id fails" || return 1
-  FAKE_BAD_COMMIT=$NH TMPDIR="$S/tmp" fakegit judge "$M1"; gitfailed "fatal: bad object $NH" "diff-tree fails on HEAD's side" || return 1
-  FAKE_BAD_COMMIT=$C3 TMPDIR="$S/tmp" fakegit judge "$M1"; gitfailed "fatal: bad object $C3" "diff-tree fails on the reviewed side" || return 1
-  TMPDIR="$S/tmp" fakegit judge "$M1"
+  FAKE_OLD_GIT=1 fakegit judge "$M1"; gitfailed "error: unknown option \`verbatim'" "git patch-id fails" || return 1
+  FAKE_BAD_COMMIT=$NH fakegit judge "$M1"; gitfailed "fatal: bad object $NH" "diff-tree fails on HEAD's side" || return 1
+  FAKE_BAD_COMMIT=$C3 fakegit judge "$M1"; gitfailed "fatal: bad object $C3" "diff-tree fails on the reviewed side" || return 1
+  fakegit judge "$M1"
   want 0 "MOVE ON: review-1 at ${C3:0:7} is clean, and HEAD ${NH:0:7} is a pure rebase of it" "control: the fake git, nothing failing" || return 1
   notmp "a pure rebase" || return 1
+  # a TMPDIR that is a missing folder: the comparison doesn't need a temporary file, only keeping git's
+  # message does, so the outcome is the same and stderr stays the one error: line
+  TMPDIR="$S/gone dir" judge "$M1"
+  want 0 "MOVE ON: review-1 at ${C3:0:7} is clean, and HEAD ${NH:0:7} is a pure rebase of it" "a pure rebase, TMPDIR a missing folder" || return 1
+  [ -z "$err" ] || fail "a pure rebase, TMPDIR a missing folder: want no stderr, got [$err]" || return 1
+  FAKE_OLD_GIT=1 TMPDIR="$S/gone dir" fakegit judge "$M1"
+  gitfailed "git's message was lost (no temporary file in $S/gone dir)" "git patch-id fails, TMPDIR a missing folder" || return 1
   replay "$C1" "$C2" "$CE" || fail "replay" || return 1
   printf 'x="a  b"\n' >"$R/d.sh" && ing git -C "$R" add d.sh && ing git -C "$R" commit -q -m three || fail "commit" || return 1
-  TMPDIR="$S/tmp" again "a patch changed only in whitespace" || return 1
+  again "a patch changed only in whitespace" || return 1
   notmp "a patch changed only in whitespace" || return 1
-  FAKE_OLD_GIT=1 TMPDIR="$S/tmp" fakegit judge "$M1"
+  FAKE_OLD_GIT=1 fakegit judge "$M1"
   gitfailed "error: unknown option \`verbatim'" "a whitespace-changed patch, git patch-id failing" || return 1
   replay "$C1" || fail "replay" || return 1
   cm c.txt 'two!' two >/dev/null && ing git -C "$R" cherry-pick --allow-empty "$CE" "$C3" >/dev/null 2>&1 || fail "replay" || return 1
@@ -453,6 +462,7 @@ SH
   want 1 "REVIEW AGAIN: review-2's from ${B0:0:7} is not on --base ${B0N:0:7}'s history: run a full review from ${B0N:0:7}" "the same, after the finisher's rebase" || return 1
   rev 3 full "$B0N" "$NH"; judge "$L"
   want 0 "MOVE ON: review-3 at ${NH:0:7} is clean" "then a full review from the rebased --base moves on" || return 1
+  notmp "every referee run in this test" || return 1
   done_ok
 }
 
