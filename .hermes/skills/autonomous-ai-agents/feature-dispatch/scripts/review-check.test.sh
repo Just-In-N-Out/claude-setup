@@ -327,7 +327,7 @@ ac6_referee_records_justins_answers() {
 }
 
 ac7_referee_checks_head_coverage() {
-  local CE C3 C4 C5 M1 M2 NH O1 O2 L P A B0 B0N S1 S2
+  local CE C3 C4 C5 M1 M2 NH O1 O2 L P A B0 B0N S1 S2 T0 K1 K2 K3 K4 TM Q4 Q4C G
   need "$RC" || return 1
   newroot; mkrepo || fail "fixture repo" || return 1
   # every referee run in this test makes its temporary files here, so notmp sees all of them
@@ -455,13 +455,108 @@ SH
   want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-2 at ${S2:0:7}: fix them, then run a full review from ${A:0:7} (review-2's from ${B0:0:7} is not on its history)" "Justin's continue, from off --base's history" || return 1
   fresh; rev 1 full "$B0" "$S1" "$(finding R1-1 P2)"; rev 2 full "$B0" "$S2"; rev 3 full "$A" "$S2"; judge "$L"
   want 0 "MOVE ON: review-3 at ${S2:0:7} is clean" "then a full review from --base moves on" || return 1
+
+  # ---- the base rule, as a table of record sequences ----
+  # Every delta round builds on the latest full round (each starts at the round before's head), so the
+  # rounds since that full round cover its from..head. That from must be --base or an older commit of it;
+  # otherwise (a from inside the story, a base commit sync.sh rewrote, a from that is no longer a commit)
+  # the answer is REVIEW AGAIN: run a full review from --base, however many clean delta rounds follow,
+  # until a full round from --base is recorded. The brakes and Justin's answers still apply first.
+  # recs <round spec>…: a fresh evidence folder, round k from the k-th spec "<scope> <from> <head> [<word>…]":
+  # each P0-P3 word is one finding R<k>-<i> with a real-use scenario; continue or accept is Justin's answer
+  # to that round ("continue": true, or accept: every finding the round lists)
+  recs() {
+    local spec k=0 i w sc f h fl ja jc
+    fresh
+    for spec in "$@"; do
+      k=$((k + 1)) i=0 fl="" ja="" jc=""
+      set -- $spec; sc=$1 f=$2 h=$3; shift 3
+      while [ $# -gt 0 ]; do
+        w=$1; shift
+        case $w in
+          continue) jc=1 ;;
+          accept) ja=1 ;;
+          *) i=$((i + 1)); fl="$fl$(finding "R$k-$i" "$w")"$'\n' ;;
+        esac
+      done
+      mkdir -p "$E/review-$k" && printf '%s' "$fl" | jq -s --argjson n "$k" --arg s "$sc" --arg f "$f" --arg h "$h" \
+        '{round: $n, scope: $s, from: $f, head: $h, findings: .}' >"$E/review-$k/review.json" || return 1
+      if [ -n "$ja$jc" ]; then
+        justin "$k" "$(jq -nc --arg k "$k" --argjson n "$i" --arg a "$ja" --arg c "$jc" '{words: "Justin says go on"}
+          + (if $a == "" then {} else {accept: [range(1; $n + 1) | "R\($k)-\(.)"]} end)
+          + (if $c == "" then {} else {continue: true} end)')" || return 1
+      fi
+    done
+  }
+  rows=0 rowsbad=0
+  row() { # row <what> <base> <exit> <last line> <round spec>…: those rounds, then the referee on $R with that --base;
+          # a row that fails is counted, and the table goes on (tablecheck fails the test)
+    local what=$1 b=$2 x=$3 l=$4; shift 4
+    rows=$((rows + 1))
+    if recs "$@"; then judge "$b"; want "$x" "$l" "$what" && return 0
+    else fail "$what: the records"; fi
+    rowsbad=$((rowsbad + 1))
+  }
+  tablecheck() { [ "$rowsbad" = 0 ] || fail "$rowsbad of $rows rows of the base-rule table failed"; }
+  offbase() { echo "REVIEW AGAIN: review-$1's from ${2:0:7} is not on --base ${3:0:7}'s history: run a full review from ${3:0:7}"; }   # offbase <k> <from> <base>
+  fixfull() { # fixfull <count> <n> <head> <base> <k> <from>: P0-P2 left, and the latest full round's from is off --base
+    echo "REVIEW AGAIN: $1 P0-P2 finding(s) in review-$2 at ${3:0:7}: fix them, then run a full review from ${4:0:7} (review-$5's from ${6:0:7} is not on its history)"
+  }
+  R="$S/table repo"; mkdir -p "$R" && ing git init -q "$R" && T0=$(cm a.txt base base) && ing git -C "$R" checkout -q -b story \
+    && K1=$(cm s.sh k1 k1) && K2=$(cm s.sh k2 k2) && K3=$(cm s.sh k3 "fix R1-1") && K4=$(cm s.sh k4 "fix R2-1") \
+    || fail "table fixture" || return 1
+  G=$(printf '%040d' 0 | tr 0 e)   # a from that is no longer a commit (garbage-collected)
+  # HEAD K4 (story: base T0, then K1 K2, fix commits K3 K4), --base T0
+  row "full from --base, clean"                               "$T0" 0 "MOVE ON: review-1 at ${K4:0:7} is clean"            "full $T0 $K4"
+  row "full from inside the story, clean"                     "$T0" 1 "$(offbase 1 "$K1" "$T0")"                           "full $K1 $K4"
+  row "full from inside the story, a P2"                      "$T0" 1 "$(fixfull 1 1 "$K4" "$T0" 1 "$K1")"                 "full $K1 $K4 P2"
+  row "full from --base, a P2; a clean delta"                 "$T0" 0 "MOVE ON: review-2 at ${K4:0:7} is clean"            "full $T0 $K2 P2" "delta $K2 $K4"
+  row "full from --base, a P2; two clean deltas"              "$T0" 0 "MOVE ON: review-3 at ${K4:0:7} is clean"            "full $T0 $K2 P2" "delta $K2 $K3" "delta $K3 $K4"
+  row "full from inside, a P2; a clean delta (R3-1)"          "$T0" 1 "$(offbase 1 "$K1" "$T0")"                           "full $K1 $K2 P2" "delta $K2 $K4"
+  row "full from inside, a P2; two clean deltas"              "$T0" 1 "$(offbase 1 "$K1" "$T0")"                           "full $K1 $K2 P2" "delta $K2 $K3" "delta $K3 $K4"
+  row "full from a commit that's gone, a P2; a clean delta"   "$T0" 1 "$(offbase 1 "$G" "$T0")"                            "full $G $K2 P2" "delta $K2 $K4"
+  row "full from inside, a P2; a clean delta, then a commit"  "$T0" 1 "$(offbase 1 "$K1" "$T0")"                           "full $K1 $K2 P2" "delta $K2 $K3"
+  row "control: full from --base; a clean delta, then a commit" "$T0" 1 "REVIEW AGAIN: 1 commit(s) after review-2's head ${K3:0:7} are unreviewed: review ${K3:0:7}..${K4:0:7}" "full $T0 $K2 P2" "delta $K2 $K3"
+  row "full from inside, two P2s; a delta with one"           "$T0" 1 "$(fixfull 1 2 "$K4" "$T0" 1 "$K1")"                 "full $K1 $K2 P2 P2" "delta $K2 $K4 P2"
+  row "full from inside, a P2; a delta with a P2 (brake c)"   "$T0" 3 "ASK JUSTIN: review-2: 1 P0-P2, no fewer than review-1's 1" "full $K1 $K2 P2" "delta $K2 $K4 P2"
+  row "the same, and Justin's continue"                       "$T0" 1 "$(fixfull 1 2 "$K4" "$T0" 1 "$K1")"                 "full $K1 $K2 P2" "delta $K2 $K4 P2 continue"
+  row "the same, and Justin accepts the P2"                   "$T0" 1 "$(offbase 1 "$K1" "$T0")"                           "full $K1 $K2 P2" "delta $K2 $K4 P2 accept"
+  row "control: full from --base, Justin accepts the delta's P2" "$T0" 0 "MOVE ON: review-2 at ${K4:0:7} is clean"         "full $T0 $K2 P2" "delta $K2 $K4 P2 accept"
+  row "full from inside; a clean delta; a full from --base"   "$T0" 0 "MOVE ON: review-3 at ${K4:0:7} is clean"            "full $K1 $K2 P2" "delta $K2 $K3" "full $T0 $K4"
+  row "full from inside; a full from --base, a P2; a clean delta" "$T0" 0 "MOVE ON: review-3 at ${K4:0:7} is clean"        "full $K1 $K2 P2" "full $T0 $K3 P2" "delta $K3 $K4"
+  row "full from --base; a full from inside, a P2; a clean delta" "$T0" 1 "$(offbase 2 "$K1" "$T0")"                       "full $T0 $K2 P2" "full $K1 $K3 P2" "delta $K3 $K4"
+  # the finisher's rebase: main gets TM; the story's commits are picked onto it unchanged (HEAD Q4, --base TM)
+  ing git -C "$R" checkout -q main && TM=$(cm m.txt tm tm) && ing git -C "$R" checkout -q -B work "$K4" \
+    && ing git -C "$R" rebase -q main >/dev/null 2>&1 && Q4=$(head_) || fail "table rebase" || return 1
+  row "rebased: full from the old base, clean"                "$TM" 0 "MOVE ON: review-1 at ${K4:0:7} is clean, and HEAD ${Q4:0:7} is a pure rebase of it" "full $T0 $K4"
+  row "rebased: full from inside, clean"                      "$TM" 1 "$(offbase 1 "$K1" "$TM")"                           "full $K1 $K4"
+  row "rebased: full from the old base, a P2; a clean delta"  "$TM" 0 "MOVE ON: review-2 at ${K4:0:7} is clean, and HEAD ${Q4:0:7} is a pure rebase of it" "full $T0 $K2 P2" "delta $K2 $K4"
+  row "rebased: full from inside, a P2; a clean delta"        "$TM" 1 "$(offbase 1 "$K1" "$TM")"                           "full $K1 $K2 P2" "delta $K2 $K4"
+  # a rebase that resolved a conflict changes a patch (HEAD Q4C); the next delta round reviews it (range-diff)
+  printf 'k4 resolved\n' >>"$R/s.sh" && ing git -C "$R" commit -q -a --amend -m "fix R2-1" && Q4C=$(head_) \
+    || fail "table conflict rebase" || return 1
+  row "conflict rebase: full from the old base, a P2; a clean delta" "$TM" 1 "REVIEW AGAIN: HEAD ${Q4C:0:7} is not review-2's head ${K4:0:7} or a pure rebase of it: review what changed since ${K4:0:7}" "full $T0 $K2 P2" "delta $K2 $K4"
+  row "conflict rebase: then a clean delta of the rebase"     "$TM" 0 "MOVE ON: review-3 at ${Q4C:0:7} is clean"           "full $T0 $K2 P2" "delta $K2 $K4" "delta $K4 $Q4C"
+  row "conflict rebase: the same, full from inside"           "$TM" 1 "$(offbase 1 "$K1" "$TM")"                           "full $K1 $K2 P2" "delta $K2 $K4" "delta $K4 $Q4C"
+  # the sync rewrite (sync repo above: the story S1 S2 was cut from B0; main is now A, sync(mac), B0N)
+  R="$S/sync repo"
+  row "sync: full from B0, a P2; a clean delta; --base B0 (the reviewer's self-check)" "$B0" 0 "MOVE ON: review-2 at ${S2:0:7} is clean" "full $B0 $S1 P2" "delta $S1 $S2"
+  row "sync: the same with --base A, after the rewrite"       "$A" 1 "$(offbase 1 "$B0" "$A")"                             "full $B0 $S1 P2" "delta $S1 $S2"
+  row "sync: the same with Justin's continue on a P2"         "$A" 1 "$(fixfull 1 2 "$S2" "$A" 1 "$B0")"                   "full $B0 $S1 P2" "delta $S1 $S2 P2 continue"
+  row "sync: then a full round from A"                        "$A" 0 "MOVE ON: review-3 at ${S2:0:7} is clean"             "full $B0 $S1 P2" "delta $S1 $S2" "full $A $S2"
+
   # the finisher's git rebase main: B0's patch is on main already (B0N), so git drops B0: S1', S2' on B0N
-  rm -r "$E/review-3" && ing git -C "$R" rebase -q main >/dev/null 2>&1 && NH=$(head_) \
+  recs "full $B0 $S1 P2" "full $B0 $S2" && ing git -C "$R" rebase -q main >/dev/null 2>&1 && NH=$(head_) \
     && L=$(ing git -C "$R" merge-base HEAD main) && [ "$L" = "$B0N" ] || fail "finisher rebase" || return 1
   judge "$L"
   want 1 "REVIEW AGAIN: review-2's from ${B0:0:7} is not on --base ${B0N:0:7}'s history: run a full review from ${B0N:0:7}" "the same, after the finisher's rebase" || return 1
   rev 3 full "$B0N" "$NH"; judge "$L"
   want 0 "MOVE ON: review-3 at ${NH:0:7} is clean" "then a full review from the rebased --base moves on" || return 1
+  row "sync, rebased: full from B0, a P2; a clean delta"      "$L" 1 "$(offbase 1 "$B0" "$B0N")"                           "full $B0 $S1 P2" "delta $S1 $S2"
+  row "sync, rebased: then a full round from A (the rebase dropped B0)" "$L" 1 "REVIEW AGAIN: HEAD ${NH:0:7} is not review-3's head ${S2:0:7} or a pure rebase of it: review what changed since ${S2:0:7}" "full $B0 $S1 P2" "delta $S1 $S2" "full $A $S2"
+  row "sync, rebased: then a clean delta of the rebase"       "$L" 0 "MOVE ON: review-4 at ${NH:0:7} is clean"             "full $B0 $S1 P2" "delta $S1 $S2" "full $A $S2" "delta $S2 $NH"
+  row "sync, rebased: or a full round from B0N"               "$L" 0 "MOVE ON: review-3 at ${NH:0:7} is clean"             "full $B0 $S1 P2" "delta $S1 $S2" "full $B0N $NH"
+  tablecheck || return 1
   notmp "every referee run in this test" || return 1
   done_ok
 }
@@ -549,6 +644,11 @@ ac9_ac_check_refuses_unreviewed_head() {
   fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2)"; rev 2 full "$BASE" "$C3" "$(finding R2-1 P2)"; acfix "$C3" "$BASE" AC1
   accheck "$BASE" --reviews "$E"; L="ASK JUSTIN: review-2: 1 P0-P2, no fewer than review-1's 1"
   want 1 "NOT ACCEPTED: the head ${C3:0:7} isn't covered by a clean review ($L)" "the latest round says ASK JUSTIN" || return 1
+  has "REVIEWS  NOT ACCEPTED: $L" "the reviews line" || return 1
+  # a full round from inside the story, then a clean delta round at HEAD: the story's first commit was never reviewed
+  fresh; rev 1 full "$C1" "$C2" "$(finding R1-1 P2)"; rev 2 delta "$C2" "$C3"; acfix "$C3" "$BASE" AC1; accheck "$BASE" --reviews "$E"
+  L="REVIEW AGAIN: review-1's from ${C1:0:7} is not on --base ${BASE:0:7}'s history: run a full review from ${BASE:0:7}"
+  want 1 "NOT ACCEPTED: the head ${C3:0:7} isn't covered by a clean review ($L)" "a clean delta after a full round from inside the story" || return 1
   has "REVIEWS  NOT ACCEPTED: $L" "the reviews line" || return 1
   # an AC failing too: the last line counts the ACs and names the review
   fresh; rev 1 full "$BASE" "$C2"; acfix "$C3" "$BASE" AC1; reject_ac1; accheck "$BASE" --reviews "$E"
