@@ -22,6 +22,8 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **Review 3:** R3-1, a P2 (an off-base full round followed by a clean delta gives MOVE ON). Brake c fired, answered with `continue` under Justin's away words (`review-3/justin.json`).
 - **Fixer 3 done:** head `aff26c8` (the off-base rule takes the latest full round; a 33-row table in AC7).
 - **Review 4: CLEAN.** The referee said MOVE ON. Its P3s are in follow-ups.
-- **Orchestrator slip:** round 2 should have been a FULL round (the rule gives Full two full rounds). Correcting it with reviewer 5, a second FULL review of `691651c..aff26c8` (`briefs/review-loop-reviewer-5.md`). Then the referee; if it's clean → verifier → auditor → `ac-check` (live, plus the worktree's `--reviews`).
+- **Orchestrator slip:** round 2 should have been a FULL round (the rule gives Full two full rounds). Corrected with reviewer 5, a second FULL review of `691651c..aff26c8`.
+- **Review 5:** R5-1, a P2 (the referee's round-1 line led to the delta round 2); REVIEW AGAIN.
+- **Running:** fixer 4 (`briefs/review-loop-fixer-4.md`), covering R5-1 plus the in-story doc and test P3s. **Next:** reviewer 6, a DELTA review of `aff26c8..<fix-4 head>`, then the referee. When clean → verifier → auditor → `ac-check`.
 - **If round 4 finds yet another P0–P2 in the same off-base/`from` area:** the loop isn't converging there. Stop and wait for Justin; offer to drop the R1-9 check and keep R1-9 as a follow-up.
 - **After the merge:** delete the live memory note `review-loop-until-clean.md` (the merge does it) and update `MEMORY.md`'s index line.
