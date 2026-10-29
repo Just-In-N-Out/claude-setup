@@ -19,7 +19,7 @@ index 7fc2b43..905e163 100644
  
  # Adversarial Verification Loop
 diff --git a/skills/backend-data-migrations/SKILL.md b/skills/backend-data-migrations/SKILL.md
-index d8e25dc..e0ea3f1 100644
+index d8e25dc..5848ac7 100644
 --- a/skills/backend-data-migrations/SKILL.md
 +++ b/skills/backend-data-migrations/SKILL.md
 @@ -27,7 +27,7 @@ For scoped durable execution stores, use [PostgreSQL validation lessons](referen
@@ -27,7 +27,7 @@ index d8e25dc..e0ea3f1 100644
  1. Never edit an already-applied migration.
  2. Ship backwards-compatible migrations first.
 -3. Validate reads/writes against both old and new schema during transition.
-+3. Validate reads/writes against both old and new schema during transition. Prove a new migration on existing rows with a real fill: store tests often clean up after themselves (Leorna's do), so fill a throwaway DB from the base code (Go: a `go test -overlay` probe with no cleanup), then apply the migration with the real runner, check the rows are unchanged and defaults hold, and run down and up again (when the runner can only roll back everything, as Leorna's `RollbackMigrations`: apply the real down file plus `DELETE FROM schema_migrations WHERE version=<n>` in one `psql --single-transaction`, then let the real apply re-run it through a no-reset overlay probe, with an md5 over the original columns before and after each step; 901y PR verifier). When the server applies migrations at startup (Leorna's `cmd/control-plane`), the real binaries are quicker: fill through the base binary, start head's to apply, run the down by psql as above, start head's again, with a per-table md5 between steps and a base-binary restart as the control (902a verifier 2, ~10 s). Match constraint text as Postgres prints it: keyword columns come back quoted, `CHECK (("position" >= 0))` (901y verifier).
++3. Validate reads/writes against both old and new schema during transition. Prove a new migration on existing rows with a real fill: store tests often clean up after themselves (Leorna's do), so fill a throwaway DB from the base code (Go: a `go test -overlay` probe with no cleanup), then apply the migration with the real runner, check the rows are unchanged and defaults hold, and run down and up again (when the runner can only roll back everything, as Leorna's `RollbackMigrations`: apply the real down file plus `DELETE FROM schema_migrations WHERE version=<n>` in one `psql --single-transaction`, then let the real apply re-run it through a no-reset overlay probe, with an md5 over the original columns before and after each step; 901y PR verifier). When the server applies migrations at startup (Leorna's `cmd/control-plane`), the real binaries are quicker: fill through the base binary, start head's to apply, run the down by psql as above, start head's again, with a per-table md5 between steps and a base-binary restart as the control (902a verifier 2, ~10 s). Match constraint text as Postgres prints it: keyword columns come back quoted, `CHECK (("position" >= 0))` (901y verifier); and pin the SQLSTATE of the FK's own action: `ON DELETE RESTRICT` raises 23001 `restrict_violation`, while 23503 is NO ACTION's, the default (86bcm901z builder).
  
  ## Mandatory Validation and Agent Defect Loop
  
@@ -162,7 +162,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..eccc36f 100644
+index f2d882d..56d7616 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,35 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -301,7 +301,15 @@ index f2d882d..eccc36f 100644
     Validate evidence against the exact intentional variant and actual process
     return, not pristine-only assumptions or attempted-publication flags.
     Repair diagnostic readers offline against retained output; preserve their
-@@ -147,7 +220,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -142,12 +215,18 @@ transcripts in `references/blind-test-patterns.md`.
+ 1. **The assertion matched a comment.** A test regexed a window of source and
+    found its keyword inside an explanatory comment, not the code. Parse the
+    *construct* (e.g. just the set literal) and strip comments before matching.
++   The same happens on a rendered page with inline `<style>`: `Contains(page,
++   "update-chip")` also matches `.update-chip{…}`, so an "absent" check can't
++   pass; match the markup (`class="chip update-chip"`) (86bcm901z builder).
+ 2. **Wrong layer.** The test exercised the base module while production
+    constructed a subclass that overrode the method. Exercise the class
     production actually builds.
  3. **Substring assertions survive their own mutation.** `src.find("if status
     in {")` still matches after the set is mutated. Assert on parsed structure
@@ -313,7 +321,7 @@ index f2d882d..eccc36f 100644
  4. **A different guard masked the one under test.** A per-person cap test
     passed because a dedup guard fired first; deleting the cap entirely stayed
     green. Build fixtures that isolate the guard under test, and add a
-@@ -155,7 +231,22 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,7 +234,22 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -337,7 +345,7 @@ index f2d882d..eccc36f 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -175,11 +266,19 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -175,11 +269,19 @@ transcripts in `references/blind-test-patterns.md`.
     constant out of the source by regex means changing the source changes the
     test — it can never disagree. Pin external contract values (registered IDs,
     API enums) as literals, with a comment recording where they are registered
@@ -358,7 +366,7 @@ index f2d882d..eccc36f 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -197,7 +296,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +299,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -370,7 +378,7 @@ index f2d882d..eccc36f 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -208,6 +310,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -208,6 +313,10 @@ transcripts in `references/blind-test-patterns.md`.
      distinction is selected and authorized within the remaining allowance.
      Missing or skipped required cases block acceptance; report permitted optional
      or platform skips with reasons instead of failing every skip message.
@@ -381,7 +389,7 @@ index f2d882d..eccc36f 100644
      Full transcript in `references/blind-test-patterns.md`.
  
  11. **Check-then-act races are invisible to sequential tests.** A publisher that
-@@ -240,7 +346,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +349,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -398,7 +406,7 @@ index f2d882d..eccc36f 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -261,7 +375,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +378,11 @@ transcripts in `references/blind-test-patterns.md`.
     very edits being tested. Stale mutated bytecode can fake either red or green
     despite correct-looking source.
  8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
@@ -411,7 +419,7 @@ index f2d882d..eccc36f 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +408,69 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +411,69 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
