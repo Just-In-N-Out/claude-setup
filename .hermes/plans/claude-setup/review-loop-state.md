@@ -31,7 +31,9 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **Finisher step 1 done:** head `aae49fd`, base `c40a51c`. Two conflicts were resolved keeping both sides (CLAUDE.md "Every brief", `ac-verification.md` steps 1–2). All gates are green.
 - **Review 7: CLEAN.** The referee says MOVE ON at `aae49fd` (`--base c40a51c`).
 - **Verifier 2: CLEAN** at `aae49fd` (17/17). **Auditor 2: CLEAN.** `ac-check` on `aae49fd` gives READY FOR THE USER 17/18, live and with `--reviews` (REVIEWS CLEAN review-7). But `main` (now `7474777`) touched `leorna/SKILL.md` since `c40a51c`, so Q10 A doesn't hold.
-- **Running:** finisher round 2 (`briefs/review-loop-finisher-2.md`): rebase, gates, range-diff, referee read-only.
+- **Finisher round 2:** head `25c2f3c` on `main` `c82f0e7`. While it ran, `main` moved and touched `ac-verification.md` (patch 9's context), so the referee says REVIEW AGAIN (`--verbatim` patch-ids hash context).
+- **Running:** reviewer 8, a delta review of `aae49fd...25c2f3c` (`briefs/review-loop-reviewer-8.md`).
+- **ASKED JUSTIN** about the merge rule, since the loop won't converge while peers edit story files.
 - **Then:** if the referee says REVIEW AGAIN, a delta review of the rebase; then verifier 3 → auditor 3 → `ac-check` → merge right away.
 - **If `main` touches a story file AGAIN during that window:** stop and ask Justin. Recommend extending Q10 A: allow a base-only merge when `range-diff` is all `=` and the gates pass, even if `main` touched a story file in lines away from the story's hunks.
 - Earlier: → `ac-check` (live + `--reviews`, `--base` = `merge-base`) → finisher 1b: base-only rebase onto the moved `main` (Q10 A, if it touches no story file) → merge right away → sync. Earlier: `main` changed 4 story files (CLAUDE.md, feature-dispatch `SKILL.md`, `ac-verification.md`, leorna `SKILL.md`), so base-only won't hold. Conflict resolutions need a delta review (the referee says "not a pure rebase"), then verifier → auditor → `ac-check` again.
