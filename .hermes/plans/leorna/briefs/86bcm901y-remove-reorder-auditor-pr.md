@@ -1,12 +1,12 @@
 
 # AC AUDITOR on the PR head (blind, read only) — leorna-control-plane, story 86bcm901y "Remove and reorder items in a pack version"
 
-Role: the blind AC AUDITOR. Prove, on your own, that every acceptance criterion of the approved plan holds on the head commit of PR #{{PR}} and fails on the base commit, and write `auditor-pr/ac.json`. You work only from the approved plan and the code. **Change no source:** no edits, commits, pushes, PR edits or posts in the worktree; write only inside your own folder.
+Role: the blind AC AUDITOR. Prove, on your own, that every acceptance criterion of the approved plan holds on the head commit of PR #99 and fails on the base commit, and write `auditor-pr/ac.json`. You work only from the approved plan and the code. **Change no source:** no edits, commits, pushes, PR edits or posts in the worktree; write only inside your own folder.
 
 ## Your inputs (and only these)
 - **Approved plan:** `~/.hermes/plans/leorna/evidence/86bcm901y/plan-approved.md` (read-only). Its "Acceptance criteria", "AC tests", per-AC old-code checks and evidence-capture sections tell you what each AC means and how it can be shown.
 - **Worktree:** `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bcm901y-remove-reorder`, branch `feat/86bcm901y-remove-reorder`.
-- **Head:** `{{HEAD}}`. **Base:** `{{BASE}}` (`git merge-base HEAD origin/main`; GitHub `main`).
+- **Head:** `008c6124af3f58bbae9bd580b86c7c50cf8ffc29`. **Base:** `dd006b79f9908976e853c57489032bd5d9d471df` (`git merge-base HEAD origin/main`; GitHub `main`).
 - **Your folder:** `~/.hermes/plans/leorna/evidence/86bcm901y/auditor-pr/` (create it). Every receipt you cite must be inside it.
 
 **Stay blind.** Under `~/.hermes/plans/leorna/evidence/86bcm901y/`, open nothing but `plan-approved.md` and your own `auditor-pr/` folder: not `verifier/`, `verifier-pr/`, `auditor/`, `review1/`, `review2/`, `fixer1/`, `fixer2/`, `fixer3/`, `EVIDENCE.md`, `INVENTORY.md`, the PNGs or logs in the folder's root, or any other file there. Don't read any `86bcm901y` brief other than this one, the working plan `~/.hermes/plans/leorna/86bcm901y-remove-reorder.md`, the hand-over drafts or the PR's text. Make your own logs, screenshots and capture code.
@@ -24,10 +24,10 @@ Justin asked that the screenshots **show items being reordered and removed** in 
 Follow `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` (the AC work; you are the auditor of step 3) exactly:
 1. Check the worktree is clean at the head.
 2. For each AC: read its named test and judge whether it really checks the AC's words (every clause); where a clause looks unexercised, confirm with a read-only `go test -overlay` mutant that the AC test fails without the code that clause depends on.
-3. Run each AC's test alone on head with the recipe (`HEAD=` first line, verbose output, `EXIT=` last line) → `auditor-pr/ac<n>-{{HEAD7}}.log`.
-4. Run the same test on base in a separate detached copy at `{{BASE7}}` with head's version of that AC's test file(s) copied in (only the Go test files the recipe allows) → `auditor-pr/ac<n>-base-{{BASE7}}.log`. It must fail there (its own fail line or a build failure of the new code), not a setup failure or a missing file.
+3. Run each AC's test alone on head with the recipe (`HEAD=` first line, verbose output, `EXIT=` last line) → `auditor-pr/ac<n>-008c612.log`.
+4. Run the same test on base in a separate detached copy at `dd006b7` with head's version of that AC's test file(s) copied in (only the Go test files the recipe allows) → `auditor-pr/ac<n>-base-dd006b7.log`. It must fail there (its own fail line or a build failure of the new code), not a setup failure or a missing file.
 5. One screenshot per AC, taken by you, in `auditor-pr/`: AC1 and AC3 as described above, from a server you build at head on your own demo database (the plan's evidence-capture section describes how); AC2 and AC4 may be rendered pages of your own head logs. Inspect every image before citing it; nothing private on screen (no server domain, URL bar, tenant ID, token or email).
-6. Write `auditor-pr/ac.json` in the format at the top of `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh`, with `"head": "{{HEAD}}"`. Self-check it while staying blind: `cp` (not `ln`) your `ac.json`, logs and images to a scratch folder outside the evidence tree, run `ac-check.sh --repo <worktree> --base {{BASE}} --plan ~/.hermes/plans/leorna/evidence/86bcm901y/plan-approved.md <evidence>/auditor-pr/ac.json <scratch copy>/ac.json`, fix any format slip, delete the copy.
+6. Write `auditor-pr/ac.json` in the format at the top of `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh`, with `"head": "008c6124af3f58bbae9bd580b86c7c50cf8ffc29"`. Self-check it while staying blind: `cp` (not `ln`) your `ac.json`, logs and images to a scratch folder outside the evidence tree, run `ac-check.sh --repo <worktree> --base dd006b79f9908976e853c57489032bd5d9d471df --plan ~/.hermes/plans/leorna/evidence/86bcm901y/plan-approved.md <evidence>/auditor-pr/ac.json <scratch copy>/ac.json`, fix any format slip, delete the copy.
 
 ## How to run things (this desktop is WSL Ubuntu)
 - **Scratch:** a fresh `<scratchpad>/86bcm901y-auditor-pr/` (`mkdir` without `-p`) for small files, and a fresh `~/.cache/86bcm901y-auditor-pr/` on the real disk for `TMPDIR`, detached copies, binaries and Chrome's `--user-data-dir`. Not `/tmp` for big files (a small shared tmpfs; a WSL restart wipes it). Remove only those folders, by their literal absolute paths, at the end.
@@ -47,4 +47,4 @@ Load, in this order, and say so in your first steps: `leorna` (AC auditor; skip 
 - You can't ask Justin anything and can't start agents.
 
 ## Output (your final message)
-`{verdict: "clean" | "findings", head: "{{HEAD7}}…", base: "{{BASE7}}…", ac_status[{ac, accepted, test, screenshot, evidence}], ac_json: "<path>", self_check: "<ac-check.sh last line>", findings[{id, severity, claim, evidence}], found_else[], skill_lessons[]}`, then end with `MAIN SESSION: check and save these skill_lessons now.`
+`{verdict: "clean" | "findings", head: "008c612…", base: "dd006b7…", ac_status[{ac, accepted, test, screenshot, evidence}], ac_json: "<path>", self_check: "<ac-check.sh last line>", findings[{id, severity, claim, evidence}], found_else[], skill_lessons[]}`, then end with `MAIN SESSION: check and save these skill_lessons now.`
