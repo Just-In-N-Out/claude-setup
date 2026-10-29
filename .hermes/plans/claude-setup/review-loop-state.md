@@ -18,5 +18,6 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **Fixer 1 done:** head `9aca235`.
 - **Review 2 (delta):** R2-1, a P2 (the R1-9 fix exits 2 on a true record when sync.sh rewrote the story's base). Real bash 3.2 (Docker `bash:3.2`) confirms R1-1 is fixed.
 - **The referee:** `ASK JUSTIN` (brake c). Justin answered "Keep going" on 2026-10-29, recorded in `review-2/justin.json` (`continue: true`); the referee now says REVIEW AGAIN.
-- **Running:** fixer 2 (`briefs/review-loop-fixer-2.md`): R2-1, plus R2-2 if it's small. **Next:** reviewer 3, a delta review of `9aca235..<fix-2 head>`, then the referee.
+- **Fixer 2 done:** head `2fad9c3`.
+- **Running:** reviewer 3, a delta review of `9aca235..2fad9c3` (`briefs/review-loop-reviewer-3.md`). Then the referee.
 - **After the merge:** delete the live memory note `review-loop-until-clean.md` (the merge does it) and update `MEMORY.md`'s index line.
