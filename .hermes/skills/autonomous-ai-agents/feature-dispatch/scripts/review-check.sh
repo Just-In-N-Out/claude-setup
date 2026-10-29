@@ -16,7 +16,7 @@
 # --base is the commit the branch starts from now (git merge-base HEAD <integration branch>).
 # Prints one line per finding of the latest round, then the outcome as the LAST line.
 # Exit 0 MOVE ON, 1 REVIEW AGAIN, 3 ASK JUSTIN, 2 bad usage or input (an error: line on stderr).
-# ac-check.sh --reviews runs it. Needs bash 3.2+, git, jq 1.6+. Tests: review-check.test.sh
+# ac-check.sh --reviews runs it. Needs bash 3.2+, git 2.39+ (patch-id --verbatim), jq 1.6+. Tests: review-check.test.sh
 set -uo pipefail
 
 usage() { echo "error: usage: review-check.sh --repo <worktree> --base <base commit> <evidence folder>" >&2; exit 2; }
@@ -150,10 +150,12 @@ outcome=$(jq -r .outcome <<<"$v") now=$(jq -r .now <<<"$v")
 
 pids() { # pids <from> <to>: a patch-id per non-merge commit, oldest first ("empty:<subject>" for no diff).
   # Plumbing diff-tree ignores colour, external-diff and textconv settings; --verbatim keeps whitespace
-  # changes (a re-indented line is a different patch).
+  # changes (a re-indented line is a different patch). Fails when any git step fails: an empty id
+  # from an error would compare equal to an empty commit's.
   local c p
   git -C "$repo" rev-list --reverse --topo-order --no-merges "$1..$2" | while IFS= read -r c; do
-    p=$(git -C "$repo" diff-tree -p --no-commit-id --full-index "$c" | git -C "$repo" patch-id --verbatim | cut -d' ' -f1)
+    p=$(git -C "$repo" diff-tree -p --no-commit-id --full-index "$c" 2>/dev/null \
+        | git -C "$repo" patch-id --verbatim 2>/dev/null | cut -d' ' -f1) || exit 1
     echo "${p:-empty:$(git -C "$repo" log -1 --format=%s "$c")}"
   done
 }
@@ -166,7 +168,8 @@ case $outcome in
     fi
     # a pure rebase: the reviewed commits' patches, in the same order, now on --base, with no merge
     if mb=$(git -C "$repo" merge-base "$RH" "$HEADSHA" 2>/dev/null) && [[ -n $mb ]]; then
-      a=$(pids "$mb" "$RH") b=$(pids "$BASESHA" "$HEADSHA")
+      a=$(pids "$mb" "$RH") && b=$(pids "$BASESHA" "$HEADSHA") \
+        || die "can't compute the patch-ids that compare HEAD ${HEADSHA:0:7} with review-$n's head ${RH:0:7} (git diff-tree | git patch-id --verbatim failed; it needs git 2.39+)"
       if [[ -n $a && $a == "$b" && $(git -C "$repo" rev-list --count --merges "$BASESHA..$HEADSHA") == 0 ]]; then
         echo "MOVE ON: review-$n at ${RH:0:7} is clean, and HEAD ${HEADSHA:0:7} is a pure rebase of it"; exit 0
       fi
