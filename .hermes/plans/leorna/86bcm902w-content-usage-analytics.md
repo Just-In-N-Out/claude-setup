@@ -12,6 +12,11 @@
 
 Review 1's R1-1 (P2): a newer shipped seed version of "Leorna starter pack" displaced the tenant's own edited starter pack on the page, because D7 keeps the newest-created version per pack name across tenant and seed versions. Justin picked **"Company's own pack wins"**: for each pack name, show the tenant's newest version; show the shared seed version only when the tenant has no version of that name. This amends D7's pack-row rule for the fixer; `plan-approved.md` (frozen at go) is unchanged and its ACs are unchanged.
 
+### Justin's answers after review 3 (2026-10-29, PR stage)
+
+- **R3-1 (P2), renamed starter pack shows twice:** PR #102 (merged into this branch) releases a starter-pack rename as the role's next shared version with the new name and `parent_version` = the previous version, so the name-keyed page kept the old-name version as a second row forever. Justin picked **"Hide replaced packs"**: a shared pack that a newer release replaced (even under a new name) no longer gets its own row. The rest of the rule stands (company's own newest version per name wins; a shared version shows only when the company has none of that name).
+- **R3-2 (P3), every shared starter pack shows as a row even when no team uses it:** Justin picked **"Keep your rule"** (as approved); recorded as a follow-up, no change now.
+
 ## Questions (answer with letters; **go** alone takes every ⭐)
 
 **Q1. How do item uses get from engineers' machines to the server in this story?** (Yan's [Upload usage automatically after Sync](https://app.clickup.com/t/86bcnuxce) is still To Do.)
