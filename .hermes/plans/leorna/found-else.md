@@ -212,3 +212,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Confirms the bring-in fixer's two items: #95's library.go:85-89 Requires comment is ahead of the code (approved-plan follow-up F1; library_items has no requires column, so a pack with prompt/review saves without its 3 required skills), and main.go SetPackBuilder wiring is untested (mutant MW green).
 - Info: #94's gate.CheckDerivedPack renders the whole parent pack; on newPackBuilderFixture's synthetic items create-from-scratch returns 422, with real shipped items 303. Test-fixture artifact, not a product bug.
 - Info: govulncheck exit 0 but notes 1 vulnerability in a required module the code doesn't call (CI pins the same tool).
+
+## 86bcm902a planner (2026-10-29)
+- Info: 86bcm901r's card says "/plan", but library 0.7.0 ships it as prompt `planning` because Claude Code has a built-in `/plan` (library README :491-493).
+- Info: 86bcm901r says "Repo: content", but every content card so far (9019, 901b, 901a, 901j) was built in leorna-control-plane's `internal/library`.

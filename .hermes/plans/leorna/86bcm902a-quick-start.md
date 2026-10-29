@@ -4,7 +4,7 @@
 
 **Away grant:** Justin (2026-10-29): "just keep everything going and follow what the recommended agent says." This covers plan approval and the ⭐ answers below, nothing else. Push, PR, ClickUp posting and merge stay unauthorized.
 
-## Questions (each ⭐ is the safe, scoped choice; the plan below is written as if every ⭐ were chosen)
+## Questions (ANSWERED 2026-10-29: every ⭐, see Justin's answers; each ⭐ is the safe, scoped choice)
 
 **Q1. Role starter packs (86bcm901r) don't exist yet. What does the quick start offer?**
 - **A ⭐ A stand-in: 901r's four proposed packs, made on pick**
@@ -36,9 +36,18 @@ If B: the team step lists teams only. With none, it says "Create a team first" a
 
 If B: AC5 gets the live tag and is owed to Justin; the agent still runs AC5's test. With A there is no video, because this desktop has no `ffmpeg`. The "recording" is a numbered, timestamped series of real console screenshots from the real binary on an empty database, plus the demo log.
 
+
+## Justin's answers (2026-10-29, away grant)
+Justin's words: "just keep everything going and follow what the recommended agent says." The main session applied every ⭐:
+- Q1 → **A**: stand-in list of 901r's four proposed role packs in `internal/onboarding/starters.go`, each pack created on pick through 901w's `CreatePack`. The Flag line at the top stands: 901r keeps its own ACs.
+- Q2 → **A**: one `quick_starts` row per company (migration 24).
+- Q3 → **A**: pick an existing team or type a new team's name.
+- Q4 → **A**: an agent records AC5 locally as a screenshot series plus logs; no AC is live.
+- Proposed AC4 and AC5 are approved with the plan. This grant covers plan approval and these answers only: push, PR, ClickUp posting and merge stay unauthorized.
+
 ## Story
 
-- **Status:** written 2026-10-29 09:55 UTC; waiting for the main session's go.
+- **Status:** written 2026-10-29 09:55 UTC. **Approved 2026-10-29 under Justin's away grant** (every ⭐ taken; see Justin's answers below). Questions above are answered.
 - **Card:** [One-click quick start (starter pack → team → sync)](https://app.clickup.com/t/86bcm902a) (E11 Pack Builder, PI-2, Size M, p1-high). Dependencies: [Create a pack by picking library items](https://app.clickup.com/t/86bcm901w) (complete, PR #96) and [Role-based starter packs](https://app.clickup.com/t/86bcm901r) (to do, Justin's own card).
 - **Repo / worktree / branch:** `leorna-control-plane` only, `~/Leorna/leorna-control-plane/.claude/worktrees/86bcm902a-quick-start`, `feat/86bcm902a-quick-start`. No client change.
 - **Base:** `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f` (Merge PR #96, 86bcm901w). Checked 2026-10-29 09:55 UTC: HTTPS fetch through gh, then `git merge --ff-only origin/main` ("Already up to date"); `main` = `origin/main` = GitHub `main` (`gh api …/commits/main`) = `6c1709e`.
