@@ -51,3 +51,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-29 | 86bcm901z | code-review-practice | test: a shared internal/web test helper that, for every 422 secret refusal (item editor, variant edit and resolve), asserts the response body holds no part of the token; run by make check | offered
 - 2026-10-29 | header-bar | figma-to-bricks | test: header-stacked.test.ts reruns each case with a thin announcement strip prepended and expects the same home links (npm run check) | offered
 - 2026-10-29 | after-faq-sections | figma-to-bricks | script: the witness harnesses walk each snapshot and throw on a repeated SNode id before converting | offered
+- 2026-10-29 | 86bcm901z | feature-dispatch | script: before dispatching the next role, list files and folder modified times in other roles' evidence folders (review-*, other fix-<n>/, verifier/, auditor/) newer than the finished role's start time | offered
