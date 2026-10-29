@@ -12,7 +12,9 @@ On 2026-10-26 Justin asked for bdryswi.com's home page (WordPress.com + Elemento
 B-Dry site `bdry.staging.growithgro.com` (WP user `Justin_GRO`; Home is page 14). This is not the All Type hydraulics
 site ([[old-site-gallery]] is that one). The new site's header is not fixed, so the paste needs no `site-header-room`
 spacer. It already has global classes named `section`, `container`, `h1`, `h2`, `h3`, `h4`, `text1`,
-`cta-btn-orange`…: the paste's own classes must use other names (prefix `home-`).
+`cta-btn-orange`, and on Home `flip-box`, `flip-inner`, `flip-front`, `flip-back`, `circle`, `line`, `horizontal`,
+`text-blue`, `yellow-h2`: the paste's own classes must use other names (prefix `home-`; the plugin's flip classes
+become `home-flip-*`).
 
 **Done:** the photos are in that site's Media as AVIFs. 13 were reused: flags 94/92/93, hotspot photo 98, Fee
 promotion 103, bee 105, hero slides 30/27/28, concrete 119, crawl-space flip front = 30, truck 89, map 64. 17 were
@@ -56,3 +58,12 @@ No capture-freezing policy ran; the underlying cause is unresolved. Renderer pro
 before it can continue. Treat this unchanged file as a draft, not a visually verified paste. Diagnostics:
 `~/.hermes/plans/figma-to-bricks/evidence/slider-autoplay/finisher-artifact-proof/report.json`. No live-site write, clipboard replacement or Windows
 Downloads overwrite occurred. Preserve any later headline/photo-hotspot updates when combining page artifacts.
+
+## v3 paste — 2026-10-29 (current)
+
+`evidence/bdry-paste/v3/home-paste-v3.json` (sha256 `8c77a931…`, 233 elements): v2 plus the plugin's own output
+(main build 28.5) for the hero slider playing by itself, the 6 flip boxes (back: blueprint media 138, a white Button
+to the service page) and the 3 photo dots opening cards (words from popups 1458/1453/1542; the dots beat). Nothing else
+changed from v2. The plugin's arrow clearance was left out (it pushed v2's heading onto a third line at 390). Chrome
+motion was seen; Bricks/iPhone live checks 3bo/3bn/3bp owed. Scripts in `v3/scripts/` (`build-v3.ts`). Supersedes v2
+and the slider-only draft.
