@@ -162,7 +162,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..dfcad1a 100644
+index f2d882d..e484ce3 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,35 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -380,7 +380,20 @@ index f2d882d..dfcad1a 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -290,7 +391,57 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +362,11 @@ transcripts in `references/blind-test-patterns.md`.
+    very edits being tested. Stale mutated bytecode can fake either red or green
+    despite correct-looking source.
+ 8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
+-   throwaway script disagrees with the real suite, suspect the probe first —
++   throwaway script disagrees with the real suite, suspect the probe first.
++   A fixture built inside `$(…)` is silently empty when that step fails (a
++   `jq --arg` past Linux's 128 KiB argument limit), so a "large input" check
++   passes on a small one: pass big values through a file and print the
++   fixture's size in the receipt (review-loop auditor). Likewise,
+    a probe that calls the function twice on one connection (easy to do via an
+    `or`-fallback expression) double-applies a stateful operation and reports
+    impossible results. Reproduce through the actual test before concluding the
+@@ -290,7 +395,57 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
