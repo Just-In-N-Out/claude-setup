@@ -94,3 +94,27 @@ Approving **"bring main in"** with **"make a PR"** authorizes exactly this, cont
 6. Then "make a PR" proceeds as the `leorna` skill's step 7 (push both branches, open both PRs, control plane first), and a later small commit records both PR numbers in `stories.json`.
 
 Nothing in this list merges a PR or posts to ClickUp.
+
+## 2026-10-29 22:31–22:35 UTC: main brought in (PR finisher, Justin approved "bring main in" + "make a PR")
+
+- GitHub `main` fetched over HTTPS through gh at 22:31 UTC and compared with `gh api repos/LeornaAI/<repo>/commits/main`:
+  - control plane `8aa32a1f68fadacb8b0514566dd465ff14b883b9` (PR #102 "Role-based starter packs" merged as a merge commit on top of `e2254e0`); `origin/main` equals it. `git rev-parse 8aa32a1^{tree}` = `1aa8ca3^{tree}` = `65a09dd2…`, so main is exactly the #102 head the stacked trial used.
+  - client `f105e27814b6efbec67059687963e722933acec2` = the story's base: nothing to bring in.
+- `git merge-tree --write-tree --name-only de5fbe0 origin/main` → exit 1, only `delivery/stories.json` conflicts; `README.md` and `internal/web/handler.go` auto-merge (as trialled).
+- `git merge --no-ff origin/main` in the story worktree; `delivery/stories.json` resolved as main's file unchanged plus the 86bcm902w entry appended last, as text: 45 → 46 entries, every earlier entry equal by value and in the same order, the last entry equals the branch's entry by value; no conflict markers; `test_story_shippable.py` 5 tests OK. Resolved file sha256 `b640b719…`.
+- **Merge commit `b78905b7acc2de7b8494ead1cde28a704004a774`** (parents `de5fbe0`, `8aa32a1`), message `Merge branch 'main' into feat/86bcm902w-content-usage-analytics`, author Leorna OK, no AI lines.
+
+### Merge proof (7.2) on `b78905b`
+
+| Check | Result |
+| --- | --- |
+| Files changed on one side only equal that side's blob | 44 of 44 (15 story-only = `de5fbe0`'s blob, 29 main-only = `8aa32a1`'s blob); no deletions on either side |
+| Files whose merged content differs from both parents (`comm -12` of each parent's diff) | `README.md`, `delivery/stories.json`, `internal/web/handler.go` = exactly the both-sides set: no evil merge |
+| Both-sides files vs git's clean 3-way `merge-file` | `README.md`, `internal/web/handler.go` equal it (0 conflicts); only `stories.json` is hand-resolved (checked by value above) |
+| Story's own patch survives (`git diff -U0`, `index`/`@@` lines stripped, `b65f797→de5fbe0` vs `8aa32a1→b78905b`) | 18 of 18 files identical |
+| Duplicated migration version (`… grep '\.up\.sql$' \| cut -d_ -f1 \| sort \| uniq -d`) | empty; newest are `000024_pack_item_order`, `000025_quick_starts`, `000026_starter_packs`; this story adds none |
+| `gitleaks dir` over the 3 both-sides files taken from the merged tree (gitleaks 8.30.1) | no leaks, EXIT=0 |
+| Stale wording: this card's ID next to until/once/later anywhere in the tracked tree | none |
+
+- Note for the review of the new commits: #102's role starter packs are shared pack versions with no tenant (`internal/pack/starter.go`: "shared like the seed base"). The content usage page's pack rule already covers shared versions (company's own version wins; a shared version counts only when the company has none of that name), so starter packs appear as pack rows like the seed. No code conflict; the gates below run on the merged tree.
+- Open PRs at 22:35 UTC: none in either repo.

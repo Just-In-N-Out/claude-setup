@@ -20,33 +20,27 @@ ClickUp: [Content usage analytics (which items get used)](https://app.clickup.co
   - `internal/web/content_usage_component_test.go`: AC3, newest version per pack, and the company-version rule at the handler.
   - `internal/web/testdata/content_usage_client_upload.json`: the client's golden upload body, byte-identical to the client's own copy; AC2 posts it.
 - Docs: `internal/metric/README.md` section "Content usage (story 86bcm902w)"; one sentence in the root `README.md` naming `/admin/content-usage`.
-- `delivery/stories.json`: the 86bcm902w entry, appended last; its PR lists stay empty until both PRs exist.
+- `delivery/stories.json`: the 86bcm902w entry, appended last, listing this PR and the client PR.
 
 ## Test Plan
 
-Everything below ran on 2026-10-29 on head `de5fbe0` (base `b65f797`), with the client at `db3e6b0`, by the pipeline's independent verifier and then a blind AC auditor who never saw the verifier's report. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 (CI's pins), gitleaks 8.30.1; real Postgres in a test container and real ClickHouse from CI's pinned image (`clickhouse-server:25.8@sha256:0152dd51…`). Hosted CI has not run: nothing is pushed yet.
+Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` with GitHub `main` brought in at `8aa32a1` (after #101 "One-click quick start" and #102 "Role-based starter packs"), with the client at `db3e6b0`. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 (CI's pins), gitleaks 8.30.1; real Postgres in a test container and real ClickHouse from CI's pinned image (`clickhouse-server:25.8@sha256:0152dd51…`).
 
+- [x] Bringing in `main`: only `delivery/stories.json` conflicted (resolved as main's file plus this entry last, every earlier entry unchanged by value); `README.md` and `internal/web/handler.go` equal git's clean 3-way merge. Every file changed on one side only equals that side's version (44 of 44); the files that differ from both parents are exactly the 3 both sides changed; this branch's own changes survive line for line (18 of 18 files); no migration version repeats (`000024`–`000026` are main's; this PR adds none); gitleaks over the 3 both-sides files: no leaks.
 - [x] `make check` with the linter and govulncheck bound to CI's versions: exit 0 (race tests, lint 0 issues in both modules, govulncheck no called vulnerability, gitleaks no leaks, library gate PASSED, build).
 - [x] `bash ./scripts/test-module-add.sh`: exit 0.
-- [x] gitleaks over the branch's 12 commits: no leaks.
-- [x] DB tests read per test from a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web` and `internal/metric/...`: 607 passed, 0 failed, 319 of 319 declared top-level tests ran; the only skips are the accepted `TestEvidenceThirdPartyContentPage` and `TestProvisionManagedPostgresLive`; no skip names the test database or ClickHouse variable.
-- [x] AC tests (verifier and auditor each ran them on `de5fbe0`; each fails to build on base `b65f797`):
+- [x] gitleaks over `b65f797..b78905b` (58 commits, main's included): no leaks.
+- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK.
+- [x] DB tests read per test from a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web` and `internal/metric/...`: @@JSON@@
+- [x] AC tests by name, each with no skip:
   - [x] AC1 `TestContentUsageAC1SpikeMatchesSupportTable`: pass
   - [x] AC2 `TestContentUsageAC2CountsPerPackAndItemWithPostgres`: pass
   - [x] AC3 `TestContentUsageAC3NotMeasurableIsStated`: pass
   - [x] AC4 `TestContentUsageAC4AdminOnlyAndTenantIsolatedWithPostgres` (6 subtests): pass
   - [x] AC5 `TestContentUsageAC5IngestAcceptsOnlyItemIdentifiersWithPostgres`: pass
-- [x] `ac-check.sh` over both AC reports with the review check: `ALL ACCEPTED: 5 of 5 ACs on de5fbe0`; `REVIEWS CLEAN: review-2 at de5fbe0`.
-- [x] Mutation checks on `de5fbe0` (overlay only, never the worktree):
-  - auditor: 26 of 26 clause mutants killed across AC1–AC5, plus 5 of 5 write-up data mutants for AC1;
-  - verifier: 27 of 28 killed; the survivor removes the equal-time pack tie-break (follow-up 3);
-  - review 2: the survivors are the page filter's "only from and to" rule and the same tie-break (follow-up 3; the reviewer notes two versions of one owner never share a creation time in practice);
-  - fixer 1: one survivor, a documented equivalent (widening the owner compare alone, because the other-company skip answers first).
-- [x] Real binary built from `de5fbe0` (`vcs.modified=false`), dev mode on loopback with a throwaway database: before any upload the page lists the packs with every count 0 and "No item uses were recorded in this period."; after real `POST /v1/usage` uploads (one batch replayed) the per-pack and per-item counts match and the replay counts once; Cursor, Claude Code agent and Codex prompt uploads answer 400. Screenshots are on the card.
-- [x] Cross-repo ties: `cmp` of the client's golden upload body with `internal/web/testdata/content_usage_client_upload.json`, and of the client's `api/control-plane.openapi.yaml` with `contracts/control-plane.openapi.yaml`: both exit 0.
-- [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff; all 12 commits by the Leorna identity with no AI attribution lines.
-- [x] Bringing in `main` after #101 (prediction, not a gate): a trial merge of `de5fbe0` with `e2254e0` conflicts only in `delivery/stories.json` (resolved by appending this entry last); gofmt, build, vet and the non-DB tests pass on it, and also with #102 stacked on top. If `main` is brought in before this PR opens, the gates and AC tests above run again on the merged head and this plan names it.
-- [ ] Hosted CI: not run yet (not pushed).
+- [x] Cross-repo ties: `cmp` of the client's golden upload body (`db3e6b0`) with `internal/web/testdata/content_usage_client_upload.json`, and of the client's `api/control-plane.openapi.yaml` with `contracts/control-plane.openapi.yaml`, both from `b78905b`: @@CMP@@
+- [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff against `main`; all 13 of the branch's own commits (12 plus the merge) by the Leorna identity with no AI attribution lines.
+- [ ] Hosted CI: @@CI@@
 
 ## Security, migration, rollback
 
@@ -86,7 +80,8 @@ Everything below ran on 2026-10-29 on head `de5fbe0` (base `b65f797`), with the 
 
 ## Evidence
 
-- Head: `de5fbe0755a41e0528815ef3b72509aeadb20c3c` (base `b65f797`). The local gates above ran on this head. If `main` is brought in first, this line names the merged head and the gates re-run on it.
-- Required check "Go quality gates": pending (not pushed).
-- Actions run: pending.
-- Local receipts (one log per gate plus summaries, AC logs, mutation tables, screenshots) are kept with the story's evidence.
+- Head: @@HEAD@@ (base `main` at `8aa32a1`; the branch started from `b65f797`). The local gates above ran on `b78905b`, the merge of `main`; @@RECORD@@
+- Before `main` was brought in, the pipeline's independent verifier and a blind AC auditor each accepted all 5 ACs on `de5fbe0`, with mutation checks and a run of the real binary there. A fresh verifier and auditor run on this PR's head next.
+- Required check "Go quality gates": @@GQG@@
+- Actions run: @@RUN@@
+- Local receipts (one log per gate plus a summary, AC logs, the merge proof) are kept with the story's evidence.

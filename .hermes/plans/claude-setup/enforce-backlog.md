@@ -50,3 +50,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-29 | 86bcm902w | leorna | script: control-plane gate scripts and the planner's common-environment template run `command -v gitleaks golangci-lint govulncheck make gcc` under the task PATH and abort naming the missing tool before make check | offered
 - 2026-10-29 | 86bcm901z | code-review-practice | test: a shared internal/web test helper that, for every 422 secret refusal (item editor, variant edit and resolve), asserts the response body holds no part of the token; run by make check | offered
 - 2026-10-29 | header-bar | figma-to-bricks | test: header-stacked.test.ts reruns each case with a thin announcement strip prepended and expects the same home links (npm run check) | offered
+- 2026-10-29 | after-faq-sections | figma-to-bricks | script: the witness harnesses walk each snapshot and throw on a repeated SNode id before converting | offered
