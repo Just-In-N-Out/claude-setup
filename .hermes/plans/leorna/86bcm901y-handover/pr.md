@@ -48,7 +48,7 @@ ClickUp: [Remove and reorder items in a pack version](https://app.clickup.com/t/
   - store `TestPackItemOrderStoreWithPostgres` (positions, the CHECK and index, immutability, older versions keep listing by kind then name, the audit order);
   - unit tests in `internal/pack/builder_order_test.go`;
   - existing `SaveVersion` call sites in `builder_test.go` and `pack_builder_test.go` switched to `VersionChange`.
-- `delivery/stories.json`: the 86bcm901y entry (PR number added once this PR exists).
+- `delivery/stories.json`: the 86bcm901y entry, which records this PR (#99).
 
 ## Test Plan
 
@@ -133,7 +133,7 @@ Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `m
 
 ## Evidence
 
-- Head: `d84fd046994d606e1f79c2faa4b2c15cc063dab3`, the merge of the reviewed head `3e8d18197575c772c6d34fcdd10f06e5911168fc` with GitHub `main` `dd006b79f9908976e853c57489032bd5d9d471df` (story base `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f`)
+- Head: `008c6124af3f58bbae9bd580b86c7c50cf8ffc29`, which is `d84fd046994d606e1f79c2faa4b2c15cc063dab3` (the merge of the reviewed head `3e8d18197575c772c6d34fcdd10f06e5911168fc` with GitHub `main` `dd006b79f9908976e853c57489032bd5d9d471df`; story base `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f`) plus one commit that records this PR (#99) in `delivery/stories.json`. The local gates below ran on `d84fd04`. On the PR-number commit, `test_story_shippable.py` and `go build ./... && go vet ./...` exit 0.
 - Required check: "Go quality gates": pending
 - Actions run: pending
 - Local gates on this head (2026-10-29), each exit 0 and kept with the story's evidence (one log per gate, plus a summary):
