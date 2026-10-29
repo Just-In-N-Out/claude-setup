@@ -1,2 +1,2 @@
 - [Finding lost sessions](finding-lost-sessions.md) — where a "deleted" or "cloud" session usually is and how to reopen it
-- [Review loop until clean](review-loop-until-clean.md) — review→fix repeats until a fresh review finds no high-priority (P0/P1) bugs and all ACs pass; never stop at two reviews
+- [Review loop until clean](review-loop-until-clean.md) — review→fix repeats until a fresh review finds no P0–P2 bug (realistic edge cases count) and all ACs pass, with convergence brakes

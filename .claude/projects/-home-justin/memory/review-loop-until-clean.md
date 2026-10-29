@@ -1,6 +1,6 @@
 ---
 name: review-loop-until-clean
-description: "Justin wants review→fix to loop until a fresh review finds no high-priority (P0/P1) bugs AND every AC passes, not stop after two reviews"
+description: "Justin wants review→fix to loop until a fresh review finds no P0–P2 bug (realistic edge cases included) AND every AC passes, with brakes so it ends"
 metadata:
   node_type: memory
   type: feedback
@@ -14,7 +14,13 @@ Justin wants the pipeline's review→fix to loop until a fresh reviewer finds no
 
 **How to apply** (until a pipeline story writes this into CLAUDE.md, feature-dispatch and review-fix-cadence):
 - After every fix round, dispatch a fresh reviewer on every commit since the last clean review.
-- "Clean" means no **high-priority** findings, P0 or P1: a security hole, a guard bypass, a false AC, or a wrong block that breaks normal work. Justin added: "I just need it to find bug errors that are high priority."
-- A review with only P2/P3 findings counts as clean, and those go on the story's follow-up list. When a round already has P0/P1 findings, its fixer also fixes that review's lower ones.
-- No round cap. Ask Justin only when the same finding or AC repeats with no new fact, or a round finds as many serious issues as the one before.
+- **"Clean"** means no P0, P1 or P2 finding: no bug a real person or agent could plausibly hit. That includes realistic edge cases (inputs, configs, git operations, both machines: macOS and WSL), anything that breaks an AC, and anything in the UI.
+- **P3** goes on the story's follow-up list: cosmetic, docs, a hole only a deliberate evasion would hit, or a setup none of Justin's machines has.
+- **Brakes, so the loop always ends:**
+  - (a) every finding must name a concrete real-use scenario, and with no scenario it is P3;
+  - (b) review 3 onward covers only the fix commits since the last review and what they touch;
+  - (c) if a round finds no fewer P0–P2 findings than the round before, stop and ask Justin;
+  - (d) the same finding twice with no new fact → ask Justin.
+  There's no fixed round cap.
+- Justin, 2026-10-28: first "only high-priority bugs", then switched to this. His words: "help out a ton, but isn't going to be infinite."
 - Verifier → auditor → `ac-check.sh` runs only after a clean review. Any fix after that gets a fresh review again before re-verifying.
