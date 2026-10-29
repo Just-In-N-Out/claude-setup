@@ -13,7 +13,8 @@
 # (exec: same args, same stdin, its exit code), because a global hooks path hides the repo's own hooks.
 # push-to-checkout with no own hook does git's default updateInstead update itself, because any
 # push-to-checkout hook replaces it (as git's push-to-checkout.sample does).
-# Repos under the system temp folders are scratch (test suites): no checks, hand-over only.
+# Repos under the system temp folders, or inside $TMPDIR (see tmpdir below), are scratch (test suites): no checks,
+# hand-over only.
 # Leorna is decided by the git common dir (like includeIf "gitdir:~/Leorna/"), so a linked worktree of a
 # Leorna repo counts as Leorna wherever it sits, and the setup repo's worktrees share its CLAUDE.md exception.
 # Off on one machine: git config --global --unset core.hooksPath (in a terminal; Claude's git-guard denies it).
@@ -30,8 +31,20 @@ leorna=$(cd "$HOME/Leorna" 2>/dev/null && pwd -P) || leorna="$home/Leorna"
 common=$(cd "$(git rev-parse --git-common-dir 2>/dev/null)" 2>/dev/null && pwd -P) || common=""
 top=$(cd "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null && pwd -P) || top=$PWD
 
+# $TMPDIR is a temp folder too (agents point it at ~/.cache/<story>-<role>/, off the desktop's small shared /tmp) when
+# it is an absolute path that isn't $HOME or a folder holding it (then every repo would be scratch)
+tmpdir=""
+case ${TMPDIR:-} in /*) tmpdir=$(cd "$TMPDIR" 2>/dev/null && pwd -P) || tmpdir="" ;; esac
+case "$home/" in "${tmpdir%/}/"*) tmpdir="" ;; esac
+
 stop() { printf 'githooks (%s): %s\n' "$name" "$*" >&2; exit 1; }
-scratch() { case "$top/" in /tmp/* | /private/tmp/* | /var/tmp/* | /var/folders/* | /private/var/folders/*) return 0 ;; esac; return 1; }
+scratch() {
+  case "$top/" in /tmp/* | /private/tmp/* | /var/tmp/* | /var/folders/* | /private/var/folders/*) return 0 ;; esac
+  [ -n "$tmpdir" ] || return 1
+  case "$common/" in "$leorna/"*) return 1 ;; esac    # a Leorna repo (by its common dir) is never scratch by $TMPDIR
+  case "$top/" in "$tmpdir/"?*) return 0 ;; esac      # inside it, as mktemp -d makes one: not $TMPDIR=<the repo>
+  return 1
+}
 setup_repo() { [ -n "$common" ] && [ "$common" = "$(cd "$home/.claude-setup.git" 2>/dev/null && pwd -P)" ]; }
 email_of() { git var "GIT_$1_IDENT" 2>/dev/null | sed -n 's/.*<\([^>]*\)>.*/\1/p'; }
 check_identity() { # check_identity AUTHOR and/or COMMITTER

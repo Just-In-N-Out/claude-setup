@@ -8,7 +8,7 @@
 # once merged), never from the live ~/.claude, ~/.hermes or the real global git config.
 # - Hook tests feed JSON to the checkout's scripts with HOME = a fake home.
 # - Git tests make repos under ${HARNESS_GUARDS_TEST_ROOT:-$HOME/.cache/harness-guards-tests}, outside
-#   the system temp folders (githook.sh skips its checks there), with GIT_CONFIG_GLOBAL = a test file
+#   the system temp folders and with TMPDIR cleared (githook.sh skips its checks in both), with GIT_CONFIG_GLOBAL = a test file
 #   (personal email, an includeIf for <fake home>/Leorna/, core.hooksPath = the checkout's githooks)
 #   and GIT_CONFIG_NOSYSTEM=1.
 set -uo pipefail
@@ -53,7 +53,7 @@ newroot() { # newroot: a fresh test folder $S with a fake home $H and its git co
     "$PERSONAL" "$H" "$S" "$GHOOKS" >"$S/gitconfig"
   printf '[user]\n\tname = Test Leorna\n\temail = %s\n' "$LEORNA" >"$S/gitconfig-leorna"
 }
-ing() { HOME="$H" GIT_CONFIG_GLOBAL="$S/gitconfig" GIT_CONFIG_NOSYSTEM=1 "$@"; }
+ing() { HOME="$H" GIT_CONFIG_GLOBAL="$S/gitconfig" GIT_CONFIG_NOSYSTEM=1 TMPDIR="${HG_TMPDIR:-}" "$@"; }  # the caller's TMPDIR never makes a test repo scratch
 nohooks() { ing git -c core.hooksPath=/dev/null "$@"; }     # fixtures only: git with no hooks at all
 done_ok() { rm -rf "$S"; return 0; }                        # remove the test folder on success (kept on failure)
 srcgit() { # git for the checkout: the worktree, or $HOME's bare repo once merged
@@ -868,6 +868,38 @@ ac12_temp_repos_skip_checks_but_chain() {
     [ "$rc" != 0 ] && grep -q own-pre-commit-ran <<<"$out" || fail "$d: own pre-commit did not run or block (rc=$rc)" || return 1
     echo "# $d: own pre-commit still ran and blocked"
   done
+  # $TMPDIR is a temp folder too (agents point it at ~/.cache/<story>-<role>/, off the desktop's small /tmp), also
+  # through a link or with a trailing /; tcommit <TMPDIR> <repo> <git args…>: $out, $rc
+  tcommit() { local t=$1 r=$2; shift 2; out=$(cd "$r" && HG_TMPDIR="$t" ing git "$@" 2>&1 </dev/null); rc=$?; }
+  local t="$S/tmpdir" r
+  mkdir -p "$t" && ln -s "$t" "$S/tmplink"
+  for tv in "$t" "$t/" "$S/tmplink"; do
+    r=$(TMPDIR="$tv" mktemp -d) && case $r in "$S"/*) ;; *) fail "mktemp ignored TMPDIR=$tv: $r"; return 1 ;; esac
+    ing git init -q -b main "$r"; echo x >"$r/CLAUDE.md"; ing git -C "$r" add CLAUDE.md
+    tcommit "$tv" "$r" -c user.email=t@t.test commit -q -m t -m "Co-authored-by: Claude <noreply@anthropic.com>"
+    [ "$rc" = 0 ] || fail "TMPDIR=$tv: a scratch repo commit was refused: $out" || return 1
+    echo "# TMPDIR=$tv: CLAUDE.md, t@t.test and an AI trailer committed in $r"
+  done
+  printf '#!/bin/sh\necho own-pre-commit-ran >&2\nexit 1\n' >"$r/.git/hooks/pre-commit"; chmod +x "$r/.git/hooks/pre-commit"
+  tcommit "$S/tmplink" "$r" commit -q --allow-empty -m t2
+  [ "$rc" != 0 ] && grep -q own-pre-commit-ran <<<"$out" || fail "TMPDIR repo: own pre-commit did not run or block (rc=$rc)" || return 1
+  echo "# TMPDIR repo: own pre-commit still ran and blocked"
+  # it never makes every repo scratch: not $HOME, a folder holding it, a relative path (.. from the repo) or the repo
+  # itself; and a Leorna repo (its common dir under ~/Leorna, also a linked worktree put in $TMPDIR) is never scratch by it
+  gitrepo "$H/work/p" || return 1
+  for tv in "$H" "$H/" "$S" / .. "$H/work/p/" "$H/missing"; do
+    echo y >>"$H/work/p/f"; ing git -C "$H/work/p" add f
+    tcommit "$tv" "$H/work/p" -c user.email=t@t.test commit -q -m t
+    refused pre-commit "needs $PERSONAL" "TMPDIR=$tv: a wrong email in a personal repo" || return 1
+  done
+  mkdir -p "$H/Leorna/tmp" && gitrepo "$H/Leorna/tmp/r" || return 1
+  echo y >"$H/Leorna/tmp/r/f"; ing git -C "$H/Leorna/tmp/r" add f
+  tcommit "$H/Leorna/tmp" "$H/Leorna/tmp/r" -c user.email=t@t.test commit -q -m t
+  refused pre-commit "needs $LEORNA" "TMPDIR=$H/Leorna/tmp: a wrong email in a Leorna repo there" || return 1
+  gitrepo "$H/Leorna/lc" && nohooks -C "$H/Leorna/lc" worktree add -q "$t/lc-wt" -b wt >/dev/null 2>&1 || fail "worktree add" || return 1
+  echo y >"$t/lc-wt/f"; ing git -C "$t/lc-wt" add f
+  tcommit "$t" "$t/lc-wt" -c user.email=t@t.test commit -q -m t
+  refused pre-commit "needs $LEORNA" "TMPDIR=$t: a wrong email in a Leorna worktree placed in it" || return 1
   done_ok
 }
 
