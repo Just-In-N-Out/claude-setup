@@ -177,7 +177,11 @@ tracker, automatic publication or a competing agent lifecycle.
   replacement per test-file child process (the `--test` parent loads no product
   module; `NODE_OPTIONS='--import <hook.mjs>'` reaches every child). Run an unhooked green control afterward and verify
   status. Select focused tests that actually import the module: zero replacements
-  is a harness failure, not a killed product mutation.
+  is a harness failure, not a killed product mutation. Go: `go test -overlay <json>`
+  swaps a source file for a mutated scratch copy, or adds a scratch
+  `zz_<role>_probe_test.go` (a Replace entry for a path not on disk) that drives
+  edge cases through the package's own fixtures; `git status --porcelain` stays
+  empty (901y review 1).
 - **Font-capture reviews:** separate requested names, registered face states and
   actual painted fonts. Use Chrome CDP `CSS.getPlatformFontsForNode` on direct-text
   nodes with visible range rectangles. A `local("Arial")`-backed face can supply
