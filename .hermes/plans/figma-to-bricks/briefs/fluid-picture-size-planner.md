@@ -82,3 +82,6 @@ want it for every single website." He chose "Both": keep the B-Dry paste fixes a
 plugin versions as Full jobs. Then: "make it a note for future agents that every single change needs to be inside the
 plug-in, not just for copy-pasting purposes." Earlier: "Whatever the planner agent says, just go with the recommended
 stuff."
+
+## Update (Justin, 2026-10-30)
+Justin stopped every B-Dry paste-only job ("stop any jobs that are just for copy-pasting the B dry"). Plan the plugin change only: no B-Dry paste file, no v5, no Downloads deliverable. Use the B-Dry measurements only as one example and test case for the general rule.
