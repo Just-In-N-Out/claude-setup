@@ -602,7 +602,7 @@ ac12_docs_name_the_review_loop() {
   f="$SRC/.claude/CLAUDE.md"; need "$f" || return 1
   blk=$(step 5 "$f"); [ -n "$blk" ] || fail "CLAUDE.md has no step 5" || return 1
   names "$blk" "CLAUDE.md step 5" review-check.sh 'REVIEW AGAIN' 'MOVE ON' 'ASK JUSTIN' P0 P1 P2 P3 scenario 'no fewer' \
-    'new fact' 'round 3' 'No round cap' || return 1
+    'new fact' 'round 3' 'No round cap' 'Mini: round 1 only' || return 1
   names "$(step 6 "$f")" "CLAUDE.md step 6" 'MOVE ON' '--reviews <evidence>' || return 1
   lacks "$f" 'a second fresh reviewer of the corrected code, then a fixer for its valid findings' || return 1
   echo "# CLAUDE.md steps 5 and 6"
@@ -615,6 +615,8 @@ ac12_docs_name_the_review_loop() {
   f="$FD/SKILL.md"; need "$f" || return 1
   names "$(cat "$f")" "feature-dispatch SKILL.md" references/review-loop.md review-check.sh || return 1
   lacks "$f" 'two in order' && lacks "$f" 'second fresh full review of the corrected candidate → fixer for its valid findings' || return 1
+  # every fix gets a fresh review: no path that sends a fix straight to the verifier
+  lacks "$f" 'Otherwise dispatch the verifier' && lacks "$f" 'New behavioral fixes still require fresh re-review' || return 1
   f="$FD/references/review-loop.md"; need "$f" || return 1
   names "$(cat "$f")" "references/review-loop.md" review.json justin.json repeats new_fact scenario follow-ups.md \
     'REVIEW AGAIN' 'MOVE ON' 'ASK JUSTIN' || return 1
