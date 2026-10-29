@@ -222,3 +222,8 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Low, pre-existing: internal/web test helper readBody (handler_test.go:308-316) caps at 64 KiB; a starter pack's /content reply (~290 KB) decodes as "unexpected end of JSON input" (already in leorna-control-plane-workflow.md).
 - Info, cosmetic: starter cards run role, pack name, item count and description together in one line (ac5-01), as the plan's CSS has it.
 - Info: the plan's E1 recipe (placeholder public URL) can't do the desktop sign-in; the builder used https://demo.leorna.invalid with a loopback Host header (ruling 2).
+
+## 86bcm902a review 1 on 7b45d43 (2026-10-29)
+- Nit: the 902a approved plan's risk R1 command (plan-approved.md:1365) has no `.up.sql` filter, so it lists every migration version as duplicated; use `grep '\.up\.sql$'` (the leorna skill line is now corrected).
+- Info: TrySetupLock (internal/web/setup_lock.go) returns false both for "your other step is running" and "all pool slots busy", so callers can't tell them apart.
+- Info: 901r and 901y conflict with each other (delivery/stories.json, internal/pack/README.md, internal/web/library.go) and both use migration 000024 (902a too): for those stories' finishers.
