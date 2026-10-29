@@ -1387,3 +1387,12 @@ Justin's words: "Okay, look, I'm gonna go shower, so just keep this running, oka
 - **Q4: A ⭐.** AC5 runs real Codex and Claude Code in throwaway homes only, never Justin's real `~/.codex` or `~/.claude`.
 - **Q5: A ⭐.** The agent installs Go and CI's tools under `~/.local/leorna-tools`. **Justin's step, owed:** Docker Desktop → Settings → Resources → WSL integration → enable for Ubuntu. Until he does it, the build continues and the Postgres gates (and anything needing `leorna-test-pg`) are recorded **NOT RUN, owed**, as option B describes; they run once Docker is on, before hand-over. Other sessions (86bcm901a, 86bcm901b) may install the same tools at the same path: check first, never overwrite or delete another session's working install, and install atomically.
 - **Q6: held for Justin.** Option A means running Chrome outside the agent sandbox, a permission change only Justin can grant, so the standing grant doesn't cover it. Until he answers, **option B applies:** take screenshots by any route that works inside the current sandbox without changing permissions or settings; if none works, save the logs and mark those screenshots **owed**.
+
+## Justin's answers (2026-10-28, after hand-over)
+
+Justin's words: "For thirteen decisions, just ask an agent and tell it to choose the best ones. Once I recommend it, I'd create a PR, but we need to run audit checks and verification checks again because something's going to emerge, so yeah."
+
+- **The 13 rulings** (`evidence/86bcm901j/handover/rulings-for-justin.md`): delegated to a fresh decision agent, which picks the best option for each. The main session also gave it the version-manager question (A add the names / B soften the README), so nothing waits on Justin.
+- **Bring main in:** OK. GitHub main is now `db3406e` (PR #95, 86bcm901b, merged). A fixer merges it in using `handover/sibling-merge-plan.md` and applies the decided changes.
+- **Re-verify:** verifier → blind AC auditor → `ac-check.sh` again on the new head; then the finisher refreshes the hand-over.
+- **PR:** not opened automatically; the main session asks for "make a PR" once the checks pass.
