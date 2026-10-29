@@ -1,5 +1,10 @@
 # 86bcm901w ClickUp evidence draft (post only when Justin says "post")
 
+> **POSTED 2026-10-29 (07:15 UTC) after Justin's "post"**, brought up to the merged head: PR #96 merged 2026-10-29T07:02:18Z, merge `6c1709e`, PR head `5a9aa2f`; main push CI run 40832867438 (3/3 jobs success); `check-story-shippable.py 86bcm901w` on main 6c1709e: "Merge/CI gate passed" (EXIT=0).
+> - **Comment id `90140274994943`**; the exact text posted is `~/.hermes/plans/leorna/86bcm901w-handover/clickup-comment-posted.md` (read back word for word: 548/548 words equal). It supersedes the 8a50486 comment below.
+> - **Attachments (5, read back, every size equal to the local bytes):** `ac1-new-pack-version-1-5a9aa2f.png` (1,841,269 B, 1440×7794, from `auditor-5a9aa2f/ac1-new-pack-version-1.png`), `ac2-pack-version-2-5a9aa2f.png` (1,843,295 B, 1440×7813, `auditor-5a9aa2f/ac2-pack-version-2.png`), `ac3-audit-history-5a9aa2f.png` (162,286 B, 1440×1053, `auditor-5a9aa2f/ac3-audit-history.png`), `ac4-refused-saves-log-5a9aa2f.png` (236,198 B, 1500×860, `auditor-5a9aa2f/ac4-refused-saves-log.png`), `gates-5a9aa2f.png` (805,179 B, 1400×2940, the finisher's rendering of `verifier-5a9aa2f/gates-make-check-5a9aa2f.txt`, ANSI stripped, govulncheck's public DB URL line shortened and labelled; file in this folder). None of the 8a50486 files in the table below was uploaded.
+> - Card status ("in progress"), assignee, tags and AC checkboxes unchanged; Justin moves the card.
+
 - **Card:** [Create a pack by picking library items](https://app.clickup.com/t/86bcm901w) (status "in progress"; read 2026-10-28; no attachments on it yet).
 - **Before posting:** fill in the `<…>` merge facts (PR number, merge date and SHA, CI run). Never change the card's status or tick its checkboxes.
 
