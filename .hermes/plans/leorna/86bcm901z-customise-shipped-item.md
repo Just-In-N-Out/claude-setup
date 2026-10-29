@@ -32,7 +32,7 @@ If B: the variant editor reuses the item editor's file fields and uploads, merge
 
 ## Acceptance criteria
 
-AC1–AC3 are the card's, in its own words. AC4 is mine (proposed): it covers the DoD's failure case, the admin-only and tenant guards, and the secret gate. No AC needs Justin's hands (the "UI demo" of the card's Verify line is an agent-captured run of the real binary, see "Evidence"), so none is `(live)`. Each test's whole name sits on its AC line.
+The first three are the card's, in its own words. The fourth is mine (proposed): it covers the DoD's failure case, the admin-only and tenant guards, and the secret gate. No AC needs Justin's hands (the "UI demo" of the card's Verify line is an agent-captured run of the real binary, see "Evidence"), so none is `(live)`. Each test's whole name sits on its AC line.
 
 - AC1: Given a library item, when I customise it, then a tenant-owned variant is created linked to the upstream item + version — test `TestVariantAC1CustomiseCreatesATenantOwnedVariantLinkedToTheUpstreamItemAndVersionWithPostgres`
 - AC2: Given a newer upstream version, then the admin sees an 'update available' notice with a diff and can merge or ignore — test `TestVariantAC2NewerUpstreamVersionShowsAnUpdateNoticeWithADiffThenMergeOrIgnoreWithPostgres`
@@ -918,7 +918,7 @@ POST forms use `adminFormLimit(w, r, maxVariantFormBytes)` (`cloud_plan.go:99`: 
 | `variant.ErrUpstreamChanged` | 409 | alert "Upstream has a newer version (X). Review its changes, then merge again." (page from a fresh read) |
 | `variant.ErrMergeConflict` | 409 | the resolver, prefilled; nothing saved |
 | `variant.ErrUnresolved` | 422 | the resolver with the submitted text; alert "Remove every conflict marker line (<<<<<<< your variant and >>>>>>> upstream …) before saving the merge." |
-| `gate.TenantSecretIssue` | 422 | alert `<issue>. Remove it before saving`; the named field is **cleared** (main body → body; description → description; anything else → both), as `item_create.go:186-198` does |
+| `gate.TenantSecretIssue` | 422 | alert `<issue>. Remove it before saving`; the named field is **cleared** (main body → body; description → description; anything else → both), as `item_create.go:193-212` does |
 | `gate.ErrTenantSecret` (no detail) | 422 | alert "A suspected secret was found. Remove it before saving"; both cleared |
 | `gate.TenantRenderIssue` / `gate.ErrTenantRender` | 422 | alert with the issue |
 | `org.ErrForbidden` | 403 | problem `FORBIDDEN` |
@@ -1045,11 +1045,11 @@ Subtests:
 ### Supporting tests (Verify line: "unit tests for variant lineage + upstream-diff")
 
 `internal/textdiff/textdiff_test.go` (no database):
-- `TestDiffShowsChangedLinesWithThreeLinesOfContext` (one change in a 12-line text → one block, `@@ -3,7 +3,7 @@`, three context lines each side);
+- `TestDiffShowsChangedLinesWithThreeLinesOfContext` (line 6 of a 12-line text changed → one block with `OldStart 3, OldLines 7, NewStart 3, NewLines 7`: lines 3–5 context, `-` old line 6, `+` new line 6, lines 7–9 context);
 - `TestDiffOfEqualTextsIsEmpty`;
 - `TestDiffSplitsFarApartChangesIntoBlocks` (changes 10 lines apart → two blocks);
 - `TestDiffMarksALastLineWithoutNewline`;
-- `TestDiffFallsBackToOneBlockAboveTheCellLimit` (two 1,100-line texts differing in every line → one block of 1,100 `-` and 1,100 `+` lines);
+- `TestDiffFallsBackToOneBlockAboveTheCellLimit` (two 1,100-line texts where line i is `same i` when i%10 == 0 and `old i` / `new i` otherwise: after the shared first line, (1,099+1)² = 1,210,000 cells is over the 2^20 limit, so the result is one block whose first line is the context `same 0` followed by 1,099 `-` lines then 1,099 `+` lines; the shared `same 10`, `same 20`… lines are not matched as context, which a line-by-line match would do);
 - `TestMerge3TakesSeparateChangesFromBothSides` (the hand-traced case);
 - `TestMerge3ConflictsWhenBothSidesChangeTheSameLines` (exact text with markers and label; `Conflicts[0].BaseStart`);
 - `TestMerge3TakesIdenticalChangesOnce`;
@@ -1361,8 +1361,8 @@ Open PRs: only **#101** (902a quick start, head `bb79ec6`, base `b65f797`). Work
 
 ## Other things found
 
-- **P3 (docs):** `internal/library/README.md:696-698` and the `Requires` comment in `internal/library/library.go:85-90` say the pack builder (86bcm901w) reads `Library.Required`; on `b65f797` no non-test code calls it (`git grep -n 'Required(' -- '*.go'` finds only its definition; 901r's branch adds the first caller in `internal/library/starter.go:156`). Not touched here.
-- **P3 (side effect):** `itembuilder.DraftIssues(in Input)` takes the input by value, but `validate` (`internal/itembuilder/validate.go:73-88`) sets `Script` on `&in.Files[i]` and `sort.Slice(in.Files, …)`, which write through the caller's shared backing array. This story passes cloned slices, so it is unaffected. Not touched here.
+- **P3 (docs):** `internal/library/README.md:696-698` and the `Requires` comment in `internal/library/library.go:85-89` say the pack builder (86bcm901w) reads `Library.Required`; on `b65f797` no non-test code calls it (`git grep -n 'Required(' -- '*.go'` finds only its definition; 901r's branch adds the first caller in `internal/library/starter.go:156`). Not touched here.
+- **P3 (side effect):** `itembuilder.DraftIssues(in Input)` takes the input by value, but `validate` (`internal/itembuilder/validate.go:70-88`) sets `Script` on `&in.Files[i]` and `sort.Slice(in.Files, …)`, which write through the caller's shared backing array. This story passes cloned slices, so it is unaffected. Not touched here.
 - **Constraint honoured, not a bug:** `internal/web/README.md:205-225` says a bound must land before tenant content reaches the unbounded library preview "for example tenant variants". Variants are stored in their own table and rendered through PR #100's bounded `renderBoundedItem`; B13 rewords that sentence.
 
 ## Rules for every role
