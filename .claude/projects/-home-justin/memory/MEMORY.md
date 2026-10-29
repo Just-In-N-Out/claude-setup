@@ -1,0 +1,1 @@
+- [Finding lost sessions](finding-lost-sessions.md) — where a "deleted" or "cloud" session usually is and how to reopen it
