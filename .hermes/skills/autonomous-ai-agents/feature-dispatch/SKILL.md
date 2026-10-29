@@ -59,11 +59,7 @@ Every new bug/feature/story, any repo: play it back in one line, recommend **Ful
 
 ## Stop, pause and notification controls
 
-1. **Separate work from delivery.** Read a stop request against the message it answers. Stopping updates suppresses unsolicited progress messages; stopping a quoted recurring script pauses that specific schedule; stopping jobs cancels the named live work and holds its automatic continuation. Do not substitute a promise of silence for actually pausing the identified scheduler, or cancel workers merely because notifications are unwanted. A correction such as "No, stop the jobs" replaces the earlier interpretation immediately.
-2. **Resolve the target and exemptions before cancellation.** For screenshots, inspect the image and match truncated labels to exact session identities. An exempt orchestrator includes its child-agent tree, not just its top-level chat. Persist the allowed and paused scope in the handoff; do not turn an exception list into a blanket stop. Stop eligible known workers promptly rather than delaying cancellation for unrelated investigation.
-3. **Request cancellation through the current owner's supported control.** Take a live roster snapshot, cancel only in-scope workers and preserve every worktree, dirty change and evidence artifact. Record cancellation requested until the control result or completion confirms interruption. A board phase is bookkeeping, not a cancellation mechanism. If another session owns a target, report that scope limit without claiming it stopped; do not repeatedly submit unrelated session IDs to a conversation-local control or kill the shared backend.
-4. **Hold continuation, not just the current process.** Record the user stop before handling subsequent completion notifications. Do not launch the next reviewer, fix pass, replacement model or queued work under the older autonomous grant. Delayed results may be recorded quietly, but do not authorize a restart. Before a later authorized resume, have the owner reconcile incomplete implementation and possible interrupted test mutations rather than assuming a clean checkpoint.
-5. **Acknowledge once, then respect silence.** Give a short confirmation of what actually stopped or was paused and what remains exempt or unconfirmed. Suppress routine async-completion and phase-change replies after updates are disabled; do not send a reset suggestion or another unsolicited summary. For a quoted recurring status post, follow `references/status-pings.md`: list, pause the exact job, read it back disabled, and leave unrelated schedules and work unchanged. Do not re-enable it merely because a new feature starts or the chat model changes.
+Read a stop request, cancel or pause only what it names, hold continuation and acknowledge once: follow `references/stop-controls.md`.
 
 ## The board
 
@@ -394,20 +390,7 @@ After verifying a Figma merge, remove the feature's copy and branch (`git worktr
 
 ## Phase 5: Live check (when Justin says "pasted")
 
-After he pastes a merged fix and replies **pasted <page>** (or **converted** for a Convert-only fix), an agent checks the live page so he doesn't have to (Justin, 2026-10-20).
-
-1. Board → `checking`. If the page is new, a draft, or ambiguous, ask for its link in one line first.
-2. Dispatch a **CHECKER**:
-   - goal: `CHECKER (read only) for <project> feature "<name>": check the live <page>`.
-   - context:
-     - the page and the site (from the project skill);
-     - the plan path and its paste check (what "fixed" looks like);
-     - "Load the project skill, CHECKER role. Read only: never log in, purge caches or change the site/media. Compare ordinary and timestamp-query responses, retaining request times and actual cache headers; a query parameter alone does not prove a cache bypass. Use project-specific cache diagnostics only within their documented access restrictions and report what the responses actually establish."
-     - "Check the fix concretely: follow each link and report where it lands; measure sizes in the browser (`browser_exec`, `getBoundingClientRect`) at desktop and phone widths. Take a screenshot of the fixed part with `capture_screenshot()` and return its file path. If the browser isn't available, check over HTTP and say no screenshot was taken."
-   - output_schema: `{verdict: pass|fail|unsure, summary, findings[], screenshots[]}`.
-3. On return, send `🔎 <name>: live check — pass` (or `fail`/`unsure`), one line per finding, and `MEDIA:` each screenshot.
-   - Pass: board → `verified`.
-   - Fail or unsure: preserve the verified source release but mark live acceptance failed/unproved. If observed responses support stale caching, request one targeted purge/recheck; do not keep recommending it after fresh responses reproduce the defect. When one saved element or pre-publication payload is needed, set `awaiting-answer` with that exact small artifact request. After it arrives, advance the board immediately and delegate bounded diagnosis of the first unresolved boundary; missing frontend metadata does not itself prove which producer/importer lost it. Do not automatically restart a full implementation/review/corpus pipeline or ask for another upload before root-cause evidence supports that step. A demonstrated code repair still requires its normal plan approval and release gates.
+After he pastes a merged fix and replies **pasted <page>** (or **converted**), a read-only CHECKER checks the live page: board → `checking`, then follow `references/live-check.md`.
 
 - **Out of steps:** dispatch a new builder with "continue from worktree <path>, last commit <sha>".
 - **Builder stopped on a test that pins intentionally replaced behavior:** have the agent identify the exact assertion, its independent controls and the stronger replacement oracle. If alignment is already an approved plan task, assign the missing task without another approval round. Otherwise record a narrow ownership clarification in the plan and brief only when the evidence shows direct alignment with an approved decision; return a genuine behavioral trade-off to Justin. Delegate patch application, test execution and commits even for a tiny prepared patch: manager-only mode has no test-edit shortcut. Require fresh independent review afterward, because an old assertion may also protect behavior the fix must preserve.
