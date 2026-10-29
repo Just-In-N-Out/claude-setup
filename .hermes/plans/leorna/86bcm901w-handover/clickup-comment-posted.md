@@ -15,8 +15,8 @@ WHAT WAS VERIFIED
 - Gates on 5a9aa2f (independent verifier, own test database): make check ✅ (fmt, vet, race tests, lint 0 issues, govulncheck no called vulnerability, gitleaks no leaks, library gate PASSED) · module-add ✅ · Postgres tests 554 pass, 0 fail, only the 4 known opt-in skips ✅ · story gate ✅ · secret scan of the story's commits and of the 4 files merged with main ✅ (gates-5a9aa2f.png).
 - Mutation testing: blind AC auditor on 5a9aa2f 20/20 mutants killed; independent verifier on 8a50486 39/39 killed (the story's own files are unchanged since, apart from the merge with main in 4 shared files).
 - CI on the PR head 5a9aa2f: Go quality gates ✅ · Publish control-plane image ✅ · Package admin-portal distribution ✅ — https://github.com/LeornaAI/leorna-control-plane/actions/runs/40804136869
-- CI on main after merge (6c1709e): MAIN_CI_LINE — https://github.com/LeornaAI/leorna-control-plane/actions/runs/40832867438
-- Story shippable check on main 6c1709e: SHIPPABLE_LINE
+- CI on main after merge (6c1709e): Go quality gates ✅ · Publish control-plane image ✅ · Package admin-portal distribution ✅ — https://github.com/LeornaAI/leorna-control-plane/actions/runs/40832867438
+- Story shippable check (scripts/check-story-shippable.py 86bcm901w) on main 6c1709e: ✅ "Merge/CI gate passed".
 - Live run: none needed; no AC needs a live server. Demo: the admin console in dev mode on a throwaway local database, with a binary built at 5a9aa2f. 4 items ticked and Create pack gave "Backend team pack · version 1" with exactly those items; github-mcp unticked and security-auditor ticked gave version 2 "from version 1"; the pack's change history showed pack.create and pack.version.create with actor, before and diff. Screenshots attached.
 
 NOT VERIFIED
