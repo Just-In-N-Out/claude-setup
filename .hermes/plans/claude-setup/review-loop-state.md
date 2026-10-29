@@ -11,15 +11,7 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **Builder done:** head `d3f220f`, base `691651c`; all non-live ACs pass; 59 mutants.
 - **Review 1:** REVIEW AGAIN (R1-1, P1: bash 3.2 can't parse a heredoc inside `$(…)` in `review-check.sh`).
 - **Fixer 1 done:** head `9aca235`.
-- **Running:** reviewer 2, a DELTA review of `d3f220f..9aca235` (`briefs/review-loop-reviewer-2.md`). Then run the referee.
-- **Referee command after each review** (the worktree's copy):
-  `bash ~/.claude-setup-wt/review-loop/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.sh --repo ~/.claude-setup-wt/review-loop --base 691651c1e942896f42f4e64ed547a1a2a121ef3c ~/.hermes/plans/claude-setup/evidence/review-loop`
-  The last line decides: MOVE ON / REVIEW AGAIN / ASK JUSTIN.
-- **Next:**
-  1. reviewer 1 (full);
-  2. the fix/review loop with delta reviews;
-  3. verifier, then auditor, then `ac-check.sh`;
-  4. finisher: rebase with the base-only checks, then the `--ff-only` merge, then `sync.sh`.
-
-  Peer sessions edit feature-dispatch, ac-verification, CLAUDE.md and leorna, so expect rebase conflicts.
+- **Review 2 (delta):** R2-1, a P2 (the R1-9 fix exits 2 on a true record when sync.sh rewrote the story's base). Real bash 3.2 (Docker `bash:3.2`) confirms R1-1 is fixed.
+- **The referee:** `ASK JUSTIN` (brake c). Justin answered "Keep going" on 2026-10-29, recorded in `review-2/justin.json` (`continue: true`); the referee now says REVIEW AGAIN.
+- **Running:** fixer 2 (`briefs/review-loop-fixer-2.md`): R2-1, plus R2-2 if it's small. **Next:** reviewer 3, a delta review of `9aca235..<fix-2 head>`, then the referee.
 - **After the merge:** delete the live memory note `review-loop-until-clean.md` (the merge does it) and update `MEMORY.md`'s index line.
