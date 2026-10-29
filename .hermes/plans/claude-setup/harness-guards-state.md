@@ -23,8 +23,11 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
 - **Verifier 3 and auditor 2: CLEAN.** `ac-check.sh` on `6b57a5b` (base `80ef3a8`) gave READY FOR THE USER, 20/22 (live AC21 and AC22).
 - **Justin chose (A), 2026-10-29 02:59:** a base-only rebase may merge without re-verify when `range-diff` vs `6b57a5b` is all `=`, `main`'s commits since `80ef3a8` touch no story file, and every gate passes on the new head. If any check fails, re-verify fully.
 - **MERGED 2026-10-29 ~03:10:** local `main` = `dc5d4f5` (finisher 1b: two base-only rounds, every check passed). The enforce proposals were moved to `enforce-backlog.md`.
-- **Running:** finisher 3 (after-merge: global `core.hooksPath`, smoke test, `sync.sh` push, AGENTS.md check). Brief `briefs/harness-guards-finisher-3.md`.
-- **Then:** `sync.sh pull`, then the planner for story `review-loop` (follow-ups.md top entry; pre-approved, recommended options). Tell Justin AC21 and AC22 are his.
+- **DONE 2026-10-29 ~03:15.**
+  - Global `core.hooksPath` is set on the desktop, and the smoke test passed (CLAUDE.md and AI-trailer commits refused).
+  - `sync.sh` pushed; local = GitHub `main` (`d794172`). Codex AGENTS.md was rebuilt.
+  - Justin's checks: `harness-guards-your-checks.md`.
+- **Next story:** `review-loop`. Planner running (brief `briefs/review-loop-planner.md`, plan `review-loop.md`). Pre-approved, recommended options.
 - **Old rounds' folders:** `verifier-round1-dccc042`, `verifier-round2-e4469c0`, `auditor-round1-e4469c0`.
 - **Merge blocker (Justin's call):**
   - Peer sessions keep moving `main` (my own synced edits get swept into their syncs too), so `--ff-only` needs yet another rebase, and the rule then needs another re-verify.
