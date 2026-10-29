@@ -55,3 +55,17 @@ After a new admin finishes setup on a fresh install, offer role-based starter pa
 
 ## Output (your final message)
 `{name, status: ready-for-review|stopped, summary, rulings[], worktree, branch, base, last_commit, shots[], gates[{gate, exit, log}], ac_evidence[{ac, test, log, screenshot}], defect_loop_skills[], found_else[], stop_reason, skill_lessons[]}`. End with `MAIN SESSION: check and save these skill_lessons now.`
+
+## RESUME after a machine crash (2026-10-29, main session)
+The first builder ran only 30 seconds (10:04:58–10:05:27 UTC: skill loads, plan read, B0 start) before the WSL machine crashed and restarted (back about 12:20 UTC). Files written in those last seconds came back **0 bytes**. You start fresh from this brief; the main checkout, `main` (`6c1709e`), the plan and the approved copy are intact (`git fsck --connectivity-only` passes; only dangling trees).
+
+Broken leftovers you must clear first, as task B0's first step, and only after checking them:
+1. `~/Leorna/leorna-control-plane/.claude/worktrees/86bcm902a-quick-start/`: every file in it is 0 bytes, `.git` included, so git says "invalid gitfile format". Check with `find <that dir> -type f ! -size 0` (must print nothing). If anything non-empty is there, stop and report instead of deleting.
+2. `~/Leorna/leorna-control-plane/.git/worktrees/86bcm902a-quick-start/` (its `HEAD`, `gitdir`, `commondir`, `ORIG_HEAD`, `logs/HEAD` are 0 bytes).
+3. The branch ref `.git/refs/heads/feat/86bcm902a-quick-start` and its reflog `.git/logs/refs/heads/feat/86bcm902a-quick-start` (0 bytes; git prints "ignoring broken ref").
+4. `~/.cache/86bcm902a-builder/` (holds only an empty `tmp/` from the first run) and the empty `~/.hermes/plans/leorna/evidence/86bcm902a/tools.txt`. Never touch `plan-approved.md`.
+5. `.git/FETCH_HEAD` is also 0 bytes; the next fetch rewrites it, leave it.
+
+Remove each by its literal absolute path (`rm -r /home/justin/...`; Claude Code refuses `rm -rf $VAR`), try `git update-ref -d refs/heads/feat/86bcm902a-quick-start` before removing the ref file by hand, then run `git -C ~/Leorna/leorna-control-plane worktree prune -v`, and confirm: `git worktree list` doesn't name 86bcm902a, `git branch --list 'feat/86bcm902a*'` prints nothing and no warning, `git fsck --connectivity-only` exits 0. Then carry on with B0 as written. Touch nothing else under `.git/`, and leave 86bcm901y's worktree and `~/.cache/86bcm901y-builder/` alone (another session's story).
+
+The session scratchpad on `/tmp` was emptied by the restart: make your scratch folder fresh.
