@@ -18,8 +18,11 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
 - **Fix 4 done:** head `e4469c0`, base `3864d61`. The LeornaAI fallback is a strict one-name URL; `$TMPDIR` counts as a temp folder.
 - **Reviewer 3: CLEAN** at `e4469c0`; its P3s are in follow-ups.
 - **Verifier 2: CLEAN** at `e4469c0` (`evidence/harness-guards/verifier/ac.json`; its own self-check gave READY FOR THE USER, 20/22).
-- **Running:** the blind auditor (brief `briefs/harness-guards-auditor-1.md`), writing `evidence/harness-guards/auditor/ac.json`.
-- **When it returns:** run `ac-check.sh --repo ~/.claude-setup-wt/harness-guards --base 3864d61abe128113f5fd6aeda8a55b02df46377d --plan evidence/harness-guards/plan-approved.md evidence/harness-guards/verifier/ac.json evidence/harness-guards/auditor/ac.json`.
+- **Auditor: CLEAN.** `ac-check.sh` on e4469c0 gave READY FOR THE USER, 20/22 (live AC21 and AC22 owed to Justin).
+- **Running:** finisher step 1 (brief `briefs/harness-guards-finisher-1.md`): rebase onto main and run the gates. No merge.
+- **Problem:** `main` moves every few minutes. Peer sessions `leorna-0f` and `closing-cta-33` are syncing, about 30 commits since the base. A rebase changes HEAD, which by the rule needs verifier → auditor → `ac-check` again.
+  - **Plan:** one full re-verify on the rebased head, then try the `--ff-only` merge at once.
+  - **If `main` moved again in the meantime:** don't loop. Ask Justin. Options: pause the peer sessions' syncs for the merge window, or accept a base-only rebase without re-verifying when `range-diff` shows no story patch changed and `main`'s new commits touch no story file.
 - **Next:**
   1. Verifier clean → blind auditor (`evidence/harness-guards/auditor/`, given only the plan, worktree, head and base) → `ac-check.sh`. Not clean → fixer → fresh reviewer on the fix → verifier.
   3. **Finisher:**
