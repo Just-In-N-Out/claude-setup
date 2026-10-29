@@ -1,0 +1,42 @@
+# REVIEWER 3 (review only, delta round) — leorna-control-plane, story 86bcm902a "One-click quick start (starter pack → team → sync)"
+
+Role: round 3 of the review loop (`review-fix-cadence` "Loop until a review is clean"; mechanics in `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/review-loop.md`). Rounds 1 and 2 were full reviews; you are a **delta** round. You never saw the build, an earlier review or a fix. Report only: change no source.
+
+## What to review
+- Worktree: `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bcm902a-quick-start`, branch `feat/86bcm902a-quick-start`, story base `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f`.
+- **Your range: `from` = `707a4c09f8c9e79388756e4ea83694e1d12d1752`** (round 2's head) **→ `head` = `9a9bdecc2f6ab53356fddddbc62b06b6533a4867`**: fixer 2's 7 commits (`789791b`, `66afa86`, `15f3d8f`, `71dc9bd`, `19baa19`, `28c0944`, `9a9bdec`) and the code they touch. Anything you notice outside that is P3. Confirm the worktree is at 9a9bdec and clean (`git status --porcelain --untracked-files=all` empty) before and after.
+- Approved plan (read-only): `~/.hermes/plans/leorna/evidence/86bcm902a/plan-approved.md`.
+- Earlier rounds: `~/.hermes/plans/leorna/evidence/86bcm902a/review-1/review.json` and `review-2/review.json` (their full evidence is in `review1/` and `review2/`).
+- **Fixer 2's answer to each round-2 finding** (claims to check; its receipts are `fix2-*` files, `mutations-9a9bdec.txt` and INVENTORY.md's fixer-2 rulings in the evidence folder):
+  - R2 M1 (done-shape CHECK loosened for skipped rows): fixed in `789791b`, `15f3d8f`. Migration 000024 edited in place again; the CHECK is now `(status='done' AND starter, pack_id, pack_number NOT NULL) OR (status<>'done' AND all three NULL AND NOT pack_reused)`; 7b45d43's refused inserts are back verbatim; test `TestQuickStartStoreWithPostgres/done_shape_is_enforced_by_the_database`.
+  - R2 N1 (the same pick again wrote a "reused" record and duplicate audits): fixed in `28c0944`, `9a9bdec`. `QuickStart.changes` writes only what changes: it assigns only when the team's default isn't that version, and records done only when the record names another starter, pack, version or team. Tests `TestQuickStartApplyWritesOnlyWhatThePickChanges` and `TestQuickStartTheSamePickAgainChangesNothingWithPostgres`.
+  - R2 N2 ("(version N)" tested only at 1): fixed in `71dc9bd`; expects "(version 2)".
+  - R2 N3 (`PackByName` substring): fixed in `66afa86`; a "Backend starter pack (old)" / part-of-a-name case.
+  - R2 N4 (30 s bound untested): fixed in `19baa19`. An unexported `Handler.quickStartPickTimeout` (zero = 30 s) and test `TestQuickStartPickIsBoundedAndReleasesTheLockWithPostgres`.
+  - Fixer 2's rulings, not yet confirmed: N1's per-write "only what changes" form (a changed team default is assigned again, the done record is not rewritten); N1's reads run only when the pack was reused; the wording and the 409-above-done-sentence behaviour unchanged; M1's constraint name and two-sided form; N4 as an unexported field set only by tests.
+  - For each finding the fixer marked fixed, judge whether the fix holds. If a rejection or fix doesn't hold, raise it again at its severity with `"repeats": "<R2-id>"`, plus `"new_fact"` (5+ words) when you have one.
+- Note: a fresh verifier and a blind auditor already accepted all five ACs on 9a9bdec (that's not your job to repeat, and their folders `verifier/` and `auditor/` are not your inputs); your round decides whether the fix code itself is clean.
+
+## The approved ACs (for judging scope; none is `(live)`)
+AC1 `TestQuickStartAC1FinishingSetupOffersRoleStarterPacksWithPostgres`; AC2 `TestQuickStartAC2ChosenPackAssignedAndDeliveredOnNextSyncWithPostgres`; AC3 `TestQuickStartAC3SkipThenResumeLaterWithPostgres`; AC4 (proposed, approved) `TestQuickStartAC4RefusedRequestsWriteNothingWithPostgres`; AC5 (proposed, approved) `TestQuickStartAC5FreshInstallEndToEndWithPostgres`. Read their full wording in the plan.
+
+## Skills (load them first with the Skill tool and say so)
+`leorna` (reviewer rules), `engineering-best-practices`, `review-fix-cadence`, `requesting-code-review` and `code-review-practice` (report only), `mutation-testing-discipline`, `security-best-practices`, `multi-tenant-auth-management`, `backend-data-migrations` (you are its independent problem-finder for the migration change). Skip `requesting-code-review`'s "independent reviewer subagent" and auto-fix steps: you are the fresh reviewer, and you can't start agents.
+
+## What to do
+1. Review `git diff 707a4c0..9a9bdec` and what it touches; run the AC tests and the fix-pass tests by name and the gates the changed code needs: `make check` with `LEORNA_TEST_DATABASE_URL` on your own disposable DB `leorna_86bcm902a_review3_test` in `leorna-test-pg` (read the port with `docker port leorna-test-pg 5432`; never `leorna-pg` on 5432, never another role's DB), CI's pinned golangci-lint 2.14.0 and govulncheck v1.7.0 (in `~/.local/leorna-toolchain`) bound through `GOLANGCI_LINT=`/`GOVULNCHECK=`, and the `go test -json` check that Postgres tests really ran. Try mutants on the changed code in your own detached copy; read each kill line by the `=== RUN` block it follows; grade a test with no pass/fail event as NOT-RUN.
+2. Grade every finding on Justin's scale (`review-fix-cadence`): P0/P1, P2 or P3, and give each P0–P2 a concrete real-use `scenario` (5+ words: who does what, what goes wrong).
+3. Write `~/.hermes/plans/leorna/evidence/86bcm902a/review-3/review.json` (create the folder) in the format of `review-loop.md` → Records: `round` 3, `scope` "delta", `from` = the full 707a4c0… sha, `head` = the full 9a9bdec… sha, findings `R3-<k>` (an empty list when clean). Self-check with `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.sh --repo <worktree> --base 6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f ~/.hermes/plans/leorna/evidence/86bcm902a`: exit 2 means your file is wrong, so fix it; exit 0, 1 or 3 is the referee's verdict, not yours to act on.
+
+## Boundaries
+- Change nothing in the worktree: no edits, commits, pushes, merges or ClickUp writes. Mutations only in your own detached copy under `~/.cache/86bcm902a-review3/` (`git -C <worktree> worktree add --detach <path> 9a9bdec`), removed with `git worktree remove --force` on its exact path. **Never run `git worktree prune`.**
+- Write only in `~/.hermes/plans/leorna/evidence/86bcm902a/review-3/` and your own scratch: a fresh `<scratchpad>/86bcm902a-review3/` (`mkdir` without `-p`) for small files; Go `TMPDIR` and binaries in `~/.cache/86bcm902a-review3/` (`/tmp` is a small shared RAM tmpfs). Remove only those folders, by their literal absolute paths, and drop your DBs at the end.
+- Never touch other stories' worktrees, branches, DBs or evidence. The client repo `~/Leorna/leorna-client` is read-only.
+- A Claude Code foreground command moves to the background after about 180 s. Don't end your turn to wait: poll its log in the foreground in waits under 3 minutes (a bounded `node -e` poll; foreground `sleep` is refused). On this desktop `date +%3N` prints 9 digits: use python3 for millisecond timestamps.
+
+## Rules for every role
+- If you find any other bug or problem outside this story's diff, don't fold it into findings: list it in `found_else` (one line each, with evidence and severity).
+- If you learn something reusable (a gotcha, an approach that worked after one failed, a skill step that was wrong, missing or stale), don't edit any skill or memory file. List it in `skill_lessons[{skill, lesson, evidence, enforce}]` and a "Skill lessons" section, naming the skill (or `memory`). `enforce` is `none`, or, when the lesson is about a rule that was broken or nearly broken, a one-line proposal for a check that would have caught it: its kind (Claude Code hook, git hook, test, lint, script), what it checks and where it runs. An empty list is the normal answer.
+
+## Output (your final message)
+`{verdict: clean|findings, round: 3, from, head, findings[{id, severity, file_line, claim, scenario, repeats, new_fact, evidence}], fix_closure[{r2_id, holds: yes|no, evidence}], rulings_review[{ruling, agree, why}], ac_status[{ac, accepted, test, screenshot, evidence}], gates[{gate, exit, log}], referee_last_line, found_else[], skill_lessons[]}`. Then a short plain summary. End with `MAIN SESSION: check and save these skill_lessons now.`
