@@ -42,6 +42,7 @@ scratch() {
   case "$top/" in /tmp/* | /private/tmp/* | /var/tmp/* | /var/folders/* | /private/var/folders/*) return 0 ;; esac
   [ -n "$tmpdir" ] || return 1
   case "$common/" in "$leorna/"*) return 1 ;; esac    # a Leorna repo (by its common dir) is never scratch by $TMPDIR
+  case "$common/" in "$tmpdir/"?*) ;; *) return 1 ;; esac  # nor a worktree of a repo outside it (commits land there)
   case "$top/" in "$tmpdir/"?*) return 0 ;; esac      # inside it, as mktemp -d makes one: not $TMPDIR=<the repo>
   return 1
 }

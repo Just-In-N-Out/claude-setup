@@ -900,6 +900,11 @@ ac12_temp_repos_skip_checks_but_chain() {
   echo y >"$t/lc-wt/f"; ing git -C "$t/lc-wt" add f
   tcommit "$t" "$t/lc-wt" -c user.email=t@t.test commit -q -m t
   refused pre-commit "needs $LEORNA" "TMPDIR=$t: a wrong email in a Leorna worktree placed in it" || return 1
+  # nor a linked worktree of a real repo put in $TMPDIR (a reviewer's base/ or head/): its commits land in that repo
+  gitrepo "$H/work/p2" && nohooks -C "$H/work/p2" worktree add -q "$t/p2-wt" -b wt >/dev/null 2>&1 || fail "worktree add" || return 1
+  echo y >"$t/p2-wt/f"; ing git -C "$t/p2-wt" add f
+  tcommit "$t" "$t/p2-wt" -c user.email=t@t.test commit -q -m t
+  refused pre-commit "needs $PERSONAL" "TMPDIR=$t: a wrong email in a personal repo's worktree placed in it" || return 1
   done_ok
 }
 
