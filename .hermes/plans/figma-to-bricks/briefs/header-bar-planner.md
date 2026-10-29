@@ -1,7 +1,8 @@
 # Brief: PLANNER for figma-to-bricks feature "header-bar" (Full pipeline)
 
-You are the PLANNER for one job on the Figma → Bricks plugin, in two parts: **Part A, the B-Dry header bar** (Justin's
-first report), and **Part B, three sections missing after the FAQ** (his second report, folded into the same job).
+You are the PLANNER for one job on the Figma → Bricks plugin: **the B-Dry header bar** (Justin's first report). His
+second report (three sections missing after the FAQ) is a **separate job** with its own planner (`after-faq-sections`,
+Justin, 2026-10-29: "don't do it in the same plan"): leave it out of this plan entirely.
 Write a plan Justin will approve. Don't build anything. Don't start agents: the main session runs every role.
 
 ## Where
@@ -11,8 +12,8 @@ Write a plan Justin will approve. Don't build anything. Don't start agents: the 
 - Write the plan to `docs/plans/2026-10-29-header-bar.md` in the worktree. Don't commit it (the builder does). Make no
   code or test change.
 - Your own evidence and scratch: `~/.hermes/plans/figma-to-bricks/evidence/header-bar/planner/` (create it).
-- Justin's screenshots (open each with Read), all in `~/.hermes/plans/figma-to-bricks/evidence/header-bar/screens/`:
-  `1-real-bdryswi-header.png`, `2-plugin-paste-header.png`, `3-real-after-faq.png`, `4-paste-after-faq.png`.
+- Justin's screenshots (open each with Read), in `~/.hermes/plans/figma-to-bricks/evidence/header-bar/screens/`:
+  `1-real-bdryswi-header.png`, `2-plugin-paste-header.png` (`3-…` and `4-…` there belong to the other job: ignore them).
 
 ## Skills (load first, say so in one line each)
 1. The project skill: Read `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md` and follow it in the
@@ -23,7 +24,7 @@ Write a plan Justin will approve. Don't build anything. Don't start agents: the 
    samples line) and the lines about `reference/bricks/` samples.
 2. `engineering-best-practices` (Skill tool).
 3. `implementation-planning` (Skill tool).
-4. `systematic-debugging` (Skill tool): both parts are bugs. Prove each root cause with file:line evidence before
+4. `systematic-debugging` (Skill tool): this is a bug. Prove the root cause with file:line evidence before
    planning its fix.
 
 ## Background: the B-Dry copy
@@ -60,31 +61,11 @@ What the main session sees in the shots (both about 1920px wide; check, don't tr
    it opens (Elementor popup or nav; `home.html` holds the popup templates), and say what ours does today and why
    (for example, why the plugin's call-link rule didn't link this number, if it didn't).
 
-**Debug file pending:** Justin has been asked to save the plugin's debug file of the Figma frame he converted (panel →
-"Save debug file"). Until it arrives, work from the staging site's live HTML (what was pasted, its classes and settings),
-the source capture and the plugin's code. When it arrives, the main session will send you its path: check its `build`
-and root frame name, then `npm run replay` it and base the root cause on it. Don't hold the whole plan for it: finish
-what you can and mark what still depends on the file.
-
-## Part B: three sections missing after the FAQ (Justin's second report)
-**The ask:** after the FAQ, the real page has three sections that our Home page lacks; they must come across, "with the
-animations and everything". Screenshot 3 is the real page, screenshot 4 ours (on ours the FAQ is followed directly by
-the site's own footer template: logo, Contact Us, Visit Us with a map, Areas We Serve, "Powered by GRO". That footer is
-the site's and is not part of the ask).
-The missing sections, in order:
-1. **"Schedule A Consultation" band:** dark blue over a faint photo, the line "Call Us Today For A No Cost, No Pressure
-   Quote", and a white pill button "Get Your Free Quote".
-2. **"Contact us today to get started":** a heading and a numbered 5-step list ("Contact Us: By Phone, Email, Or Contact
-   Form." … "On Time, Every Time: Projects End When You Are Fully Satisfied.").
-3. **"Customer Reviews":** a full-width blue band with the heading, then a reviews carousel: a summary card (logo,
-   stars, "224 reviews", "Write a review") and Google/Facebook review cards with arrows. It's likely a third-party
-   reviews widget: identify which one from `home.html` and what a Bricks page can do with it.
-
-Main session's quick check (verify): in `home-paste-v3.json`, "Schedule A Consultation", "Customer Reviews", "Get Your
-Free Quote" and "On Time, Every Time" appear 0 times and "Contact us today" once (find out what that one is); the source
-`home.html` has all of them. Find where they were lost (never in the paste's input, dropped by the plugin, or left out
-of a paste build) and say so with evidence. Each section's entrance animations are in its Elementor `data-settings`
-(the `tree-*.json` files).
+**No debug file (Justin, 2026-10-29: "just do it without the debug and figure it out"):** there will be no debug
+file of the Figma frame he converted. Work it out from the staging site's live HTML (what was pasted: its elements,
+classes and settings), the source capture and the plugin's code, and, where it helps, a generic fixture you build that
+reproduces the shape of his header (a full-width bar with a logo, a centred phone line, a button and a ☰). Record each
+root-cause claim that rests on inference rather than a replay as such, with the evidence it rests on.
 
 ## Must be general (CLAUDE.md "Build general logic, never one-file fixes")
 Plugin changes recognise patterns from structure and properties, never from this site's names, words, colours or pixel
@@ -110,19 +91,19 @@ compare by test name against base a3a008e. Fixing corpus.json is not part of thi
 
 ## ACs
 Justin gave no ACs: write your own, marked **proposed**, numbered AC1, AC2…, each with one named test, each whole on
-one line (`ac-check.sh` matches test names line by line). Part A's ACs first, then Part B's. Cover at least, for Part A:
+one line (`ac-check.sh` matches test names line by line). Cover at least:
 the bar's height, gradient and edge-to-edge placement at the real site's widths; logo and button size and the button's
 letter case; the logo links to `/`; the phone number is a `tel:` link; the ☰ opens a menu that slides down (with
-keyboard and phone taps) and closes; designs without a header bar give byte-identical pastes (name which). For
-Part B: each of the three sections is in the paste, in order, after the FAQ, at 1440, 1024, 767 and 390, with its
-entrance animation; lint no worse on every available file. Tag `(live)` right after the id any AC only Justin can check
+keyboard and phone taps) and closes; designs without a header bar give byte-identical pastes (name which); lint no
+worse on every available file. Tag `(live)` right after the id any AC only Justin can check
 (a paste into Bricks, a real phone), e.g. `- AC9 (proposed) (live): …`.
 
 ## Rules
 - You can't ask Justin anything. Put the questions at the top of the plan, right after the title, each with 2–4
   lettered options under about 60 characters, the recommended one marked ⭐. Write the plan as if the ⭐ options were
   chosen: this project has a standing auto-go, so the builder starts right after the plan message.
-- Each part gets its own root cause, tasks and checks. Keep Part A first everywhere.
+- The other job, `after-faq-sections`, is planned separately and may touch the B-Dry paste too: say which files and
+  paste parts this plan changes, so the two can be built one after the other without clashing.
 - Say whether this job touches the same files as other open work (worktrees `headline-marker`, `slider-autoplay`,
   `photo-hotspots`, `flip-cards`, `closing-cta` exist; the last four are merged into main) so it can be built safely.
 - End the plan with a **Docs & records** task naming every file the build and finish will update (plan, ledger,
@@ -140,7 +121,7 @@ entrance animation; lint no worse on every available file. Tag `(live)` right af
 
 ## Return (your final message)
 A JSON-like report: `{name, plan_path, playback, root_cause, summary, choices[], questions[{q, options[], recommended}],
-acs[], live_acs[], debug_file_dependent[], risks[], touches[], overlaps, found_else[], skill_lessons[]}` (only
+acs[], live_acs[], risks[], touches[], overlaps, found_else[], skill_lessons[]}` (only
 `plan_path` and `summary` required). End it with the line `MAIN SESSION: check and save these skill_lessons now.`
 
 ## Justin's words
@@ -153,5 +134,8 @@ click the logo it takes you back to the home screen. When you click on the phone
 side, for the sidebar, it slides down. We need to implement all of these. Have a planar agent running all of these and
 make sure you're orchestrating it properly." (Voice note: "bee, drag" = B-Dry, "planar" = planner, "sidebar" = the ☰
 menu.) He chose the **Full** pipeline and said the header came from "Plugin, from a Figma frame".
-Third: "Here, as you can see, we have an issue. After the FAQ there are the Contact Us and review forms, with the
+Third (now the separate job `after-faq-sections`, not this plan): "Here, as you can see, we have an issue. After the FAQ there are the Contact Us and review forms, with the
 animations and everything. Our plug-in didn't pull any of those, so we need to fix that."
+Fourth: "Whatever, just do it without the debug and figure it out." Fifth: "No, don't do it in the same plan. Put it in
+another planner who's going to plan for it, and then we'll give it to another builder and do the pipeline again. Full
+pipeline."
