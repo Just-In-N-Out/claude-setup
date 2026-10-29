@@ -33,7 +33,7 @@ Turn a review report into verified fixes and reasoned pushback. Understand the c
    - Tool or platform claims ("Codex does X", "Windows breaks Y"): run the real tool, or check its docs.
    - "Missing" or "should be added": search for real usage first. If nothing uses it, it's YAGNI.
    - Claims backed by no command output: treat them as unverified and run the commands yourself.
-   - Stale comment or doc after a rule changed: also search the diff for the old rule restated in other words (its consequences, not just the cited wording); reviewers cite one site (901y fixer 2 found a second).
+   - Stale comment or doc after a rule changed: also search the diff for the old rule restated in other words (its consequences, not just the cited wording); reviewers cite one site (901y fixer 2 found a second; 901j fixer 9 found two more). A wording-only fix proves the code unchanged: in Go, print each file with `go/parser` (no `ParseComments`) and `go/printer` before and after and require byte-equal output, failing closed on a non-zero exit or empty output (with no `go` on PATH, two empty outputs compare equal), plus one control edit that must show as different.
 
 3. **Give each finding a verdict:**
    - **Valid, introduced:** this branch caused it. Fix it here.
