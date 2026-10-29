@@ -39,3 +39,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-29 | 86bcm901y | leorna | script: before `gh pr create`/`gh pr edit --body-file`, grep the body file for card IDs (`86b[a-z0-9]{6}`) other than the story's own and stop with the list (finisher PR step, or a git-guard check on gh pr create/edit) | offered
 - 2026-10-29 | header-bar | figma-to-bricks | browser test in npm run test:browser: pin the renderer's linked-Image markup to captured Bricks markup (classes on the anchor) | offered
 - 2026-10-29 | header-bar | figma-to-bricks | test: run every icon-shape reader over shared ICONS variants on 48–64px circle and tile backdrops (test/unit/normalise-*-shape.test.ts) | offered
+- 2026-10-29 | 86bcm901y | memory review-prompt-for-agent | Claude Code PreToolUse Bash hook: deny `gh pr checkout` and `git checkout`/`switch` when the cwd or `-C` target is `~/Leorna/<repo>` itself (not `.claude/worktrees/*` or a scratch clone) | offered

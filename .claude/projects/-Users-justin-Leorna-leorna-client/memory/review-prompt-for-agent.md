@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: feedback
   originSessionId: 2fe303d7-90b7-4c97-a578-b1d2535f94fa
-  modified: 2026-09-27T17:48:45.148Z
+  modified: 2026-10-29T18:00:00.000Z
 ---
 
 After I finish building a user story, and again after each round of review fixes, always give Justin a paste-ready prompt he can hand to a fresh agent to double-check the work. Don't wait to be asked.
@@ -14,7 +14,7 @@ After I finish building a user story, and again after each round of review fixes
 
 **How to apply:** The prompt must be self-contained, because the reviewer starts with no context:
 - say "don't trust anyone's summary or the shared memory; check it yourself", and "review only: no commit, push, PR or ClickUp changes; restore anything you change; leave `deploy/local/` alone";
-- the repo, branch, commit range and whether it's pushed (if it's local only, the agent must run on this Mac);
+- the repo, branch, commit range and whether it's pushed (if it's local only, the agent must run on this Mac); how to get the code: a detached worktree at the head SHA, or `gh pr checkout <n>` in the reviewer's own clone, never a checkout in `~/Leorna/<repo>`, whose branch sibling sessions share (901y post prep);
 - the full card text: acceptance criteria, Verify, DoD, card notes, plus decisions Justin already made ("check they're implemented, don't re-argue them");
 - for a re-review, list the previous findings and the claimed fix for each;
 - exact commands to run (Docker/test DB, `LEORNA_TEST_DATABASE_URL`, `-v` to confirm nothing skipped, `make check`, module-add, story tests);
