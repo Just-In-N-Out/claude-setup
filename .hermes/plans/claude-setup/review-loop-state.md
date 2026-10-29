@@ -25,13 +25,12 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **Orchestrator slip:** round 2 should have been a FULL round (the rule gives Full two full rounds). Corrected with reviewer 5, a second FULL review of `691651c..aff26c8`.
 - **Review 5:** R5-1, a P2 (the referee's round-1 line led to the delta round 2); REVIEW AGAIN.
 - **Fixer 4 done:** head `aba3093`.
-- **Running in parallel:**
-  - reviewer 6, a DELTA review of `aff26c8..aba3093` (`briefs/review-loop-reviewer-6.md`);
-  - planner amendment 1 (`briefs/review-loop-planner-amend-1.md`), changing AC2 and AC7 for the round-1 line form.
-- **When the amendment returns:**
-  - sync it;
-  - move `evidence/review-loop/plan-approved.md` aside to `plan-approved-v1-pre-amend1.md`;
-  - `install -m 444` the amended plan as `plan-approved.md`. Do this before the verifier.
-- **When the referee says MOVE ON:** verifier → auditor → `ac-check` (live, plus the worktree's `--reviews`).
-- **If round 4 finds yet another P0–P2 in the same off-base/`from` area:** the loop isn't converging there. Stop and wait for Justin; offer to drop the R1-9 check and keep R1-9 as a follow-up.
+- **Review 6: CLEAN.** The referee said MOVE ON at `aba3093`.
+- **Plan amendments:** 1 (AC2/AC7 round-1 line) and 2 (12 ACs reconciled with their tests). The old approved copy is `evidence/review-loop/plan-approved-v0-at-go.md`; the amended one is installed as `plan-approved.md` (09:55).
+- **Running:** verifier 1 (`briefs/review-loop-verifier-1.md`).
+- **Next:**
+  1. auditor (blind; brief from harness-guards-auditor-2 adapted);
+  2. `ac-check` live: `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh --repo ~/.claude-setup-wt/review-loop --base <base> --plan evidence/review-loop/plan-approved.md evidence/review-loop/verifier/ac.json evidence/review-loop/auditor/ac.json`;
+  3. the worktree's `ac-check.sh` with `--reviews evidence/review-loop` too;
+  4. finisher: base-only rebase (Q10 A), then merge, then sync.
 - **After the merge:** delete the live memory note `review-loop-until-clean.md` (the merge does it) and update `MEMORY.md`'s index line.
