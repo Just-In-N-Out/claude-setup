@@ -86,7 +86,7 @@ Everything below ran on head `5a9aa2f` on 2026-10-28. That head is the branch wi
   - unticking one and ticking another gives "version 2 … from version 1";
   - the pack's change history shows `pack.create` and `pack.version.create` with actor and diff.
   - The same name in another case gave the inline 409 alert in the console on `8a50486`. On `5a9aa2f`, AC4's "name taken" subtest covers it.
-- [ ] Hosted CI on `5a9aa2f`: pending until this head is pushed (see Evidence).
+- [x] Hosted CI on `5a9aa2f` (run 40804136869, `pull_request`): "Go quality gates" success; "Publish control-plane image" success (build and Trivy scan; the push steps are skipped on a PR); "Package admin-portal distribution" success.
 - History: hosted CI on the previous head `8a50486` (run 40787263343, `pull_request`): "Go quality gates" success; "Publish control-plane image" success (build and Trivy scan; the push steps are skipped on a PR); "Package admin-portal distribution" success.
 
 ## Security, migration, rollback
@@ -137,7 +137,7 @@ Everything below ran on head `5a9aa2f` on 2026-10-28. That head is the branch wi
 
 - Head: `5a9aa2f6c4c219234b49d9f9bd17e83942790437`. It merges GitHub `main` `a8d1465` into the branch; the branch started from `1ee7157`.
 - Required check: "Go quality gates"
-- Actions run on `5a9aa2f`: pending until this head is pushed.
+- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40804136869 (CI, `pull_request` on `5a9aa2f`, conclusion success: "Go quality gates", "Publish control-plane image" and "Package admin-portal distribution" all success)
 - Previous head `8a50486`: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40787263343 (CI, `pull_request`, conclusion success: "Go quality gates", "Publish control-plane image" and "Package admin-portal distribution" all success)
 - Local gates on this head (2026-10-28), run by both the fixer and the verifier, each exit 0 and kept with the story's evidence (one log per gate plus a `SUMMARY-gates-5a9aa2f.txt`):
   - `make check` and `test-module-add.sh`;
