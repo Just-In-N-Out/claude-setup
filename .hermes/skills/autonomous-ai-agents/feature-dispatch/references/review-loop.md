@@ -59,7 +59,7 @@ Justin, 2026-10-28. The rule (severities, brakes, order) lives in `review-fix-ca
 ~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.sh --repo <worktree> --base <base> <evidence>
 ```
 
-`<base>` is `git -C <worktree> merge-base HEAD <integration branch>`. It prints one line per finding of the latest round (`<id>  <effective severity>  <file_line>  <claim>  (repeats <id>)`), then the outcome as its last line:
+`<base>` is `git -C <worktree> merge-base HEAD <integration branch>`. It takes one `--repo`, like `ac-check.sh`: in a story spanning two repos, every reviewer writes a `review.json` per repo (`<evidence>/review-<n>/` for the `ac-check.sh` repo, `<evidence>/<other repo>/review-<n>/` for the other, empty findings when clean) and the main session runs the referee once per repo; MOVE ON needs both (86bcm902w planner). It prints one line per finding of the latest round (`<id>  <effective severity>  <file_line>  <claim>  (repeats <id>)`), then the outcome as its last line:
 
 - **`REVIEW AGAIN`** (exit 1): P0–P2 findings are left, the round is clean but HEAD has commits it didn't cover, or the latest full round's `from` isn't on `--base`'s history.
   - **When the line says "run a full review from `<base>`", check this first:** round n+1 is `full` with `from` = `--base`, after the fixer when findings are left. A delta round never clears it: the referee keeps saying it until a full round from `--base` is recorded.
