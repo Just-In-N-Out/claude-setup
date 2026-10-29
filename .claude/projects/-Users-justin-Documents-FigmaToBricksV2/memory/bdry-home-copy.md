@@ -37,6 +37,8 @@ chats, one each. Their prompts are in `C:\Users\Admin\Downloads\codex-prompts\` 
 next step). Before continuing any of them here, check `git log` in its worktree: Codex may have moved it on or merged
 it.
 
+**Capture coverage (checked 2026-10-29):** `tree-*.json` walks only the page (Elementor post 9, ending at the FAQ). The header template (32), the footer template (35: "Schedule A Consultation", the 5 contact steps, "Customer Reviews") and the popups (27 = the ☰ menu; 1453/1458/1542/1731) exist only in `home.html`, so v1–v3 never had them. Staging: header template = post 11 (hand-built in September, logo media 23, not plugin output), footer template = post 41, `/` is the blog list (no front page set), the v3 paste is on homev2 (page 155).
+
 **How to apply:** after Justin pastes, read the live Home fresh and compare it with the source shots; once each
 feature merges, rebuild those parts of the paste exactly as the plugin emits them. The headline-marker and
 photo-hotspots planners re-dispatch from their briefs when Justin asks.
