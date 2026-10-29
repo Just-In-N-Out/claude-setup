@@ -8,7 +8,11 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 
 ## Status
 - **Done:** the plan `review-loop.md` (18 ACs; AC18 is live on the Mac; AC11 and AC17 run only when named), and the approved copy `evidence/review-loop/plan-approved.md`.
-- **Running:** the builder (`briefs/review-loop-builder.md`), worktree `~/.claude-setup-wt/review-loop`.
+- **Builder done:** head `d3f220f`, base `691651c`; all non-live ACs pass; 59 mutants.
+- **Running:** reviewer 1 (full; `briefs/review-loop-reviewer-1.md`). It writes `evidence/review-loop/review-1/review.json`.
+- **Referee command after each review** (the worktree's copy):
+  `bash ~/.claude-setup-wt/review-loop/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.sh --repo ~/.claude-setup-wt/review-loop --base 691651c1e942896f42f4e64ed547a1a2a121ef3c ~/.hermes/plans/claude-setup/evidence/review-loop`
+  The last line decides: MOVE ON / REVIEW AGAIN / ASK JUSTIN.
 - **Next:**
   1. reviewer 1 (full);
   2. the fix/review loop with delta reviews;

@@ -145,7 +145,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..f1aceb2 100644
+index f2d882d..5c94e4f 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,29 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -249,7 +249,19 @@ index f2d882d..f1aceb2 100644
     Validate evidence against the exact intentional variant and actual process
     return, not pristine-only assumptions or attempted-publication flags.
     Repair diagnostic readers offline against retained output; preserve their
-@@ -155,7 +198,20 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -147,7 +190,10 @@ transcripts in `references/blind-test-patterns.md`.
+    production actually builds.
+ 3. **Substring assertions survive their own mutation.** `src.find("if status
+    in {")` still matches after the set is mutated. Assert on parsed structure
+-   or behavior, never on the presence of a substring you also edited.
++   or behavior, never on the presence of a substring you also edited. Likewise an
++   old-vs-new "identical output" check passes when both runs hit the same early
++   error: pin each fixture's expected exit code or outcome line beside it
++   (review-loop builder, ac11).
+ 4. **A different guard masked the one under test.** A per-person cap test
+    passed because a dedup guard fired first; deleting the cap entirely stayed
+    green. Build fixtures that isolate the guard under test, and add a
+@@ -155,7 +201,20 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -271,7 +283,7 @@ index f2d882d..f1aceb2 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -180,6 +236,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -180,6 +239,11 @@ transcripts in `references/blind-test-patterns.md`.
     not reproduce because the fixture omitted a field the real record carried.
     Build fixtures from the real record shape; when a test unexpectedly passes
     against a known-live bug, suspect the fixture before declaring victory.
@@ -283,7 +295,7 @@ index f2d882d..f1aceb2 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -197,7 +258,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +261,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -295,7 +307,7 @@ index f2d882d..f1aceb2 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -240,7 +304,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +307,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -312,7 +324,7 @@ index f2d882d..f1aceb2 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -290,7 +362,54 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +365,54 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively

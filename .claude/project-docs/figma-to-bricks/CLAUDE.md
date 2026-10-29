@@ -5,10 +5,12 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-10-28)
+## Status (2026-10-29)
 
-- **Current build `2026-10-28.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-29.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **29.1 headline-marker:** a stroke draws around styled words; released at Justin's direction with drawn-phone
+    and exact-design-width ring overflow still open. Paste check **3br** owed (AC13: Figma Trim, Bricks, Safari/iPhone).
   - **28.5 closing-cta (section rhythm):** between every two sections the page's section space (the space most
     sections draw) separates their words, stepping down on tablets and phones; no divider lines between them; buttons
     always get that space under them; the space beside a left-out site header/footer stays. Paste check **3bq** owed
