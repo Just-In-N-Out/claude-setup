@@ -1,2 +1,5 @@
 # Enforce backlog: check proposals from subagents' skill_lessons `enforce` field, offered to Justin as stories (the main session never builds them itself).
 One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered` (then `story <name>` or `declined`).
+- 2026-10-28 | harness-guards | implementation-planning | the planner's brief requires a base-commit tally of every suite named in a regression AC ("existing suites pass"), and the orchestrator checks it before "go" (evidence: codex-parity ac23 already failed on base 3f8c53c) | offered
+- 2026-10-28 | harness-guards | mutation-testing-discipline | the mutation harness writes its PID into its marker file, and its restore/cleanup step refuses while that PID is alive (evidence: fix-1 restored under a live setsid harness, voiding F9a) | offered
+- 2026-10-28 | harness-guards | code-review-practice | a shared table of quoting and abbreviation forms ac4/ac7 must deny (`$'--no-verify'`, `$"--no-verify"`, `--unset-a core.hooksPath`, `--remove-s credential`, `--auth=`), reused by the Codex git-guard follow-up (evidence: review-2/bypass-repro.log) | offered
