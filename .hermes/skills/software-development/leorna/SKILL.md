@@ -74,7 +74,7 @@ After a lookup, record the verified query scope, count, assigned cards and readi
 - **Scope:** don't change repo-wide patterns or `toolconnector.Connector` inside a story; list them as follow-ups.
 - **Guessing:** never guess ClickUp IDs or facts that ARE acceptance criteria. A card with no ACs is different: the planner writes ACs marked **proposed**, and Justin approves them with the plan; proposing openly is not guessing. Other gaps: make a small reversible guess and list it under Assumptions.
 - **Boundary:** OpenAPI is the only link between the repos; no cross-repo Go imports.
-- **Control plane:** leave the untracked `deploy/local/` alone.
+- **Control plane:** leave the untracked `deploy/local/` alone. In either repo, never run a repo-wide `git worktree prune` (it drops other stories' entries); deregister only your own detached copies with `git worktree remove --force <own path>` before deleting their folder (901y builder).
 - **Reviews:** an AI review through Justin's account is never a human approval.
 - **Servers:** the test servers run in dev mode, where `/dev/login` makes anyone admin. Never send a server domain, URL or tenant ID in chat (WhatsApp leaves this Mac), a PR, ClickUp or team messages; refer to servers by date. Never print tokens. Never touch Christian's or Yan's servers. Justin clicks every delete. Ask before writing into his real `~/.codex` or `~/.claude`.
 

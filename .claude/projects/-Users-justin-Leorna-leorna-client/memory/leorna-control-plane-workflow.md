@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: a556c9a6-4fab-452b-b655-0dea343116e8
-  modified: 2026-10-28T23:51:01.000Z
+  modified: 2026-10-29T13:02:18.000Z
 ---
 
 Server-specific companion to [[leorna-workflow]] (shared rules, people, delivery, story state live there).
@@ -50,7 +50,7 @@ Server-specific companion to [[leorna-workflow]] (shared rules, people, delivery
 - Mutations that replace a condition with `false` can leave a variable unused and break the build, which proves nothing; use a never-true comparison instead (e.g. `x == Status("never")`).
 - Errors: the console returns JSON problems via `writeProblem`; only the setup wizard renders inline HTML errors (with `writeHTMLPage(w, nonce, status, page)` in `packs.go`).
 - Docs claims about tests must be true as written (the README said the round-trip covered migration 14 before it did).
-- OpenAPI changes: a new operation needs a stub on `roundTripServer` (`packages/contracts/roundtrip_test.go`, `var _ StrictServerInterface`) and a method on `*web.Handler` (`handler.go`, `var _ contracts.ServerInterface`). Any new enum must be a named schema, never the inline `kind: {type: string, enum: [...]}` form: both repos' contract-kind tests (`internal/web/contract_kinds_test.go`, client `application/contract_kinds_test.go`) require exactly 2 such lines (86bcm901w planner, checked 2026-10-28).
+- OpenAPI changes: a new operation needs a stub on `roundTripServer` (`packages/contracts/roundtrip_test.go`, `var _ StrictServerInterface`) and a method on `*web.Handler` (`handler.go`, `var _ contracts.ServerInterface`). Any new enum must be a named schema, never the inline `kind: {type: string, enum: [...]}` form: both repos' contract-kind tests (`internal/web/contract_kinds_test.go`, client `application/contract_kinds_test.go`) require exactly 2 such lines (86bcm901w planner, checked 2026-10-28). On base, a new POST route answers 405, not 404, because `internal/web/handler.go:316` registers a `GET /` catch-all: old-code predictions for a new POST say 405 (86bcm901y red-ac4.log).
 
 ## CI secret scan scans every branch
 CI checks out with `fetch-depth: 0` and runs `gitleaks git`, which scans ALL refs, so a flagged commit on anyone's branch fails every PR's "Scan repository for secrets" step. Locally `make check` only sees the branches you've fetched. To reproduce: `git fetch origin && gitleaks git --redact -v`; to check only your PR: `gitleaks git --redact --log-opts="origin/main..HEAD"`. The config is `.gitleaks.toml` from the PR's merge commit, so an allowlist only helps once it's on main. A "Re-run jobs" reuses the old merge commit; a new push is needed. First hit 2026-09-26: PR #47 failed on two fake test JWTs in Christian's PR #46 branch `feat/console-session-capture` (`internal/console/extract_test.go:66`, `internal/console/capture/capture_test.go:46`).

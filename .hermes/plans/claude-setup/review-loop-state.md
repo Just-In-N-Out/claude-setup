@@ -20,6 +20,7 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **The referee:** `ASK JUSTIN` (brake c). Justin answered "Keep going" on 2026-10-29, recorded in `review-2/justin.json` (`continue: true`); the referee now says REVIEW AGAIN.
 - **Fixer 2 done:** head `2fad9c3`.
 - **Review 3:** R3-1, a P2 (an off-base full round followed by a clean delta gives MOVE ON). Brake c fired, answered with `continue` under Justin's away words (`review-3/justin.json`).
-- **Running:** fixer 3 (`briefs/review-loop-fixer-3.md`). **Next:** reviewer 4, a delta review of `2fad9c3..<fix-3 head>`.
+- **Fixer 3 done:** head `aff26c8` (the off-base rule takes the latest full round; a 33-row table in AC7).
+- **Running:** reviewer 4, a delta review of `2fad9c3..aff26c8` (`briefs/review-loop-reviewer-4.md`). Then the referee.
 - **If round 4 finds yet another P0–P2 in the same off-base/`from` area:** the loop isn't converging there. Stop and wait for Justin; offer to drop the R1-9 check and keep R1-9 as a follow-up.
 - **After the merge:** delete the live memory note `review-loop-until-clean.md` (the merge does it) and update `MEMORY.md`'s index line.
