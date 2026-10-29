@@ -31,16 +31,16 @@ Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` wi
 - [x] `bash ./scripts/test-module-add.sh`: exit 0.
 - [x] gitleaks over `b65f797..b78905b` (58 commits, main's included): no leaks.
 - [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK.
-- [x] DB tests read per test from a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web` and `internal/metric/...`: @@JSON@@
+- [x] DB tests read per test from a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web` and `internal/metric/...`: 703 passed, 0 failed, 339 of 339 declared top-level tests ran; the only skips are the accepted `TestEvidenceThirdPartyContentPage` and `TestProvisionManagedPostgresLive`; no skip names the test database or ClickHouse variable.
 - [x] AC tests by name, each with no skip:
   - [x] AC1 `TestContentUsageAC1SpikeMatchesSupportTable`: pass
   - [x] AC2 `TestContentUsageAC2CountsPerPackAndItemWithPostgres`: pass
   - [x] AC3 `TestContentUsageAC3NotMeasurableIsStated`: pass
   - [x] AC4 `TestContentUsageAC4AdminOnlyAndTenantIsolatedWithPostgres` (6 subtests): pass
   - [x] AC5 `TestContentUsageAC5IngestAcceptsOnlyItemIdentifiersWithPostgres`: pass
-- [x] Cross-repo ties: `cmp` of the client's golden upload body (`db3e6b0`) with `internal/web/testdata/content_usage_client_upload.json`, and of the client's `api/control-plane.openapi.yaml` with `contracts/control-plane.openapi.yaml`, both from `b78905b`: @@CMP@@
+- [x] Cross-repo ties: `cmp` of the client's golden upload body (`db3e6b0`) with `internal/web/testdata/content_usage_client_upload.json`, and of the client's `api/control-plane.openapi.yaml` with `contracts/control-plane.openapi.yaml`, both from `b78905b`: both exit 0.
 - [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff against `main`; all 13 of the branch's own commits (12 plus the merge) by the Leorna identity with no AI attribution lines.
-- [ ] Hosted CI: @@CI@@
+- [ ] Hosted CI: pending (just pushed).
 
 ## Security, migration, rollback
 
@@ -80,8 +80,8 @@ Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` wi
 
 ## Evidence
 
-- Head: @@HEAD@@ (base `main` at `8aa32a1`; the branch started from `b65f797`). The local gates above ran on `b78905b`, the merge of `main`; @@RECORD@@
+- Head: `b78905b7acc2de7b8494ead1cde28a704004a774` (base `main` at `8aa32a1`; the branch started from `b65f797`). The local gates above ran on `b78905b`, the merge of `main`; a commit that only records the PR numbers in `delivery/stories.json` follows.
 - Before `main` was brought in, the pipeline's independent verifier and a blind AC auditor each accepted all 5 ACs on `de5fbe0`, with mutation checks and a run of the real binary there. A fresh verifier and auditor run on this PR's head next.
-- Required check "Go quality gates": @@GQG@@
-- Actions run: @@RUN@@
+- Required check "Go quality gates": pending.
+- Actions run: pending.
 - Local receipts (one log per gate plus a summary, AC logs, the merge proof) are kept with the story's evidence.

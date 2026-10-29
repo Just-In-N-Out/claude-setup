@@ -13,3 +13,4 @@
 - [Checks on the desktop](corpus-paths-on-desktop.md) — Mac corpus paths do not resolve; cached Linux Chrome is available via CHROME_PATH; local corpus copies and base comparisons required
 - [B-Dry home copy](bdry-home-copy.md) — bdryswi.com Home → B-Dry staging; v3 paste (slider, flip boxes, dots) 2026-10-29; site class names to avoid
 - [WSL clipboard](wsl-clipboard.md) — read the clipboard back through a UTF-8 file, never stdout (non-ASCII gets mangled)
+- [Deliverable first](deliverable-first.md) — hand over a verified paste file at once while plugin review loops continue; Justin keeps thorough loops when told they find real edge cases
