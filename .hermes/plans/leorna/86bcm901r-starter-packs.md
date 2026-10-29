@@ -5,7 +5,7 @@ Repo: **`leorna-control-plane` only** (no client change). Pipeline: **Full** (aw
 
 **Status: approved 2026-10-29 under Justin's away grant** ("just keep everything going and follow what the recommended agent says"). Justin's answers: **Q1 A, Q2 A, Q3 A, Q4 A, Q5 A, Q6 A** (every ⭐), including the proposed AC4 (then a live check) and AC5. The grant covers this story up to the hand-over only: no push, PR, merge, ClickUp post, CI or credential change. ~~AC4 stays owed to Justin.~~ *(amended below)*
 
-**Amended 2026-10-29: AC4 is agent-run (Justin: "Can't you do AC4 by yourself?" → "Agent does it, counts")**
+**Amended 2026-10-29: AC4 is agent-run (Justin: "Can't you do AC4 by yourself?" → "Agent does it, counts")** **Amendment approved 2026-10-29: Justin "Go"** on the rewritten AC4 below. **QA1 answered: "Fix it if a fixer runs"**: review-1 at `abc60dc` came back clean (MOVE ON), so no fixer ran; `internal/pack/README.md:300` stays a P3 docs follow-up and the PR text says how AC4 was proven.
 
 ## Amendments
 
@@ -20,7 +20,7 @@ Amendment 1, 2026-10-29 (Justin's decision "Agent does it, counts": the planner 
 
 ## Open question from Amendment 1 (one; ⭐ is the planner's recommendation)
 
-**QA1. The branch's `internal/pack/README.md:300` (at `398af64` and `abc60dc`) says "Live: one desktop Sync of a starter pack into Claude Code, Codex and Cursor (owed to Justin)."** After this amendment that line is out of date.
+**QA1 (answered: "Fix it if a fixer runs"; none ran). The branch's `internal/pack/README.md:300` (at `398af64` and `abc60dc`) says "Live: one desktop Sync of a starter pack into Claude Code, Codex and Cursor (owed to Justin)."** After this amendment that line is out of date.
 - A ⭐ Leave the reviewed repo unchanged; the finisher lists the line as a follow-up (a docs-only P3) and the PR text says how AC4 was proven
 - B One docs commit now ("Agent-run: a real leorna-client Sync … proven by the AC4 check"), reviewed in the same round as the fixer's merge commit
 
