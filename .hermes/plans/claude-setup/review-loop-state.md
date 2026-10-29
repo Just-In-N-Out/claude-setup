@@ -24,6 +24,14 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **Review 4: CLEAN.** The referee said MOVE ON. Its P3s are in follow-ups.
 - **Orchestrator slip:** round 2 should have been a FULL round (the rule gives Full two full rounds). Corrected with reviewer 5, a second FULL review of `691651c..aff26c8`.
 - **Review 5:** R5-1, a P2 (the referee's round-1 line led to the delta round 2); REVIEW AGAIN.
-- **Running:** fixer 4 (`briefs/review-loop-fixer-4.md`), covering R5-1 plus the in-story doc and test P3s. **Next:** reviewer 6, a DELTA review of `aff26c8..<fix-4 head>`, then the referee. When clean → verifier → auditor → `ac-check`.
+- **Fixer 4 done:** head `aba3093`.
+- **Running in parallel:**
+  - reviewer 6, a DELTA review of `aff26c8..aba3093` (`briefs/review-loop-reviewer-6.md`);
+  - planner amendment 1 (`briefs/review-loop-planner-amend-1.md`), changing AC2 and AC7 for the round-1 line form.
+- **When the amendment returns:**
+  - sync it;
+  - move `evidence/review-loop/plan-approved.md` aside to `plan-approved-v1-pre-amend1.md`;
+  - `install -m 444` the amended plan as `plan-approved.md`. Do this before the verifier.
+- **When the referee says MOVE ON:** verifier → auditor → `ac-check` (live, plus the worktree's `--reviews`).
 - **If round 4 finds yet another P0–P2 in the same off-base/`from` area:** the loop isn't converging there. Stop and wait for Justin; offer to drop the R1-9 check and keep R1-9 as a follow-up.
 - **After the merge:** delete the live memory note `review-loop-until-clean.md` (the merge does it) and update `MEMORY.md`'s index line.
