@@ -12,7 +12,8 @@
 #     round had any) or brake d (a P0-P2 that repeats an earlier P0-P2 with no new_fact of 5+ words)
 #     trips → ASK JUSTIN; justin.json "continue": true answers that round's ASK with REVIEW AGAIN;
 #   - none left → MOVE ON when the round's head is HEAD, or HEAD is a pure rebase of it (the same
-#     patches in the same order, no merges); otherwise REVIEW AGAIN for the unreviewed commits.
+#     patches in the same order, no merges); otherwise REVIEW AGAIN for the unreviewed commits;
+#   - a full round whose from is not on --base's history → REVIEW AGAIN: run a full review from --base.
 # --base is the commit the branch starts from now (git merge-base HEAD <integration branch>).
 # Prints one line per finding of the latest round, then the outcome as the LAST line.
 # Exit 0 MOVE ON, 1 REVIEW AGAIN, 3 ASK JUSTIN, 2 bad usage or input (an error: line on stderr).
@@ -136,12 +137,15 @@ bad=$(jq -r "$VALIDATE" <<<"$in" 2>&1) || die "can't check the review records: $
 RH=$(jq -r ".rounds[$((n - 1))].head" <<<"$in") RF=$(jq -r ".rounds[$((n - 1))].from" <<<"$in")
 [[ -n $(commit "$RH") ]] || die "review-$n's head ${RH:0:7} is not a commit in $repo"
 [[ -n $(commit "$RF") ]] || die "review-$n's from ${RF:0:7} is not a commit in $repo"
+offbase=0
 if [[ $(jq -r ".rounds[$((n - 1))].scope" <<<"$in") == full ]]; then
   git -C "$repo" merge-base --is-ancestor "$RF" "$RH" 2>/dev/null && [[ $RF != "$RH" ]] \
     || die "review-$n is a full review, but its from ${RF:0:7} is not an older commit of its head ${RH:0:7}"
-  # the story base, or an older commit of it (a rebase moves --base forward past the recorded base)
-  git -C "$repo" merge-base --is-ancestor "$RF" "$BASESHA" 2>/dev/null \
-    || die "review-$n is a full review, but its from ${RF:0:7} is not the --base ${BASESHA:0:7} or an older commit of it"
+  # A full round reviews from --base or an older commit of it (a rebase moves --base forward past the
+  # recorded base). A from off --base's history is a true record that didn't review the whole story now
+  # (a range recorded from inside the story, or a base commit sync.sh's rebase rewrote): the next review
+  # is a full one from --base.
+  git -C "$repo" merge-base --is-ancestor "$RF" "$BASESHA" 2>/dev/null || offbase=1
 fi
 
 v=$(jq -c "$JUDGE" <<<"$in") || die "can't judge the review records"
@@ -161,6 +165,10 @@ pids() { # pids <from> <to>: a patch-id per non-merge commit, oldest first ("emp
 }
 case $outcome in
   clean)
+    if ((offbase)); then
+      echo "REVIEW AGAIN: review-$n's from ${RF:0:7} is not on --base ${BASESHA:0:7}'s history: run a full review from ${BASESHA:0:7}"
+      exit 1
+    fi
     if [[ $RH == "$HEADSHA" ]]; then echo "MOVE ON: review-$n at ${RH:0:7} is clean"; exit 0; fi
     if git -C "$repo" merge-base --is-ancestor "$RH" "$HEADSHA" 2>/dev/null; then
       echo "REVIEW AGAIN: $(git -C "$repo" rev-list --count "$RH..$HEADSHA") commit(s) after review-$n's head ${RH:0:7} are unreviewed: review ${RH:0:7}..${HEADSHA:0:7}"
@@ -177,6 +185,10 @@ case $outcome in
     echo "REVIEW AGAIN: HEAD ${HEADSHA:0:7} is not review-$n's head ${RH:0:7} or a pure rebase of it: review what changed since ${RH:0:7}"
     exit 1 ;;
   again)
+    if ((offbase)); then
+      echo "REVIEW AGAIN: $now P0-P2 finding(s) in review-$n at ${RH:0:7}: fix them, then run a full review from ${BASESHA:0:7} (review-$n's from ${RF:0:7} is not on its history)"
+      exit 1
+    fi
     echo "REVIEW AGAIN: $now P0-P2 finding(s) in review-$n at ${RH:0:7}: fix them, then review the fix commits"; exit 1 ;;
   ask)
     why=$(jq -r '[ (if (.stalled | length) > 0 then "repeats with no new fact: \(.stalled | join(", "))" else empty end),

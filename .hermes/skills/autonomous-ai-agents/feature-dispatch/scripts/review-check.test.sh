@@ -327,7 +327,7 @@ ac6_referee_records_justins_answers() {
 }
 
 ac7_referee_checks_head_coverage() {
-  local CE C3 C4 C5 M1 M2 NH O1 O2 L
+  local CE C3 C4 C5 M1 M2 NH O1 O2 L P A B0 B0N S1 S2
   need "$RC" || return 1
   newroot; mkrepo || fail "fixture repo" || return 1
   ing git -C "$R" config color.ui always   # a colour setting must not change what the referee compares
@@ -409,9 +409,39 @@ SH
     && ing git -C "$R" checkout -q -f work || fail "orphan branch" || return 1
   fresh; rev 1 full "$BASE" "$C2"; rev 2 delta "$C2" "$O2"; judge "$M2"
   want 1 "REVIEW AGAIN: HEAD ${NH:0:7} is not review-2's head ${O2:0:7} or a pure rebase of it: review what changed since ${O2:0:7}" "a reviewed head on unrelated history" || return 1
-  # a full round's from is --base or an older commit of it (above: from the old base after a rebase moves on)
+  # a full round's from is --base or an older commit of it (above: the old base after a rebase moved --base
+  # on); otherwise the round didn't review the whole story: run a full review from --base
   fresh; rev 1 full "$O1" "$O2"; judge "$M2"
-  bad2 "review-1 is a full review, but its from ${O1:0:7} is not the --base ${M2:0:7} or an older commit of it" "a full review on unrelated history" || return 1
+  want 1 "REVIEW AGAIN: review-1's from ${O1:0:7} is not on --base ${M2:0:7}'s history: run a full review from ${M2:0:7}" "a full review on unrelated history" || return 1
+  P=$(ing git -C "$R" rev-parse HEAD~1) || fail "HEAD~1" || return 1
+  fresh; rev 1 full "$P" "$NH"; judge "$M2"
+  want 1 "REVIEW AGAIN: review-1's from ${P:0:7} is not on --base ${M2:0:7}'s history: run a full review from ${M2:0:7}" "a full review from a commit inside the story, at HEAD" || return 1
+  fresh; rev 1 full "$P" "$NH" "$(finding R1-1 P2)"; judge "$M2"
+  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${NH:0:7}: fix them, then run a full review from ${M2:0:7} (review-1's from ${P:0:7} is not on its history)" "a full review from inside the story, a P2 left" || return 1
+  # sync.sh rebases local main onto the other machine's push, rewriting an unpushed sync commit B0 that the
+  # story was cut from: B0 is then on neither --base's history nor main's. The record is true, so not exit 2.
+  R="$S/sync repo"; mkdir -p "$R" && ing git init -q "$R" && A=$(cm a.txt a pushed) && B0=$(cm n.md n1 "sync(desktop)") \
+    && ing git -C "$R" checkout -q -b story && S1=$(cm s.sh one one) && S2=$(cm s.sh two two) \
+    && ing git -C "$R" checkout -q -b mac "$A" && cm x.txt x "sync(mac)" >/dev/null \
+    && ing git -C "$R" checkout -q main && ing git -C "$R" rebase -q mac >/dev/null 2>&1 && B0N=$(head_) \
+    && ing git -C "$R" checkout -q story && L=$(ing git -C "$R" merge-base HEAD main) && [ "$L" = "$A" ] \
+    || fail "sync fixture" || return 1
+  fresh; rev 1 full "$B0" "$S1" "$(finding R1-1 P2)"; rev 2 full "$B0" "$S2"; judge "$L"
+  want 1 "REVIEW AGAIN: review-2's from ${B0:0:7} is not on --base ${A:0:7}'s history: run a full review from ${A:0:7}" "a sync rebase rewrote the story's base" || return 1
+  judge "$B0"; want 0 "MOVE ON: review-2 at ${S2:0:7} is clean" "control: the reviewer's self-check with the brief's base" || return 1
+  edit 2 '.findings = [ {id: "R2-1", severity: "P2", file_line: "s.sh:1", claim: "c", scenario: "An agent runs it and it breaks"} ]'; judge "$L"
+  want 3 "ASK JUSTIN: review-2: 1 P0-P2, no fewer than review-1's 1" "the base rule doesn't skip the brakes" || return 1
+  justin 2 '{"words": "go on", "continue": true}'; judge "$L"
+  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-2 at ${S2:0:7}: fix them, then run a full review from ${A:0:7} (review-2's from ${B0:0:7} is not on its history)" "Justin's continue, from off --base's history" || return 1
+  fresh; rev 1 full "$B0" "$S1" "$(finding R1-1 P2)"; rev 2 full "$B0" "$S2"; rev 3 full "$A" "$S2"; judge "$L"
+  want 0 "MOVE ON: review-3 at ${S2:0:7} is clean" "then a full review from --base moves on" || return 1
+  # the finisher's git rebase main: B0's patch is on main already (B0N), so git drops B0: S1', S2' on B0N
+  rm -r "$E/review-3" && ing git -C "$R" rebase -q main >/dev/null 2>&1 && NH=$(head_) \
+    && L=$(ing git -C "$R" merge-base HEAD main) && [ "$L" = "$B0N" ] || fail "finisher rebase" || return 1
+  judge "$L"
+  want 1 "REVIEW AGAIN: review-2's from ${B0:0:7} is not on --base ${B0N:0:7}'s history: run a full review from ${B0N:0:7}" "the same, after the finisher's rebase" || return 1
+  rev 3 full "$B0N" "$NH"; judge "$L"
+  want 0 "MOVE ON: review-3 at ${NH:0:7} is clean" "then a full review from the rebased --base moves on" || return 1
   done_ok
 }
 
@@ -452,8 +482,6 @@ ac8_referee_rejects_bad_records() {
   bad ".from = \"$G\""                   "review-1's from ffffff. is not a commit"  "a from that isn't a commit" || return 1
   bad ".from = \"$C2\""                  'is not an older commit of its head'       "a full review from its own head" || return 1
   bad ".from = \"$C2\" | .head = \"$C1\"" 'is not an older commit of its head'      "a full review from a later commit" || return 1
-  bad ".from = \"$C1\"" "review-1 is a full review, but its from ${C1:0:7} is not the --base ${BASE:0:7} or an older commit of it" \
-    "a full review from a commit inside the story" || return 1
   bad '.findings = {}'                   'findings must be a list'                  "findings as an object" || return 1
   bad '.findings[0] = "R1-1"'            'a finding is not an object'               "a finding as text" || return 1
   bad '.findings[0].id = "R2-1"'         'finding id "R2-1" must start R1-'         "an id from another round" || return 1
