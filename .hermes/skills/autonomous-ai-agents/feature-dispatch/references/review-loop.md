@@ -62,7 +62,7 @@ Justin, 2026-10-28. The rule (severities, brakes, order) lives in `review-fix-ca
 
 - **`REVIEW AGAIN`** (exit 1): P0–P2 findings are left, the round is clean but HEAD has commits it didn't cover, or the latest full round's `from` isn't on `--base`'s history.
   - **When the line says "run a full review from `<base>`", check this first:** round n+1 is `full` with `from` = `--base`, after the fixer when findings are left. A delta round never clears it: the referee keeps saying it until a full round from `--base` is recorded.
-  - Otherwise, a fixer brief gets the printed lines verbatim and the evidence folder; the fixer verifies each P0–P2 (`receiving-code-review`), fixes the valid ones test-first and stops `ready-for-next-review`. Then the next reviewer's brief gives round n+1, `from` = this round's head, and the earlier folders. For "commits after the reviewed head", dispatch just that delta review.
+  - Otherwise, a fixer brief gets the printed lines verbatim and the evidence folder; the fixer verifies each P0–P2 (`receiving-code-review`), fixes the valid ones test-first and stops `ready-for-next-review`. Then the next reviewer's brief gives round n+1, `from` = this round's head (Full's round 2: full, `from` = `--base`), and the earlier folders. For "commits after the reviewed head", dispatch just that review, by the same rule. After round 1 the line names both: "review again (Full: round 2 reviews the whole story from `<base>`; Mini: …)".
 - **`MOVE ON`** (exit 0): the latest round has no P0–P2 and its head is HEAD, or HEAD is a pure rebase of it (the same patches in the same order, no merges). Append its P3 lines to `<evidence>/follow-ups.md`, then dispatch the verifier (`ac-verification.md`).
 - **`ASK JUSTIN`** (exit 3): brake c (no fewer P0–P2 than the round before) or brake d (a repeat with no new fact) tripped. Ask him with the line and the finding lines, dispatch nothing until he answers, write his answer to `review-<n>/justin.json`, and rerun the referee.
 - **Exit 2:** bad usage or a bad record, with an `error:` line on stderr. Send the file back to the reviewer that wrote it (SendMessage), or fix the command.
@@ -71,6 +71,6 @@ The main session never rules on a finding's severity, and never drops or rewrite
 
 ## After MOVE ON
 
-Every later commit, even a records-only one, needs a fresh delta review before the verifier runs on it: a verifier finding, a NOT ACCEPTED round, a rebase that resolved conflicts. `ac-check.sh --reviews <evidence>` enforces it: it runs the referee and refuses a head that no clean review covers. Fixers batch records into their fix commit to keep these reviews few.
+Every later commit, even a records-only one, needs a fresh delta review (Full's round 2 is full) before the verifier runs on it: a verifier finding, a NOT ACCEPTED round, a rebase that resolved conflicts. `ac-check.sh --reviews <evidence>` enforces it: it runs the referee and refuses a head that no clean review covers. Fixers batch records into their fix commit to keep these reviews few.
 
 Mini: the same loop and brakes, with round 1 the only full round (`mini-pipeline.md`).

@@ -93,6 +93,10 @@ want() { # want <exit code> <exact last line> <what>
   echo "# $3: $last"
 }
 has() { printf '%s\n' "$out" | grep -qxF -- "$1" || fail "$2: no line [$1] in: $out"; }   # has <exact line> <what>
+# after round 1 the next review is a delta round in Mini but the whole story again in Full, so round 1's
+# REVIEW AGAIN names both (later rounds name only the delta review)
+again1() { local b=$1; echo "review again (Full: round 2 reviews the whole story from ${b:0:7}; Mini: $2)"; }   # again1 <base> <Mini's review>
+fix1() { echo "REVIEW AGAIN: $1 P0-P2 finding(s) in review-1 at ${2:0:7}: fix them, then $(again1 "${3:-$BASE}" "review the fix commits")"; }   # fix1 <count> <head> [base]
 bad2() { # bad2 <stderr ERE> <what>: exit 2, an error: line on stderr matching it, and no outcome line
   [ "$rc" = 2 ] || fail "$2: want exit 2, got $rc (out: $out; err: $err)" || return 1
   printf '%s\n' "$err" | grep -q '^error: ' || fail "$2: no error: line on stderr ($err)" || return 1
@@ -153,23 +157,26 @@ ac2_referee_reviews_again_on_p0_to_p2() {
   newroot; mkrepo || fail "fixture repo" || return 1
   for sev in P0 P1 P2; do
     fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 "$sev")" "$(finding R1-2 P3)"; judge
-    want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C2:0:7}: fix them, then review the fix commits" "one $sev and a P3" || return 1
+    want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C2:0:7}: fix them, then review again (Full: round 2 reviews the whole story from ${BASE:0:7}; Mini: review the fix commits)" "one $sev and a P3" || return 1
     has "R1-1  $sev  lib/x.sh:R1-1  claim of R1-1" "the $sev" || return 1
     has "R1-2  P3  lib/x.sh:R1-2  claim of R1-2" "the P3 beside a $sev" || return 1
   done
   fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P0)" "$(finding R1-2 P1)" "$(finding R1-3 P2)" "$(finding R1-4 P3)"; judge
-  want 1 "REVIEW AGAIN: 3 P0-P2 finding(s) in review-1 at ${C2:0:7}: fix them, then review the fix commits" "a P0, a P1, a P2 and a P3" || return 1
+  want 1 "$(fix1 3 "$C2")" "a P0, a P1, a P2 and a P3" || return 1
   # the message names the round's own head, not HEAD
   fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)"; judge
-  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C1:0:7}: fix them, then review the fix commits" "a P2 at an older head" || return 1
-  # review-2 counts only its own findings
+  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C1:0:7}: fix them, then review again (Full: round 2 reviews the whole story from ${BASE:0:7}; Mini: review the fix commits)" "a P2 at an older head" || return 1
+  # Full's round 2 starts at --base (the story's base now), not at review-1's from
+  fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2)"; judge "$C1"
+  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C2:0:7}: fix them, then review again (Full: round 2 reviews the whole story from ${C1:0:7}; Mini: review the fix commits)" "--base after review-1's from" || return 1
+  # review-2 (and every later round) counts only its own findings, and names only the fix commits
   fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)" "$(finding R1-3 P2)"
   rev 2 full "$BASE" "$C2" "$(finding R2-1 P1)"; judge
   want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-2 at ${C2:0:7}: fix them, then review the fix commits" "review-2's one P1 after review-1's three" || return 1
   # one line per finding, even when file_line or claim holds a tab or a newline
   fresh; rev 1 full "$BASE" "$C2" "$(jq -nc --arg sc "$SC" '{id: "R1-1", severity: "P2", file_line: "lib/a\tb.sh:3",
     claim: "two\nlines", scenario: $sc}')"; judge
-  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C2:0:7}: fix them, then review the fix commits" "a claim with a newline" || return 1
+  want 1 "$(fix1 1 "$C2")" "a claim with a newline" || return 1
   has "R1-1  P2  lib/a b.sh:3  two lines" "control characters print as spaces" || return 1
   [ "$(printf '%s\n' "$out" | grep -c .)" = 2 ] || fail "want one finding line and the outcome: $out" || return 1
   done_ok
@@ -192,11 +199,11 @@ ac3_referee_counts_p2_without_scenario_as_p3() {
   # five words is enough, with any whitespace between them
   for sc in "an agent hits this bug" "$(printf 'an\tagent\nhits  this bug')"; do
     fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2 "$sc")"; judge
-    want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C2:0:7}: fix them, then review the fix commits" "a P2 with a five-word scenario" || return 1
+    want 1 "$(fix1 1 "$C2")" "a P2 with a five-word scenario" || return 1
     has "R1-1  P2  lib/x.sh:R1-1  claim of R1-1" "a P2 with a five-word scenario" || return 1
   done
   fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2 "edge case")" "$(finding R1-2 P2)"; judge
-  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C2:0:7}: fix them, then review the fix commits" "a P2 with no scenario beside a real one" || return 1
+  want 1 "$(fix1 1 "$C2")" "a P2 with no scenario beside a real one" || return 1
   done_ok
 }
 
@@ -283,7 +290,7 @@ ac6_referee_records_justins_answers() {
   has "R1-1  ACCEPTED  lib/x.sh:R1-1  claim of R1-1" "an accepted P2" || return 1
   has "R1-2  ACCEPTED  lib/x.sh:R1-2  claim of R1-2" "an accepted P1" || return 1
   justin 1 "{$W, \"accept\": [\"R1-1\"]}"; judge
-  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C2:0:7}: fix them, then review the fix commits" "one of two accepted" || return 1
+  want 1 "$(fix1 1 "$C2")" "one of two accepted" || return 1
   # a later finding whose repeats chain reaches an accepted one is ACCEPTED: it neither counts nor stalls
   C3=$(cm d.txt three three)
   fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)" "$(finding R1-3 P2)"; justin 1 "{$W, \"accept\": [\"R1-1\"]}"
@@ -338,11 +345,11 @@ ac7_referee_checks_head_coverage() {
   rev 1 full "$BASE" "$C3"; judge
   want 0 "MOVE ON: review-1 at ${C3:0:7} is clean" "HEAD is the reviewed head" || return 1
   C4=$(cm e.txt four four); judge
-  want 1 "REVIEW AGAIN: 1 commit(s) after review-1's head ${C3:0:7} are unreviewed: review ${C3:0:7}..${C4:0:7}" "a commit after the reviewed head" || return 1
+  want 1 "REVIEW AGAIN: 1 commit(s) after review-1's head ${C3:0:7} are unreviewed: review again (Full: round 2 reviews the whole story from ${BASE:0:7}; Mini: review ${C3:0:7}..${C4:0:7})" "a commit after the reviewed head" || return 1
   C5=$(empty notes); judge
-  want 1 "REVIEW AGAIN: 2 commit(s) after review-1's head ${C3:0:7} are unreviewed: review ${C3:0:7}..${C5:0:7}" "two commits after, one empty" || return 1
+  want 1 "REVIEW AGAIN: 2 commit(s) after review-1's head ${C3:0:7} are unreviewed: $(again1 "$BASE" "review ${C3:0:7}..${C5:0:7}")" "two commits after, one empty" || return 1
   ing git -C "$R" checkout -q -B work "$C2"; judge
-  want 1 "REVIEW AGAIN: HEAD ${C2:0:7} is not review-1's head ${C3:0:7} or a pure rebase of it: review what changed since ${C3:0:7}" "HEAD reset behind the reviewed head" || return 1
+  want 1 "REVIEW AGAIN: HEAD ${C2:0:7} is not review-1's head ${C3:0:7} or a pure rebase of it: review again (Full: round 2 reviews the whole story from ${BASE:0:7}; Mini: review what changed since ${C3:0:7})" "HEAD reset behind the reviewed head" || return 1
   # main moves on; the story is rebased onto it (--base is then the new merge-base)
   ing git -C "$R" checkout -q main && M1=$(cm m.txt m1 m1) || fail "main commit" || return 1
   ing git -C "$R" checkout -q -B work "$C3" && ing git -C "$R" rebase -q main >/dev/null 2>&1 || fail "rebase" || return 1
@@ -355,7 +362,7 @@ ac7_referee_checks_head_coverage() {
   }
   again() { # again <what>: HEAD is not a pure rebase of the reviewed head
     judge "$M1"
-    want 1 "REVIEW AGAIN: HEAD $(head_ | cut -c1-7) is not review-1's head ${C3:0:7} or a pure rebase of it: review what changed since ${C3:0:7}" "$1"
+    want 1 "REVIEW AGAIN: HEAD $(head_ | cut -c1-7) is not review-1's head ${C3:0:7} or a pure rebase of it: $(again1 "$M1" "review what changed since ${C3:0:7}")" "$1"
   }
   replay "$C1" "$C2" "$CE" "$C3" || fail "replay" || return 1; NH=$(head_); judge "$M1"
   want 0 "MOVE ON: review-1 at ${C3:0:7} is clean, and HEAD ${NH:0:7} is a pure rebase of it" "the same commits picked onto main" || return 1
@@ -418,7 +425,7 @@ SH
   ing git -C "$R" checkout -q main && M2=$(cm m.txt m2 m2) && ing git -C "$R" checkout -q work \
     && ing git -C "$R" merge -q --no-ff -m merge main >/dev/null 2>&1 || fail "merge" || return 1
   judge "$M2"
-  want 1 "REVIEW AGAIN: HEAD $(head_ | cut -c1-7) is not review-1's head ${C3:0:7} or a pure rebase of it: review what changed since ${C3:0:7}" "a merge commit" || return 1
+  want 1 "REVIEW AGAIN: HEAD $(head_ | cut -c1-7) is not review-1's head ${C3:0:7} or a pure rebase of it: $(again1 "$M2" "review what changed since ${C3:0:7}")" "a merge commit" || return 1
   # a clean delta round: HEAD a pure rebase of its head moves on
   fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2)"; rev 2 delta "$C2" "$C3"
   ing git -C "$R" checkout -q -B work "$C3" && ing git -C "$R" rebase -q main >/dev/null 2>&1 || fail "rebase" || return 1
@@ -634,11 +641,11 @@ ac9_ac_check_refuses_unreviewed_head() {
   newroot; mkrepo || fail "fixture repo" || return 1
   C3=$(cm d.txt three three)
   rev 1 full "$BASE" "$C2"; acfix "$C3" "$BASE" AC1; accheck "$BASE" --reviews "$E"
-  L="REVIEW AGAIN: 1 commit(s) after review-1's head ${C2:0:7} are unreviewed: review ${C2:0:7}..${C3:0:7}"
+  L="REVIEW AGAIN: 1 commit(s) after review-1's head ${C2:0:7} are unreviewed: $(again1 "$BASE" "review ${C2:0:7}..${C3:0:7}")"
   want 1 "NOT ACCEPTED: the head ${C3:0:7} isn't covered by a clean review ($L)" "a commit after the clean review" || return 1
   has "AC1  ACCEPTED" "the AC itself is proven" && has "REVIEWS  NOT ACCEPTED: $L" "the reviews line" || return 1
   fresh; rev 1 full "$BASE" "$C3" "$(finding R1-1 P2)"; acfix "$C3" "$BASE" AC1; accheck "$BASE" --reviews "$E"
-  L="REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at ${C3:0:7}: fix them, then review the fix commits"
+  L=$(fix1 1 "$C3")
   want 1 "NOT ACCEPTED: the head ${C3:0:7} isn't covered by a clean review ($L)" "the latest round says REVIEW AGAIN" || return 1
   has "REVIEWS  NOT ACCEPTED: $L" "the reviews line" || return 1
   fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2)"; rev 2 full "$BASE" "$C3" "$(finding R2-1 P2)"; acfix "$C3" "$BASE" AC1
@@ -653,7 +660,7 @@ ac9_ac_check_refuses_unreviewed_head() {
   # an AC failing too: the last line counts the ACs and names the review
   fresh; rev 1 full "$BASE" "$C2"; acfix "$C3" "$BASE" AC1; reject_ac1; accheck "$BASE" --reviews "$E"
   want 1 "NOT ACCEPTED: 1 of 1 ACs on ${C3:0:7}; and the head isn't covered by a clean review" "an AC and the review both fail" || return 1
-  has "REVIEWS  NOT ACCEPTED: REVIEW AGAIN: 1 commit(s) after review-1's head ${C2:0:7} are unreviewed: review ${C2:0:7}..${C3:0:7}" "the reviews line" || return 1
+  has "REVIEWS  NOT ACCEPTED: REVIEW AGAIN: 1 commit(s) after review-1's head ${C2:0:7} are unreviewed: $(again1 "$BASE" "review ${C2:0:7}..${C3:0:7}")" "the reviews line" || return 1
   # only an AC failing: the old last line, after a clean reviews line
   fresh; rev 1 full "$BASE" "$C3"; acfix "$C3" "$BASE" AC1; reject_ac1; accheck "$BASE" --reviews "$E"
   want 1 "NOT ACCEPTED: 1 of 1 ACs on ${C3:0:7}" "only the AC fails" || return 1
@@ -769,6 +776,8 @@ ac12_docs_name_the_review_loop() {
   f="$FD/references/review-loop.md"; need "$f" || return 1
   names "$(cat "$f")" "references/review-loop.md" review.json justin.json repeats new_fact scenario follow-ups.md \
     'REVIEW AGAIN' 'MOVE ON' 'ASK JUSTIN' || return 1
+  # a Full story's round 2 reviews the whole story, whatever round 1's REVIEW AGAIN was for (R5-1)
+  names "$(cat "$f")" "references/review-loop.md" "(Full's round 2: full, \`from\` = \`--base\`)" || return 1
   names "$(cat "$FD/references/ac-verification.md")" "references/ac-verification.md" 'MOVE ON' --reviews || return 1
   f="$FD/references/mini-pipeline.md"
   names "$(cat "$f")" "references/mini-pipeline.md" review-check.sh 'MOVE ON' || return 1

@@ -13,6 +13,8 @@
 #     trips → ASK JUSTIN; justin.json "continue": true answers that round's ASK with REVIEW AGAIN;
 #   - none left → MOVE ON when the round's head is HEAD, or HEAD is a pure rebase of it (the same
 #     patches in the same order, no merges); otherwise REVIEW AGAIN for the unreviewed commits;
+#   - after round 1, a REVIEW AGAIN names both next rounds: Full's round 2 reviews the whole story from
+#     --base, Mini's is a delta round (this script can't tell Full from Mini);
 #   - the latest full round's from not on --base's history → REVIEW AGAIN: run a full review from --base
 #     (the delta rounds after it build on it, so no delta round clears it; only a full round from --base).
 # --base is the commit the branch starts from now (git merge-base HEAD <integration branch>).
@@ -157,6 +159,9 @@ v=$(jq -c "$JUDGE" <<<"$in") || die "can't judge the review records"
 jq -r '.lines[]' <<<"$v"
 outcome=$(jq -r .outcome <<<"$v") now=$(jq -r .now <<<"$v")
 
+# next <Mini's review>: what the next round reviews. After round 1 a Full story reviews the whole story
+# again (rule b: rounds 1 and 2 are full), so the line names both; from round 2 on it is the delta review.
+next() { if ((n == 1)); then echo "review again (Full: round 2 reviews the whole story from ${BASESHA:0:7}; Mini: $1)"; else echo "$1"; fi; }
 pids() { # pids <from> <to>: a patch-id per non-merge commit, oldest first ("empty:<subject>" for no diff).
   # Plumbing diff-tree ignores colour, external-diff and textconv settings; --verbatim keeps whitespace
   # changes (a re-indented line is a different patch). Fails when any git step fails: an empty id
@@ -176,7 +181,7 @@ case $outcome in
     fi
     if [[ $RH == "$HEADSHA" ]]; then echo "MOVE ON: review-$n at ${RH:0:7} is clean"; exit 0; fi
     if git -C "$repo" merge-base --is-ancestor "$RH" "$HEADSHA" 2>/dev/null; then
-      echo "REVIEW AGAIN: $(git -C "$repo" rev-list --count "$RH..$HEADSHA") commit(s) after review-$n's head ${RH:0:7} are unreviewed: review ${RH:0:7}..${HEADSHA:0:7}"
+      echo "REVIEW AGAIN: $(git -C "$repo" rev-list --count "$RH..$HEADSHA") commit(s) after review-$n's head ${RH:0:7} are unreviewed: $(next "review ${RH:0:7}..${HEADSHA:0:7}")"
       exit 1
     fi
     # a pure rebase: the reviewed commits' patches, in the same order, now on --base, with no merge
@@ -194,14 +199,14 @@ case $outcome in
         echo "MOVE ON: review-$n at ${RH:0:7} is clean, and HEAD ${HEADSHA:0:7} is a pure rebase of it"; exit 0
       fi
     fi
-    echo "REVIEW AGAIN: HEAD ${HEADSHA:0:7} is not review-$n's head ${RH:0:7} or a pure rebase of it: review what changed since ${RH:0:7}"
+    echo "REVIEW AGAIN: HEAD ${HEADSHA:0:7} is not review-$n's head ${RH:0:7} or a pure rebase of it: $(next "review what changed since ${RH:0:7}")"
     exit 1 ;;
   again)
     if ((offbase)); then
       echo "REVIEW AGAIN: $now P0-P2 finding(s) in review-$n at ${RH:0:7}: fix them, then run a full review from ${BASESHA:0:7} (review-$FK's from ${FF:0:7} is not on its history)"
       exit 1
     fi
-    echo "REVIEW AGAIN: $now P0-P2 finding(s) in review-$n at ${RH:0:7}: fix them, then review the fix commits"; exit 1 ;;
+    echo "REVIEW AGAIN: $now P0-P2 finding(s) in review-$n at ${RH:0:7}: fix them, then $(next "review the fix commits")"; exit 1 ;;
   ask)
     why=$(jq -r '[ (if (.stalled | length) > 0 then "repeats with no new fact: \(.stalled | join(", "))" else empty end),
                    (if .prev > 0 and .now >= .prev then "\(.now) P0-P2, no fewer than review-\(.round - 1)'"'"'s \(.prev)" else empty end) ]
