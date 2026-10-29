@@ -40,3 +40,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-29 | header-bar | figma-to-bricks | browser test in npm run test:browser: pin the renderer's linked-Image markup to captured Bricks markup (classes on the anchor) | offered
 - 2026-10-29 | header-bar | figma-to-bricks | test: run every icon-shape reader over shared ICONS variants on 48–64px circle and tile backdrops (test/unit/normalise-*-shape.test.ts) | offered
 - 2026-10-29 | 86bcm901y | memory review-prompt-for-agent | Claude Code PreToolUse Bash hook: deny `gh pr checkout` and `git checkout`/`switch` when the cwd or `-C` target is `~/Leorna/<repo>` itself (not `.claude/worktrees/*` or a scratch clone) | offered
+- 2026-10-29 | 86bcm901r-starter-packs | leorna | script: in the finisher's step 7.2 pre-flight, `git grep -n -i -E '(until|once).{0,40}<card id>'` over the whole tree; each hit is fixed or listed as a follow-up | offered
