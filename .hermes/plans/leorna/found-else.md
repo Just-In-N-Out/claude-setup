@@ -253,3 +253,6 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Low, process: no gates screenshot (gates-9a9bdec.png) exists in evidence/86bcm902a/ though clickup-evidence.md asks for one; render verifier/gates-9a9bdec.txt (EXIT=0) before "post".
 - Info, for 86bcm901j: local feat/86bcm901j-mcp-templates at f2892bc is 8 commits past PR #98's GitHub head 17f2ccf (unpushed), so PR #98's CI and reviews cover an older head.
 - Medium, integration: 901y's new SaveVersion(…, pack.VersionChange) signature breaks 902a's internal/web/quick_start_test.go:1146 at merge with no text conflict (go vet / test build fail); one-line fix proven green in a trial tree (86bcm902a-handover/integration-receipts/901y-saveversion-fix.diff); whichever merges second applies it.
+
+## 86bcm902a review 3 on 9a9bdec (2026-10-29)
+- P3, pre-existing, outside the story (internal/store/postgres/setup_lock.go:41, story 86bbu3xr4): the deferred unlock runs on context.WithoutCancel(ctx), which drops the 30 s deadline; if the database stalls, the unlock and the request can hang with the setup slot held (source reading only, not executed).

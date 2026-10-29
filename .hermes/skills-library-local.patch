@@ -32,7 +32,7 @@ index d8e25dc..6bfc503 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..8ebb58e 100644
+index d6a2493..b9ffb63 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,13 +60,13 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -67,7 +67,7 @@ index d6a2493..8ebb58e 100644
  - Fixture credential disposal: after verified exact resource absence, require the generated owner/runtime credential maps to be absent too; private permissions alone do not establish disposal. On incomplete/refused cleanup retain necessary recoverable credentials with an explicit reason. Reconcile historical remnants additively without rewriting sealed resource receipts.
  - Keep ownership authority distinct from resource-policy acceptance where the frozen fixture contract permits exact-ID cleanup of a proved-owned but policy-invalid resource. Compare new retirement requirements with inherited wrong-image/resource-policy assertions before accepting a design; otherwise adding image agreement at cleanup can contradict the positive recovery contract. Require a prospective, explicitly reviewed oracle supersession if the authority contract truly changes, not both incompatible expectations.
  - Ownership refusal classification: validate required response envelopes, mappings and identity fields before dereference, and classify missing/malformed proof as explicit refusal rather than a generic exception eligible for cleanup retry. Audit every consuming call path: a guarded pre-start observation does not validate a fresh raw post-start response. Inject malformed evidence at each meaningful lifecycle point, allow later responses to be healthy, and require no subsequent client use, retry or deletion after refusal. Pair genuine nonzero transport failure and proved-resource-absence controls so the repair neither masks errors nor silently disables safe recovery.
-+- Guard vs consumer parsing: when a policy check and the tool it protects read the same document, probe a case-variant duplicate of a guarded key (`APPROVAL_POLICY` beside `approval_policy`) and a case-variant key of the wrong type that breaks only the guard's decode. Go `encoding/json` and BurntSushi/toml match struct fields case-insensitively (toml in random map order) while renderers and real tools read exact keys; a guard that returns "no failures" when its decode fails is a bypass. Require exact-key decoding, an allowlist of known keys, and fail-closed decode errors (86bcm901j review 1: one extra `"ARGS":1` passed the gate; real Codex ran `danger-full-access` in 154 of 200 gate passes). The same applies to ids: one validated case-insensitively (a UUID check accepting A–F) but then used as text (audit target, cache key, log join) needs an upper-cased id sent through every entry point; typed parsers make it lower case, raw `r.PathValue` values don't (86bcm901w review 1: an upper-case edit URL hid a save from the pack's audit history). Names too: Go `strings.EqualFold`/`TrimSpace` is wider than Postgres `lower(btrim())` (`ſ` and the Kelvin sign fold only in Go; `TrimSpace` also strips tabs and NBSP), so Go code that matches "like the unique index" should use the index's own SQL rule; probe with `Backend ſtarter pack` (86bcm902a review 1). A Go handler that runs several separately committed writes on `r.Context()` is cut part-way when the client leaves (double-click, closed tab): probe with a `go test -overlay` wrapper that blocks until `ctx.Done()`, cancel the request, then check what stayed written and what the retry returns (86bcm902a review 1).
++- Guard vs consumer parsing: when a policy check and the tool it protects read the same document, probe a case-variant duplicate of a guarded key (`APPROVAL_POLICY` beside `approval_policy`) and a case-variant key of the wrong type that breaks only the guard's decode. Go `encoding/json` and BurntSushi/toml match struct fields case-insensitively (toml in random map order) while renderers and real tools read exact keys; a guard that returns "no failures" when its decode fails is a bypass. Require exact-key decoding, an allowlist of known keys, and fail-closed decode errors (86bcm901j review 1: one extra `"ARGS":1` passed the gate; real Codex ran `danger-full-access` in 154 of 200 gate passes). The same applies to ids: one validated case-insensitively (a UUID check accepting A–F) but then used as text (audit target, cache key, log join) needs an upper-cased id sent through every entry point; typed parsers make it lower case, raw `r.PathValue` values don't (86bcm901w review 1: an upper-case edit URL hid a save from the pack's audit history). Names too: Go `strings.EqualFold`/`TrimSpace` is wider than Postgres `lower(btrim())` (`ſ` and the Kelvin sign fold only in Go; `TrimSpace` also strips tabs and NBSP), so Go code that matches "like the unique index" should use the index's own SQL rule; probe with `Backend ſtarter pack` (86bcm902a review 1). A Go handler that runs several separately committed writes on `r.Context()` is cut part-way when the client leaves (double-click, closed tab): probe with a `go test -overlay` wrapper that blocks until `ctx.Done()`, cancel the request, then check what stayed written and what the retry returns (86bcm902a review 1). A test asserting a Postgres advisory (session) lock was released must probe from a fresh connection outside the pool: `pg_try_advisory_lock` is re-entrant per session, so a pooled probe can be handed the very session still holding it and succeed (86bcm902a review 3: a leaked-lock mutant passed).
  - Readiness budgets: reject nonfinite and negative numeric timeouts before resource or persistent-state claims, including direct API callers. Preserve zero only when it is the documented immediate-timeout control; use bounded fake-clock regressions rather than launching an infinite wait.
  - Maintainability: simple design, local conventions, names, duplication, abstraction fit.
  - Docs and rollout: README, changelog, feature flags, migration notes, operator impact.
@@ -162,7 +162,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..2795c06 100644
+index f2d882d..26db846 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,35 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -398,7 +398,7 @@ index f2d882d..2795c06 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +400,66 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +400,69 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -435,6 +435,9 @@ index f2d882d..2795c06 100644
 +    (`awk '/^=== RUN/{run=$3} /_test.go:[0-9]+:/{print run, $0}'`) and match the
 +    expected failure text (902a verifier: V12/V20/V22 first graded on a log line;
 +    902a auditor: "last line before `--- FAIL`" named the last failing subtest).
++    In `go test -json` a parent's own Output holds only its `=== RUN`/`--- FAIL`;
++    the `file:line` lines sit under each subtest's `Test`, so name the failing
++    subtests as the expected tests (902a review 3: R3M2 first graded SURVIVED).
 +    A consistency tripwire (a test-side list that must match production) is often
 +    masked when production is broken, because an earlier assertion fails first:
 +    overlay the legitimate future change instead (the tripwire must fire) and pair it

@@ -35,3 +35,8 @@ Sources: `~/.hermes/plans/leorna/found-else.md` (the 86bcm902a planner, builder,
 | 17 | The approved plan's risk R1 command has no `.up.sql` filter, so it lists every migration version as duplicated. | Done: the `leorna` skill line now carries the filter; this finisher used it (review 1 found-else) |
 | 18 | No gates screenshot (`gates-9a9bdec.png`) exists in the story's evidence, although `clickup-evidence.md` (memory) asks for one. The verifier's gate log is clean and can be rendered before "post". | Open, process (this finisher) |
 | 19 | For 86bcm901r's card: "/plan" ships as prompt `planning` (Claude Code has a built-in `/plan`), and its "Repo: content" is likely this repo's `internal/library`. | Info (planner found-else) |
+
+## Added after round-3 review (2026-10-29, main session; from evidence/86bcm902a/follow-ups.md)
+- R3-1 (P3, test gap): the "same pick again" team-default check is tested only with one-row assignment lists; add a case with [team default, project override of that team, another team's default] (review-3 probe TestReview3SamePickWithMoreAssignmentRows).
+- R3-2 (P3, test gap): TestQuickStartPickIsBoundedAndReleasesTheLockWithPostgres checks the advisory lock from the pool (re-entrant per session); probe from a fresh session like setup_lock_test.go lockFree (review-3 probe TestReview3BoundedPickLockFreeFromAFreshSession).
+- Pre-existing (story 86bbu3xr4): setup_lock.go:41 unlock on WithoutCancel drops the 30 s deadline.
