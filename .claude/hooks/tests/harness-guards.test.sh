@@ -346,7 +346,7 @@ ac5_guard_allows_leorna_https_fallback() {
   local L=https://github.com/LeornaAI/leorna-client.git P=https://github.com/Just-In-N-Out/claude-setup.git
   for c in "push --repo $L $P main" "push --rep $L $P main" "push --rece $L $P main" "push --exe $L $P main" \
     "push -o $L $P main" "push -qo $L $P main" "fetch -o $L $P main" "fetch --submodule-prefix $L $P main" \
-    "fetch --upload $L $P main"; do
+    "fetch --upload $L $P main" "push -- https://github.com/LeornaAI/../Just-In-N-Out/claude-setup.git main"; do
     expect deny 'credential helper' "$fb $c" || return 1
   done
   for c in "push --force-with-lease $L feat/x" "push -fu $L feat/x" "push $L feat/x --force-with-lease=feat/x:abc123" \
