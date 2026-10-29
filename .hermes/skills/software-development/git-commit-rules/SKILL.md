@@ -90,5 +90,5 @@ Hermes has no Claude Code worktree isolation, so run main-folder commands direct
 ## Verification
 
 - `git log -1 --pretty=format:'%an <%ae>'` gives the identity for that folder (Leorna or personal).
-- `git ls-files | grep -i claude.md` prints nothing.
+- `git diff --name-only <base>...HEAD | grep -i claude.md` prints nothing (the branch's own changes: a tree-wide `git ls-files` scan also matches vendored third-party files, e.g. leorna-client's `vendor/github.com/labstack/echo/v4/CLAUDE.md`; 86bcm902w PR finisher).
 - After a worktree merge, `git log --oneline main` shows the feature commits and nothing was pushed.
