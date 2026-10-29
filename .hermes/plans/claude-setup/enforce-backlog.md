@@ -33,3 +33,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-29 | after-faq-sections | figma-to-bricks | test or finisher gate: fail when a `## ` heading in main's docs/HANDOFF.md is missing from the branch's | offered
 - 2026-10-29 | after-faq-sections | code-review-practice | test: search src for `.map(<identifier>)` callbacks passed by reference to helpers with optional parameters | offered
 - 2026-10-29 | after-faq-sections | git-commit-rules | git pre-commit hook in FigmaToBricksV2: run `npm run typecheck` when .ts files are staged | offered
+- 2026-10-29 | 86bcm902a-quick-start | leorna | script: a finisher helper prints distinct mutant IDs and their final outcome from mutations-*.txt and fails if the PR text's mutant count differs; runs at hand-over before the PR text is saved | offered

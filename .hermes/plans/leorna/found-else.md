@@ -248,3 +248,8 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 86bcm902a blind auditor on 9a9bdec (2026-10-29)
 - Low, test strength (AC1, not blocking): mutant M1c (card role title rendered as its key) passed AC1, because assertQuickStartOffer checks offer.Role and offer.PackName and every pack name contains its role; pin the role inside <strong> (auditor/mutants/M1c-no-role-title-ac1.log).
 - Info: the approved plan's E1 capture recipe uses LEORNA_PUBLIC_BASE_URL=https://pending.leorna.invalid, which turns client discovery off (admin_ui.go:30-35, client_auth.go:196-198 → 503); desktop sync needs https://demo.leorna.invalid (already in leorna-control-plane-workflow.md).
+
+## 86bcm902a finisher on 9a9bdec (2026-10-29)
+- Low, process: no gates screenshot (gates-9a9bdec.png) exists in evidence/86bcm902a/ though clickup-evidence.md asks for one; render verifier/gates-9a9bdec.txt (EXIT=0) before "post".
+- Info, for 86bcm901j: local feat/86bcm901j-mcp-templates at f2892bc is 8 commits past PR #98's GitHub head 17f2ccf (unpushed), so PR #98's CI and reviews cover an older head.
+- Medium, integration: 901y's new SaveVersion(…, pack.VersionChange) signature breaks 902a's internal/web/quick_start_test.go:1146 at merge with no text conflict (go vet / test build fail); one-line fix proven green in a trial tree (86bcm902a-handover/integration-receipts/901y-saveversion-fix.diff); whichever merges second applies it.
