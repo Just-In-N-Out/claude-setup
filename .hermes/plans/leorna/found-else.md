@@ -207,3 +207,8 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Low: main's internal/library/library.go comment on Requires (#95) says the pack builder (86bcm901w) reads it through Library.Required; 901w's builder doesn't (AC1 "exactly the ticked items"). Ticking a prompt without its required skills gives a pack missing them. Product question for 901b/901r.
 - Low-medium: CreateVersion paths write no audit record (fork, single-item edit, and now #94's create-from-scratch); builder saves do. Extends the earlier P2 Fork/SaveEditedVersion audit gap.
 - Low: main's delivery/stories.json lists 86bcm901b with "prs": [] though #95 merged, so check-story-shippable.py 86bcm901b passes vacuously.
+
+## 86bcm901w verifier on 5a9aa2f (2026-10-28)
+- Confirms the bring-in fixer's two items: #95's library.go:85-89 Requires comment is ahead of the code (approved-plan follow-up F1; library_items has no requires column, so a pack with prompt/review saves without its 3 required skills), and main.go SetPackBuilder wiring is untested (mutant MW green).
+- Info: #94's gate.CheckDerivedPack renders the whole parent pack; on newPackBuilderFixture's synthetic items create-from-scratch returns 422, with real shipped items 303. Test-fixture artifact, not a product bug.
+- Info: govulncheck exit 0 but notes 1 vulnerability in a required module the code doesn't call (CI pins the same tool).
