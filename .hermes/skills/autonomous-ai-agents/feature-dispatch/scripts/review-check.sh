@@ -70,9 +70,12 @@ def sha: type == "string" and test("^[0-9a-f]{40}$");
         else empty end),
      (if ([ $x.findings[] | .id? ] | length) != ([ $x.findings[] | .id? ] | unique | length) then "\($w): a finding id is listed twice" else empty end)
    end),
-  ($j[$i] | if . == {} then empty
+  ($j[$i] | if . == null then empty
      elif type != "object" or (.words | str | not) then "\($w)/justin.json needs words: Justin's reply, verbatim"
-     elif ((.accept // []) | type) != "array" then "\($w)/justin.json: accept must be a list of finding ids"
+     elif has("accept") and (.accept | type) != "array" then "\($w)/justin.json: accept must be a list of finding ids"
+     elif has("continue") and (.continue | type) != "boolean" then "\($w)/justin.json: continue must be true or false"
+     elif (has("accept") or has("continue")) | not
+     then "\($w)/justin.json needs accept (the finding ids he accepts) or continue (true: keep going), or both"
      else (.accept // [])[] as $a
           | if ([ $x.findings[]? | select(.id? == $a) ] | length) == 0 then "\($w)/justin.json accepts \($a | tojson), which \($w) doesn't list" else empty end
      end)
@@ -119,9 +122,10 @@ done
 rounds="[" justin="[" sep=""
 for ((k = 1; k <= n; k++)); do
   r=$(jq -c . "$ev/review-$k/review.json" 2>/dev/null) && [[ -n $r ]] || die "review-$k/review.json is not JSON"
-  j='{}'
+  j=null   # no answer recorded (a justin.json file must be an object)
   if [[ -f $ev/review-$k/justin.json ]]; then
     j=$(jq -c . "$ev/review-$k/justin.json" 2>/dev/null) && [[ -n $j ]] || die "review-$k/justin.json is not JSON"
+    [[ $j != null ]] || die "review-$k/justin.json needs words: Justin's reply, verbatim"
   fi
   rounds="$rounds$sep$r" justin="$justin$sep$j" sep=,
 done

@@ -47,7 +47,7 @@ Justin, 2026-10-28. The rule (severities, brakes, order) lives in `review-fix-ca
 - `round` is the folder's number; folders run `review-1`, `review-2`, … with no gaps. Round 1 is `full`. A delta round's `from` is the previous round's `head`.
 - `id` is `R<round>-<k>`, unique in the file. `severity` is `P0`–`P3`. `file_line` and `claim` are required. `scenario`, `repeats` and `new_fact` are text; `repeats` names an earlier round's id.
 
-`<evidence>/review-<n>/justin.json`, written by the main session after an ASK JUSTIN: `{"words": "<Justin's reply, verbatim>", "accept": ["R3-1"]}` or `{"words": "…", "continue": true}`.
+`<evidence>/review-<n>/justin.json`, written by the main session after an ASK JUSTIN: `{"words": "<Justin's reply, verbatim>", "accept": ["R3-1"]}` or `{"words": "…", "continue": true}`. It needs `words` and at least one of `accept` (a list) or `continue` (`true` or `false`); anything else exits 2.
 - `accept`: known limits. Those findings, and later findings that `repeats` them, count as ACCEPTED: not fixed, not counted.
 - `"continue": true`: keep going. That round's ASK JUSTIN becomes REVIEW AGAIN.
 - When he accepts some and wants the rest fixed, write both. With `accept` alone, the brakes judge the round again on what is left, and may ask again.

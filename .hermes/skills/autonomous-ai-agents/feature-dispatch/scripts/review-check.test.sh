@@ -312,6 +312,16 @@ ac6_referee_records_justins_answers() {
   justin 2 "{$W, \"accept\": [\"R2-9\"]}"; judge; bad2 'accepts "R2-9", which review-2 doesn.t list' "accepts an id the round doesn't list" || return 1
   justin 2 "{$W, \"accept\": [\"R1-1\"]}"; judge; bad2 'accepts "R1-1", which review-2 doesn.t list' "accepts another round's id" || return 1
   justin 2 "{$W, \"accept\": \"R2-1\"}"; judge; bad2 'accept must be a list' "accept that isn't a list" || return 1
+  justin 2 "{$W, \"accept\": null}"; judge; bad2 'accept must be a list' "accept null" || return 1
+  # continue is true or false, and an answer records accept or continue: words alone would ask him again
+  justin 2 '{"words": "Keep going.", "continue": "true"}'; judge
+  bad2 'review-2/justin\.json: continue must be true or false' "continue as text" || return 1
+  justin 2 '{"words": "Keep going.", "continue": null}'; judge; bad2 'continue must be true or false' "continue null" || return 1
+  justin 2 "{$W}"; judge; bad2 'review-2/justin\.json needs accept .* or continue' "words alone" || return 1
+  justin 2 '{}'; judge; bad2 'review-2/justin\.json needs words' "an empty answer" || return 1
+  justin 2 'null'; judge; bad2 'review-2/justin\.json needs words' "a null answer" || return 1
+  justin 2 '{"words": "No, stop here.", "continue": false}'; judge
+  want 3 "ASK JUSTIN: review-2: 1 P0-P2, no fewer than review-1's 1" "continue false: a valid answer that changes nothing" || return 1
   rm "$E/review-2/justin.json"; justin 1 '{"continue": true}'; judge; bad2 'review-1/justin\.json needs words' "an earlier round's bad answer" || return 1
   done_ok
 }
