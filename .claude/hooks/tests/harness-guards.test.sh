@@ -310,6 +310,36 @@ ac5_guard_allows_leorna_https_fallback() {
     "$fb pull https://github.com/LeornaAI/leorna-client.git feat/x"; do
     expect deny 'credential helper' "$c" || return 1
   done
+  # the URL is one repo name right under LeornaAI/: curl squashes a dot segment, also a %-encoded one (fix 4 probe:
+  # LeornaAI/../Just-In-N-Out/x.git and LeornaAI/%2e%2e/… both GET /Just-In-N-Out/x.git), so a URL whose path could
+  # end up elsewhere is not the fallback; a variable set earlier in the command is read with its value
+  local u
+  for u in "LeornaAI/../Just-In-N-Out/claude-setup.git" "LeornaAI/./leorna-client.git" "LeornaAI/.." "LeornaAI/." \
+    "LeornaAI/%2e%2e/Just-In-N-Out/claude-setup.git" "LeornaAI/%2E%2E/Just-In-N-Out/claude-setup.git" \
+    "LeornaAI/.%2e/Just-In-N-Out/claude-setup.git" "LeornaAI/%2e./Just-In-N-Out/claude-setup.git" \
+    "'LeornaAI/..\\Just-In-N-Out\\claude-setup.git'" "LeornaAI/..%5cJust-In-N-Out%5cclaude-setup.git" \
+    "LeornaAI/%2e%2e%2fJust-In-N-Out%2fclaude-setup.git" "LeornaAI//leorna-client.git" "LeornaAI/" "LeornaAI/.git" \
+    "LeornaAI/leorna-client.git/../../Just-In-N-Out/claude-setup.git" "LeornaAI/x/leorna-client.git" \
+    "'LeornaAI/leorna-client.git?x=/../../Just-In-N-Out/claude-setup'" "'LeornaAI/leorna-client.git#/../x'" \
+    "LeornaAI/{../Just-In-N-Out/claude-setup,x}.git" "LeornaAI/\${REPO:-../Just-In-N-Out/claude-setup}.git" \
+    "leornaai/leorna-client.git" "LEORNAAI/leorna-client.git" "LeornaAi/leorna-client.git"; do
+    case $u in "'"*) u="'https://github.com/${u#\'}" ;; *) u="https://github.com/$u" ;; esac
+    expect deny 'credential helper' "$fb fetch $u main" || return 1
+    expect deny 'credential helper' "$fb push $u main" || return 1
+  done
+  for c in "$fb push https://GitHub.com/LeornaAI/leorna-client.git feat/x" "$fb push HTTPS://github.com/LeornaAI/leorna-client.git feat/x" \
+    "REPO=../Just-In-N-Out/claude-setup; $fb push https://github.com/LeornaAI/\$REPO.git main" \
+    "export REPO=../Just-In-N-Out/claude-setup && $fb fetch https://github.com/LeornaAI/\${REPO}.git main"; do
+    expect deny 'credential helper' "$c" || return 1
+  done
+  # the real forms (also from transcripts): a repo name with or without .git, an unknown variable in it (a loop's)
+  expect ask 'Leorna push' "$fb push https://github.com/LeornaAI/leorna-control-plane feat/x" || return 1
+  expect ask 'Leorna push' "$fb push https://github.com/LeornaAI/\$REPO.git \$BRANCH:refs/heads/\$BRANCH" || return 1
+  expect ask 'Leorna push' "REPO=leorna-client; $fb push https://github.com/LeornaAI/\${REPO}.git feat/x" || return 1
+  for c in "$fb fetch -q https://github.com/LeornaAI/leorna-control-plane.git main:refs/remotes/origin/main" \
+    "for r in leorna-control-plane leorna-client; do cd ~/Leorna/\$r && $fb fetch -q https://github.com/LeornaAI/\$r.git main:refs/remotes/origin/main; done"; do
+    expect none '' "$c" || return 1
+  done
   done_ok
 }
 

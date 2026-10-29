@@ -41,6 +41,9 @@ IDENTITY_KEYS = {"user.email", "user.name", "author.email", "author.name", "comm
 IDENTITY_ENV = {"GIT_AUTHOR_EMAIL", "GIT_AUTHOR_NAME", "GIT_COMMITTER_EMAIL", "GIT_COMMITTER_NAME"}
 FALLBACK_HELPERS = {"", "!gh auth git-credential"}
 FALLBACK_URL = "https://github.com/LeornaAI/"
+# the fallback URL's one repo name: GitHub's name characters, or a plain $NAME / ${NAME} whose value isn't known
+REPO_NAME_RE = re.compile(r"(?:[A-Za-z0-9_.-]|\$[A-Za-z_][A-Za-z0-9_]*|\$\{[A-Za-z_][A-Za-z0-9_]*\})+")
+VAR_RE = re.compile(r"\$(?:([A-Za-z_][A-Za-z0-9_]*)|\{([A-Za-z_][A-Za-z0-9_]*)\})")
 REASONS = {
     "identity": "git-guard: never override commit identity (CLAUDE.md, Git Commit Authorship). Commit with plain "
                 "`git commit` and let the repo's config pick the email (the folder decides: ~/Leorna/ is "
@@ -484,6 +487,18 @@ def am_n(rest):
     return False
 
 
+def fallback_url(url, env):
+    """url names one repo right under LeornaAI/, so git reaches no other owner: curl squashes a '.' or '..' path
+    segment, also a %-encoded one (LeornaAI/%2e%2e/x/y.git fetches /x/y.git), so only GitHub's name characters,
+    and never the name '.' or '..'. A $NAME or ${NAME} set earlier in the command is read with its value; an
+    unknown one (a for loop's) can't be seen."""
+    if not url.startswith(FALLBACK_URL):
+        return False
+    name = VAR_RE.sub(lambda m: env.get(m.group(1) or m.group(2), m.group(0)), url[len(FALLBACK_URL):])
+    bare = name[:-4] if name.endswith(".git") else name
+    return bool(REPO_NAME_RE.fullmatch(name)) and bare not in ("", ".", "..")
+
+
 def long_opts(negatable, plain=""):
     """A command's long options as git 2.53's -h lists them: --x and --no-x for each negatable one."""
     names = {"--" + n for n in (negatable + " " + plain).split()}
@@ -665,7 +680,7 @@ class Guard:
             shenv["OLDPWD"] = cwd
             return new
         if name == "git":
-            self.git(cmd[1:], cwd)
+            self.git(cmd[1:], cwd, env)
         elif name == "gh":
             self.gh(cmd[1:])
         elif depth < 3 and name in SHELLS:
@@ -696,7 +711,7 @@ class Guard:
             self.deny("gh")
 
     # ---- git ----
-    def git(self, args, cwd):
+    def git(self, args, cwd, env):
         configs = []  # (key, value, how)
         folder = cwd
         dirs = []
@@ -737,7 +752,7 @@ class Guard:
             elif kl == "core.hookspath":
                 self.deny("hooks")
             elif kl.startswith("credential."):
-                if not self.leorna_fallback(configs, sub, rest):
+                if not self.leorna_fallback(configs, sub, rest, env):
                     self.deny("credential")
         if sub == "commit":
             self.commit(rest)
@@ -788,7 +803,7 @@ class Guard:
                 out.append((m.group(1).partition("=")[0], None, "env"))
         return out
 
-    def leorna_fallback(self, configs, sub, rest):
+    def leorna_fallback(self, configs, sub, rest, env):
         for k, v, how in configs:
             kl = lower(k)
             if not kl.startswith("credential."):
@@ -800,7 +815,7 @@ class Guard:
         pos = self.positionals(rest, {"-o", "--push-option", "--receive-pack", "--exec", "--upload-pack", "--depth",
                                       "-j", "--jobs", "--refmap", "--server-option", "--shallow-since",
                                       "--shallow-exclude", "--deepen", "--negotiation-tip"})
-        return bool(pos) and pos[0].startswith(FALLBACK_URL)
+        return bool(pos) and fallback_url(pos[0], env)
 
     @staticmethod
     def positionals(rest, takes_value):
