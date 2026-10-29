@@ -216,3 +216,9 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 86bcm902a planner (2026-10-29)
 - Info: 86bcm901r's card says "/plan", but library 0.7.0 ships it as prompt `planning` because Claude Code has a built-in `/plan` (library README :491-493).
 - Info: 86bcm901r says "Repo: content", but every content card so far (9019, 901b, 901a, 901j) was built in leorna-control-plane's `internal/library`.
+
+## 86bcm902a builder on 7b45d43 (2026-10-29)
+- High (integration): 86bcm901r is being built on feat/86bcm901r-starter-packs (aa57092, another session) with its own 000024_starter_packs migration and real starter packs (internal/library/starter-packs.json, internal/pack/starter.go) that overlap 902a's stand-in internal/onboarding/starters.go; migration 24 is now claimed by 901y, 901r and 902a; all three touch delivery/stories.json, and 901r/902a both touch cmd/control-plane/main.go and internal/web/handler.go.
+- Low, pre-existing: internal/web test helper readBody (handler_test.go:308-316) caps at 64 KiB; a starter pack's /content reply (~290 KB) decodes as "unexpected end of JSON input" (already in leorna-control-plane-workflow.md).
+- Info, cosmetic: starter cards run role, pack name, item count and description together in one line (ac5-01), as the plan's CSS has it.
+- Info: the plan's E1 recipe (placeholder public URL) can't do the desktop sign-in; the builder used https://demo.leorna.invalid with a loopback Host header (ruling 2).
