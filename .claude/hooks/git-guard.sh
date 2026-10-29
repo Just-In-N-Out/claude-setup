@@ -518,6 +518,19 @@ CONFIG_OPTS = {  # git config: legacy mode (""), then each subcommand
     "unset": long_opts(_CFG_FILE + "all value fixed-value"),
     "rename-section": long_opts(_CFG_FILE), "remove-section": long_opts(_CFG_FILE), "edit": long_opts(_CFG_FILE),
 }
+# the Leorna fallback's push and fetch options (git 2.53's -h) that never take the next word as their value, spelled
+# out in full: before the URL, an abbreviation or a value-taking one (--repo, -o, a hidden --submodule-prefix) could
+# make git use the next word as its repository instead of the URL checked, so then it is not the fallback
+FALLBACK_OPTS = {
+    "push": (long_opts("verbose quiet all branches mirror delete tags dry-run porcelain force force-with-lease "
+                       "force-if-includes thin set-upstream progress prune follow-tags signed atomic", "verify ipv4 ipv6"),
+             set("vqdnfu46")),
+    "fetch": (long_opts("verbose quiet set-upstream append atomic force tags prefetch prune prune-tags "
+                        "recurse-submodules dry-run porcelain write-fetch-head keep update-head-ok progress "
+                        "update-shallow negotiate-only auto-maintenance auto-gc show-forced-updates write-commit-graph "
+                        "stdin", "unshallow refetch ipv4 ipv6"),
+              set("vqaftnpPku46")),
+}
 COMMIT_OPTS = long_opts("quiet verbose file author date message reedit-message reuse-message fixup squash "
                         "reset-author signoff template edit cleanup status gpg-sign all include interactive patch "
                         "only dry-run short branch ahead-behind porcelain long null amend untracked-files "
@@ -810,31 +823,21 @@ class Guard:
                 continue
             if how != "-c" or kl != "credential.helper" or v not in FALLBACK_HELPERS:
                 return False
-        if sub not in ("push", "fetch"):
+        if sub not in FALLBACK_OPTS:
             return False
-        pos = self.positionals(rest, {"-o", "--push-option", "--receive-pack", "--exec", "--upload-pack", "--depth",
-                                      "-j", "--jobs", "--refmap", "--server-option", "--shallow-since",
-                                      "--shallow-exclude", "--deepen", "--negotiation-tip"})
-        return bool(pos) and fallback_url(pos[0], env)
-
-    @staticmethod
-    def positionals(rest, takes_value):
-        pos = []
-        i = 0
-        while i < len(rest):
-            a = rest[i]
+        longs, shorts = FALLBACK_OPTS[sub]
+        for j, a in enumerate(rest):  # the options before git's repository word, which is the URL to check
             if a == "--":
-                pos += rest[i + 1:]
-                break
-            if a in takes_value:
-                i += 2
-                continue
-            if a.startswith("-") and a != "-":
-                i += 1
-                continue
-            pos.append(a)
-            i += 1
-        return pos
+                return j + 1 < len(rest) and fallback_url(rest[j + 1], env)
+            if a.startswith("--"):
+                if "=" not in a and a not in longs:  # it may take the next word, so git's repository is unknown
+                    return False
+            elif a.startswith("-") and a != "-":
+                if not set(a[1:]) <= shorts:
+                    return False
+            else:
+                return fallback_url(a, env)
+        return False
 
     def commit(self, rest):
         takes = {"-m", "-F", "-c", "-C", "-t", "--message", "--file", "--reuse-message", "--reedit-message",

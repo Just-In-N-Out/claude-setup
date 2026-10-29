@@ -340,6 +340,23 @@ ac5_guard_allows_leorna_https_fallback() {
     "for r in leorna-control-plane leorna-client; do cd ~/Leorna/\$r && $fb fetch -q https://github.com/LeornaAI/\$r.git main:refs/remotes/origin/main; done"; do
     expect none '' "$c" || return 1
   done
+  # the URL checked is the one git uses: an option before it that takes the next word as its value (--repo, an
+  # abbreviation, -o, also ending a cluster, a hidden one) sends git to the next URL (fix 4 probe); after the URL
+  # nothing changes it (git's positional repository wins over --repo=)
+  local L=https://github.com/LeornaAI/leorna-client.git P=https://github.com/Just-In-N-Out/claude-setup.git
+  for c in "push --repo $L $P main" "push --rep $L $P main" "push --rece $L $P main" "push --exe $L $P main" \
+    "push -o $L $P main" "push -qo $L $P main" "fetch -o $L $P main" "fetch --submodule-prefix $L $P main" \
+    "fetch --upload $L $P main"; do
+    expect deny 'credential helper' "$fb $c" || return 1
+  done
+  for c in "push --force-with-lease $L feat/x" "push -fu $L feat/x" "push $L feat/x --force-with-lease=feat/x:abc123" \
+    "push --repo=$P $L feat/x" "push -- $L feat/x"; do
+    expect ask 'Leorna push' "$fb $c" || return 1
+  done
+  for c in "fetch --no-write-fetch-head=false $L pull/94/head" "fetch --prune --tags -q $L" "fetch -qt $L main" \
+    "fetch $L main --depth 1"; do
+    expect none '' "$fb $c" || return 1
+  done
   done_ok
 }
 
