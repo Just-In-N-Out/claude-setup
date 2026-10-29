@@ -7,3 +7,4 @@
 - [Codex CLI offline checks](codex-cli-offline-checks.md) — prompt-input/mcp get/doctor/sandbox/execpolicy and `claude doctor` need no login; fake homes outside $TMPDIR; codex exec needs a probe home
 - [Update main before a Leorna worktree](leorna-update-main-before-worktree.md) — ff the main checkout's main too, not just the worktree
 - [Claude Code headless agent runs](claude-code-headless-agent-runs.md) — prove a project agent ran via claude -p stream-json; allowlist and CLAUDE.md gotchas
+- [No re-verify while main moves](leorna-no-reverify-while-main-moves.md) — after ALL ACCEPTED, bring-main-in fixers run gates + AC tests only; no new verifier/auditor
