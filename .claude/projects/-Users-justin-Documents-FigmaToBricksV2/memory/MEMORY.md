@@ -14,3 +14,4 @@
 - [B-Dry home copy](bdry-home-copy.md) — bdryswi.com Home → B-Dry staging; v3 paste (slider, flip boxes, dots) 2026-10-29; site class names to avoid
 - [WSL clipboard](wsl-clipboard.md) — read the clipboard back through a UTF-8 file, never stdout (non-ASCII gets mangled)
 - [Deliverable first](deliverable-first.md) — thorough review rounds finding edge cases are good (Justin); hand over a verified paste file as soon as it is usable
+- [Plugin first](plugin-first.md) — every fix goes into the plugin as a general rule; a paste-only patch is at most a stop-gap (2026-10-29)

@@ -17,6 +17,8 @@ Justin's Figma plugin that converts any Figma design into a Bricks (WordPress) p
 
 The project's standing rules and compact Status are in the main folder's `CLAUDE.md` (not in git); feature history is in HANDOFF and plan ledgers. Hermes sessions start in `~`, so it never auto-loads; this skill makes sure it's read and adapts its Claude Code worktree steps to Hermes. When this skill and that `CLAUDE.md` disagree, `CLAUDE.md` wins.
 
+**Every change goes into the plugin (Justin, 2026-10-29: "every single change needs to be inside the plug-in, not just for copy-pasting purposes").** A fix found on one site's paste (e.g. the B-Dry copy of bdryswi.com) is also planned as a general plugin change so every converted website gets it; a paste-only patch is at most a stop-gap beside the plugin job, never the whole answer. A planner whose fix is paste-only names the plugin code that produced or would produce the same output (file:line) and the general rule, or says plainly why the plugin can't be involved (e.g. a look Figma can't express).
+
 ## When to Use
 
 - Justin asks for a feature, fix or check on "the Figma plugin", "Figma to Bricks", "the plugin", or the Bricks paste
