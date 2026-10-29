@@ -145,10 +145,10 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..a46d176 100644
+index f2d882d..5d36adb 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
-@@ -31,12 +31,27 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
+@@ -31,12 +31,29 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
  
  - A critical permission/identity/data-integrity guard needs targeted sensitivity proof.
  - A changed caller/refactor may bypass an assertion, or a supposed regression test
@@ -168,7 +168,9 @@ index f2d882d..a46d176 100644
 +  not `$(…)`, because an orphan holding the pipe hangs the run. Never kill strays with
 +  `pkill -f`: it also matches the Bash tool's own `bash -c` wrapper, even with the
 +  `[x]yz` trick, so list PIDs with `pgrep -f`, drop shells and kill the rest
-+  (`ac-verification.md`). A harness started with
++  (`ac-verification.md`). A Bash-tool background run sits in its own process group,
++  so `kill -- -<pgid>` can miss it: kill by session (`ps -eo pid,pgid,sid`) and confirm
++  none of that session is left before restarting. A harness started with
 +  `setsid` can outlive its background task's "completed" notice, so wait on its PID
 +  (`tail --pid=<pid> -f /dev/null`) before restoring anything. `$!` after
 +  `setsid … &` is setsid's own PID, which may exit at once, so take the real one from
@@ -177,7 +179,7 @@ index f2d882d..a46d176 100644
  
  ## The Core Rule
  
-@@ -47,7 +62,9 @@ then restore exact candidate bytes and verify the relevant GREEN.
+@@ -47,7 +64,9 @@ then restore exact candidate bytes and verify the relevant GREEN.
  ```
  
  An unexpected survivor needs diagnosis: equivalent/duplicate guards, an unreached
@@ -188,7 +190,7 @@ index f2d882d..a46d176 100644
  itself prove that the entire test is worthless.
  
  ## Procedure
-@@ -85,12 +102,28 @@ itself prove that the entire test is worthless.
+@@ -85,12 +104,28 @@ itself prove that the entire test is worthless.
     second guard or a shorter competing timeout. Deleting one site of a
     deliberate defense-in-depth guard is an equivalent mutant that no black-box
     test can kill. Mutate all sites (or the shared helper) together, and record
@@ -221,7 +223,7 @@ index f2d882d..a46d176 100644
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -99,14 +132,21 @@ itself prove that the entire test is worthless.
+@@ -99,14 +134,21 @@ itself prove that the entire test is worthless.
     leave mutated source behind. After a mid-cycle crash, compare the working
     file with the saved green bytes and restore before launching another probe.
  4. **Require the intended failure for every mutation.** A nonzero exit from
@@ -246,7 +248,7 @@ index f2d882d..a46d176 100644
     Validate evidence against the exact intentional variant and actual process
     return, not pristine-only assumptions or attempted-publication flags.
     Repair diagnostic readers offline against retained output; preserve their
-@@ -155,7 +195,18 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,7 +197,18 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -266,7 +268,7 @@ index f2d882d..a46d176 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -180,6 +231,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -180,6 +233,11 @@ transcripts in `references/blind-test-patterns.md`.
     not reproduce because the fixture omitted a field the real record carried.
     Build fixtures from the real record shape; when a test unexpectedly passes
     against a known-live bug, suspect the fixture before declaring victory.
@@ -278,7 +280,7 @@ index f2d882d..a46d176 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -197,7 +253,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +255,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -290,7 +292,7 @@ index f2d882d..a46d176 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -240,7 +299,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +301,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -307,7 +309,7 @@ index f2d882d..a46d176 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -290,7 +357,50 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +359,50 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -360,10 +362,10 @@ index f2d882d..a46d176 100644
  ## Specialized harnesses
  
 diff --git a/skills/security-best-practices/SKILL.md b/skills/security-best-practices/SKILL.md
-index 6f12e3e..77cfc1d 100644
+index 6f12e3e..fd1dc3d 100644
 --- a/skills/security-best-practices/SKILL.md
 +++ b/skills/security-best-practices/SKILL.md
-@@ -87,3 +87,13 @@ When assigning an ID for some resource, which will then be used by exposed to th
+@@ -87,3 +87,15 @@ When assigning an ID for some resource, which will then be used by exposed to th
  ### A note on TLS
  
  While TLS is important for production deployments, most development work will be with TLS disabled or provided by a separate TLS proxy. Due to this, be very careful about not reporting lack of TLS as a security issue. Also be very careful around use of "secure" cookies. They should only be set if the application will actually be over TLS. If they are set on non-TLS applications (such as when deployed for local dev or testing), it will break the application. You can provide a env or other flag to override setting secure as a way to keep it off until on a TLS production deployment. Additionally avoid recommending HSTS. It is dangerous to use without full understanding of the lasting impacts (can cause major outages and user lockout) and it is not generally recommended for the projects being reviewed by codex.
@@ -375,6 +377,8 @@ index 6f12e3e..77cfc1d 100644
 +### Scanning untrusted trees with gitleaks
 +
 +gitleaks 8.30.1 `dir` always loads `<scanned folder>/.gitleaksignore` (case-insensitively on macOS), even when `--gitleaks-ignore-path` points elsewhere, and an inline `gitleaks:allow` suppresses a finding unless `--ignore-gitleaks-allow` is set. When the scanned content is untrusted (a PR-controlled library, uploads), reject `.gitleaksignore`/`.gitleaks.toml` in the tree or scan a copy without them, and pass `--ignore-gitleaks-allow`. Probe (2026-10-23): 3 findings with no ignore file, 0 with a root `.gitleaksignore` or `.GitLeaksIgnore`. `dir` also skips any text file that `h2non/filetype` (first read, up to 100 KB) types as `application/*`: `%PDF-`, `{\rtf`, `%!PS` at the start, and `ustar` at byte 257, `DICM` at 128, `CD001` at 32769 even after a header line. A secret there is missed (exit 0) while `gitleaks git` finds it. Scan copies whose first line carries a token-shaped canary gitleaks must report on line 1; fail closed when it's missing, drop the canary finding and shift other lines by 1. `dir` also reads in 100,000-byte chunks (plus up to 25,000 bytes of peek to a newline), so a token across the cut is missed while the canary is still reported: fail closed on any copy over 100,000 bytes. Build the canary without vowels: the default global allowlist `(?i)^true|false|null$` is unanchored in the middle and drops any token containing "false" (read it with `strings "$(readlink -f "$(command -v gitleaks)")" | grep -F 'true|false|null'`); no `[extend]` key removes it (`useDefault` always appends the default allowlists), so catching such secrets needs a full rules file. `\uXXXX`-escaped tokens are not a bypass: decoding is on by default (tag `decoded:unicode`) unless `--max-decode-depth=0` (probes 2026-10-24). An explicit `--config` takes precedence over `GITLEAKS_CONFIG*` env, so a real-gitleaks test can't detect a dropped env scrub; pin the scrub with a recording fake scanner.
++
++A URL prefix allowlist (`https://host/Owner/`) for a git command can be escaped. curl squashes `..` segments, encoded ones too (`%2e%2e`, `.%2e`). A value-taking option before the URL (`--repo`, an abbreviation, `-o`) makes git use a later URL. And `url.*.insteadOf`/`include.path` via `-c` or `GIT_CONFIG_*` rewrite it. So check the rest as one name with a character allowlist (never `.`/`..`), allow only exact no-value options before the URL, and refuse rewrite keys in the same command (harness-guards fix 4).
 +
 +In agent-facing content (skills, prompts), read `npx <pkg>` as `npx -y <pkg>@latest`: npm exec assumes `--yes` whenever stdin is not a TTY or CI is detected (npm 10.9.4 `npm-exec.md` lines 37-38), which is how coding agents run commands, so an unpinned line installs and runs the newest release. Look each bare name up (`npm view <name> description bin maintainers deprecated`: an exact pin of a deprecated package isn't vetting, e.g. `@modelcontextprotocol/server-github` 2025.4.8 and `server-postgres` 0.6.2 say "Package no longer supported", so prefer the vendor's hosted MCP server, for GitHub `https://api.githubcopilot.com/mcp/readonly` with a PAT as `Authorization: Bearer` and Codex's `bearer_token_env_var`; 901j, 2026-10-28). A launcher allowlist (`command == "npx"`) is bypassed by `PATH` in the server's own `env`, because Node spawn and Rust `Command` resolve the command with the child's PATH: refuse `PATH`/`PATHEXT`, `LD_*`, `DYLD_*`, `NODE_*`, `NPM_CONFIG_*`, `COREPACK_*`, `HOME`/`USERPROFILE`/`APPDATA`/`LOCALAPPDATA`/`XDG_*`, `PREFIX`, `OPENSSL_*`/`SSL_CERT_*`, `GIT_*`, and the shell npm runs the package through (`sh` via PATH, or `%ComSpec%`: `BASH_ENV`, `BASH_FUNC_*`, `SHELLOPTS`/`PS4`, `COMSPEC`) case-insensitively, or allowlist env keys (npm 10.9.9 reads `PREFIX`, `LOCALAPPDATA` and `ComSpec`; 901j fixer 2). First refuse any env key that isn't a variable name (`^[A-Za-z_][A-Za-z0-9_]*$`): Claude Code 2.1.312 passes a key `"PATH=/dir:"` through as `PATH=/dir:=value` and finds the command on that PATH, so a whole-name list is bypassed by `NAME=` keys (901j verifier); it also passes keys with a space, an empty name, a line break, full-width or Cyrillic look-alike letters or `${…}` unchanged (no expansion in keys), and refuses to start a server whose key or value holds a NUL. To see what a launched server really received, have the fake command dump its own `/proc/$$/environ`: a `/bin/sh` fake re-exports only valid names, so odd keys look dropped (901j fixer 3) (901j review 2: Claude Code 2.1.312 ran a fake `npx` from env.PATH; `env -i HOME=<scratch> claude mcp add-json -s user …` then `claude mcp list` starts every user-scope stdio server, so a marker-writing fake command shows what ran, no login needed), and read its latest bin script from the tarball (download into an empty folder, check `dist.shasum`, never run it; npm `tsc` 2.0.4 calls itself a deprecated TypeScript release but its bin only prints a warning and exits 1), before calling it safe: the name can belong to someone else (npm `lhci` is a third-party placeholder with an `lhci` bin; Lighthouse CI is `@lhci/cli`) (9019, 2026-10-25).
 diff --git a/skills/security-best-practices/references/golang-general-backend-security.md b/skills/security-best-practices/references/golang-general-backend-security.md

@@ -15,9 +15,10 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
 
 ## harness-guards pipeline
 - **Done:** build; review 1 → fix 1; review 2 → fix 2; verifier 1 → fix 3 (V1 plus the rebase onto main, new base `3864d61`, head `d82956d`).
-- **Running:** fix 4, covering the `..` URL escape in the LeornaAI fallback and `$TMPDIR` as a temp folder. Brief: `briefs/harness-guards-fixer-4.md`.
+- **Fix 4 done:** head `e4469c0`, base `3864d61`. The LeornaAI fallback is a strict one-name URL; `$TMPDIR` counts as a temp folder.
+- **Running:** reviewer 3 (brief `briefs/harness-guards-reviewer-3.md`), covering everything since `7b30f16`.
 - **Next:**
-  1. **Reviewer 3:** fresh, on every story change since review 2's head `7b30f16`, i.e. fix rounds 2–4 including the rebase resolution. Loop review → fix until no P0–P2.
+  1. If reviewer 3 isn't clean: fixer → fresh reviewer on the new commits, until no P0–P2 (brakes in the memory note).
   2. Verifier → blind auditor → `ac-check.sh`.
   3. **Finisher:**
      - rebase onto local `main`; if HEAD changes, verifier → auditor → `ac-check` again;
@@ -27,5 +28,6 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
   4. **After the merge:**
      - append `evidence/harness-guards/enforce-proposals-pending.md` to `enforce-backlog.md`, then delete it;
      - save the held lesson about `TMPDIR` vs the githooks temp skip, depending on fix 4's choice;
-     - tell Justin AC21 (desktop) and AC22 (Mac) are his.
+     - tell Justin AC21 (desktop) and AC22 (Mac) are his;
+     - the finisher may remove the roughly 64 leftover failed-test folders in `~/.cache/harness-guards-tests/` (fix 4's RED/mutant runs, dated after 20:00 on 2026-10-28).
 - **Syncs are held until the merge,** so `main` doesn't move under the verified head. Push everything at the finish.
