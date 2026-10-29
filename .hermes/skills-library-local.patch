@@ -19,7 +19,7 @@ index 7fc2b43..905e163 100644
  
  # Adversarial Verification Loop
 diff --git a/skills/backend-data-migrations/SKILL.md b/skills/backend-data-migrations/SKILL.md
-index d8e25dc..2c25a38 100644
+index d8e25dc..e0ea3f1 100644
 --- a/skills/backend-data-migrations/SKILL.md
 +++ b/skills/backend-data-migrations/SKILL.md
 @@ -27,7 +27,7 @@ For scoped durable execution stores, use [PostgreSQL validation lessons](referen
@@ -27,7 +27,7 @@ index d8e25dc..2c25a38 100644
  1. Never edit an already-applied migration.
  2. Ship backwards-compatible migrations first.
 -3. Validate reads/writes against both old and new schema during transition.
-+3. Validate reads/writes against both old and new schema during transition. Prove a new migration on existing rows with a real fill: store tests often clean up after themselves (Leorna's do), so fill a throwaway DB from the base code (Go: a `go test -overlay` probe with no cleanup), then apply the migration with the real runner, check the rows are unchanged and defaults hold, and run down and up again (when the runner can only roll back everything, as Leorna's `RollbackMigrations`: apply the real down file plus `DELETE FROM schema_migrations WHERE version=<n>` in one `psql --single-transaction`, then let the real apply re-run it through a no-reset overlay probe, with an md5 over the original columns before and after each step; 901y PR verifier). Match constraint text as Postgres prints it: keyword columns come back quoted, `CHECK (("position" >= 0))` (901y verifier).
++3. Validate reads/writes against both old and new schema during transition. Prove a new migration on existing rows with a real fill: store tests often clean up after themselves (Leorna's do), so fill a throwaway DB from the base code (Go: a `go test -overlay` probe with no cleanup), then apply the migration with the real runner, check the rows are unchanged and defaults hold, and run down and up again (when the runner can only roll back everything, as Leorna's `RollbackMigrations`: apply the real down file plus `DELETE FROM schema_migrations WHERE version=<n>` in one `psql --single-transaction`, then let the real apply re-run it through a no-reset overlay probe, with an md5 over the original columns before and after each step; 901y PR verifier). When the server applies migrations at startup (Leorna's `cmd/control-plane`), the real binaries are quicker: fill through the base binary, start head's to apply, run the down by psql as above, start head's again, with a per-table md5 between steps and a base-binary restart as the control (902a verifier 2, ~10 s). Match constraint text as Postgres prints it: keyword columns come back quoted, `CHECK (("position" >= 0))` (901y verifier).
  
  ## Mandatory Validation and Agent Defect Loop
  
