@@ -403,6 +403,8 @@ ac8_referee_rejects_bad_records() {
   fresh; mkdir -p "$E/review-1"; printf 'not json' >"$E/review-1/review.json"; judge; bad2 'review-1/review\.json is not JSON' "a file that isn't JSON" || return 1
   : >"$E/review-1/review.json"; judge;                bad2 'review-1/review\.json is not JSON' "an empty file" || return 1
   printf '[]' >"$E/review-1/review.json"; judge;      bad2 'not a JSON object' "a list" || return 1
+  rev 2 full "$BASE" "$C2"; judge;                     bad2 '^error: review-1/review\.json is not a JSON object$' "an earlier round that's a list" || return 1
+  rev 2 delta "$C1" "$C2"; judge;                      bad2 '^error: review-1/review\.json is not a JSON object$' "an earlier list before a delta round" || return 1
   bad() { fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2)" "$(finding R1-2 P3)"; edit 1 "$1"; judge; bad2 "$2" "$3"; }
   bad '.round = 2'                       'review-1: round is 2, want 1'             "round 2 in review-1" || return 1
   bad '.round = "1"'                     'review-1: round is "1", want 1'           "round as text" || return 1

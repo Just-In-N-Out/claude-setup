@@ -45,14 +45,14 @@ def str: type == "string" and test("[^[:space:]]");
 def sha: type == "string" and test("^[0-9a-f]{40}$");
 .rounds as $r | .justin as $j
 | range(0; $r | length) as $i | $r[$i] as $x | ($i + 1) as $k | "review-\($k)" as $w
-| ([ $r[0:$i][] | .findings[]? | .id? ]) as $earlier
+| ([ $r[0:$i][] | objects | .findings | arrays | .[] | objects | .id ]) as $earlier
 | if ($x | type) != "object" then "\($w)/review.json is not a JSON object" else
   (if $x.round != $k then "\($w): round is \($x.round | tojson), want \($k)" else empty end),
   (if ($x.scope | IN("full", "delta") | not) then "\($w): scope must be full or delta" else empty end),
   (if $k == 1 and $x.scope != "full" then "review-1 must be a full review" else empty end),
   (if ($x.head | sha | not) then "\($w): head must be a full 40-character sha" else empty end),
   (if ($x.from | sha | not) then "\($w): from must be a full 40-character sha" else empty end),
-  (if $k > 1 and $x.scope == "delta" and $x.from != $r[$i - 1].head
+  (if $k > 1 and $x.scope == "delta" and $x.from != ($r[$i - 1] | objects | .head)
    then "\($w): a delta review starts at review-\($k - 1)'s head, not \($x.from | tostring | .[0:7])" else empty end),
   (if ($x.findings | type) != "array" then "\($w): findings must be a list" else
      ($x.findings[] | . as $f
