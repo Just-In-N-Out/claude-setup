@@ -227,3 +227,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Nit: the 902a approved plan's risk R1 command (plan-approved.md:1365) has no `.up.sql` filter, so it lists every migration version as duplicated; use `grep '\.up\.sql$'` (the leorna skill line is now corrected).
 - Info: TrySetupLock (internal/web/setup_lock.go) returns false both for "your other step is running" and "all pool slots busy", so callers can't tell them apart.
 - Info: 901r and 901y conflict with each other (delivery/stories.json, internal/pack/README.md, internal/web/library.go) and both use migration 000024 (902a too): for those stories' finishers.
+
+## 86bcm902a fixer 1 on 707a4c0 (2026-10-29)
+- Nit (UX, follows from F1): resubmitting after a pick whose browser went away shows the done sentence and, above it, the 409 "team name already exists" alert; both true, but they read oddly together.
+- Info: review 1's probe file (evidence/86bcm902a/review1/tools) no longer compiles against 707a4c0 (PackMaker.Packs removed); fixer 1's two new tests replace its two scenarios.
