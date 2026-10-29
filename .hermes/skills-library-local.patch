@@ -19,7 +19,7 @@ index 7fc2b43..905e163 100644
  
  # Adversarial Verification Loop
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..32f1dc3 100644
+index d6a2493..5e8f07a 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,13 +60,13 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -39,8 +39,12 @@ index d6a2493..32f1dc3 100644
  - Resource-owner lifetime: require an armed owner from initial pool/handle creation through setup, registration, outer-body execution and finalization transfer. A guard created only by the cleanup helper leaves earlier error/drop paths uncovered. Cancel the actual outer caller and post-creation/pre-registration setup in tests; a direct test of the close/finalize utility does not cover those boundaries. Keep unknown backend identities explicit while retaining the real pool or handle; dropping a Tokio JoinHandle or standard Child is not abort/join or kill/reap.
  - Audit every enclosing test/quality supervisor, not only the qualified inner runner. Fallible PID-record publication after Popen, wait interruption and timeout must not discard the actual CLI owner; PID/argv/wall-time files are diagnostics, not an acknowledged ownership transfer. Prefer an already-qualified external owner over adding another supervisor layer, and separately qualify its client/identity/result bindings.
  - Process ownership: test cancellation between spawn and identity registration, and between reap and identity retirement, not only during a blocking wait. Use owned scheduling controls and harmless signal interception, never forced PID reuse. Require identity reservation through the last group signal; distinguish a joined leader from completed foreground descendants, because both missed cancellation and stale numeric signaling can survive ordinary happy-path/signal tests.
-@@ -78,12 +78,14 @@ Use this as a scan order, not a rigid form:
- - Tests: meaningful assertions, regression cases, integration boundaries, fixtures, flaky timing.
+@@ -75,15 +75,17 @@ Use this as a scan order, not a rigid form:
+ - Require positive terminal-publication proof at every reuse/prerequisite consumer. An atomic pathname install may precede failing fsync/readback or late-return checks; marker presence plus absence of a best-effort error file is not proof of completion. Inject failure after marker visibility while preventing the veto write, then require the next consumer to refuse before charging or launching another action.
+ - Performance: algorithmic cost, N+1 queries, hot paths, memory, network calls.
+ - Concurrency: races, locks, async ordering, duplicate jobs, stale reads.
+-- Tests: meaningful assertions, regression cases, integration boundaries, fixtures, flaky timing.
++- Tests: meaningful assertions, regression cases, integration boundaries, fixtures, flaky timing. When an id is composed from a validated part (`starter-<role>-<n>`), check the composed id against the stored column or validator limit, not only the part's own bound: probe with the part at its maximum length and a two-digit counter (86bcm901r review 2: a 42-character role passed parse and resolve, then stopped startup).
  - Test entrypoint compatibility: when adding ignore/opt-in markers or renaming fixture variables, audit existing CI, task-runner and shell callers. Execute their real selectors with an intentionally invalid prerequisite and require the intended test failure, not exit zero with all cases ignored. Keep new DB regressions explicitly selected in the provisioned DB job; successful manual commands using both old and new variables can mask a broken existing invocation.
  - Trace renamed fixture environment variables into the unchanged CI invocation and rerun with only its documented inputs. A convenience wrapper that sets both old and new names can hide a broken compatibility seam; ensure newly ignored DB regression targets are explicitly selected in the real DB job, not merely compiled by general tests.
 +- A git subprocess claimed to give byte-stable output is not isolated by `GIT_CONFIG_NOSYSTEM=1` + `GIT_CONFIG_GLOBAL=/dev/null`: `GIT_CONFIG_COUNT`/`KEY_n`/`VALUE_n` and `GIT_CONFIG_PARAMETERS` still add config, `GIT_DIFF_OPTS=-u0` overrides `--unified`, and a global attributes file (`$XDG_CONFIG_HOME/git/attributes` or `$HOME/.config/git/attributes`, `* -diff`) turns the diff into `Binary files … differ`. Rerun it with those set and expect an allowlisted environment (PATH, HOME=<empty scratch>, `GIT_CONFIG_NOSYSTEM=1`, `GIT_CONFIG_GLOBAL=/dev/null`, `GIT_ATTR_NOSYSTEM=1`, ceiling dir), not `os.Environ()` plus overrides (9019, 2026-10-25).
