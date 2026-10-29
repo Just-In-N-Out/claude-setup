@@ -1,4 +1,4 @@
-# 86bcm902a — ClickUp closing evidence (draft for bb79ec6; Justin said "post" 2026-10-29)
+# 86bcm902a — ClickUp closing evidence (bb79ec6; POSTED 2026-10-29 20:40 UTC, see clickup-posted.md)
 
 Card: [One-click quick start (starter pack → team → sync)](https://app.clickup.com/t/86bcm902a). Read 2026-10-29 20:19 UTC (finisher 3): status "in progress", 0 attachments, 0 comments, no checklists. Leave the status, checkboxes and fields alone.
 
@@ -13,7 +13,7 @@ The "State:" line is filled from a fresh `gh pr view 101` right before posting. 
 
 WHAT WAS DONE
 leorna-control-plane PR #101: https://github.com/LeornaAI/leorna-control-plane/pull/101
-<STATE LINE: filled at post time from gh pr view 101>
+State: merged into main 2026-10-29 20:23 UTC by Justin-Leorna, merge commit e2254e0. Main's tree after the merge equals the accepted head's. Head bb79ec6. +3294/-10, 19 files.
 Right after setup finishes, the setup page offers a one-click quick start: four role starter packs (Backend, Frontend, Platform/DevOps, Secure coding (regulated)), each card listing its items.
 The admin picks a pack and a team, or names a new team. The quick start creates that pack from the content library and makes it the team's default pack, so the team's engineers get it on their next sync.
 "Skip for now" is remembered per company. "Resume quick start" on the setup page and on the admin home's setup banner brings it back.
@@ -56,7 +56,8 @@ Local gates on bb79ec6: make check ✅ (fmt, vet, go test -race, golangci-lint 0
 Each AC test fails on main before this change (b65f797, where the quick start doesn't exist) and passes on bb79ec6.
 Four fresh code reviews; the last (review 4, on bb79ec6) is clean. An independent verifier and a blind auditor each accepted 5 of 5 ACs on bb79ec6.
 Mutation checks: the auditor's 25 mutants, 23 killed by the AC tests. The 2 survivors are test-strength follow-ups; the code is right in both (the auditor's own probe kills one). The verifier's 5 targeted mutants all behaved as expected.
-<CI LINE: PR head run 40936750079, or main's run on the merge SHA when merged>
+CI on the merge: run 40948633595 on main at e2254e0, all 3 checks pass (Go quality gates, Publish control-plane image, Package admin-portal distribution): https://github.com/LeornaAI/leorna-control-plane/actions/runs/40948633595
+CI on the PR head bb79ec6: run 40936750079, all 3 checks pass: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40936750079
 Console run (2026-10-29): the console screenshots come from a server built at bb79ec6, run locally in dev mode on a throwaway database.
 Live run: none needed, no AC is live. AC5's recorded fresh-install demo is an agent-recorded screenshot series on the real head binary.
 
