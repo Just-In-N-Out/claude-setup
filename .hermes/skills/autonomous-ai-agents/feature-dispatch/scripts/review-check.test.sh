@@ -527,23 +527,25 @@ ac11_ac_check_existing_cases_pass() {
   echo "# base $base's ac-check.test.sh with the new ac-check.sh: all passed, the same $n ok labels"
   # five fixtures, without --reviews: the base and the new ac-check.sh print the same bytes and exit the same
   mkrepo || fail "fixture repo" || return 1
-  same() { # same <what> <args>…: run both scripts with these args
+  same() { # same <what> <want exit> <args>…: run both scripts with these args; both exit <want exit>
+    local what=$1 want=$2; shift 2
     o_old=$(ing bash "$S/old/ac-check.sh" "$@" 2>&1); rc_old=$?
     o_new=$(ing bash "$S/new/ac-check.sh" "$@" 2>&1); rc_new=$?
     [ "$o_old" = "$o_new" ] && [ "$rc_old" = "$rc_new" ] \
-      || fail "$1: base exit $rc_old [$o_old], new exit $rc_new [$o_new]" || return 1
-    echo "# $1: exit $rc_new, identical output ($(printf '%s\n' "$o_new" | awk 'NF { l = $0 } END { print l }'))"
+      || fail "$what: base exit $rc_old [$o_old], new exit $rc_new [$o_new]" || return 1
+    [ "$rc_new" = "$want" ] || fail "$what: the fixture exits $rc_new, want $want: $o_new" || return 1
+    echo "# $what: exit $rc_new, identical output ($(printf '%s\n' "$o_new" | awk 'NF { l = $0 } END { print l }'))"
   }
   acfix "$C2" "$BASE" AC1 AC2
-  same "all accepted" --repo "$R" --base "$BASE" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
+  same "all accepted" 0 --repo "$R" --base "$BASE" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
   reject_ac1
-  same "one AC not accepted" --repo "$R" --base "$BASE" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
+  same "one AC not accepted" 1 --repo "$R" --base "$BASE" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
   fresh; acfix "$C2" "$BASE" AC1 AC2:live
-  same "a live AC owed" --repo "$R" --base "$BASE" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
+  same "a live AC owed" 0 --repo "$R" --base "$BASE" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
   echo dirty >"$R/scratch.txt"
-  same "a dirty worktree" --repo "$R" --base "$BASE" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
+  same "a dirty worktree" 1 --repo "$R" --base "$BASE" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
   rm "$R/scratch.txt"
-  same "a usage error" --repo "$R" --base "$BASE" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
+  same "a usage error" 2 --repo "$R" --base "$BASE" "$E/verifier/ac.json" "$E/auditor/ac.json" || return 1
   done_ok
 }
 
