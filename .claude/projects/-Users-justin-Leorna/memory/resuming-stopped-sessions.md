@@ -5,10 +5,12 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 2c0f653f-8021-4c94-84cf-9276a410e30a
-  modified: 2026-10-29T12:37:29.934Z
+  modified: 2026-10-29T14:04:48.848Z
 ---
 
 Found on 2026-10-23 while writing restart prompts for three stopped Leorna sessions:
+
+- **Finding the chat for a story or PR** (Justin asks "find me the chat from PR 97"): map the PR to its card with `gh pr view <n> --json headRefName`, then scan `~/.claude/projects/*/*.jsonl` for the card id with Python (the Bash tool's `grep` and `ls` are wrappers that misbehave). The story's own session is the one whose first user prompt names the card, usually the most hits; others only mention it. Before giving `claude --resume <id>`, check its liveness (below): a live one is open in another terminal (2026-10-29).
 
 - **Subagent transcripts** are in `~/.claude/projects/<project>/<session-id>/subagents/agent-<id>.jsonl`. `<project>` is the folder's absolute path with every non-alphanumeric character replaced by `-`, plus a hash suffix past 200 characters (binary 2.1.310). So `/Users/justin/.hermes` becomes `-Users-justin--hermes`, and WSL's `/home/justin/Leorna` becomes `-home-justin-Leorna`. A background agent's final report is in its `SubagentHandback` tool_use input, or in its last text block (Plan-type agents can end with plain text). Check both: the 901v planner's 120 KB plan was only in the last text block.
 - **Real model and effort** of an agent: `agent-<id>.meta.json` (`model`, `effort`). The agent itself can't see its effort.
