@@ -6,7 +6,7 @@ Proposed title (pass with `--title`; the body file below has no title line):
 feat(86bcm901y): remove and reorder items in a pack version
 ```
 
-Body file: `/home/justin/.hermes/cache/scratch/leorna-pr-86bcm901y-remove-reorder.md` (used with `gh pr create --body-file` once Justin says "make a PR"). After the PR exists, add its number to `delivery/stories.json` (a small commit, which needs a fresh gate run), and fill in the Evidence block's CI run.
+Body file: `/home/justin/.hermes/cache/scratch/leorna-pr-86bcm901y-remove-reorder.md`, refreshed by fixer 3 for head `d84fd04` (GitHub `main` `dd006b7` merged in). Use it with `gh pr create --body-file`. After the PR exists, add its number to `delivery/stories.json` (a small commit, which needs a fresh gate run), move the Evidence head to that commit, and fill in the Evidence block's CI run.
 
 ---
 
@@ -52,46 +52,34 @@ ClickUp: [Remove and reorder items in a pack version](https://app.clickup.com/t/
 
 ## Test Plan
 
-Everything below ran on head `3e8d181` (base `6c1709e`, which is still GitHub `main`) on 2026-10-29. The pipeline's independent verifier and a blind AC auditor each ran it in a detached copy of that exact head with its own `_test` database. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 and gitleaks 8.30.1 (CI's pins). **CI has not run: nothing is pushed yet.**
+Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `main` (`dd006b7`, which includes #98) into the reviewed head `3e8d181`. It ran in the story's worktree with its own `_test` database. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 and gitleaks 8.30.1 (CI's pins). **CI is pending: nothing is pushed yet.**
 
+- [x] Merge of `main`: the only conflict was `delivery/stories.json`. It was resolved by taking main's file and appending this story's entry last; every earlier entry is unchanged.
+  - Every other file equals one side's version.
+  - There is no duplicate migration number; this story's 24 is still the newest.
+  - Outside `delivery/stories.json`, this PR's diff against `main` is byte-identical to the reviewed `3e8d181` diff.
 - [x] `make check`, exit 0:
   - workspace, contracts-check, fmt, vet;
   - `go test -race` on every package;
   - lint 0 issues in both modules;
   - govulncheck "No vulnerabilities found" in both modules;
   - gitleaks no leaks;
-  - library gate PASSED;
+  - library gate PASSED (main's library 0.8.0);
   - build.
 - [x] `scripts/test-module-add.sh`: exit 0
 - [x] Postgres tests (`go test -json` over `internal/cloud/dbcheck`, `internal/store/postgres` and `internal/web`, read per test):
   - 527 results: 523 pass, 0 fail, and 0 declared tests missing.
   - The only 4 skips are the accepted ones (the two ClickHouse subtests, the live Scaleway test and the opt-in evidence-dir test). No skip names `LEORNA_TEST_DATABASE_URL`.
   - All 106 `TestPackBuilder*`/`TestPackItems*`/`TestPackItemOrderStoreWithPostgres`/`TestMigrationRoundTrip` entries pass, including 86bcm901w's suite, unchanged apart from the `SaveVersion` call sites.
-- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: OK
-- [x] gitleaks over the story's commits (`6c1709e..3e8d181`): no leaks.
-- [x] Scope: no `.github` change; the only new migration is `000024`, and no existing migration changed; all 13 commits are by the Leorna identity with no AI attribution lines; contract diff additive; `check-generated-contracts.sh` exit 0.
-- [x] Container build at `3e8d181` (`docker build --no-cache --file Containerfile`): exit 0; the image's gitleaks is 8.30.1.
-- [x] Migration 24 over existing data. Base code applied migrations 1–23 and wrote real packs, then head code applied 24. Every existing row got position 0, rows stayed byte-identical, and listings were unchanged. Editing a position is refused (42501). The down migration and a second up both kept the rows.
 - [x] `TestPackItemsAC1RemoveSavesNewVersionWithoutTheItemAndAuditsWithPostgres` (5 subtests): pass
 - [x] `TestPackItemsAC2RemovedItemLeavesTheNextSyncLockfileWithPostgres` (4 subtests): pass
 - [x] `TestPackItemsAC3ReorderSavesNewVersionInTheNewOrderAndAuditsWithPostgres` (6 subtests): pass
 - [x] `TestPackItemsAC4RefusedRemovesAndReordersWriteNothingWithPostgres` (22 subtests; each refusal checks its status, code or alert and that no version or audit row was written): pass. The cases are: the only item, first up, last down, an item not in this version, an outdated version (console and JSON), no or two buttons, a missing or repeated `parent_version`, a form over 4 KiB, member, bad CSRF, another company's pack, signed out, and an order that misses, invents, repeats or removes an item, changes nothing, is too long, or is empty.
-- [x] The verifier and the auditor each ran every AC test on its own on `3e8d181`. Each AC test also fails on base `6c1709e` with the head's test file copied in. Base has no item list, `POST …/items` is not routed (405), and `order` is an unknown field (400).
-- [x] `ac-check.sh` over the verifier's and the auditor's AC reports: `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`.
-- [x] Mutation checks on `3e8d181` (`go test -overlay`; the copy on disk was never edited):
-  - **Verifier, 22 mutants:** 19 killed by the named test, including CSRF, admin, the 4 KiB bound, the `parent_version` count, the empty order, the position CHECK, the unique index, immutability and the stale parent. The other 3 survive as defence in depth, each with a killed pair:
-    - the tenant clauses on the new route are backed by migration 23's composite FK;
-    - `Pack()`'s read-path tenant clause is backed by the lineage lock, and 901w's suite kills it;
-    - a repeated item in an order is backed by the duplicate-item check and the DB unique constraint.
-  - **Auditor, 19 runs:** 16 killed by the named AC test. 3 survived:
-    - dropping the bundle's path sort doesn't change AC3's "same files and hashes", and AC2's sorted-manifest check kills it;
-    - two are test gaps listed under Follow-ups (an item no longer in the library; a reorder with supporting files). The auditor's probes show head handles both correctly.
-- [x] Admin console in dev mode on a loopback server and a throwaway database, with a binary built at `3e8d181` (verifier and auditor each did the run):
-  - version 1 lists five items; Move up on the 5th gives "version 2 … from version 1" with the 4th and 5th swapped;
-  - Remove on github-mcp gives "version 3 … from version 2" with four items;
-  - the change history shows the reorder (`reordered: true`, both orders) and the removal (`removed: github-mcp`, no order);
-  - a one-item pack's Remove is disabled.
-- [x] Client (supporting, read-only clone at `f105e27`, no client change): `TestSyncEndToEndWithLoginMockTLSAndRealWriters`, `TestApplyRemovesOnlyUnchangedManagedFile` and `TestApplyRestoresRemovedFileWhenLaterInstallFails` pass. The desktop deletes files the new lockfile dropped and keeps an edited one.
+- [x] `TestPackItemOrderStoreWithPostgres`: pass
+- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: OK
+- [x] gitleaks over this PR's commits (`dd006b7..d84fd04`), and over the merged `delivery/stories.json`: no leaks.
+- [x] Scope: no `.github` change; the only new migration is `000024`, and no existing migration changed; all 14 commits (13 plus the merge) are by the Leorna identity with no AI attribution lines; the contract is unchanged since `3e8d181`; `check-generated-contracts.sh` exit 0.
+- [ ] Acceptance on the PR head: being rerun. On the reviewed head `3e8d181`, before `main` was merged in, the pipeline's independent verifier and a blind AC auditor each ran every AC test. They also ran each AC test on base, where it fails. Their other checks were mutation checks, migration 24 over existing data, a dev-mode admin console run on a loopback server and the container build. `ac-check.sh` gave `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`. A read-only run of the client's Sync tests (`f105e27`, no client change) also passed then.
 - [ ] Hosted CI: pending until pushed.
 
 ## Security, migration, rollback
@@ -125,7 +113,7 @@ Everything below ran on head `3e8d181` (base `6c1709e`, which is still GitHub `m
 - `BuilderService.SaveVersion` now takes `pack.VersionChange` instead of `add, remove`. Every caller on `main` is updated here. In-flight 86bcm902a adds one test caller with the old arguments (see the next point).
 - The OpenAPI change is additive and optional, so the client needs no regeneration.
 - Test Postgres ran on 127.0.0.1:55432, because 5432 is another container on the build machine. CI uses its own service.
-- **Integration with in-flight stories** (checked against #98 at `17f2ccf` and the local branches for 86bcm901r and 86bcm902a). Whichever story merges second:
+- **Integration:** `main` (with #98) is merged in here. Its only conflict was `delivery/stories.json`, resolved by appending this story's entry last. Checked against the local branches for 86bcm901r and 86bcm902a, neither yet pushed. Whichever story merges second:
   - appends its `delivery/stories.json` entry last, as text;
   - renames its own `000024_*` migration pair to the next free number, with the "migration 24" mentions in its docs and comments, because 86bcm901r and 86bcm902a also add a migration 24;
   - with 86bcm901r only: keeps both `libraryCSS` additions and both README sections; passes `false` at 901r's new `insertVersionItems` call (`starter_packs.go`); and renames one of the two `mintDesktopToken` test helpers in `internal/web`;
@@ -145,8 +133,13 @@ Everything below ran on head `3e8d181` (base `6c1709e`, which is still GitHub `m
 
 ## Evidence
 
-- Head: `3e8d18197575c772c6d34fcdd10f06e5911168fc` (base `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f`, still GitHub `main` on 2026-10-29 14:32 UTC)
+- Head: `d84fd046994d606e1f79c2faa4b2c15cc063dab3`, the merge of the reviewed head `3e8d18197575c772c6d34fcdd10f06e5911168fc` with GitHub `main` `dd006b79f9908976e853c57489032bd5d9d471df` (story base `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f`)
 - Required check: "Go quality gates": pending until pushed
 - Actions run: pending until pushed
-- Local gates on this head (2026-10-29, verifier), each exit 0 and kept with the story's evidence (one log per gate, plus a summary): `make check`, `test-module-add.sh`, the Postgres `go test -json` stream read per test, the four AC tests, gitleaks on the story's commits, scope and authors, the contract and generated-code checks, the story gate, and the container build.
-- AC reports on this head: the verifier's and the blind auditor's. `ac-check.sh` over both: `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`.
+- Local gates on this head (2026-10-29), each exit 0 and kept with the story's evidence (one log per gate, plus a summary):
+  - `make check`, `test-module-add.sh`, and the Postgres `go test -json` stream read per test;
+  - the four AC tests and the store order test;
+  - gitleaks on this PR's commits;
+  - scope and authors, and the contract and generated-code checks;
+  - the story gate, and the merge proof.
+- AC reports: the verifier's and the blind auditor's on `3e8d181` (`ac-check.sh`: `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`); both are being rerun on this head.

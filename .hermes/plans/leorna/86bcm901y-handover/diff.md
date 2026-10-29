@@ -1,8 +1,8 @@
-# 86bcm901y stop and show: `feat/86bcm901y-remove-reorder` at `3e8d181` (not pushed)
+# 86bcm901y stop and show: `feat/86bcm901y-remove-reorder` at `d84fd04` (not pushed)
 
-Base `6c1709e` (= GitHub `main`, rechecked 2026-10-29 14:32 UTC). The worktree is clean. There are 13 commits, and nothing is pushed, opened or merged.
+Head `d84fd046994d606e1f79c2faa4b2c15cc063dab3` merges the reviewed head `3e8d181` with GitHub `main` `dd006b7` (#98 merged; fetched and checked against `gh api` at 2026-10-29 16:29 UTC). Story base `6c1709e`. The worktree is clean. There are 13 story commits plus the merge commit, and nothing is pushed, opened or merged. Outside `delivery/stories.json`, the branch's diff against the new `main` is byte-identical to the reviewed `6c1709e..3e8d181` diff (`evidence/86bcm901y/fixer3/story-diff-unchanged-d84fd04.txt`). How the merge was resolved and proven: `integration.md`.
 
-## `git diff --stat 6c1709e...HEAD`
+## `git diff --stat origin/main...HEAD` (origin/main = `dd006b7`)
 
 ```
  contracts/control-plane.openapi.yaml               |  19 +-
@@ -29,9 +29,10 @@ Base `6c1709e` (= GitHub `main`, rechecked 2026-10-29 14:32 UTC). The worktree i
  21 files changed, 1855 insertions(+), 54 deletions(-)
 ```
 
-## Commits (`git log --oneline 6c1709e..HEAD`)
+## Commits (`git log --oneline 6c1709e..HEAD ^origin/main`)
 
 ```
+d84fd04 Merge branch 'main' into feat/86bcm901y-remove-reorder
 3e8d181 fix(86bcm901y): say the audit records the order whenever a save names one
 b35d111 fix(86bcm901y): document that versions derived on Pack Versions drop the order
 f2eccd5 fix(86bcm901y): test the item form's parent_version and 4 KiB bounds
@@ -47,12 +48,13 @@ cc518b5 feat(86bcm901y): store item positions in built pack versions
 750d135 feat(86bcm901y): order a pack version's items in ApplyChange
 ```
 
-## Pre-flight (read-only, run 2026-10-29 by the finisher)
+## Pre-flight on `d84fd04` (read-only, fixer 3, 16:33 UTC; `evidence/86bcm901y/fixer3/preflight-d84fd04.txt`)
 
-- `git log --format='%an <%ae> | %cn <%ce>' 6c1709e..HEAD | sort | uniq -c` gives `13 Justin Issa <justin@leorna.com> | Justin Issa <justin@leorna.com>`.
-- AI-attribution lines in commit bodies: `git log --format='%H%n%B' 6c1709e..HEAD | grep -inE '^co-authored-by:|generated with|noreply@anthropic|🤖'` finds **none**.
-- `git diff --name-only 6c1709e...HEAD -- .github/` is **empty**.
-- `git ls-files | grep -i claude.md`: none. `git status --porcelain`: empty.
+- `git status --porcelain`: empty.
+- Authors and committers of the 14 story commits (`6c1709e..HEAD ^origin/main`, the merge included): 1 identity, Leorna OK.
+- AI-attribution lines in those commit bodies (`^co-authored-by:|generated with|noreply@anthropic|🤖`, case-insensitive): **none**.
+- `git diff --name-only origin/main...HEAD -- .github/` is **empty**, and no `CLAUDE.md` path.
+- `git merge-tree --write-tree --name-only HEAD origin/main` exits 0, and `origin/main` is an ancestor of HEAD.
 
 ## Key hunks
 
@@ -207,7 +209,21 @@ The change is add-only. A constant default rewrites no row, so migration 23's no
 ```
 The change is additive. The only removed lines are the replaced `summary` and `PackVersionChange.description` lines. It also adds descriptions on `PackCreate.libraryItemIds` and `PackVersionDetail.items`. In `controlplane.gen.go` the change is `Order *[]PackItemKey` (`omitempty`) plus comments, 22 lines added and 16 removed.
 
-## Gate results on `3e8d181` (verifier, detached copy, own DB)
+## Gate results on `d84fd04` (fixer 3, the story worktree, own DB `leorna_86bcm901y_fix3_test`, 16:33–16:35 UTC)
+
+`gates-summary-d84fd04.txt` has every step at EXIT=0:
+- G1 `make check`: lint 0 issues in both modules; govulncheck "No vulnerabilities found" in both modules; gitleaks "no leaks found"; library-gate PASSED on main's library 0.8.0;
+- G2 `test-module-add.sh`;
+- G3 Postgres-ran: 527 entries, 523 pass, 4 accepted skips, 0 missing declared tests, no skip naming `LEORNA_TEST_DATABASE_URL`, and 106 story and builder entries all pass;
+- G4 AC1–AC4 by name (5, 4, 6 and 22 subtests pass) and the store order test;
+- G5 gitleaks on `origin/main..HEAD`;
+- G6 scope;
+- G7 contract diff (unchanged since `3e8d181`) and the generated-code check;
+- G8 `test_story_shippable.py`.
+
+The merge proof, gitleaks on the both-sides file and the duplicate-migration check are in `fixer3/` (`integration.md`). The container build was not rerun on `d84fd04`. The pipeline is rerunning the verifier and the blind auditor on the PR head.
+
+### Earlier: gate results on `3e8d181` (verifier, detached copy, own DB)
 
 `verifier/gates-summary-3e8d181.txt` has every step at EXIT=0:
 - G1 `make check` (lint 0 issues in both modules; govulncheck "No vulnerabilities found" in both modules; gitleaks "no leaks found"; library-gate PASSED);
