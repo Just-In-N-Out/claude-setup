@@ -1389,3 +1389,10 @@ Justin's words: "Just go with the recommended and the star one for each."
 - Q3 → A: Ignore records that version only; a newer release shows the notice again.
 - Q4 → A: the admin edits the description and main text; supporting files follow upstream.
 - The proposed fourth acceptance criterion (refusals write nothing and stay inside the tenant) is approved as written. No criterion is live.
+
+## Justin's answers after review 2 (2026-10-29)
+
+Review 2 tripped brake c (one P0–P2, as in review 1). Justin's words: "R2-1: Keep going (Recommended). Item editor secret echo: Fold into this fix."
+
+- R2-1 (a suspected secret in an agent variant's description is shown back in the main-text box) is fixed in fix round 2; the loop continues.
+- **Added scope, its own last task and commit:** the existing item editor (`internal/web/item_create.go:193-203`) has the same defect (it clears only the field the scanner names first). Fix it the same way in a separate commit after the R2-1 fix, with its own test: a refused save with the token in an agent's description shows the token in neither field. Done means no 422 secret refusal from the item editor or the variant pages shows any part of the token. No AC changes: AC4's wording and test name stay as approved; the item-editor fix is covered by its own test and by review round 3.
