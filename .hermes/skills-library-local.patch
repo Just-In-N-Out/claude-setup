@@ -81,7 +81,7 @@ index d6a2493..8ebb58e 100644
  
  ## Output Format
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..b3c48ba 100644
+index c509c64..53b191d 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,11 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -102,7 +102,7 @@ index c509c64..b3c48ba 100644
  Extract the goal, included work, exclusions, acceptance and allowed side effects from the current request. Resolve an obvious interpretation autonomously; ask one brief question only when genuinely different interpretations change the plan.
  
 -**Done:** one-sentence goal and a finite scope; historical work is not silently resumed or called incomplete.
-+Number the acceptance criteria and name each one's test. When the request or card states none, write proposed ones from it: observable Given/When/Then outcomes, marked **proposed** near the top of the plan so the user approves them with it. Never reword or replace stated criteria; a fact only the user or team can decide stays an open question, not a criterion.
++Number the acceptance criteria and name each one's test. When the request or card states none, write proposed ones from it: observable Given/When/Then outcomes, marked **proposed** near the top of the plan so the user approves them with it. Never reword or replace stated criteria; a fact only the user or team can decide stays an open question, not a criterion. Word a base-vs-head criterion's allowed difference by its rule ("exactly the variants that split, and each of them does"), not by a test's cases ("only AC1's cases differ"): fix rounds add variants to supporting tests, and a case-based wording needs an amendment every round.
 +
 +**Done:** one-sentence goal, a finite scope and numbered acceptance criteria (stated or proposed); historical work is not silently resumed or called incomplete.
  

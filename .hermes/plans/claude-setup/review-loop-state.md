@@ -33,7 +33,15 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **Verifier 2: CLEAN** at `aae49fd` (17/17). **Auditor 2: CLEAN.** `ac-check` on `aae49fd` gives READY FOR THE USER 17/18, live and with `--reviews` (REVIEWS CLEAN review-7). But `main` (now `7474777`) touched `leorna/SKILL.md` since `c40a51c`, so Q10 A doesn't hold.
 - **Finisher round 2:** head `25c2f3c` on `main` `c82f0e7`. While it ran, `main` moved and touched `ac-verification.md` (patch 9's context), so the referee says REVIEW AGAIN (`--verbatim` patch-ids hash context).
 - **Running:** reviewer 8, a delta review of `aae49fd...25c2f3c` (`briefs/review-loop-reviewer-8.md`).
-- **ASKED JUSTIN** about the merge rule, since the loop won't converge while peers edit story files.
+- **Review 8: CLEAN.** The referee says MOVE ON at `25c2f3c`.
+- **Justin chose A (2026-10-29 ~12:00):** merge after a final update without another full re-check if a script confirms all three:
+  1. no clashes;
+  2. the story's own changed (`+`/`-`) lines are identical to the accepted head `aae49fd`'s (against its base `c40a51c`);
+  3. every test passes.
+
+  This holds even if other chats edited other parts of the same files.
+- **Running:** finisher 3 (`briefs/review-loop-finisher-3.md`): rebase, the three checks, then report. The main session then runs the `--ff-only` merge at once, `sync.sh`, and checks the memory note is gone and `MEMORY.md` is updated.
+- **After the merge:** update feature-dispatch's "Setup repo" merge-policy line with this extended rule (as used for review-loop; ask before reusing), and add the "pure rebase hashes context" note to `review-loop.md`.
 - **Then:** if the referee says REVIEW AGAIN, a delta review of the rebase; then verifier 3 → auditor 3 → `ac-check` → merge right away.
 - **If `main` touches a story file AGAIN during that window:** stop and ask Justin. Recommend extending Q10 A: allow a base-only merge when `range-diff` is all `=` and the gates pass, even if `main` touched a story file in lines away from the story's hunks.
 - Earlier: → `ac-check` (live + `--reviews`, `--base` = `merge-base`) → finisher 1b: base-only rebase onto the moved `main` (Q10 A, if it touches no story file) → merge right away → sync. Earlier: `main` changed 4 story files (CLAUDE.md, feature-dispatch `SKILL.md`, `ac-verification.md`, leorna `SKILL.md`), so base-only won't hold. Conflict resolutions need a delta review (the referee says "not a pure rebase"), then verifier → auditor → `ac-check` again.
