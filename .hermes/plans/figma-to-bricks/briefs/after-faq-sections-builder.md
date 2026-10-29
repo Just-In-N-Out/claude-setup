@@ -2,18 +2,20 @@
 
 Build the approved plan. Don't re-plan.
 
-## Step 0: get into your own copy (do this before anything else)
-You were started with your own throwaway worktree, because the main session sits in another job's copy
-(`header-bar`) and agents can only write in the worktree they're in. Your real copy is
-`/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/after-faq-sections` (branch `worktree-after-faq-sections`,
-made from `main` at a3a008e, with CLAUDE.md and node_modules already in it).
-1. Load the tool: ToolSearch with query `select:EnterWorktree`.
-2. Call EnterWorktree with `path` = `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/after-faq-sections`.
-3. Check with `pwd` and `git branch --show-current` that you're there, on `worktree-after-faq-sections`.
-4. If the switch is refused or you end up anywhere else, change nothing and stop at once:
-   `status: stopped`, `stop_reason: "worktree switch: <the exact message>"`.
-Never write in the `header-bar` worktree, the main folder `/home/justin/Documents/FigmaToBricksV2`, or the throwaway
-worktree you started in.
+## Step 0: your copy is the worktree you start in (do this before anything else)
+You were started in your own worktree (`isolation: worktree`, under `.claude/worktrees/agent-…`, on its own branch,
+made from `main` at dea6296). **Build the whole job there.** Don't switch worktrees: an earlier builder's EnterWorktree
+into the prepared copy `.claude/worktrees/after-faq-sections` was refused, so that copy is not used. Don't touch it.
+1. Record `pwd`, `git branch --show-current` and `git rev-parse HEAD`; report them as `worktree`, `branch` and `base`.
+2. If `CLAUDE.md` or `node_modules/` is missing, copy them from the main folder (read only there):
+   `cp /home/justin/Documents/FigmaToBricksV2/CLAUDE.md <your worktree>/` and
+   `cp -a /home/justin/Documents/FigmaToBricksV2/node_modules <your worktree>/`. CLAUDE.md is excluded from git; never
+   stage it.
+3. Leave your worktree and branch in place when you finish: they hold the job's commits, and the next roles start
+   from your `last_commit`.
+If anything here is refused, change nothing more and stop: `status: stopped`, `stop_reason: "<the exact message>"`.
+Never write in the `header-bar` worktree, the prepared `after-faq-sections` worktree or the main folder
+`/home/justin/Documents/FigmaToBricksV2`.
 
 ## Where
 - Plan: the approved, read-only copy is `~/.hermes/plans/figma-to-bricks/evidence/after-faq-sections/plan-approved.md`
@@ -103,10 +105,11 @@ out." / "Put it in another planner … then we'll give it to another builder and
   missing or stale), don't edit any skill or memory file: list it in `skill_lessons[{skill, lesson, evidence,
   enforce}]`. `enforce` is `none`, or, when the lesson is about a rule that was broken or nearly broken, a one-line
   proposal for a check that would have caught it (its kind: Claude Code hook, git hook, test, lint or script; what it
-  checks; where it runs). An empty list is the normal answer. Say in `skill_lessons` whether the Step 0 switch worked.
+  checks; where it runs). An empty list is the normal answer. Say in `skill_lessons` whether building in the start-up worktree worked
+  (CLAUDE.md and node_modules there or copied, commits kept).
 - Don't start other agents. Stop at `ready-for-review`: no merge, no BUILD, no main-folder edits.
 
 ## Return (your final message)
-`{name, status: ready-for-review|stopped, summary, base, worktree_switch, rulings[], steps_for_justin[], stop_reason,
+`{name, status: ready-for-review|stopped, summary, base, branch, rulings[], steps_for_justin[], stop_reason,
 worktree, last_commit, shots[], ac_evidence[{ac, test, screenshot}], chrome_env, found_else[], defect_loop_skills[],
 skill_lessons[]}`. End with the line `MAIN SESSION: check and save these skill_lessons now.`
