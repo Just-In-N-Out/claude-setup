@@ -1,8 +1,10 @@
-# 86bcm902a — stop and show (diff at `9a9bdec`)
+# 86bcm902a — stop and show (diff at `72ae141`)
 
-Branch `feat/86bcm902a-quick-start`, head `9a9bdecc2f6ab53356fddddbc62b06b6533a4867`, base `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f` (= GitHub `main`, re-checked 2026-10-29 15:46 UTC). Not pushed. `git status --porcelain`: 0 lines.
+Branch `feat/86bcm902a-quick-start`, head `72ae14193df3414ef5d4ffb197558e28daf9fbc6`, pushed (`origin/feat/86bcm902a-quick-start` = head), PR #101. GitHub `main` = `b985422cd78a961b8c8e70a9e56fecc51d487858` (#98 and #99), merged into the branch in `7360fca`; re-checked 2026-10-29 18:51 UTC. `git status --porcelain`: 0 lines.
 
-## Stat (`git diff --stat 6c1709e...HEAD`)
+Since the accepted head `9a9bdec`: the merge of main (`7360fca`, only `delivery/stories.json` hand-resolved), the migration renumber 000024 → 000025 (`58f2bff`), the `SaveVersion(…, pack.VersionChange)` test call (`be31bad`) and the PR number in `delivery/stories.json` (`72ae141`).
+
+## Stat (`git diff --stat origin/main...HEAD`)
 
 ```
  README.md                                          |    4 +
@@ -14,8 +16,8 @@ Branch `feat/86bcm902a-quick-start`, head `9a9bdecc2f6ab53356fddddbc62b06b6533a4
  internal/onboarding/quickstart_test.go             |  476 +++++++
  internal/onboarding/starters.go                    |   77 ++
  internal/onboarding/starters_test.go               |   53 +
- .../migrations/000024_quick_starts.down.sql        |    1 +
- .../postgres/migrations/000024_quick_starts.up.sql |   23 +
+ .../migrations/000025_quick_starts.down.sql        |    1 +
+ .../postgres/migrations/000025_quick_starts.up.sql |   23 +
  internal/store/postgres/quick_starts.go            |  177 +++
  internal/store/postgres/quick_starts_test.go       |  377 ++++++
  internal/store/postgres/store_test.go              |    6 +-
@@ -29,14 +31,15 @@ Branch `feat/86bcm902a-quick-start`, head `9a9bdecc2f6ab53356fddddbc62b06b6533a4
 
 ## Checks
 
-- `git diff --name-only 6c1709e...HEAD -- .github/`: **empty** (0 paths). No CI change.
-- OpenAPI / contracts: **no change** (0 paths under `contracts/`, `packages/contracts/` or named openapi). No client change.
-- `CLAUDE.md`: 0 paths.
-- Commits: 21; authors: Justin Issa <justin@leorna.com> (1 identity); committers: Justin Issa <justin@leorna.com> .
+- `git diff --name-only origin/main...HEAD -- .github/`: **empty** (0 paths). No CI change.
+- OpenAPI / contracts: **no change** (0 paths). No client change.
+- Migration versions duplicated: **none** (`ls internal/store/postgres/migrations | grep '\.up\.sql$' | cut -d_ -f1 | sort | uniq -d` empty; newest 000024 `pack_item_order` from #99, then 000025 `quick_starts`).
+- Branch's own commits (`HEAD ^6c1709e ^origin/main`): 25; authors: Justin Issa <justin@leorna.com> (1 identity); committers: Justin Issa <justin@leorna.com>.
 - Commit bodies matching `^co-authored-by:|generated with|noreply@anthropic|🤖` (case-insensitive): 0.
-- Subjects not `feat(86bcm902a):`/`fix(86bcm902a):`: 0.
+- `git merge-tree --write-tree --name-only HEAD origin/main`: EXIT=0.
+- Merge check (`evidence/86bcm902a/finisher2/merge-check-7360fca.txt`): one-side files equal that side's blob (16 + 38); differs-from-both = both-sides set (`delivery/stories.json`, `internal/web/README.md`, `internal/web/handler.go`); the two auto-merged files equal a fresh 3-way merge; `stories.json` equals the resolver's output (42 main entries unchanged by value, 86bcm902a appended last).
 
-## Commits
+## Commits (`git log --topo-order --reverse HEAD ^origin/main`)
 
 ```
 deef0f6 feat(86bcm902a): role starter stand-in list and its resolution against the library
@@ -60,29 +63,43 @@ f5c12fa fix(86bcm902a): pin the routes' own admin check and the quick start's te
 19baa19 fix(86bcm902a): test the quick start pick's time bound
 28c0944 fix(86bcm902a): write nothing when the same quick start pick is made again
 9a9bdec fix(86bcm902a): pin that only a done record counts as the same pick
+7360fca Merge branch 'main' into feat/86bcm902a-quick-start
+58f2bff fix(86bcm902a): renumber the quick_starts migration to 000025 after #99
+be31bad fix(86bcm902a): pass pack.VersionChange to SaveVersion after #99
+72ae141 docs(86bcm902a): record PR #101 in the delivery inventory
 ```
 
-## Gates on `9a9bdec` (the verifier's own run, `evidence/86bcm902a/verifier/`)
+## Gates on `be31bad` (finisher 2, `evidence/86bcm902a/finisher2/`)
 
 ```
+HEAD=be31bad22b24ceb4c39451c81f32faf64b341e5e start=2026-10-29T18:37:04.469+00:00
 make-check EXIT=0
 module-add EXIT=0
-pg-json EXIT=0
+pg-go-test EXIT=0
+pg-read EXIT=0
 unit EXIT=0
 story-gate EXIT=0
 gitleaks-story EXIT=0
+gitleaks-both-sides EXIT=0
+checks written (33 lines)
+ac1 EXIT=0 pass=4 fails=0 skips=0
+ac2 EXIT=0 pass=5 fails=0 skips=0
+ac3 EXIT=0 pass=4 fails=0 skips=0
+ac4 EXIT=0 pass=14 fails=0 skips=0
+ac5 EXIT=0 pass=1 fails=0 skips=0
 porcelain after: 0
-done 2026-10-29T15:05:17Z
+end=2026-10-29T18:39:03.765+00:00
+ALLDONE
 ```
 
-Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, packaged gitleaks `8.30.1`) and the Postgres stream (`pg-9a9bdec-summary.txt`: 501 pass, 4 allowed skips, no skip naming `LEORNA_TEST_DATABASE_URL`, all 260 declared top-level tests have a result, all 50 `TestQuickStart*` results pass). `ac-check.sh`: `ALL ACCEPTED: 5 of 5 ACs on 9a9bdec`.
+The Postgres stream (`pg-be31bad-summary.txt`): 573 pass, 0 fail, the 4 accepted skips only, no skip naming `LEORNA_TEST_DATABASE_URL`, all 267 declared top-level tests have a result, all 50 `TestQuickStart*` results pass. `72ae141` (stories.json only): story gate OK (`story-gate-72ae141.txt`). Review, verifier and blind auditor on the new head run after the PR opens; the earlier `ALL ACCEPTED: 5 of 5 ACs` was on `9a9bdec`.
 
-## Key hunks
+## Key hunks (against `origin/main`)
 
-### `internal/store/postgres/migrations/000024_quick_starts.up.sql`
+### `internal/store/postgres/migrations/000025_quick_starts.up.sql`
 
 ```diff
-+++ b/internal/store/postgres/migrations/000024_quick_starts.up.sql
++++ b/internal/store/postgres/migrations/000025_quick_starts.up.sql
 @@ -0,0 +1,23 @@
 +-- One-click quick start (story 86bcm902a). One row per tenant once an admin
 +-- has skipped or finished the quick start; no row means it is still offered.
@@ -109,10 +126,10 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
 +);
 ```
 
-### `internal/store/postgres/migrations/000024_quick_starts.down.sql`
+### `internal/store/postgres/migrations/000025_quick_starts.down.sql`
 
 ```diff
-+++ b/internal/store/postgres/migrations/000024_quick_starts.down.sql
++++ b/internal/store/postgres/migrations/000025_quick_starts.down.sql
 @@ -0,0 +1 @@
 +DROP TABLE quick_starts;
 ```
@@ -120,6 +137,7 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
 ### `cmd/control-plane/main.go`
 
 ```diff
++++ b/cmd/control-plane/main.go
 @@ -28,6 +28,7 @@ import (
  	"github.com/LeornaAI/leorna-control-plane/internal/library"
  	"github.com/LeornaAI/leorna-control-plane/internal/library/gate"
@@ -148,6 +166,7 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
 ### `internal/web/handler.go`
 
 ```diff
++++ b/internal/web/handler.go
 @@ -102,6 +102,8 @@ type Handler struct {
  	bundleServer                  bundleResolver
  	setupDatabases                setupDatabases
@@ -157,7 +176,7 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
  	devLogin                      bool
  	autoSetup                     bool
  	bootstrapLoader               func(ctx context.Context, tenantID store.TenantID) error
-@@ -290,6 +292,9 @@ func (handler *Handler) Routes() http.Handler {
+@@ -291,6 +293,9 @@ func (handler *Handler) Routes() http.Handler {
  	routes.Handle("POST /admin/setup/database", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.setupDatabase)), false))
  	routes.Handle("POST /admin/setup/database/existing", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.setupExistingDatabase)), false))
  	routes.Handle("POST /admin/setup/pack", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.setupPack)), false))
@@ -167,7 +186,7 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
  	routes.Handle("GET /v1/audit", handler.requireSession(handler.requireAdmin(api), false))
  	routes.Handle("GET /admin/audit", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.auditView)), true))
  	routes.Handle("GET /admin/third-party-content", handler.requireSession(handler.requireAdmin(http.HandlerFunc(handler.thirdPartyContentView)), true))
-@@ -527,7 +532,8 @@ type adminPageData struct {
+@@ -528,7 +533,8 @@ type adminPageData struct {
  	TenantID    store.TenantID
  	CSRFToken   string
  	Setup       *onboarding.Progress
@@ -177,7 +196,7 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
  }
  
  func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
-@@ -557,6 +563,14 @@ func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
+@@ -558,6 +564,14 @@ func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
  			handler.logger.Warn("setup banner unavailable", "error", err)
  		}
  	}
@@ -192,7 +211,7 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
  
  	var page bytes.Buffer
  	if err := handler.template.Execute(&page, adminPageData{
-@@ -566,6 +580,7 @@ func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
+@@ -567,6 +581,7 @@ func (handler *Handler) admin(w http.ResponseWriter, r *http.Request) {
  		TenantID:    session.Principal.TenantID,
  		CSRFToken:   csrfCookie.Value,
  		Setup:       setup,
@@ -200,7 +219,7 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
  		Client:      handler.clientConnectStatus(r.Context()),
  	}); err != nil {
  		handler.writeProblem(w, r, http.StatusInternalServerError, "RENDER_FAILED", "The admin page could not be rendered", err)
-@@ -752,7 +767,7 @@ const adminTemplate = `<!doctype html>
+@@ -753,7 +768,7 @@ const adminTemplate = `<!doctype html>
      <p>Your Google identity is connected to one server-resolved tenant.</p>
      ` + clientURLCardHTML + `
      {{if .Setup}}<section class="card" id="setup-banner">
@@ -214,6 +233,7 @@ Plus the image build (`image-9a9bdec.txt`: `docker build --no-cache` EXIT=0, pac
 ### `internal/web/setup.go`
 
 ```diff
++++ b/internal/web/setup.go
 @@ -153,6 +153,16 @@ func (handler *Handler) renderSetupPage(w http.ResponseWriter, r *http.Request,
  		}
  		autoRefresh = setupIsAdvancing(progress)
@@ -556,6 +576,6 @@ func quickStartFailure(err error) (int, string) {
 
 ### Docs and tests (not shown)
 
-- Docs: root `README.md` (+4: authorization row, setup sentence), `internal/onboarding/README.md` (+42/-1: "Quick start (86bcm902a)" section; the intro now says the quick start answer is the one stored fact), `internal/web/README.md` (+9: three routes, the panel and the banner link), `internal/audit/README.md` (+6: `quickstart.skip`, `quickstart.complete`).
-- Tests: `internal/web/quick_start_test.go` (+1300: the five AC tests plus done-sentence, browser-gone, time-bound and same-pick-again tests), `internal/onboarding/quickstart_test.go` (+476), `internal/onboarding/starters_test.go` (+53), `internal/store/postgres/quick_starts_test.go` (+377), `store_test.go` (`quick_starts` added to both round-trip table lists and the reset drop list).
-- `delivery/stories.json`: `86bcm902a` appended last with `prs: []` (earlier 40 entries unchanged by value; the PR number goes in after the PR opens).
+- Docs: root `README.md` (+4: authorization row, setup sentence), `internal/onboarding/README.md` (+42/-1: "Quick start (86bcm902a)" section, "(migration 25)"; the intro now says the quick start answer is the one stored fact), `internal/web/README.md` (+9: three routes, the panel and the banner link), `internal/audit/README.md` (+6: `quickstart.skip`, `quickstart.complete`).
+- Tests: `internal/web/quick_start_test.go` (+1300: the five AC tests plus done-sentence, browser-gone, time-bound and same-pick-again tests; line 1146 now passes `pack.VersionChange{AddLibraryItemIDs: …}` after #99), `internal/onboarding/quickstart_test.go` (+476), `internal/onboarding/starters_test.go` (+53), `internal/store/postgres/quick_starts_test.go` (+377), `store_test.go` (`quick_starts` added to both round-trip table lists and the reset drop list).
+- `delivery/stories.json`: `86bcm902a` appended last with `prs: [101]` (main's 42 earlier entries unchanged by value).
