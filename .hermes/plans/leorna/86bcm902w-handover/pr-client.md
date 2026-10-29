@@ -31,7 +31,7 @@ Everything below ran on 2026-10-29 on head `db3e6b0` (base `f105e27`, which is s
 - [x] Real Claude Code 2.1.312 (`TestRealClaudeCodeTranscriptItemUses`, isolated home, faked model API on loopback): pass; 3 sessions, 1 prompt use, 1 skill use. A typed `/skill` is recorded as a command line, as the write-up says.
 - [x] Cross-repo ties: `cmp` of `usage/testdata/items/upload.golden.json` with the control plane's `internal/web/testdata/content_usage_client_upload.json`, and of `api/control-plane.openapi.yaml` with the control plane's `contracts/control-plane.openapi.yaml`, both read from `b78905b`: both exit 0. The control plane's AC2 test posts this golden body.
 - [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff; all 6 commits by the Leorna identity with no AI attribution lines.
-- [ ] Hosted CI: pending (just pushed).
+- [ ] Hosted CI on `db3e6b0`: "Go quality gates" and "Clean Windows tool installation" pass; **"Windows client executable" fails** in this PR's two new tests `TestManagedItemsFromLastSuccessfulSync` and `TestOpenReadOnlyNeverMigrates` (`application/managed_items_test.go`). On the Windows runner the test's temporary project path is the short 8.3 form (`RUNNER~1`) while `ManagedItems` returns the long form, so the root comparison fails; the second test's temp-folder cleanup error follows because its failure skips closing the database. The same job passes on `main`. This needs a fix on this branch before merge.
 
 ## Assumptions
 
@@ -55,6 +55,6 @@ Everything below ran on 2026-10-29 on head `db3e6b0` (base `f105e27`, which is s
 
 - Head: `db3e6b0f76652088c11fafa8c3c54509f62116f7` (base `f105e27`). The local gates above ran on this head.
 - Earlier on this same head, in the story's pipeline: the independent verifier and a blind AC auditor ran the story tests and the real Claude Code test; the builder ran it end to end on loopback (a real client Sync to Claude Code, Codex and Cursor, then the built `import-content-usage` against synthetic transcripts: Claude Code 3 uses, Codex 1, the same counts on re-import with nothing doubled, Cursor refused); mutation checks: builder 13 of 13 killed, verifier 4 of 5 (the survivor drops a record-type filter the payload-type switch already covers), the review survivors are follow-ups 2 and 5. A fresh verifier and auditor run on the PR heads next.
-- Required check "Go quality gates": pending.
-- Actions run: pending.
+- Required check "Go quality gates": success on `db3e6b0`; "Windows client executable": failure (see the Test Plan).
+- Actions run: https://github.com/LeornaAI/leorna-client/actions/runs/40968292489 (`db3e6b0`, failure in the Windows job).
 - Local receipts (one log per gate plus a summary) are kept with the story's evidence.

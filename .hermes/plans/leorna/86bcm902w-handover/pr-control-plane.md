@@ -1,6 +1,6 @@
 ## Summary
 
-Adds content usage analytics: admins can now see which delivered skills, prompts and agents engineers actually use. A spike first checked, per tool and per kind, what each tool's local transcripts record. The result is a write-up with a machine-checked support table: Claude Code records skill calls and typed `/name` commands; Codex shows a skill only when it reads the skill's `SKILL.md` (inferred, counted once per session); Cursor records neither; and no tool's agent use can be tied to a Leorna item, because Leorna installs no agents yet. The usage upload (`POST /v1/usage` and `POST /v1/client/usage`) now also accepts item uses: identifiers only (id, tool, kind, item name, time, optional project), validated before anything is written, and only for a tool and kind the table can measure. They go to a new additive ClickHouse table, `item_uses_v1`, separate from the usage events, so existing usage, cost, adoption and monthly figures don't change. A new admin-only page, `/admin/content-usage`, shows where usage can be measured, counts per pack and per item, and "Not measurable" (never 0) where a tool can't record a use. The desktop client's import command that sends these uses is in the matching client PR (same branch name). No Postgres migration, no new route on the API, no CI change.
+Adds content usage analytics: admins can now see which delivered skills, prompts and agents engineers actually use. A spike first checked, per tool and per kind, what each tool's local transcripts record. The result is a write-up with a machine-checked support table: Claude Code records skill calls and typed `/name` commands; Codex shows a skill only when it reads the skill's `SKILL.md` (inferred, counted once per session); Cursor records neither; and no tool's agent use can be tied to a Leorna item, because Leorna installs no agents yet. The usage upload (`POST /v1/usage` and `POST /v1/client/usage`) now also accepts item uses: identifiers only (id, tool, kind, item name, time, optional project), validated before anything is written, and only for a tool and kind the table can measure. They go to a new additive ClickHouse table, `item_uses_v1`, separate from the usage events, so existing usage, cost, adoption and monthly figures don't change. A new admin-only page, `/admin/content-usage`, shows where usage can be measured, counts per pack and per item, and "Not measurable" (never 0) where a tool can't record a use. The desktop client's import command that sends these uses is in the matching client PR, LeornaAI/leorna-client#23. No Postgres migration, no new route on the API, no CI change.
 
 ClickUp: [Content usage analytics (which items get used)](https://app.clickup.com/t/90141510532/86bcm902w)
 
@@ -40,7 +40,7 @@ Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` wi
   - [x] AC5 `TestContentUsageAC5IngestAcceptsOnlyItemIdentifiersWithPostgres`: pass
 - [x] Cross-repo ties: `cmp` of the client's golden upload body (`db3e6b0`) with `internal/web/testdata/content_usage_client_upload.json`, and of the client's `api/control-plane.openapi.yaml` with `contracts/control-plane.openapi.yaml`, both from `b78905b`: both exit 0.
 - [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff against `main`; all 13 of the branch's own commits (12 plus the merge) by the Leorna identity with no AI attribution lines.
-- [ ] Hosted CI: pending (just pushed).
+- [x] Hosted CI: "Go quality gates", "Publish control-plane image" and "Package admin-portal distribution" pass on `fabbec0` (the PR head) and on `b78905b`.
 
 ## Security, migration, rollback
 
@@ -56,7 +56,7 @@ Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` wi
 
 ## Assumptions
 
-- Merge order: this PR first, then the client PR. With only this PR merged, the page works (empty until uploads) and the upload accepts item uses that nothing sends yet. With only the client merged, its import fails with "usage upload rejected" and stores nothing.
+- Merge order: this PR first, then the client PR (LeornaAI/leorna-client#23). With only this PR merged, the page works (empty until uploads) and the upload accepts item uses that nothing sends yet. With only the client merged, its import fails with "usage upload rejected" and stores nothing.
 - Uses reach the server through an explicit import command run on the engineer's machine (approved option). Automatic upload after Sync is the separate "Upload usage automatically after Sync" card, which should reuse the client's detectors.
 - Only uses of items the last Sync installed leave the machine, so personal skill and command names are never sent (approved option).
 - An item that sits in several packs counts in each pack (approved option); pack totals can overlap, and the page says so.
@@ -80,8 +80,8 @@ Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` wi
 
 ## Evidence
 
-- Head: `b78905b7acc2de7b8494ead1cde28a704004a774` (base `main` at `8aa32a1`; the branch started from `b65f797`). The local gates above ran on `b78905b`, the merge of `main`; a commit that only records the PR numbers in `delivery/stories.json` follows.
+- Head: `fabbec00fa8428bf7e014ba06350efe796002c1c` (base `main` at `8aa32a1`; the branch started from `b65f797`). The local gates above ran on `b78905b`, the merge of `main`; `fabbec0` on top of it only records this PR and the client PR in `delivery/stories.json` (`test_story_shippable.py` 5 OK on it).
 - Before `main` was brought in, the pipeline's independent verifier and a blind AC auditor each accepted all 5 ACs on `de5fbe0`, with mutation checks and a run of the real binary there. A fresh verifier and auditor run on this PR's head next.
-- Required check "Go quality gates": pending.
-- Actions run: pending.
+- Required check "Go quality gates": success on `fabbec0`.
+- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40969718620 (`fabbec0`, success); also https://github.com/LeornaAI/leorna-control-plane/actions/runs/40967518059 (`b78905b`, success).
 - Local receipts (one log per gate plus a summary, AC logs, the merge proof) are kept with the story's evidence.
