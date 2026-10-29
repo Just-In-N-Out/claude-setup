@@ -192,7 +192,7 @@ ac3_referee_counts_p2_without_scenario_as_p3() {
   local sc sev
   need "$RC" || return 1
   newroot; mkrepo || fail "fixture repo" || return 1
-  for sc in NONE "" "   " "edge case" "see claim above" "an agent hits it"; do
+  for sc in NONE "" "   " "edge case" "see claim above" "an agent hits it" "  an agent hits it "; do
     fresh; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2 "$sc")"; judge
     want 0 "MOVE ON: review-1 at ${C2:0:7} is clean" "a P2 with scenario [$sc]" || return 1
     has "R1-1  P3 (no scenario)  lib/x.sh:R1-1  claim of R1-1" "a P2 with scenario [$sc]" || return 1
@@ -249,15 +249,18 @@ ac5_referee_asks_on_repeat_without_new_fact() {
   local C3 nf
   need "$RC" || return 1
   newroot; mkrepo || fail "fixture repo" || return 1
-  for nf in "" "still broken here"; do
+  # a new fact is 5+ words: 4 is not enough, and whitespace around the words adds none (R5-5)
+  for nf in "" "still broken here" "still broken right here" " still broken right here" "still broken right here  "; do
     fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)"
     rev 2 full "$BASE" "$C2" "$(finding R2-1 P2 "$SC" R1-2 "$nf")"; judge
     want 3 "ASK JUSTIN: review-2: repeats with no new fact: R2-1 repeats R1-2" "2 then 1, a repeat with new_fact [$nf]" || return 1
     has "R2-1  P2  lib/x.sh:R2-1  claim of R2-1  (repeats R1-2)" "the repeat's line names what it repeats" || return 1
   done
-  fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)"
-  rev 2 full "$BASE" "$C2" "$(finding R2-1 P2 "$SC" R1-2 "the fix covers only the short form")"; judge
-  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-2 at ${C2:0:7}: fix them, then review the fix commits" "a repeat with a new fact" || return 1
+  for nf in "the fix misses one form" "the fix covers only the short form"; do
+    fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)"
+    rev 2 full "$BASE" "$C2" "$(finding R2-1 P2 "$SC" R1-2 "$nf")"; judge
+    want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-2 at ${C2:0:7}: fix them, then review the fix commits" "a repeat with new_fact [$nf]" || return 1
+  done
   # repeating an earlier P3, or an earlier P2 with no scenario, isn't a stall
   fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)" "$(finding R1-3 P3)"
   rev 2 full "$BASE" "$C2" "$(finding R2-1 P2 "$SC" R1-3)"; judge
