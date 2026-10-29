@@ -5,9 +5,18 @@
 #
 # Reads <evidence>/review-1/review.json, review-2/…, numbered without gaps (format and the
 # reviewer's duties: references/review-loop.md), and Justin's recorded answers
-# <evidence>/review-<n>/justin.json, then judges the LATEST round.
-# Exit 2: bad usage or input, with an error: line on stderr. Needs bash 3.2+, git, jq 1.6+.
-# Tests: review-check.test.sh
+# <evidence>/review-<n>/justin.json, then judges the LATEST round:
+#   - a P0-P2 whose scenario has fewer than 5 words counts as P3 (brake a);
+#   - a finding Justin accepted, or one that repeats it, counts as ACCEPTED (it isn't fixed);
+#   - P0-P2 left → REVIEW AGAIN, unless brake c (no fewer P0-P2 than the round before, when that
+#     round had any) or brake d (a P0-P2 that repeats an earlier P0-P2 with no new_fact of 5+ words)
+#     trips → ASK JUSTIN; justin.json "continue": true answers that round's ASK with REVIEW AGAIN;
+#   - none left → MOVE ON when the round's head is HEAD, or HEAD is a pure rebase of it (the same
+#     patches in the same order, no merges); otherwise REVIEW AGAIN for the unreviewed commits.
+# --base is the commit the branch starts from now (git merge-base HEAD <integration branch>).
+# Prints one line per finding of the latest round, then the outcome as the LAST line.
+# Exit 0 MOVE ON, 1 REVIEW AGAIN, 3 ASK JUSTIN, 2 bad usage or input (an error: line on stderr).
+# ac-check.sh --reviews runs it. Needs bash 3.2+, git, jq 1.6+. Tests: review-check.test.sh
 set -uo pipefail
 
 usage() { echo "error: usage: review-check.sh --repo <worktree> --base <base commit> <evidence folder>" >&2; exit 2; }
@@ -130,10 +139,31 @@ fi
 v=$(jq -c "$JUDGE" <<<"$in") || die "can't judge the review records"
 jq -r '.lines[]' <<<"$v"
 outcome=$(jq -r .outcome <<<"$v") now=$(jq -r .now <<<"$v")
+
+pids() { # pids <from> <to>: a patch-id per non-merge commit, oldest first ("empty:<subject>" for no diff).
+  # Plumbing diff-tree ignores colour, external-diff and textconv settings; --verbatim keeps whitespace
+  # changes (a re-indented line is a different patch).
+  local c p
+  git -C "$repo" rev-list --reverse --topo-order --no-merges "$1..$2" | while IFS= read -r c; do
+    p=$(git -C "$repo" diff-tree -p --no-commit-id --full-index "$c" | git -C "$repo" patch-id --verbatim | cut -d' ' -f1)
+    echo "${p:-empty:$(git -C "$repo" log -1 --format=%s "$c")}"
+  done
+}
 case $outcome in
   clean)
     if [[ $RH == "$HEADSHA" ]]; then echo "MOVE ON: review-$n at ${RH:0:7} is clean"; exit 0; fi
-    echo "REVIEW AGAIN: HEAD ${HEADSHA:0:7} is not review-$n's head ${RH:0:7}: review what changed since ${RH:0:7}"
+    if git -C "$repo" merge-base --is-ancestor "$RH" "$HEADSHA" 2>/dev/null; then
+      echo "REVIEW AGAIN: $(git -C "$repo" rev-list --count "$RH..$HEADSHA") commit(s) after review-$n's head ${RH:0:7} are unreviewed: review ${RH:0:7}..${HEADSHA:0:7}"
+      exit 1
+    fi
+    # a pure rebase: the reviewed commits' patches, in the same order, now on --base, with no merge
+    if mb=$(git -C "$repo" merge-base "$RH" "$HEADSHA" 2>/dev/null) && [[ -n $mb ]]; then
+      a=$(pids "$mb" "$RH") b=$(pids "$BASESHA" "$HEADSHA")
+      if [[ -n $a && $a == "$b" && $(git -C "$repo" rev-list --count --merges "$BASESHA..$HEADSHA") == 0 ]]; then
+        echo "MOVE ON: review-$n at ${RH:0:7} is clean, and HEAD ${HEADSHA:0:7} is a pure rebase of it"; exit 0
+      fi
+    fi
+    echo "REVIEW AGAIN: HEAD ${HEADSHA:0:7} is not review-$n's head ${RH:0:7} or a pure rebase of it: review what changed since ${RH:0:7}"
     exit 1 ;;
   again)
     echo "REVIEW AGAIN: $now P0-P2 finding(s) in review-$n at ${RH:0:7}: fix them, then review the fix commits"; exit 1 ;;
