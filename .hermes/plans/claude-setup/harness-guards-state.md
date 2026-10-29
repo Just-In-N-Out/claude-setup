@@ -16,10 +16,10 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
 ## harness-guards pipeline
 - **Done:** build; review 1 → fix 1; review 2 → fix 2; verifier 1 → fix 3 (V1 plus the rebase onto main, new base `3864d61`, head `d82956d`).
 - **Fix 4 done:** head `e4469c0`, base `3864d61`. The LeornaAI fallback is a strict one-name URL; `$TMPDIR` counts as a temp folder.
-- **Running:** reviewer 3 (brief `briefs/harness-guards-reviewer-3.md`), covering everything since `7b30f16`.
+- **Reviewer 3: CLEAN** at `e4469c0`; its P3s are in follow-ups.
+- **Running:** verifier 2 (brief `briefs/harness-guards-verifier-2.md`). Round 1's folder was moved to `evidence/harness-guards/verifier-round1-dccc042/`.
 - **Next:**
-  1. If reviewer 3 isn't clean: fixer → fresh reviewer on the new commits, until no P0–P2 (brakes in the memory note).
-  2. Verifier → blind auditor → `ac-check.sh`.
+  1. Verifier clean → blind auditor (`evidence/harness-guards/auditor/`, given only the plan, worktree, head and base) → `ac-check.sh`. Not clean → fixer → fresh reviewer on the fix → verifier.
   3. **Finisher:**
      - rebase onto local `main`; if HEAD changes, verifier → auditor → `ac-check` again;
      - `--ff-only` merge into `~/.claude-setup.git` `main`;
