@@ -27,7 +27,7 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
 - **Fixer 4 done:** head `aba3093`.
 - **Review 6: CLEAN.** The referee said MOVE ON at `aba3093`.
 - **Plan amendments:** 1 (AC2/AC7 round-1 line) and 2 (12 ACs reconciled with their tests). The old approved copy is `evidence/review-loop/plan-approved-v0-at-go.md`; the amended one is installed as `plan-approved.md` (09:55).
-- **Running:** verifier 1 (`briefs/review-loop-verifier-1.md`).
+- **Verifier 1: CLEAN** (17/17 non-live; self-check READY FOR THE USER). **Running:** the blind auditor (`briefs/review-loop-auditor-1.md`).
 - **Next:**
   1. auditor (blind; brief from harness-guards-auditor-2 adapted);
   2. `ac-check` live: `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh --repo ~/.claude-setup-wt/review-loop --base <base> --plan evidence/review-loop/plan-approved.md evidence/review-loop/verifier/ac.json evidence/review-loop/auditor/ac.json`;

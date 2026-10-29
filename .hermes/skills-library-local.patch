@@ -18,6 +18,19 @@ index 7fc2b43..905e163 100644
  ---
  
  # Adversarial Verification Loop
+diff --git a/skills/backend-data-migrations/SKILL.md b/skills/backend-data-migrations/SKILL.md
+index d8e25dc..6bfc503 100644
+--- a/skills/backend-data-migrations/SKILL.md
++++ b/skills/backend-data-migrations/SKILL.md
+@@ -27,7 +27,7 @@ For scoped durable execution stores, use [PostgreSQL validation lessons](referen
+ ## Rules
+ 1. Never edit an already-applied migration.
+ 2. Ship backwards-compatible migrations first.
+-3. Validate reads/writes against both old and new schema during transition.
++3. Validate reads/writes against both old and new schema during transition. Prove a new migration on existing rows with a real fill: store tests often clean up after themselves (Leorna's do), so fill a throwaway DB from the base code (Go: a `go test -overlay` probe with no cleanup), then apply the migration with the real runner, check the rows are unchanged and defaults hold, and run down and up again. Match constraint text as Postgres prints it: keyword columns come back quoted, `CHECK (("position" >= 0))` (901y verifier).
+ 
+ ## Mandatory Validation and Agent Defect Loop
+ 
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
 index d6a2493..af31f67 100644
 --- a/skills/code-review-practice/SKILL.md

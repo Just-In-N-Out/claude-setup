@@ -231,3 +231,9 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 86bcm902a fixer 1 on 707a4c0 (2026-10-29)
 - Nit (UX, follows from F1): resubmitting after a pick whose browser went away shows the done sentence and, above it, the 409 "team name already exists" alert; both true, but they read oddly together.
 - Info: review 1's probe file (evidence/86bcm902a/review1/tools) no longer compiles against 707a4c0 (PackMaker.Packs removed); fixer 1's two new tests replace its two scenarios.
+
+## 86bcm901y remove-reorder (2026-10-29: planner, builder, verifier on 3e8d181)
+- P3 product (pre-existing): every pack-builder save gives items new row ids, so scripts need re-approval even after a pure reorder (`internal/pack/README.md:225`).
+- P3 client (pre-existing): when an edited file blocks a removal at Sync, the whole tool fails with "Native files were not changed for this tool" and no file name (leorna-client `application/sync.go:280-281`).
+- P3 process: the 901y builder ran a repo-wide `git worktree prune`, which removed the stale registration of `~/.cache/86bcm901j-fixer6/head-d723e04` (folder already gone; 901j's worktree and branch intact). Rule now in the `leorna` skill.
+- Nit (test gap): AC4/another_company_pack posts a current parent_version, so the new item route's 409/400 page branches for a foreign tenant are covered only through 901w's `TestPackBuilderAC4RefusedSavesWriteNothingWithPostgres/another_company_pack`; a foreign-tenant case with a stale parent_version expecting 404 would test the new route directly (`evidence/86bcm901y/verifier/mutations-summary-3e8d181.txt`).
