@@ -79,7 +79,7 @@ Inside the copy (always `terminal(..., workdir=<copy>)`):
   - End every plan with a **Docs & records** task (Justin's standing ask) listing:
     - plan copied to `docs/plans/<date>-<name>.md`;
     - ledger moved by the finisher to `docs/plans/<plan>-ledger.md` before the final premerge commit/rebase;
-    - `docs/HANDOFF.md` updated, with the paste check owed (the next free id; parallel copies pick ids alone, so the second to merge renumbers a clash: keep the old id through the rebase's conflict and renumber in its own commit afterwards, so the branch's later HANDOFF commits replay cleanly);
+    - `docs/HANDOFF.md` updated, with the paste check owed (the next free id; parallel copies pick ids alone, so the second to merge renumbers a clash: keep the old id through the rebase's conflict and renumber in its own commit afterwards, so the branch's later HANDOFF commits replay cleanly). A new section goes above the previous top `## ` heading and never replaces that line (a builder's commit replaced closing-cta's heading unnoticed through two reviews);
     - `BUILD` bumped;
     - main `CLAUDE.md` **Status** updated after the merge: current build and one feature line/paste check only; details/rulings go in HANDOFF and the ledger, with only new standing rules, decisions or shared gotchas in CLAUDE.md (Step 4 item 6);
     - any new `CLAUDE.md` rule the fix creates.

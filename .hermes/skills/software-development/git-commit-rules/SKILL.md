@@ -85,6 +85,7 @@ Hermes has no Claude Code worktree isolation, so run main-folder commands direct
 - Hermes doesn't add `Co-Authored-By` itself, but other tools (Claude Code, Codex) may. Check messages written by delegated agents too.
 - `git commit --amend` keeps the original author. If that author is wrong, tell Justin instead of rewriting history yourself.
 - Rewriting pushed history (`filter-branch`, `--force-with-lease`) needs Justin's explicit OK.
+- Never send a commit in the same parallel batch of tool calls as the gate it depends on (typecheck, tests): wait for the gate's exit first (after-faq-sections fixer 2 committed while its typecheck failed).
 
 ## Verification
 
