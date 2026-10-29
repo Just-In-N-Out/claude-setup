@@ -40,7 +40,10 @@ Updated 2026-10-29 ~03:45. Justin is asleep. He said "approve either way"; the p
   3. every test passes.
 
   This holds even if other chats edited other parts of the same files.
-- **Running:** finisher 3 (`briefs/review-loop-finisher-3.md`): rebase, the three checks, then report. The main session then runs the `--ff-only` merge at once, `sync.sh`, and checks the memory note is gone and `MEMORY.md` is updated.
+- **Finisher 3:** all three conditions passed on `a489a1e`, but `main` moved during the gates (syncs every 1–6 min).
+- **Running:** finisher 4 (`briefs/review-loop-finisher-4.md`): loops rounds and merges by itself as soon as a round ends with `main` unchanged (up to 8 rounds or 60 min).
+- **After it:** the main session runs `sync.sh` and reports to Justin.
+- **Lesson held (feature-dispatch is a story file):** a finisher round should be one script that checks `main` at the end and merges at once.
 - **After the merge:** update feature-dispatch's "Setup repo" merge-policy line with this extended rule (as used for review-loop; ask before reusing), and add the "pure rebase hashes context" note to `review-loop.md`.
 - **Then:** if the referee says REVIEW AGAIN, a delta review of the rebase; then verifier 3 → auditor 3 → `ac-check` → merge right away.
 - **If `main` touches a story file AGAIN during that window:** stop and ask Justin. Recommend extending Q10 A: allow a base-only merge when `range-diff` is all `=` and the gates pass, even if `main` touched a story file in lines away from the story's hunks.
