@@ -9,7 +9,7 @@ Story heads: control plane `de5fbe0755a41e0528815ef3b72509aeadb20c3c` (base `b65
 | leorna-control-plane | `e2254e0100a482b9201edf9b96f01936e4486d44` | same | **Yes**: PR #101 "One-click quick start" merged 20:23 UTC (27 commits, 19 files) |
 | leorna-client | `f105e27814b6efbec67059687963e722933acec2` | same | No (= base) |
 
-Fetched 22:01 UTC; `origin/main` rechecked at 22:06 UTC (unchanged).
+Fetched 22:01 UTC; rechecked at 22:06 and 22:15 UTC (both `main`s unchanged; #102 still at `1aa8ca3`; story heads unchanged and clean).
 
 ## Open sibling PRs
 
