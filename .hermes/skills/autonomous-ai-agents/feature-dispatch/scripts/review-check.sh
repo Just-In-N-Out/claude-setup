@@ -139,6 +139,9 @@ RH=$(jq -r ".rounds[$((n - 1))].head" <<<"$in") RF=$(jq -r ".rounds[$((n - 1))].
 if [[ $(jq -r ".rounds[$((n - 1))].scope" <<<"$in") == full ]]; then
   git -C "$repo" merge-base --is-ancestor "$RF" "$RH" 2>/dev/null && [[ $RF != "$RH" ]] \
     || die "review-$n is a full review, but its from ${RF:0:7} is not an older commit of its head ${RH:0:7}"
+  # the story base, or an older commit of it (a rebase moves --base forward past the recorded base)
+  git -C "$repo" merge-base --is-ancestor "$RF" "$BASESHA" 2>/dev/null \
+    || die "review-$n is a full review, but its from ${RF:0:7} is not the --base ${BASESHA:0:7} or an older commit of it"
 fi
 
 v=$(jq -c "$JUDGE" <<<"$in") || die "can't judge the review records"

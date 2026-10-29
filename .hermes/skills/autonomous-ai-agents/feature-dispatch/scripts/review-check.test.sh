@@ -384,8 +384,11 @@ ac7_referee_checks_head_coverage() {
   # a reviewed head with no common history with HEAD
   ing git -C "$R" checkout -q --orphan lone && ing git -C "$R" rm -rq --cached . && O1=$(cm o.txt o1 o1) && O2=$(cm o.txt o2 o2) \
     && ing git -C "$R" checkout -q -f work || fail "orphan branch" || return 1
+  fresh; rev 1 full "$BASE" "$C2"; rev 2 delta "$C2" "$O2"; judge "$M2"
+  want 1 "REVIEW AGAIN: HEAD ${NH:0:7} is not review-2's head ${O2:0:7} or a pure rebase of it: review what changed since ${O2:0:7}" "a reviewed head on unrelated history" || return 1
+  # a full round's from is --base or an older commit of it (above: from the old base after a rebase moves on)
   fresh; rev 1 full "$O1" "$O2"; judge "$M2"
-  want 1 "REVIEW AGAIN: HEAD ${NH:0:7} is not review-1's head ${O2:0:7} or a pure rebase of it: review what changed since ${O2:0:7}" "a reviewed head on unrelated history" || return 1
+  bad2 "review-1 is a full review, but its from ${O1:0:7} is not the --base ${M2:0:7} or an older commit of it" "a full review on unrelated history" || return 1
   done_ok
 }
 
@@ -426,6 +429,8 @@ ac8_referee_rejects_bad_records() {
   bad ".from = \"$G\""                   "review-1's from ffffff. is not a commit"  "a from that isn't a commit" || return 1
   bad ".from = \"$C2\""                  'is not an older commit of its head'       "a full review from its own head" || return 1
   bad ".from = \"$C2\" | .head = \"$C1\"" 'is not an older commit of its head'      "a full review from a later commit" || return 1
+  bad ".from = \"$C1\"" "review-1 is a full review, but its from ${C1:0:7} is not the --base ${BASE:0:7} or an older commit of it" \
+    "a full review from a commit inside the story" || return 1
   bad '.findings = {}'                   'findings must be a list'                  "findings as an object" || return 1
   bad '.findings[0] = "R1-1"'            'a finding is not an object'               "a finding as text" || return 1
   bad '.findings[0].id = "R2-1"'         'finding id "R2-1" must start R1-'         "an id from another round" || return 1
