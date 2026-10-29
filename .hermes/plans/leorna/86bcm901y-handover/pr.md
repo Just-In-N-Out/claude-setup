@@ -27,7 +27,7 @@ ClickUp: [Remove and reorder items in a pack version](https://app.clickup.com/t/
 - `internal/store/postgres/pack_versions.go`:
   - `insertVersionItems(…, ordered bool)`: builder versions store 1…n, while `CreateVersion` (Fork, Edit, Add library item, a new item on Pack Versions) stores 0.
   - `loadVersionItems` orders by position, then kind, then name.
-- `internal/store/postgres/pack_builder.go`: `SavePackVersion` passes the order to `ApplyChange` and stores positions. A save that names an `order` adds `order` (as `kind/name`) to both the before and after values of its audit record. Saves without one keep 86bcm901w's shape.
+- `internal/store/postgres/pack_builder.go`: `SavePackVersion` passes the order to `ApplyChange` and stores positions. A save that names an `order` adds `order` (as `kind/name`) to both the before and after values of its audit record. Saves without one keep #96's shape.
 - `internal/web/pack_items.go` (new), `internal/web/handler.go`: `POST /admin/library/packs/{packId}/items` (`requireSession(requireAdmin(…))`, form CSRF, 4 KiB body) takes exactly one button (`remove`, `move_up` or `move_down` = item id) and one `parent_version`. It gives:
   - 303 on success;
   - an inline 400 alert for removing the only item, moving the first item up, moving the last item down, or an item that isn't in this version;
@@ -52,7 +52,7 @@ ClickUp: [Remove and reorder items in a pack version](https://app.clickup.com/t/
 
 ## Test Plan
 
-Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `main` (`dd006b7`, which includes #98) into the reviewed head `3e8d181`. It ran in the story's worktree with its own `_test` database. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 and gitleaks 8.30.1 (CI's pins). **CI is pending: nothing is pushed yet.**
+Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `main` (`dd006b7`, which includes #98) into the reviewed head `3e8d181`. It ran in the story's worktree with its own `_test` database. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 and gitleaks 8.30.1 (CI's pins). Hosted CI runs on this PR.
 
 - [x] Merge of `main`: the only conflict was `delivery/stories.json`. It was resolved by taking main's file and appending this story's entry last; every earlier entry is unchanged.
   - Every other file equals one side's version.
@@ -70,7 +70,7 @@ Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `m
 - [x] Postgres tests (`go test -json` over `internal/cloud/dbcheck`, `internal/store/postgres` and `internal/web`, read per test):
   - 527 results: 523 pass, 0 fail, and 0 declared tests missing.
   - The only 4 skips are the accepted ones (the two ClickHouse subtests, the live Scaleway test and the opt-in evidence-dir test). No skip names `LEORNA_TEST_DATABASE_URL`.
-  - All 106 `TestPackBuilder*`/`TestPackItems*`/`TestPackItemOrderStoreWithPostgres`/`TestMigrationRoundTrip` entries pass, including 86bcm901w's suite, unchanged apart from the `SaveVersion` call sites.
+  - All 106 `TestPackBuilder*`/`TestPackItems*`/`TestPackItemOrderStoreWithPostgres`/`TestMigrationRoundTrip` entries pass, including #96's suite, unchanged apart from the `SaveVersion` call sites.
 - [x] `TestPackItemsAC1RemoveSavesNewVersionWithoutTheItemAndAuditsWithPostgres` (5 subtests): pass
 - [x] `TestPackItemsAC2RemovedItemLeavesTheNextSyncLockfileWithPostgres` (4 subtests): pass
 - [x] `TestPackItemsAC3ReorderSavesNewVersionInTheNewOrderAndAuditsWithPostgres` (6 subtests): pass
@@ -80,12 +80,12 @@ Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `m
 - [x] gitleaks over this PR's commits (`dd006b7..d84fd04`), and over the merged `delivery/stories.json`: no leaks.
 - [x] Scope: no `.github` change; the only new migration is `000024`, and no existing migration changed; all 14 commits (13 plus the merge) are by the Leorna identity with no AI attribution lines; the contract is unchanged since `3e8d181`; `check-generated-contracts.sh` exit 0.
 - [ ] Acceptance on the PR head: being rerun. On the reviewed head `3e8d181`, before `main` was merged in, the pipeline's independent verifier and a blind AC auditor each ran every AC test. They also ran each AC test on base, where it fails. Their other checks were mutation checks, migration 24 over existing data, a dev-mode admin console run on a loopback server and the container build. `ac-check.sh` gave `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`. A read-only run of the client's Sync tests (`f105e27`, no client change) also passed then.
-- [ ] Hosted CI: pending until pushed.
+- [ ] Hosted CI: running on this PR.
 
 ## Security, migration, rollback
 
 - **Security:**
-  - The new console route and the JSON `order` sit behind the same `requireSession(requireAdmin(…))` as 86bcm901w's routes; a member gets 403. The store re-checks the role inside the write transaction.
+  - The new console route and the JSON `order` sit behind the same `requireSession(requireAdmin(…))` as #96's routes; a member gets 403. The store re-checks the role inside the write transaction.
   - Another company's pack is 404. Every read and lock is tenant-keyed, and migration 23's `(tenant_id, pack_id)` FK refuses a cross-tenant version.
   - The form uses the console's form CSRF check and a 4 KiB body bound; JSON keeps the `X-CSRF-Token` guard, strict decoding and the 64 KiB bound.
   - Item ids come from the shown version only. An id from any other version is a stale page (inline 400), never a lookup in another version.
@@ -105,37 +105,37 @@ Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `m
   - **Q1-A:** AC2 is proven by this repo's sync test (remove → assign → the desktop's lockfile drops exactly the item's files) plus a read-only run of the client's existing Sync tests. The card's Verify asks for a "client sync integration test": the client's existing `TestSyncEndToEndWithLoginMockTLSAndRealWriters` and `TestApplyRemovesOnlyUnchangedManagedFile` cover the desktop half, and no client test or code was added.
   - **Q2-A:** Move up and Move down buttons, each click saving a version. There is no JavaScript, so it works under the console's CSP. Bulk reordering goes through the API's `order`.
   - **Q3-A:** the order shows in the console and the API, and Sync is unchanged. The bundle and lockfile stay sorted by path.
-- Only packs built in the library get the item list (86bcm901w's rule). Seed versions and forks keep today's Pack Versions flows.
+- Only packs built in the library get the item list (#96's rule). Seed versions and forks keep today's Pack Versions flows.
 - There is no confirmation step for Remove: the previous version stays and can be assigned again.
 - The API's `order` is a complete order, not move steps. A present but empty `order` is refused (400), even beside other changes, so it is never silently ignored.
-- The audit action stays `pack.version.create`. A save that names an `order` records both orders, even when it only places added items, because `diff.added` is sorted. Saves without an `order` keep 86bcm901w's audit shape, and its AC3 test passes unchanged.
+- The audit action stays `pack.version.create`. A save that names an `order` records both orders, even when it only places added items, because `diff.added` is sorted. Saves without an `order` keep #96's audit shape, and its AC3 test passes unchanged.
 - AC4's setup makes version 2 through the JSON API rather than a console click, so the base-commit run reaches every refusal case.
-- `BuilderService.SaveVersion` now takes `pack.VersionChange` instead of `add, remove`. Every caller on `main` is updated here. In-flight 86bcm902a adds one test caller with the old arguments (see the next point).
+- `BuilderService.SaveVersion` now takes `pack.VersionChange` instead of `add, remove`. Every caller on `main` is updated here. The in-flight quick-start story ("One-click quick start") adds one test caller with the old arguments (see the next point).
 - The OpenAPI change is additive and optional, so the client needs no regeneration.
 - Test Postgres ran on 127.0.0.1:55432, because 5432 is another container on the build machine. CI uses its own service.
-- **Integration:** `main` (with #98) is merged in here. Its only conflict was `delivery/stories.json`, resolved by appending this story's entry last. Checked against the local branches for 86bcm901r and 86bcm902a, neither yet pushed. Whichever story merges second:
+- **Integration:** `main` (with #98) is merged in here. Its only conflict was `delivery/stories.json`, resolved by appending this story's entry last. Checked against the local branches of the starter-packs story ("Role-based starter packs") and the quick-start story, neither yet pushed. Whichever story merges second:
   - appends its `delivery/stories.json` entry last, as text;
-  - renames its own `000024_*` migration pair to the next free number, with the "migration 24" mentions in its docs and comments, because 86bcm901r and 86bcm902a also add a migration 24;
-  - with 86bcm901r only: keeps both `libraryCSS` additions and both README sections; passes `false` at 901r's new `insertVersionItems` call (`starter_packs.go`); and renames one of the two `mintDesktopToken` test helpers in `internal/web`;
-  - with 86bcm902a only: switches its `quick_start_test.go` `SaveVersion` call to `pack.VersionChange{AddLibraryItemIDs: …}`;
+  - renames its own `000024_*` migration pair to the next free number, with the "migration 24" mentions in its docs and comments, because the starter-packs and quick-start stories also add a migration 24;
+  - with the starter-packs story only: keeps both `libraryCSS` additions and both README sections; passes `false` at its new `insertVersionItems` call (`starter_packs.go`); and renames one of the two `mintDesktopToken` test helpers in `internal/web`;
+  - with the quick-start story only: switches its `quick_start_test.go` `SaveVersion` call to `pack.VersionChange{AddLibraryItemIDs: …}`;
   - then reruns its gates.
 - **Follow-ups** (not in this PR):
   1. Client: a Sync test that removes a whole item (not only supporting files) and checks that a locally edited file is kept and flagged, in all three tools.
   2. Client: when an edited file blocks a removal, Sync says only "Native files were not changed for this tool". Name the file.
   3. Every pack-builder save, even a pure reorder, gives items new row ids, so script items need approval again. Consider carrying an approval forward when the script bytes are unchanged (a security choice, for Christian).
   4. Console: bulk reordering or drag and drop, if admins rearrange large packs often (drag and drop needs a CSP-nonced script).
-  5. 86bcm902d: show `reordered` and the two orders in the version history view.
+  5. "Manage many packs per tenant in one screen": show `reordered` and the two orders in the version history view.
   6. If an item's order ever matters to a tool, add `position` to the bundle contract (both repos; every assigned pack re-syncs once).
   7. Test gaps found by the blind auditor, each probed as correct on this head:
      - no test lists or removes an item that is no longer in the library;
      - AC3's sync subtest reorders items without supporting files (the unit test `TestApplyChangeOrdersTheResult` covers that case);
-     - AC4's other-company case posts a current `parent_version`, so the new route's 409 and 400 pages for a foreign tenant rely on 86bcm901w's suite.
+     - AC4's other-company case posts a current `parent_version`, so the new route's 409 and 400 pages for a foreign tenant rely on #96's suite.
 
 ## Evidence
 
 - Head: `d84fd046994d606e1f79c2faa4b2c15cc063dab3`, the merge of the reviewed head `3e8d18197575c772c6d34fcdd10f06e5911168fc` with GitHub `main` `dd006b79f9908976e853c57489032bd5d9d471df` (story base `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f`)
-- Required check: "Go quality gates": pending until pushed
-- Actions run: pending until pushed
+- Required check: "Go quality gates": pending
+- Actions run: pending
 - Local gates on this head (2026-10-29), each exit 0 and kept with the story's evidence (one log per gate, plus a summary):
   - `make check`, `test-module-add.sh`, and the Postgres `go test -json` stream read per test;
   - the four AC tests and the store order test;
