@@ -53,6 +53,9 @@
 24. **The user changes a diagnostic-only instruction to applying an existing fix.** Record the new source-write authority without inventing a validation or publication waiver. Resolve only any still-unanswered material product choice, then dispatch the scoped fixer on the existing branch; do not require a second implementation approval or restart architecture research.
 25. **A proposed experiment leaves the implementation gate unresolved under every possible outcome.** Label it diagnostic-only before requesting permission, name the decision it can inform and the clearance still required, and do not describe its successful completion as readiness to apply or ship the fix.
 26. **Prototype examples pass while application source is unchanged.** Say the story is not done when asked. Report prototype evidence separately from application implementation, remaining validation, independent review and operator acceptance.
+27. **Round 3 (a delta review of the fix commits) is clean.** `review-check.sh` prints MOVE ON: its P3 lines go to `<evidence>/follow-ups.md` and the verifier starts. No extra full review, and the main session rules on no finding.
+28. **Round 4 repeats round 3's P2 with no new fact.** `review-check.sh` prints ASK JUSTIN (brake d): dispatch nothing until Justin answers. Record his words in `<evidence>/review-4/justin.json` (`accept` for known limits, `"continue": true` to keep going), then rerun the referee and follow its new last line.
+29. **The verifier finds a bug after MOVE ON.** A fixer fixes it test-first, then a fresh delta review of that fix, until `review-check.sh` prints MOVE ON for the new head; only then the verifier again, then the auditor and `ac-check.sh --reviews`. A records-only commit after MOVE ON needs the same short review.
 
 ## Operational handoff cases
 
