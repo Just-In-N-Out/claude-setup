@@ -8,6 +8,10 @@
 
 "Yeah, just go with the recommended star options." → **go** with Q1 a (explicit import command), Q2 a (only items the last Sync installed leave the machine), Q3 a (every pack holding an item shows its full count), Q4 a (disposable ClickHouse container from CI's pinned image). The plan below is written for exactly these answers; AC4 and AC5 (proposed) are approved with it.
 
+### Justin's answer after review 1 (2026-10-29)
+
+Review 1's R1-1 (P2): a newer shipped seed version of "Leorna starter pack" displaced the tenant's own edited starter pack on the page, because D7 keeps the newest-created version per pack name across tenant and seed versions. Justin picked **"Company's own pack wins"**: for each pack name, show the tenant's newest version; show the shared seed version only when the tenant has no version of that name. This amends D7's pack-row rule for the fixer; `plan-approved.md` (frozen at go) is unchanged and its ACs are unchanged.
+
 ## Questions (answer with letters; **go** alone takes every ⭐)
 
 **Q1. How do item uses get from engineers' machines to the server in this story?** (Yan's [Upload usage automatically after Sync](https://app.clickup.com/t/86bcnuxce) is still To Do.)
