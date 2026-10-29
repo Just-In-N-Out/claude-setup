@@ -79,8 +79,9 @@ Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `m
 - [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: OK
 - [x] gitleaks over this PR's commits (`dd006b7..d84fd04`), and over the merged `delivery/stories.json`: no leaks.
 - [x] Scope: no `.github` change; the only new migration is `000024`, and no existing migration changed; all 14 commits (13 plus the merge) are by the Leorna identity with no AI attribution lines; the contract is unchanged since `3e8d181`; `check-generated-contracts.sh` exit 0.
-- [ ] Acceptance on the PR head: being rerun. On the reviewed head `3e8d181`, before `main` was merged in, the pipeline's independent verifier and a blind AC auditor each ran every AC test. They also ran each AC test on base, where it fails. Their other checks were mutation checks, migration 24 over existing data, a dev-mode admin console run on a loopback server and the container build. `ac-check.sh` gave `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`. A read-only run of the client's Sync tests (`f105e27`, no client change) also passed then.
-- [ ] Hosted CI: running on this PR.
+- [x] Acceptance on the PR head `008c612` (2026-10-29): a fresh verifier and, after it, a blind AC auditor (given only the approved plan and the code) each ran every AC test on `008c612`, where it passes, and on `main` `dd006b7`, where it fails on its own assertions; each took its own admin-console captures of a removal and a reorder. The verifier also proved the merge (only `delivery/stories.json` differs from both parents; the story's diff equals the reviewed `3e8d181` diff apart from the PR number), reran every gate above on a detached copy, ran migration 24 up, down and up over rows written by the base code, and ran 19 guard mutants (15 killed; the 4 survivors are classified: three single layers of a two-layer guard and one fixture gap listed below). The auditor ran 31 mutants of its own (every AC clause has a killing mutant). `ac-check.sh` on both reports: `ALL ACCEPTED: 4 of 4 ACs on 008c612`. A read-only run of the client's Sync tests (`f105e27`, no client change) passed again.
+- [x] Earlier, on the reviewed head `3e8d181`, before `main` was merged in, the pipeline's independent verifier and a blind AC auditor each ran every AC test. They also ran each AC test on base, where it fails. Their other checks were mutation checks, migration 24 over existing data, a dev-mode admin console run on a loopback server and the container build. `ac-check.sh` gave `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`. A read-only run of the client's Sync tests (`f105e27`, no client change) also passed then.
+- [x] Hosted CI on `008c612`: Go quality gates, Package admin-portal distribution and Publish control-plane image all pass.
 
 ## Security, migration, rollback
 
@@ -126,20 +127,22 @@ Everything below ran on head `d84fd04` on 2026-10-29. That head merges GitHub `m
   4. Console: bulk reordering or drag and drop, if admins rearrange large packs often (drag and drop needs a CSP-nonced script).
   5. "Manage many packs per tenant in one screen": show `reordered` and the two orders in the version history view.
   6. If an item's order ever matters to a tool, add `position` to the bundle contract (both repos; every assigned pack re-syncs once).
-  7. Test gaps found by the blind auditor, each probed as correct on this head:
+  7. Test gaps found by the blind auditors, each probed as correct on this head:
      - no test lists or removes an item that is no longer in the library;
      - AC3's sync subtest reorders items without supporting files (the unit test `TestApplyChangeOrdersTheResult` covers that case);
-     - AC4's other-company case posts a current `parent_version`, so the new route's 409 and 400 pages for a foreign tenant rely on #96's suite.
+     - AC4's other-company case posts a current `parent_version`, so the new route's 409 and 400 pages for a foreign tenant rely on #96's suite;
+     - AC4's member, bad-CSRF, other-company and signed-out cases post to the new console route only; the JSON `order` path keeps #96's unchanged route guards (an auditor probe shows it refuses each and writes nothing);
+     - the store test repeats a position only at 2, so narrowing the partial unique index to `WHERE position > 1` would go unnoticed; a second insert at position 1 would close it (no real save can reach it: positions are written 1…n in one transaction).
 
 ## Evidence
 
 - Head: `008c6124af3f58bbae9bd580b86c7c50cf8ffc29`, which is `d84fd046994d606e1f79c2faa4b2c15cc063dab3` (the merge of the reviewed head `3e8d18197575c772c6d34fcdd10f06e5911168fc` with GitHub `main` `dd006b79f9908976e853c57489032bd5d9d471df`; story base `6c1709e39efd2d4efcb1fa226e0a8fa9221dc76f`) plus one commit that records this PR (#99) in `delivery/stories.json`. The local gates below ran on `d84fd04`. On the PR-number commit, `test_story_shippable.py` and `go build ./... && go vet ./...` exit 0.
-- Required check: "Go quality gates": pending
-- Actions run: pending
+- Required check: "Go quality gates": pass (10m41s) on `008c612`
+- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40916770447
 - Local gates on this head (2026-10-29), each exit 0 and kept with the story's evidence (one log per gate, plus a summary):
   - `make check`, `test-module-add.sh`, and the Postgres `go test -json` stream read per test;
   - the four AC tests and the store order test;
   - gitleaks on this PR's commits;
   - scope and authors, and the contract and generated-code checks;
   - the story gate, and the merge proof.
-- AC reports: the verifier's and the blind auditor's on `3e8d181` (`ac-check.sh`: `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`); both are being rerun on this head.
+- AC reports: the verifier's and the blind auditor's on `3e8d181` (`ac-check.sh`: `ALL ACCEPTED: 4 of 4 ACs on 3e8d181`), and both rerun on this head (`ALL ACCEPTED: 4 of 4 ACs on 008c612`).
