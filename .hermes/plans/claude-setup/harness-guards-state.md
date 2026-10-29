@@ -20,7 +20,7 @@ Updated 2026-10-28, late. Justin is asleep. He said: "keep this running and make
 - **Verifier 2: CLEAN** at `e4469c0` (`evidence/harness-guards/verifier/ac.json`; its own self-check gave READY FOR THE USER, 20/22).
 - **Auditor: CLEAN.** `ac-check.sh` on e4469c0 gave READY FOR THE USER, 20/22 (live AC21 and AC22 owed to Justin).
 - **Finisher step 1 done:** rebased onto `80ef3a8`, new head `6b57a5b` (range-diff all `=`, no conflicts, every gate green). `main` had already moved again by then (e2479ef, no story files).
-- **Running:** verifier 3 on `6b57a5b` (brief `briefs/harness-guards-verifier-3.md`). Then blind auditor 2 (`briefs/harness-guards-auditor-2.md`) → `ac-check.sh` with `--base 80ef3a8e6979abe6c2754b06d2acd61850f1ac5d`.
+- **Verifier 3: CLEAN** on `6b57a5b` (READY FOR THE USER, 20/22). **Running:** blind auditor 2 (`briefs/harness-guards-auditor-2.md`) → `ac-check.sh` with `--base 80ef3a8e6979abe6c2754b06d2acd61850f1ac5d`.
 - **Old rounds' folders:** `verifier-round1-dccc042`, `verifier-round2-e4469c0`, `auditor-round1-e4469c0`.
 - **Merge blocker (Justin's call):**
   - Peer sessions keep moving `main` (my own synced edits get swept into their syncs too), so `--ff-only` needs yet another rebase, and the rule then needs another re-verify.
