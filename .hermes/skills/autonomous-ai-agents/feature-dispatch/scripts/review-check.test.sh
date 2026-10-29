@@ -644,7 +644,7 @@ ac16_scripts_portable_to_macos() {
   need "$RC" && need "$ACC" || return 1
   for f in "$RC" "$ACC" "$HERE/review-check.test.sh"; do bash -n "$f" || fail "${f##*/}: bash -n fails" || return 1; done
   # the patterns are built in pieces, so this file never holds them itself
-  re='map''file|read''array|declare -''A|local -''n|[$][{][A-Za-z_][A-Za-z0-9_]*([[][^]]*[]])?[,^]|[[][[] -''v |[|]''&|&''>>'
+  re='map''file|read''array|declare -''A|local -''n|[$][{][A-Za-z_][A-Za-z0-9_]*([[][^]]*[]])?[,^]|[[][[] -''v |[|]''&|''&''>>'
   re="$re|sed -""i|grep -[A-Za-z]*""P|readlink -""f|date -""d|stat -""c"
   for f in "$RC" "$ACC" "$HERE/review-check.test.sh"; do
     hit=$(grep -nE -- "$re" "$f") && { fail "${f##*/} uses a bash 4+ or GNU-only form: $hit"; return 1; }
