@@ -39,8 +39,11 @@ BASESHA=$(commit "$base") || die "--base $base is not a commit"
 [[ $BASESHA != "$HEADSHA" ]] && git -C "$repo" merge-base --is-ancestor "$BASESHA" "$HEADSHA" 2>/dev/null \
   || die "--base must be an older commit of this branch than HEAD"
 
+# The jq programs are read with read -d '' (it returns 1 at the end of input), never captured from a
+# here-document inside a command substitution: bash 3.2 finds the end of a command substitution with
+# no here-document logic, so a quote in the program would end it early.
 # every rule a record breaks, one line each (the first one is reported)
-VALIDATE=$(cat <<'JQ'
+IFS= read -r -d '' VALIDATE <<'JQ' || :
 def str: type == "string" and test("[^[:space:]]");
 def sha: type == "string" and test("^[0-9a-f]{40}$");
 .rounds as $r | .justin as $j
@@ -75,9 +78,8 @@ def sha: type == "string" and test("^[0-9a-f]{40}$");
      end)
   end
 JQ
-)
 # the latest round's verdict: effective severities, its finding lines, and clean / again / ask
-JUDGE=$(cat <<'JQ'
+IFS= read -r -d '' JUDGE <<'JQ' || :
 def words: [splits("[[:space:]]+") | select(length > 0)] | length;
 def serious: . == "P0" or . == "P1" or . == "P2";
 def oneline: tostring | gsub("[[:cntrl:]]+"; " ");
@@ -104,7 +106,6 @@ def oneline: tostring | gsub("[[:cntrl:]]+"; " ");
               elif ($stalled | length) > 0 or ($prev > 0 and ($now | length) >= $prev) then "ask"
               else "again" end) }
 JQ
-)
 
 # the rounds: review-1 … review-<n>, with no gaps
 n=0

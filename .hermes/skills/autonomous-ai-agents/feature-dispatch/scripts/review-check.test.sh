@@ -651,6 +651,12 @@ ac16_scripts_portable_to_macos() {
   for f in "$RC" "$ACC" "$HERE/review-check.test.sh"; do
     hit=$(grep -nE -- "$re" "$f") && { fail "${f##*/} uses a bash 4+ or GNU-only form: $hit"; return 1; }
   done
+  # bash 3.2 finds the end of a command substitution by matching quotes and parens, with no
+  # here-document logic: a here-document opened inside one (a <<< here-string is fine) can end it early
+  re='[$][(]([^)]*[^<])?<''<[^<]'
+  for f in "$RC" "$ACC" "$HERE/review-check.test.sh"; do
+    hit=$(grep -nE -- "$re" "$f") && { fail "${f##*/} opens a here-document inside a command substitution: $hit"; return 1; }
+  done
   for f in "$RC" "$HERE/review-check.test.sh"; do
     hit=$(grep -nE -- '(hea''d|tai''l) -[0-9]' "$f") && { fail "${f##*/} uses a head/tail short form: $hit"; return 1; }
   done
