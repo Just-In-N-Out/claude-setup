@@ -51,16 +51,18 @@ ClickUp: [Customise a shipped item (company variant)](https://app.clickup.com/t/
   - `internal/web/item_create_integration_test.go` and `pack_versions_test.go`: the item-editor fix;
   - `internal/store/postgres/store_test.go`: `library_variants` in `TestMigrationRoundTrip` and `resetDatabase`.
 - `delivery/stories.json`: this story's entry, appended last. `03319a0` records this PR's number in it.
-- **Merge of `main`** (`5e6863d`, with #101, #102 and #103) in `f10da15`, no rebase. Four files that both sides appended to were resolved keeping both:
-  - `delivery/stories.json`: main's file unchanged, this story's entry last;
-  - `internal/audit/README.md`: the quick start paragraph, then this story's;
-  - `internal/store/postgres/store_test.go`: `quick_starts` and `library_variants` in both `TestMigrationRoundTrip` lists and in `resetDatabase`;
-  - `internal/web/library.go`: this story's lede, then #102's Starter packs section.
-  - The same commit renames the migration pair to 27 and changes "migration 25" to 27 in `internal/library/README.md`.
+- **Merges of `main`**, no rebase:
+  - `f10da15` brought in `5e6863d` (#101, #102 and #103). Four files that both sides appended to were resolved keeping both:
+    - `delivery/stories.json`: main's file unchanged, this story's entry last;
+    - `internal/audit/README.md`: the quick start paragraph, then this story's;
+    - `internal/store/postgres/store_test.go`: `quick_starts` and `library_variants` in both `TestMigrationRoundTrip` lists and in `resetDatabase`;
+    - `internal/web/library.go`: this story's lede, then #102's Starter packs section.
+    - The same commit renames the migration pair to 27 and changes "migration 25" to 27 in `internal/library/README.md`.
+  - `caf5d96` brings in `9135f4e` (#104, manage many packs in one admin overview) with no conflict. The seven files both sides change merged cleanly, and #104 adds no migration.
 
 ## Test Plan
 
-Unless an item names another commit, everything below ran on `f10da15` (the merge of GitHub `main` `5e6863d` into `4904333`) on 2026-10-30. The PR finisher ran it in a detached copy with its own fresh `_test` database, using Go 1.27.3, golangci-lint 2.14.0 and govulncheck v1.7.0 (as CI) and gitleaks 8.30.1.
+Unless an item names another commit, everything below ran on `caf5d96` (the merge of GitHub `main` `9135f4e` into `03319a0`) on 2026-10-30. The PR finisher ran it in a detached copy with its own fresh `_test` database, using Go 1.27.3, golangci-lint 2.14.0 and govulncheck v1.7.0 (as CI) and gitleaks 8.30.1.
 
 - [x] `make check`, exit 0:
   - workspace, contracts-check, fmt and vet;
@@ -71,34 +73,33 @@ Unless an item names another commit, everything below ran on `f10da15` (the merg
   - library gate PASSED (0.8.0, 43 items);
   - build.
 - [x] `scripts/test-module-add.sh`: exit 0.
-- [x] Postgres tests: a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web`, `internal/variant` and `internal/textdiff`, read per test.
-  - 349 declared top-level tests: 342 passed, 424 subtests passed, 0 failures. That includes #101's, #102's and #103's tests and `TestMigrationRoundTrip` up and down through migration 27.
-  - 7 skips, all accepted: the two ClickHouse subtests of `TestTeamsAPIWithPostgres`, `LEORNA_EVIDENCE_DIR`, `SCW_LIVE`, and #103's five content-usage tests, which need ClickHouse (`LEORNA_TEST_CLICKHOUSE_URL`). CI runs those with its ClickHouse service. No skip names `LEORNA_TEST_DATABASE_URL`.
-- [x] AC tests, each run alone by name on `f10da15`, 0 skips:
+- [x] Postgres tests: a `go test -json` stream over `cmd/control-plane`, `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web`, `internal/variant`, `internal/textdiff`, `internal/pack` and `internal/library`, read per test.
+  - 467 declared top-level tests: 460 passed, 630 subtests passed, 0 failures. That includes #101's to #104's tests (#104's pack overview and body diff tests among them) and `TestMigrationRoundTrip` up and down through migration 27.
+  - 9 skips, all accepted: 7 top-level tests (#103's five content-usage tests, which need ClickHouse through `LEORNA_TEST_CLICKHOUSE_URL`, plus `LEORNA_EVIDENCE_DIR` and `SCW_LIVE`) and the two ClickHouse subtests of `TestTeamsAPIWithPostgres`. CI runs the ClickHouse ones with its ClickHouse service. No skip names `LEORNA_TEST_DATABASE_URL`.
+- [x] AC tests, each run alone by name on `caf5d96`, 0 skips:
   - [x] AC1 `TestVariantAC1CustomiseCreatesATenantOwnedVariantLinkedToTheUpstreamItemAndVersionWithPostgres` (7 subtests): pass
   - [x] AC2 `TestVariantAC2NewerUpstreamVersionShowsAnUpdateNoticeWithADiffThenMergeOrIgnoreWithPostgres` (5 subtests): pass
   - [x] AC3 `TestVariantAC3VariantIsUsedInPacksExactlyLikeALibraryItemWithPostgres` (8 subtests): pass
   - [x] AC4 `TestVariantAC4RefusedVariantRequestsWriteNothingAndStayInsideTheTenantWithPostgres` (14 subtests): pass
-- [x] gitleaks: no leaks in the 80 commits from this branch's base to `f10da15`, nor in the merged content of the 11 files both sides changed plus the renamed migration.
-- [x] Real binary from `f10da15` (`vcs.modified=false`), dev mode on loopback, fresh database, HTTP requests only (no browser):
+- [x] gitleaks: no leaks in the 84 commits from this branch's base to `caf5d96`, nor in the merged content of the 7 files both sides of `caf5d96` changed.
+- [x] Real binary from `caf5d96` (`vcs.modified=false`), dev mode on loopback, fresh database, HTTP requests only (no browser):
   - the production startup loads ran: the content library (43 items) and #102's four starter packs;
   - the Content library shows the Starter packs section, the pack builder and this story's lede;
   - customising `incident-postmortem` as `incident-postmortem-acme` redirects to its variant page;
   - the library then lists it with the Company variant chip, and the pack builder offers it as a checkbox;
-  - the Packs page answers 200, and the server logged no error.
-- [x] Merge checks:
+  - building a pack with only the variant ticked opens that pack with the variant ticked and marked "in pack";
+  - #104's Pack overview lists that pack as a tenant pack, and its history page shows the variant added at 1.0.0;
+  - the Packs and Pack versions pages answer 200, and the server logged no error.
+- [x] Merge checks on `caf5d96`:
+  - no conflict, and the merged tree equals the one a trial predicted before the merge (also the tree CI tested on `03319a0`);
   - every file only one side changed equals that side's version;
-  - the renamed migration pair has the same bytes as 25, and the two README lines differ only by the number;
-  - the files whose merged content differs from both parents are exactly the 11 both-sides files plus the renamed pair;
-  - this story's own patch survives line for line, except those two README lines and the three test lines that now hold both tables;
-  - no duplicated migration version: 25 `quick_starts`, 26 `starter_packs`, 27 `library_variants`;
-  - the merged tree equals the one a trial predicted before the merge.
-- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK. `delivery/stories.json`: main's 46 entries unchanged and in order, this story's entry 47th and last.
-- [x] Scope: no `.github` path changed. The branch's 20 commits (19 plus the merge) are by the Leorna identity, with no AI attribution lines. No `CLAUDE.md`.
-- [x] `03319a0` (on top of `f10da15`) changes only `delivery/stories.json`, adding this PR's number. Unittest OK; main's entries are unchanged by value, with this story last; `scripts/check-story-shippable.py 86bcm901z` prints only the two lines expected while this PR is open ("not merged into main" and "open follow-up references this story").
-- [x] Hosted CI on `03319a0`, which GitHub ran on the merge with `main` `9135f4e` (#104 included): Go quality gates, Publish control-plane image (build only on a PR) and Package admin-portal distribution all passed; see Evidence. Pushing `03319a0` cancelled the run on `f10da15`.
-- [x] Prediction on that same merge (the tree CI checked out), run locally with a fresh database: fmt, vet, build, contracts-check and library-check passed. The Postgres `go test -json` stream had 467 declared top-level tests: 460 passed and 7 accepted skips (the same as above). AC1–AC4 and `TestMigrationRoundTrip` passed.
-- [ ] Not re-run on `f10da15` (they ran on `4904333`, see Assumptions): the mutation checks, the headless-Chrome captures, the release-B update run and the migration fill test.
+  - the 7 files both sides changed equal git's clean three-way merge, and they are exactly the files whose merged content differs from both parents;
+  - this story's own patch survives line for line in all 34 files;
+  - no duplicated migration version: 25 `quick_starts`, 26 `starter_packs`, 27 `library_variants`.
+- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK. `delivery/stories.json`: main's 47 entries unchanged by value and in order, this story's entry 48th and last and unchanged, still recording this PR. `scripts/check-story-shippable.py 86bcm901z` prints only the two lines expected while this PR is open ("not merged into main" and "open follow-up references this story").
+- [x] Scope: no `.github` path changed. The branch's 22 commits (19 story commits, the PR-number record and two merges of `main`) are by the Leorna identity, with no AI attribution lines. No `CLAUDE.md`.
+- [ ] Hosted CI on `caf5d96`: running; see Evidence.
+- [ ] Not re-run on `caf5d96` (they ran on `4904333`, see Assumptions): the mutation checks, the headless-Chrome captures, the release-B update run and the migration fill test.
 
 ## Security, migration, rollback
 
@@ -111,7 +112,7 @@ Unless an item names another commit, everything below ran on `f10da15` (the merg
   - No auth bypass or dev-login change.
 - **Migration:**
   - One new table, additive. No existing table or row changes. The verifier's fill test on the pre-merge head (then numbered 25) kept every earlier row through up, down and up again.
-  - It is migration 27 (#101 took 25, #102 took 26). The SQL is byte-for-byte the same as when this branch numbered it 25.
+  - It is migration 27 (#101 took 25, #102 took 26; #103 and #104 add none). The SQL is byte-for-byte the same as when this branch numbered it 25.
   - GitHub `main` never had it, so no shared database ran it as 25; only this story's own test databases did. A database that ran a pre-merge build of this branch stops at startup with "migration 25 checksum mismatch". The SQL bytes are unchanged and the checksum leaves out the number, so `UPDATE schema_migrations SET version = 27 WHERE version = 25` recovers it and keeps its variants; the next start then applies 25 and 26. Dropping `library_variants` and its `schema_migrations` row, or a fresh database, also works.
 - **Rollback:**
   - **Run the down migration first, then roll back the deploy.** The older binary refuses to start on a database that still records this migration ("applied migration N is missing from embedded migrations"; seen with the base binary in the verifier's migration fill).
@@ -129,8 +130,8 @@ Unless an item names another commit, everything below ran on `f10da15` (the merg
 - **Justin's decisions during review:**
   - After review 2: "R2-1: Keep going." On the item editor's same defect: "Fold into this fix". That is the item-editor change above, in its own commit with its own tests. AC wording unchanged.
   - Then, on cleared supporting-file text that could be resubmitted as empty files: "Mark cleared file boxes required". Built in the next fix round.
-  - Bringing `main` in with this PR: "ok push pr".
-- **Verification so far:** the pre-merge head `4904333` passed four fresh reviews (the last one clean), a verifier and a blind AC auditor (`ac-check.sh`: all 4 ACs accepted), mutation checks (verifier 36 of 36 killed, auditor 16 of 16), a two-release run of the real binaries in headless Chrome, and a migration fill test. On this PR's head, the gates, the AC tests and the startup check above ran; a fresh review of the merge commit, then a new verifier and AC auditor, follow on this PR's head.
+  - Bringing `main` in with this PR: "ok push pr". Then, once #104 had merged, bringing it in before the verifier and the AC auditor: "Bring #104 in first".
+- **Verification so far:** the pre-merge head `4904333` passed four fresh reviews (the last one clean), a verifier and a blind AC auditor (`ac-check.sh`: all 4 ACs accepted), mutation checks (verifier 36 of 36 killed, auditor 16 of 16), a two-release run of the real binaries in headless Chrome, and a migration fill test. On this PR's head `caf5d96`, the gates, the AC tests and the startup check above ran; fresh reviews of the commits since `4904333` (the two merges of `main` and the PR-number record), then a new verifier and blind AC auditor, follow on this PR's head.
 - **Rulings not yet confirmed by Justin** (accepted by the reviews and the verifier):
   - Builder:
     - deleting a library row that a variant is based on fails with SQLSTATE 23001 (`ON DELETE RESTRICT`), not 23503;
@@ -167,9 +168,9 @@ Unless an item names another commit, everything below ran on `f10da15` (the merg
 - Customise also runs the gate, because the variant's name changes the rendered paths. A shipped item that fails the tenant rules couldn't be customised; `TestEveryShippedSkillAgentAndPromptCanBeCustomised` shows none does today.
 - If a later release ships an item with a variant's name, the variant stays (packs that hold it keep working) but can't be ticked; the admin customises again under a new name.
 - Older Pack Versions paths (fork, single-item edit, "Add library item"), the quick start (#101) and the role starter packs (#102) pick shipped items only.
-- **Merging with other work** (checked 2026-10-30, 08:52 UTC): GitHub `main` is `9135f4e`. Since this branch's base it has merged #101, #102 and #103, which this PR's merge commit brought in, and #104 (manage many packs in one admin overview), which merged after this PR opened. No other PR is open.
-  - This PR merges with `main` `9135f4e` without conflict: #104 placed its `delivery/stories.json` entry before the previous last one, and it adds no migration. GitHub shows the branch as behind `main`. CI's run on this PR and the local prediction above both tested that merge.
-  - Before #104 merged: the files both PRs change auto-merged, no top-level name is added by both, and #104 calls none of the functions this PR changed.
+- **Merging with other work** (checked 2026-10-30, 13:14 UTC): GitHub `main` is `9135f4e`. Since this branch's base it has merged #101, #102 and #103, which `f10da15` brought in, and #104 (manage many packs in one admin overview), which merged after this PR opened and which `caf5d96` brought in. The branch contains `main`, and no other PR is open.
+  - #104 merged in with no conflict: it placed its `delivery/stories.json` entry before the previous last one and adds no migration. The seven files both change auto-merged, no top-level name is added by both, and #104 calls none of the functions this PR changed.
+  - #104's Pack overview reads pack versions, so a pack holding a variant shows the variant like any other item (the startup check above).
   - #103's usage counts read pack items by kind and name, so a variant in a pack is counted under its own name.
 - **Follow-ups:**
   1. Edit supporting files in a variant, with a per-file merge.
@@ -187,6 +188,6 @@ Unless an item names another commit, everything below ran on `f10da15` (the merg
 
 ## Evidence
 
-- Head: `03319a0ee8c85d22c7038244599d98e0701bf24f` (the PR-number record) on `f10da155b9f35e72c35645efea3d20121b72d69f`, the merge of `main` `5e6863d` into `4904333a8fe0def527ad32603e115f2499c6cef8` (story base `b65f797ff6cdc56a802dfaf417b0adec96463317`)
-- Check "Go quality gates": pass (11m56s), on GitHub's merge of `03319a0` into `main` `9135f4e`
-- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/41027484165
+- Head: `caf5d9659953cbab3e6141eddd4193762f96aeff`, the merge of `main` `9135f4e` into `03319a0` (the PR-number record), which sits on `f10da155b9f35e72c35645efea3d20121b72d69f`, the merge of `main` `5e6863d` into `4904333a8fe0def527ad32603e115f2499c6cef8` (story base `b65f797ff6cdc56a802dfaf417b0adec96463317`)
+- Check "Go quality gates": running on `caf5d96`
+- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/41061511703
