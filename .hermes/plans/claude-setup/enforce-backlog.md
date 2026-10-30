@@ -62,3 +62,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-29 | 86bcm901z | feature-dispatch | check: before dispatching a Leorna finisher (or in ac-check.sh), require a gates-<sha7> image for the accepted head | offered
 - 2026-10-30 | header-bar | figma-to-bricks | script: the witness-receipt classifier refuses an expected positive of a ticked-outcome class without its `@ <left-out>` field; runs in each fixer's receipt | offered
 - 2026-10-30 | header-bar | mutation-testing-discipline | script: the mutation runner gives "Cannot read properties of" its own CRASH-KILL verdict, apart from behavioural kills | offered
+- 2026-10-30 | web-compare | feature-dispatch | script: before dispatching a role into an isolation:worktree copy, check `git merge-base --is-ancestor <planner base> main` and write the true base (merge-base) into the brief | offered
