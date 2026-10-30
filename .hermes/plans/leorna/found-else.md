@@ -290,3 +290,5 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - 2026-10-29 86bcm901z finisher | P3 records: the 901z auditor's `ac.json` says AC4 has "15/15 subtests"; both its logs show 14 (the hand-over uses 14).
 - 2026-10-29 86bcm901z finisher | info: the shared main checkout is on local `main` e2254e0, behind GitHub 8aa32a1 (the next builder's B0 fast-forwards it).
 - 2026-10-29 86bcm902w review 4 | P3 (#102 design): LatestStarterVersions lists every role ever loaded and #102 never retires a role, so a curation that renames a role slug or drops a role leaves the old role's pack in the catalog (and as its own line on the content usage page) forever.
+- 2026-10-30 86bcm901z PR finisher | P3 docs: the earlier PR draft said this story's test DBs "are dropped", but the builder's `leorna_86bcm901z_test` still exists; reworded in the PR text, DB left alone.
+- 2026-10-30 86bcm901z PR finisher | P3 status: PR #105 is BEHIND main 9135f4e (#104 merged 05:29 UTC during the push-approval wait); merges with no conflict; CI's refs/pull/105/merge (tree ddf88fc) and a local prediction on that tree are green.
