@@ -35,3 +35,5 @@ what it will look like, and keep questions for real trade-offs, with a preview. 
 post-paste steps are in [[site-and-team]].
 
 Screenshots Justin sends may be taken at browser zoom (on 2026-10-29 two were at about 75%, a ~2560px CSS window): before measuring sizes from a shot, solve the zoom from two or three known sizes in it.
+
+After a new build, tell him to close the plugin panel (X) and reopen it, and to check the panel's "Figma to Bricks v2 build …" line before Convert: on 2026-10-30 his first Convert after build 30.1 still ran 29.3 (Figma loads `\\wsl.localhost\Ubuntu\home\justin\Documents\FigmaToBricksV2\manifest.json`, but only on reopen).
