@@ -165,7 +165,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..8601161 100644
+index f2d882d..c8f522d 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,37 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -439,7 +439,7 @@ index f2d882d..8601161 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +426,69 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +426,73 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -460,6 +460,10 @@ index f2d882d..8601161 100644
 +    restore the saved bytes in `finally`, and check hash and git status;
 +    also remove folders a mutant created (a leftover empty item folder made
 +    every later mutant fail for the wrong reason) and digest folders too.
++    The same goes for a database: a migration mutant whose round-trip test
++    fails never rolls back, leaving its table and schema-wide index names for
++    the next mutant to trip on, so recreate the disposable DB before each
++    migration mutant (86bcm901z review 5, M4 vs M4-v2).
 +    An overlay can also add a file (a Replace entry for a path not on disk):
 +    swap an unreachable call (e.g. `EvalSymlinks` on a fresh temp dir) for a
 +    failing stub, apply the same swap to old (RED) and fixed (GREEN) code, and

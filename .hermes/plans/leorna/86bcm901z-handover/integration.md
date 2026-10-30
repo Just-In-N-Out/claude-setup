@@ -174,3 +174,56 @@ Porcelain empty; authors: 1 identity, Leorna OK (20 commits: `HEAD ^b65f797 ^ori
 - **CI:** run 41027484165 (`pull_request`, head `03319a0`) checked out `refs/pull/105/merge` = `c9e8d37` "Merge 03319a0 into 9135f4e", **whose tree is `ddf88fc`, the predicted tree above**. Go quality gates **pass** (11m56s), Publish control-plane image **pass** (build only on a PR), Package admin-portal distribution **pass**. The `f10da15` run 41027208766 was cancelled by push 2 (expected, not a failure).
 - PR body then edited (`gh pr edit --body-file`) to name `03319a0`, the CI result and run, the record checks, the prediction, and #104's merge; read back equal to the file.
 - Open PRs after CI (08:52 UTC): only #105.
+
+---
+
+# 2026-10-30 (09:03 UTC on): bring main in again, #104 (PR finisher 2)
+
+Justin: "I have to make a PR, merge locally with main, and then run the auditors and reviewers because main got moved", then "Bring #104 in first (Recommended)". The fresh review of this merge, then the verifier and the blind auditor, follow on the PR's head.
+
+## Refs (read 2026-10-30 09:03–09:11 UTC)
+
+| Ref | SHA | How it was read |
+| --- | --- | --- |
+| GitHub `main` | `9135f4e9b82c0d5a77b88542a1b3e8b0fb990969` (#104 many packs overview; parents `5e6863d` + `0f9d081`) | HTTPS fetch through gh at 09:04 and 09:11, equal to `gh api …/commits/main` both times |
+| PR head before | `03319a0ee8c85d22c7038244599d98e0701bf24f` | worktree clean; equal to `gh pr view 105 --json headRefOid` (`MERGEABLE`, `BEHIND`) |
+| **Merge commit** | **`caf5d9659953cbab3e6141eddd4193762f96aeff`** (parents `03319a0` + `9135f4e`, tree `ddf88fc38424f1caf312ae2f18d620baae4d2b78`) | `git merge --no-ff --no-commit origin/main`, then `git commit -m "Merge branch 'main' into feat/86bcm901z-customise-shipped-item"`; Leorna identity for author and committer; no attribution line |
+| Open PRs | only #105 | `gh pr list --state open` at 09:04 and 09:11 |
+
+## The merge
+
+- No conflict ("Automatic merge went well"). `git write-tree` before committing and `git rev-parse HEAD^{tree}` after: **`ddf88fc`, the predicted tree** (`evidence/86bcm901z/pr/trial-main-9135f4e/`), which is also the tree of CI's `refs/pull/105/merge` on `03319a0`.
+- Merge base `5e6863d`. #104 changed 21 files; this branch changed 34 since `5e6863d`. Both-sides set (7): `cmd/control-plane/main.go`, `delivery/stories.json`, `internal/pack/README.md`, `internal/web/README.md`, `internal/web/handler.go`, `internal/web/pack_versions.go`, `internal/web/pack_versions_test.go`. #104 adds no migration.
+
+## Merge proof (`evidence/86bcm901z/pr/merge-proof-caf5d96.log`, FAIL COUNT=0)
+
+- One-side files: 27 story-only files equal `03319a0`'s blob; 14 main-only files equal `9135f4e`'s; no deletion on either side.
+- All 7 both-sides files equal `git merge-file -p` of their three blobs (git's clean 3-way result): 0 hand-resolved files.
+- Evil merge: the files whose merged content differs from both parents are exactly the 7 both-sides files.
+- Patch survived: 34 of 34 story files identical line for line (`git diff -U0 5e6863d 03319a0` against `git diff -U0 9135f4e caf5d96`, headers and `@@` lines stripped).
+- Migrations: `uniq -d` over up and down versions prints nothing (tree and worktree); the list ends 25 `quick_starts`, 26 `starter_packs`, 27 `library_variants`; #104 added none.
+- `delivery/stories.json` by value: main's 47 entries equal and in order (#104's `86bcm902d` sits where #104 put it, before `86bcm902w`); `86bcm901z` is entry 48 and last, equal by value to `03319a0`'s, with `"LeornaAI/leorna-control-plane": [105]`.
+- `gitleaks dir` over the 7 both-sides files from the merged tree: no leaks.
+- Stale wording: main's new lines don't name this story or variants; the branch's lines name neither #104 nor its card and say nothing about "until/once … merges"; the only `86bcm901z`/"company variant" line near until/once/later is the known `pack_builder.go:378` code comment about a later release.
+
+## Pre-flight (`preflight-caf5d96.log`)
+
+Porcelain empty; authors: 1 identity, Leorna OK (22 commits: `HEAD ^b65f797 ^origin/main`); committers likewise; 0 attribution lines; no `.github` path and no `CLAUDE.md` in `origin/main...HEAD` or `b65f797...HEAD`; `merge-tree HEAD origin/main` EXIT=0; `origin/main` is an ancestor of HEAD.
+
+## Gates on `caf5d96` (`evidence/86bcm901z/pr/SUMMARY-caf5d96.txt`, 09:07–09:10 UTC)
+
+Detached copy of the exact head, fresh `leorna_86bcm901z_pr2_test` in `leorna-test-pg`, go1.27.3, golangci-lint 2.14.0 and govulncheck v1.7.0 bound through `GOLANGCI_LINT`/`GOVULNCHECK` (`make -n` shows both absolute paths), gitleaks 8.30.1 (`LEORNA_TEST_GITLEAKS_BIN=/usr/local/bin/gitleaks`).
+
+| Gate | Result | Log |
+| --- | --- | --- |
+| `make check` | EXIT=0 (lint 0 issues in both modules; govulncheck no called vulnerability; gitleaks no leaks; library gate PASSED, 0.8.0, 43 items) | `make-check-caf5d96.log` |
+| `scripts/test-module-add.sh` | EXIT=0 | `module-add-caf5d96.log` |
+| Postgres `go test -json` stream (`cmd/control-plane`, dbcheck, store/postgres, web, variant, textdiff, pack, library), read per test | go test EXIT=0, VERDICT OK: 467 declared top-level tests, 460 pass, 630 subtests pass, 0 fail, no DB-URL skip; 9 accepted skips (#103's five `TestContentUsage*WithPostgres` on `LEORNA_TEST_CLICKHOUSE_URL not set`, `LEORNA_EVIDENCE_DIR`, `SCW_LIVE`, two ClickHouse subtests of `TestTeamsAPIWithPostgres`). Required and passing: AC1–AC4, `TestLibraryVariantsStoreWithPostgres`, `TestVariantUpdateAppearsAfterTheNextLibraryLoadWithPostgres`, `TestPackBuilderCopiesOnlyTheTenantsOwnVariantsWithPostgres`, `TestMigrationRoundTrip`. #104's new tests (`internal/pack` overview and body diff, `internal/web` pack overview) are in the declared set and passed | `pg-summary-caf5d96.txt`, `pg-caf5d96.json` |
+| gitleaks `b65f797..HEAD` (84 commits) | EXIT=0 | `gitleaks-story-caf5d96.log` |
+| story-shippable unittest | EXIT=0, 5 tests | `story-shippable-unittest-caf5d96.log` |
+| `stories.json` by value | EXIT=0 | `stories-by-value-caf5d96.log` |
+| AC1–AC4 alone by name (story worktree) | each EXIT=0, 0 fail, 0 skip (7/5/8/14 subtests) | `ac1..4-caf5d96.log` |
+
+## Startup probe (`startup-probe-caf5d96.log`, PROBE EXIT=0)
+
+Real binary built from `caf5d96` (`vcs.revision=caf5d96…`, `vcs.modified=false`), dev mode on loopback, fresh database, HTTP requests only. Startup loaded the content library (43) and #102's four starter packs. Then: Content library 200 with the lede, the Starter packs section and the builder; customise `incident-postmortem` as `incident-postmortem-acme` → 303 to its variant page (200, edit form); the library lists it with the Company variant chip and offers it as a pack-builder checkbox; **building a pack with only the variant ticked** → 303 to the built pack, whose page shows the variant ticked and "in pack"; **#104's `/admin/packs/overview`** lists that pack as a tenant pack, and its detail page shows "Added …/incident-postmortem-acme · 1.0.0"; `/admin/packs` and `/admin/packs/versions` 200; 0 error or panic lines in the server log.
