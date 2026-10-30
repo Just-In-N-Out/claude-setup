@@ -32,6 +32,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   layers (web-capture review 1). But the capture reads after its freeze scrolls back to the top, so reveal-on-scroll
   content that hides itself again off screen is `visibility: hidden` then: probe a reveal that toggles both ways
   before changing what counts as shown (web-capture review 2).
+- A page whose body is its scroller (html's overflow not visible, body overflow-y auto/scroll with a set height, e.g.
+  `html,body{height:100%;overflow-x:hidden}`): the window never scrolls, so `window.scrollTo`/`scrollY` do nothing,
+  lazy loaders fire only when body scrolls, and a wheel event scrolls body unseen. Scroll `document.body` and take the
+  page height from it (web-compare fixer 2).
 - Parts from landmarks: many sites have `<header>` and `<footer>` but no `<main>` (Divi, older themes, plain div
   pages), or only a footer: probe those shapes (web-capture review 2).
 - `documentElement.scrollWidth` stays wider than the window when html/body has `overflow-x: hidden|clip`, though nobody
@@ -56,6 +60,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
 - Serialising an inline SVG with its computed paint (a fingerprint or a vector): write paint only on parts drawn in
   place, never on a `<symbol>` or a `<use>` target (the instance would take the target's inline style and lose the
   use's inherited paint), and declare `xmlns:xlink` when the markup uses `xlink:` or the standalone SVG won't parse
-  (web-compare fixer 1).
+  (web-compare fixer 1). An inline SVG serialised alone also loses what its `<use>`s and `url(#id)` paints point to
+  outside it (a page-wide sprite of `<symbol>`s, a shared gradient): copy those ids into its `<defs>`, following what
+  they point to in turn. Chrome draws a sprite file (`sprite.svg#id`) only from the page's own origin, never from
+  another, so don't fetch a cross-origin one from Node (web-compare fixer 2). Tests of lost SVG paint need a saturated
+  colour: a thin #333 icon is within the hasher's colour tolerance of black.
 - Frame names made from slugs go through normalise's `pageUrl`, which sends any name starting with "home" to `/`:
   `/home-inspections/` would link home. Name own-page frames so only the real home matches (web-capture review 1).
