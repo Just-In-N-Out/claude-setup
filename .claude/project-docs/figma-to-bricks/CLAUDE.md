@@ -7,12 +7,12 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-30)
 
-- **Current build `2026-10-30.16`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.17`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
   - **30.16 djtrees-ruled-rows (quick fix in session):** a row divided by thin line layers evens its items' sides once it
     wraps or stacks. Paste check **3cd**.
   - **30.15 djtrees-hover-label (quick fix in session):** a button's hover copy keeps its words on one line where the
-    button's do. Paste check **3cc**.
+    button's do; 30.17: from the design width up too. Paste check **3cc**.
   - **30.12 djtrees-wide-hero (quick fix in session, no reviews):** section photos fill wide screens edge to edge (Justin's
     new choice); a menu bar drawn over the hero is pinned above tablets. Paste check **3cb**.
   - **30.11 djtrees-side-photo (quick fix in session, no reviews):** a section's Crop photo drawn against one side reaches
