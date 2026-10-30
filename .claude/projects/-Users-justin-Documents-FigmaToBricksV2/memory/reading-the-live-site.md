@@ -28,3 +28,5 @@ The live site (see [[site-and-team]]) sits behind LiteSpeed: a plain `curl` of a
   screenshots. The Windows desktop (WSL) has no Chrome: `npx @puppeteer/browsers install chrome-headless-shell@stable`,
   plus `apt-get download libnss3 libnspr4 libasound2t64` unpacked with `dpkg-deb -x` (no sudo) on `LD_LIBRARY_PATH`,
   then `CHROME_PATH=<that binary>` (2026-10-26). A pasted header 73px tall hid behind the 88px fixed site header at 1440 but showed below it narrower.
+
+DJ Trees staging (2026-10-30): `djtreeservice.staging.growithgro.com`, pages `/home/` (homepage, carousels) and `/landingpage/` (services landing); its CSS is in external files (`wp-content/uploads/bricks/css/post-<id>.min.css`). A pasted Code element that shows up as a `<pre>` holding the script, with no `<script>` tag, means Bricks didn't run it (code execution off for the role, or the paste not signed yet): check that before debugging the script itself.
