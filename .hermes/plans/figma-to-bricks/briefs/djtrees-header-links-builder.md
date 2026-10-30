@@ -1,0 +1,22 @@
+# djtrees-header-links: direct quick-fix follow-up
+
+## Authority
+Justin's earlier instruction persists for these corrections to the same delivered fixes: "give it to each agent"; "I just need a quick plug-in fix, no need for reviews or anything." Do direct diagnosis/test/fix, NO planner/review/verifier/auditor pipeline and no spawned agents. User reports the delivered build30.4 still fails on his updated full design. Do not just rerun old synthetic tests and infer this file works. Reproduce this full file's real plugin conversion and fix the general rule.
+
+## Ownership
+Your exclusive worktree: /home/justin/Documents/FigmaToBricksV2/.claude/worktrees/djtrees-header-links; branch worktree-djtrees-header-links; base 11efccb8eb33def73bfb9f1b2e3be9c1ea2795f4. You are not alone: another agent is fixing the other issue in its own branch. Do not revert others; coordinate shared-module overlap through root. Never edit main, BUILD, CLAUDE or shared HANDOFF during implementation. Write your handoff at /home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-header-links/handoff.md for release to combine. Root does local ff-only merges and delegates the final build bump/release.
+
+## Rules and skills
+Read current worktree CLAUDE.md and relevant source, tests, HANDOFF and canonical Bricks samples. Apply previously loaded engineering-best-practices, systematic-debugging, test-driven-development and git-commit-rules; re-open if unavailable in your context. User waiver overrides review requirements. Keep this focused. Desktop browser/corpus constraints: /home/justin/.claude/projects/-home-justin-Documents-FigmaToBricksV2/memory/corpus-paths-on-desktop.md. Fresh owned scratch paths; old role scratch was removed. /tmp limited tmpfs: keep large images/profiles in your owned evidence folder.
+
+## Full real input NOW AVAILABLE
+/home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-home-inputs/full-home-debug.json (copied unchanged from Downloads figma-to-bricks-debug-landing-page-DJSTREESHOME.json). Build2026-10-30.4, root DJ Tree Service — Homepage | Evansville Final Content, 1440x13191, 672 nodes, 16MB. This REPLACES the old selected-vector-only file; prior incomplete-input limitation no longer applies. Screenshots in same folder. Do not edit input.
+
+## Execution and handback
+Inspect and replay the actual file first. Reproduce failure before code changes; write a meaningful general regression test, then fix general logic without design-specific identifiers/words/pixels. Preserve previous fixes and explicit Figma choices. Use existing canonical native Bricks output. Run npm run check and appropriate interaction/browser tests plus real debug replay/render at required widths. Run project corpus with documented desktop constraints and compare any failures against base; don't treat missing inputs as passing. No unnecessary repeated unchanged checks. Send root a concise root-cause/update as soon as established and before lengthy gates. Commit by explicit paths (no CLAUDE, normal personal identity, no AI trailer), rebase on current main if root requests. Return clean branch/SHA, exact checks/evidence, full real-file findings and remaining live limitations.
+Return skill_lessons[] normally; only new/proven/reusable items have skill,lesson,evidence,enforce. Do not edit skills or memory. End MAIN SESSION: check and save these skill_lessons now.
+
+## Your issue: header navigation hyperlinks still do not work
+Own header/menu links + focused tests; FAQ belongs to the other agent.
+Screenshot header-links-not-working.png shows a dark photo hero with the header over it, tree logo + DJ Tree Service wordmark left, Home/About Us/Services/Gallery/FAQ/Contact Us in the middle and a Free Estimate button on the right. WordPress admin bar visible. User says header and hyperlinks are not working after build30.4. Navigation labels should open their respective pages, logo home, preserving explicit Figma links and existing site matching. Inspect actual full-file output and click behavior: distinguish absent anchors, wrong targets, and overlays intercepting clicks. Do not assume prior generic fixture proves this header. Preserve footer-link support from build30.4. No unrequested mobile-menu/sticky redesign.
+Justin's words: "Take a look at it here also. The header's not working and the hyperlinks aren't working, so please fix that." Earlier authorized requirement: header/footer texts link to respective pages and logo home; changes are general across Figma designs.

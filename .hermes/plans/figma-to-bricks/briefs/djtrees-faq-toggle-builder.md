@@ -1,0 +1,22 @@
+# djtrees-faq-toggle: direct quick-fix follow-up
+
+## Authority
+Justin's earlier instruction persists for these corrections to the same delivered fixes: "give it to each agent"; "I just need a quick plug-in fix, no need for reviews or anything." Do direct diagnosis/test/fix, NO planner/review/verifier/auditor pipeline and no spawned agents. User reports the delivered build30.4 still fails on his updated full design. Do not just rerun old synthetic tests and infer this file works. Reproduce this full file's real plugin conversion and fix the general rule.
+
+## Ownership
+Your exclusive worktree: /home/justin/Documents/FigmaToBricksV2/.claude/worktrees/djtrees-faq-toggle; branch worktree-djtrees-faq-toggle; base 11efccb8eb33def73bfb9f1b2e3be9c1ea2795f4. You are not alone: another agent is fixing the other issue in its own branch. Do not revert others; coordinate shared-module overlap through root. Never edit main, BUILD, CLAUDE or shared HANDOFF during implementation. Write your handoff at /home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-faq-toggle/handoff.md for release to combine. Root does local ff-only merges and delegates the final build bump/release.
+
+## Rules and skills
+Read current worktree CLAUDE.md and relevant source, tests, HANDOFF and canonical Bricks samples. Apply previously loaded engineering-best-practices, systematic-debugging, test-driven-development and git-commit-rules; re-open if unavailable in your context. User waiver overrides review requirements. Keep this focused. Desktop browser/corpus constraints: /home/justin/.claude/projects/-home-justin-Documents-FigmaToBricksV2/memory/corpus-paths-on-desktop.md. Fresh owned scratch paths; old role scratch was removed. /tmp limited tmpfs: keep large images/profiles in your owned evidence folder.
+
+## Full real input NOW AVAILABLE
+/home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-home-inputs/full-home-debug.json (copied unchanged from Downloads figma-to-bricks-debug-landing-page-DJSTREESHOME.json). Build2026-10-30.4, root DJ Tree Service — Homepage | Evansville Final Content, 1440x13191, 672 nodes, 16MB. This REPLACES the old selected-vector-only file; prior incomplete-input limitation no longer applies. Screenshots in same folder. Do not edit input.
+
+## Execution and handback
+Inspect and replay the actual file first. Reproduce failure before code changes; write a meaningful general regression test, then fix general logic without design-specific identifiers/words/pixels. Preserve previous fixes and explicit Figma choices. Use existing canonical native Bricks output. Run npm run check and appropriate interaction/browser tests plus real debug replay/render at required widths. Run project corpus with documented desktop constraints and compare any failures against base; don't treat missing inputs as passing. No unnecessary repeated unchanged checks. Send root a concise root-cause/update as soon as established and before lengthy gates. Commit by explicit paths (no CLAUDE, normal personal identity, no AI trailer), rebase on current main if root requests. Return clean branch/SHA, exact checks/evidence, full real-file findings and remaining live limitations.
+Return skill_lessons[] normally; only new/proven/reusable items have skill,lesson,evidence,enforce. Do not edit skills or memory. End MAIN SESSION: check and save these skill_lessons now.
+
+## Your issue: FAQ plus does not expand/collapse answers
+Own FAQ detection/native accordion behavior + focused tests; navigation links belong to the other agent.
+Screenshot faq-not-opening.png: beige two-column FAQ section, large heading on left, six questions on right. First answer is visibly expanded with minus; other five have plus controls at the far right. Bricks editor outline selects Container. User explicitly confirms failure in PREVIEW too; do not dismiss as editor selection behavior. Clicking question/plus should reveal its existing answer below, clicking again closes it; preserve the designed initial state/look and make answers editable. Determine whether actual payload lacks accordion structure, click target is obstructed, settings/state is wrong, or other real cause before changing code. No invented answer content.
+Justin's words: "First of all, the FAQs aren't sliding down when you click the plus button, so we need to fix that." Clarification: "It doesn't work in the Bricks editor, the Hyper, or the preview for the FAQs." 'Hyper' is unclear transcription; Preview failure is explicit.
