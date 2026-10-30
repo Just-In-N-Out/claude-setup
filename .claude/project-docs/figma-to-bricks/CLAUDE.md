@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-29)
 
-- **Current build `2026-10-30.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **30.2 faq-gaps (quick fix in session):** a row gap drawn past its own box fits it; a label and its small icon
+    keep one line at laptop widths. Paste check **3bv** owed.
   - **30.1 cut-outs (quick fix in session, no review rounds at Justin's word):** a see-through picture Figma shows
     whole is `contain`, so a cut-out of another shape swapped in Bricks shows whole. Paste check **3bu** owed.
   - **29.3 header-bar:** with the header tick on, a site's top bar (logo, phone line, button, ☰) is recognised as its
