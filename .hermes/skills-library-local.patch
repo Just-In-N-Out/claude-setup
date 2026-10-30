@@ -32,7 +32,7 @@ index d8e25dc..98606f4 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..e3cc1d9 100644
+index d6a2493..33d8928 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,13 +60,13 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -40,7 +40,7 @@ index d6a2493..e3cc1d9 100644
  
  - Scope: change matches request, no unrelated churn, no generated junk.
 -- Behavior: happy path, edge cases, invalid input, empty state, failure state.
-+- Behavior: happy path, edge cases, invalid input, empty state, failure state. When a fix defers a decision up a chain (an inner element passes its need to its parent), probe the parents the decider rejects: the deferral needs a fallback when no ancestor decides, or it trades a safe fallback for an unchecked overflow.
++- Behavior: happy path, edge cases, invalid input, empty state, failure state. When a fix defers a decision up a chain (an inner element passes its need to its parent), probe the parents the decider rejects: the deferral needs a fallback when no ancestor decides, or it trades a safe fallback for an unchecked overflow. When code decides "something changed" from a fixed list of compared facts, probe a change to a fact not on the list; probes built from the plan's own examples pass (web-capture: width-only media queries made no switch point).
  - Contracts: API, schema, CLI, config, events, storage, migrations, compatibility.
  - Data and state: consistency, transactions, idempotency, rollback, retention.
 -- Security-sensitive logic: authn/authz, secrets, injection, deserialization, untrusted input, sensitive logging.
