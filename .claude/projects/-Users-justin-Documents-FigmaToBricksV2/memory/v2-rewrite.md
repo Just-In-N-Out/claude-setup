@@ -8,6 +8,8 @@ metadata:
   modified: 2026-10-29T08:23:34.767Z
 ---
 
+**2026-10-30.4 DJ Trees quick fixes** (released/pushed `11efccb`, main/origin/GitHub equal; dist rebuilt): general plain header/footer navigation links through page matching, logo→home; closed question+chevron rows become native editable accordions, hidden answers retained and absent answers get placeholders. Justin explicitly requested two direct builder agents and no pipeline/reviews. Preserves parallel FAQ hover/alignment build30.3. Combined check: 2579 unit passes/60 known path skips, 35 browser passes/0 skips; five local corpus payloads unchanged vs navigation main, all28 widths retain lint counts. Navigation makes four phone cases gain one small-logo tap-target warning; existing two corpus-colors failures, unavailable Mac files and brainstorm font stay. Full DJ Trees/live proof still owed: Downloads `figma-to-bricks-debug-landing-page-DJTrees.json` is only one selected arrow plus skeletal parents, build30.1; requested whole homepage export. Paste checks **3bw** links/logo and **3bx** FAQ. Evidence: `~/.hermes/plans/figma-to-bricks/evidence/djtrees-{links,faq,release}/`; HANDOFF holds details. Setup sync read-only even escalated; notes remain local.
+
 v2 rewrite of the user's Figma→Bricks plugin lives in ~/Documents/FigmaToBricksV2 (spec docs/specs/2026-10-06-v2-design.md,
 plans + ledgers in docs/plans/, status and next steps in docs/HANDOFF.md). M0, M1a and M1b (desktop parity: free-frame
 inference, fluid sizing, turned layers, native dividers/buttons) finished 2026-10-06. Next: M1c (panel, upload, SVG
