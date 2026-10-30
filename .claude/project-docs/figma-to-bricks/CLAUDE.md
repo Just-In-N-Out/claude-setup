@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-30)
 
-- **Current build `2026-10-30.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **30.6 djtrees-landing (quick fix in session, no reviews):** a logo lockup (mark + name) makes a header; a pasted
+    solid header sticks; a row drawn edge to edge drops the Container's side margin above tablets. Paste check **3by**.
   - **30.4/30.5 djtrees-links (quick fixes, reviews waived):** header menus inside the hero now link too; the logo
     goes home and footer links stay. Full-file clicks proven; failed paste check **3bw** needs a fresh-paste retest.
   - **30.4/30.5 djtrees-faq (quick fixes, reviews waived):** wrapped titles pair as native FAQ items; the first open
