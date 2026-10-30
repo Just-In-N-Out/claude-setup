@@ -7,8 +7,11 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-29)
 
-- **Current build `2026-10-29.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-29.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **29.2 after-faq-sections:** a footer frame that stacks page sections above its links keeps those sections when
+    the footer is ticked, painted as drawn. Paste check **3bt** owed (paste the three sections under the FAQ on
+    /homev2/).
   - **29.1 headline-marker:** a stroke draws around styled words; released at Justin's direction with drawn-phone
     and exact-design-width ring overflow still open. Paste check **3br** owed (AC13: Figma Trim, Bricks, Safari/iPhone).
   - **28.5 closing-cta (section rhythm):** between every two sections the page's section space (the space most
@@ -26,7 +29,8 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
   - **26.1 faq-answer-space:** space under an open FAQ answer. Paste check **3bl** owed.
 - **Paste checks owed:** HANDOFF "End-of-run check list" (3c onward); each feature's HANDOFF heading names its check.
   3bj, 3bl, 3bm and 3bq all empty Home and re-paste "Home Page Final" with the header/footer ticks as on the site: copy
-  the FAQ answers Justin typed in Bricks first and type them back after. Several older pages need a re-paste too (3ac).
+  the FAQ answers Justin typed in Bricks first and type them back after. 3bt pastes `after-faq-sections.json` under
+  the FAQ on B-Dry's staging /homev2/. Several older pages need a re-paste too (3ac).
 - **Milestones:** M0–M4b of the design (`docs/specs/2026-10-06-v2-design.md`) are done. Next: the user's end-of-run
   check, then the sample-bound parts (M2d phone menu, Tabs, Dropdown, Offcanvas, pop-ups).
 - **Corpus:** 17 results are worse than v1, all from Bricks' cap of every element at its parent's width (live-site
@@ -93,6 +97,12 @@ This plugin converts **any** Figma file into Bricks, not only the design in fron
 different files by many different designers. Treat every request (a new feature, a bug report, "this section looks
 wrong") as one example of a whole class of designs, and change the logic so the entire class converts correctly.
 
+- **Every change goes into the plugin** (Justin, 2026-10-29: "every single change needs to be inside the plug-in, not
+  just for copy-pasting purposes"). A fix found on one site's paste (the B-Dry copy of bdryswi.com) is also a general
+  plugin change so every converted website gets it; a paste-only patch is at most a stop-gap beside the plugin job. A
+  paste-only plan names the plugin code involved and the general rule, or says why the plugin can't be.
+- **Prove it on the plugin first** (Justin, 2026-10-29): a problem seen on a hand-built paste becomes a plugin job only
+  once a real plugin conversion shows it; until then it's recorded as a suspicion.
 - **Fix the rule, not the instance.** When something converts wrong, work out why the logic produced that output and
   change the logic. Don't patch the result for the one file that showed the problem.
 - **No hardcoding from the file under test.** Don't key behaviour on a specific layer name, node ID, text string, pixel

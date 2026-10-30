@@ -144,3 +144,5 @@ Interrupted output is uncredited; completed fallback evidence retained. Evidence
 `~/.hermes/plans/figma-to-bricks/evidence/photo-hotspots/` (verifier/round-7, auditor/round-5, finisher-main,
 ac-check-release.txt). Setup sync remains blocked by read-only private setup gitdir despite escalated retries;
 notes/plans/skills are saved locally, no bypass.
+
+**2026-10-29.2 after-faq-sections** (released 3ea33bb, pushed): a footer frame stacking page sections above its links keeps them when the footer is ticked (careful allow-list rule, R13; 1-2-word titles read as a typed logo, so such frames leave whole as before). 11/12 ACs by verifier + blind auditor; live check 3bt owed (the three sections are already on B-Dry /homev2/ from the whole-page paste). Evidence ~/.hermes/plans/figma-to-bricks/evidence/after-faq-sections/.
