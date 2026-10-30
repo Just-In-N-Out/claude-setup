@@ -98,7 +98,7 @@ Unless an item names another commit, everything below ran on `caf5d96` (the merg
   - no duplicated migration version: 25 `quick_starts`, 26 `starter_packs`, 27 `library_variants`.
 - [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK. `delivery/stories.json`: main's 47 entries unchanged by value and in order, this story's entry 48th and last and unchanged, still recording this PR. `scripts/check-story-shippable.py 86bcm901z` prints only the two lines expected while this PR is open ("not merged into main" and "open follow-up references this story").
 - [x] Scope: no `.github` path changed. The branch's 22 commits (19 story commits, the PR-number record and two merges of `main`) are by the Leorna identity, with no AI attribution lines. No `CLAUDE.md`.
-- [ ] Hosted CI on `caf5d96`: running; see Evidence.
+- [x] Hosted CI on `caf5d96` (GitHub's test merge with `main` `9135f4e` has the same tree as `caf5d96`): Go quality gates, Publish control-plane image (build only on a PR) and Package admin-portal distribution all passed; see Evidence.
 - [ ] Not re-run on `caf5d96` (they ran on `4904333`, see Assumptions): the mutation checks, the headless-Chrome captures, the release-B update run and the migration fill test.
 
 ## Security, migration, rollback
@@ -189,5 +189,5 @@ Unless an item names another commit, everything below ran on `caf5d96` (the merg
 ## Evidence
 
 - Head: `caf5d9659953cbab3e6141eddd4193762f96aeff`, the merge of `main` `9135f4e` into `03319a0` (the PR-number record), which sits on `f10da155b9f35e72c35645efea3d20121b72d69f`, the merge of `main` `5e6863d` into `4904333a8fe0def527ad32603e115f2499c6cef8` (story base `b65f797ff6cdc56a802dfaf417b0adec96463317`)
-- Check "Go quality gates": running on `caf5d96`
+- Check "Go quality gates": pass (12m25s) on `caf5d96`
 - Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/41061511703
