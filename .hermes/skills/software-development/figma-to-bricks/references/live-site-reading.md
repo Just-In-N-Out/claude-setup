@@ -24,7 +24,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   min-height-only and flex-basis-only media queries must count (web-capture review 1). Compare sizes as the site set
   them (`computedStyleMap()`: `50%`, `auto`, `1fr 2fr`, `min(100%, 1140px)`), not drawn px, so text wrapping never makes
   a switch point; count a length as drift only when its step across the boundary equals a neighbouring step (±0.75px),
-  since a 50% column that becomes 100% changes on both sides yet really jumps there (web-capture fixer 1).
+  since a 50% column that becomes 100% changes on both sides yet really jumps there (web-capture fixer 1). Any fixed
+  list misses something: compare every computed property (`computedStyleMap`, minus a short named skip list: custom
+  properties, animation/transition timing, cursor and the like) where the quick list finds nothing; all ~479
+  properties cost ~0.7 s per 864 elements, so keep b+1 in the page and re-read only what differs (web-capture fixer 3).
 
 ## What counts as shown
 - Hidden is more than `display: none`: `visibility: hidden` (closed dropdowns, megamenus, popups) and screen-reader
@@ -35,7 +38,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
 - A page whose body is its scroller (html's overflow not visible, body overflow-y auto/scroll with a set height, e.g.
   `html,body{height:100%;overflow-x:hidden}`): the window never scrolls, so `window.scrollTo`/`scrollY` do nothing,
   lazy loaders fire only when body scrolls, and a wheel event scrolls body unseen. Scroll `document.body` and take the
-  page height from it (web-compare fixer 2).
+  page height from it (web-compare fixer 2). Move any page scroller with `scrollTo({top, behavior: "instant"})`:
+  under the site's `scroll-behavior: smooth` a plain `scrollTop` assignment only starts an async scroll, so a 1px test
+  move reads unchanged and a body scroller looks unscrollable (web-capture fixer 3).
 - Parts from landmarks: many sites have `<header>` and `<footer>` but no `<main>` (Divi, older themes, plain div
   pages), or only a footer: probe those shapes (web-capture review 2), each with a phone-only box between the parts,
   and twin pages differing by one tag (`<footer>` vs `<div>`, with or without `<main>`): parts built from boxes shown
