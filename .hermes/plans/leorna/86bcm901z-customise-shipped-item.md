@@ -1400,3 +1400,4 @@ Review 2 tripped brake c (one P0–P2, as in review 1). Justin's words: "R2-1: K
 
 ## Justin's "make a PR" (2026-10-30)
 Justin's words: "ok push pr" (after "today we're not gonna do anything because I'm waiting on another PR"; that PR, #103, merged 03:38 UTC). No re-verify letter given, so the recommended A applies: bring main in (migration renumbered inside the merge), gates and AC tests on the merged head, push and open the PR, then a fresh review of the new commits and the full verifier → blind auditor → `ac-check.sh` on the PR head. "post" (ClickUp) is not authorized yet.
+- 2026-10-30, after PR #105 opened and #104 merged into main (9135f4e) during the push wait: Justin picked "Bring #104 in first (Recommended)". A second bring-in merge and push, then review 6 of that merge, then the verifier and blind auditor on the final PR head.
