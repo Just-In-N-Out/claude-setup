@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-29)
 
-- **Current build `2026-10-29.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **30.1 cut-outs (quick fix in session, no review rounds at Justin's word):** a see-through picture Figma shows
+    whole is `contain`, so a cut-out of another shape swapped in Bricks shows whole. Paste check **3bu** owed.
   - **29.3 header-bar:** with the header tick on, a site's top bar (logo, phone line, button, ☰) is recognised as its
     header and left out, a call bar's nav bar with it; unticked, its logo links home, its phone number calls, and its
     row spans wide screens. Paste check **3bs** owed (paste the B-Dry header into the staging site's Header template).
@@ -547,6 +549,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   to be removed", then chose "Only over a photo" over "every faint photo frame" and "remove it in Figma"): a
   see-through box with a faint outline around a picture loses the outline only where it is drawn on a photo; boxes on
   plain backgrounds, filled cards and divider lines keep theirs, as drawn (`normalise/photo-frames.ts`).
+- **Swapped cut-outs stay whole** (Justin, 2026-10-30: "I need this fix on all pages … It should be a plug-in fix"; he
+  swaps the plugin's pictures in Bricks for his own cut-out photos of other shapes): a picture whose file has
+  see-through parts and which Figma shows whole is `object-fit: contain`; solid or cropped photos keep `cover`
+  (HANDOFF "Cut-outs stay whole when swapped").
 - **Native Buttons by shape alone** (2026-10-06): a painted box around one short centred label becomes a Bricks Button,
   linked or not and whatever its name. Form fields (words starting at the left) and table cells (a rule on one side)
   aren't buttons. Tags and pills of the same shape may become Buttons; the user accepted that.
