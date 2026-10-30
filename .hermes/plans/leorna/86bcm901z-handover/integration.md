@@ -8,8 +8,8 @@ Everything below is a **prediction** made in detached scratch copies. The story 
 | --- | --- | --- |
 | Story head (`feat/86bcm901z-customise-shipped-item`) | `4904333a8fe0def527ad32603e115f2499c6cef8` | `git rev-parse HEAD`; worktree clean (`git status --porcelain` empty) |
 | Story base | `b65f797ff6cdc56a802dfaf417b0adec96463317` | plan |
-| GitHub `main` | `8aa32a1f68fadacb8b0514566dd465ff14b883b9` | HTTPS fetch through gh into `refs/remotes/origin/main` at 23:52 UTC, equal to `gh api repos/LeornaAI/leorna-control-plane/commits/main --jq .sha` at 23:52 and again at 23:59 |
-| Open PR #103 (content usage analytics, 86bcm902w) | `fabbec00fa8428bf7e014ba06350efe796002c1c` | `pull/103/head` fetched into a scratch copy's `FETCH_HEAD`; equal to `gh pr view 103 --json headRefOid` (23:55, rechecked 23:59) |
+| GitHub `main` | `8aa32a1f68fadacb8b0514566dd465ff14b883b9` | HTTPS fetch through gh into `refs/remotes/origin/main` at 23:52 UTC, equal to `gh api repos/LeornaAI/leorna-control-plane/commits/main --jq .sha` at 23:52, 23:59 and 2026-10-30 00:08 |
+| Open PR #103 (content usage analytics, 86bcm902w) | `b4acb2f82016990587371a46279c88f416152c42` | `pull/103/head` fetched into a scratch copy's `FETCH_HEAD`; equal to `gh pr view 103 --json headRefOid` at 2026-10-30 00:08 UTC. It was `fabbec0` at 23:55; two commits landed while this was written, so both heads were trialled |
 
 - **Main has moved past the base.** Since `b65f797`, GitHub `main` merged **#101** (one-click quick start, migration `000025_quick_starts`) and **#102** (role-based starter packs, migration `000026_starter_packs`). Both are `MERGED` (`gh pr view`).
 - Only one PR is open: **#103**. It already contains `main` `8aa32a1` and adds no migration.
@@ -59,11 +59,13 @@ The resolution is saved as `trial-main-resolution.patch` (the story head's versi
 
 ## 2. Against the open sibling PR #103 (content usage analytics)
 
-- `git merge-tree origin/main fabbec0` → exit 0: #103 is up to date with `main`.
+#103's head moved from `fabbec0` to `b4acb2f` during this check: two commits (`7f05c9c` hides replaced shared pack versions, `b4acb2f` is docs). They touch 8 files, none of them this story's, but two this story builds on (`internal/pack/version.go`, `internal/store/postgres/pack_versions.go`). Both heads were trialled; the results are the same.
+
+- `git merge-tree origin/main <#103 head>` → exit 0 for both heads: #103 is up to date with `main`.
 - `git merge-tree HEAD fabbec0` → exit 1, the same four conflicts as above. They come from `main`'s content inside #103, not from #103's own work.
-- **#103 stacked on the predicted merge** (`git merge-tree --write-tree --merge-base=8aa32a1 fda4f69 fabbec0`): one conflict, `delivery/stories.json`, where both append last. `contracts/control-plane.openapi.yaml`, `packages/contracts/controlplane.gen.go` and `internal/web/handler.go` (files #103 and this story both change) merge cleanly.
-  - Resolution, whichever merges second: take the other's merged file and append its own entry last as text. Trialled with #103 first: #103's 46 entries equal and in order, `86bcm901z` 47th.
-  - Stacked tree `b1bc17bbd6009f9606d2a73427bb045b7419668e`: `make fmt`, `vet`, `build`, `test` (no DB), `lint`, `contracts-check` and `library-check` all EXIT=0. `contracts-check` matters here: it regenerates the client and server code from the merged OpenAPI file and compares, so the cleanly merged generated file is consistent.
+- **#103 stacked on the predicted merge** (`git merge-tree --write-tree --merge-base=8aa32a1 fda4f69 <#103 head>`): one conflict, `delivery/stories.json`, where both append last. `contracts/control-plane.openapi.yaml`, `packages/contracts/controlplane.gen.go` and `internal/web/handler.go` (files #103 and this story both change) merge cleanly.
+  - Resolution, whichever merges second: take the other's merged file and append its own entry last as text. Trialled with #103 first: #103's 46 entries equal and in order, `86bcm901z` 47th. #103's `stories.json` is the same at both heads.
+  - Stacked trees `b1bc17bbd6009f9606d2a73427bb045b7419668e` (`fabbec0`) and `c60877c1d5e10ea73a863a60d4b5584530484902` (`b4acb2f`): `make fmt`, `vet`, `build`, `test` (no DB), `lint`, `contracts-check` and `library-check` all EXIT=0 on both. `contracts-check` matters here: it regenerates the client and server code from the merged OpenAPI file and compares, so the cleanly merged generated file is consistent.
   - No migration clash: #103 adds none (its new table is ClickHouse `item_uses_v1`).
   - Behaviour: #103 counts item uses by kind and name from pack versions' items. A variant in a pack is copied into the pack version under its own name, so it is counted like any other item. Nothing to change on either side.
 
@@ -72,7 +74,7 @@ The resolution is saved as `trial-main-resolution.patch` (the story head's versi
 One phrase, e.g. **"bring main in and make a PR"** plus a letter for the question at the end, would approve this. Not done yet; nothing below has run on the real branch.
 
 1. In the story worktree: fetch GitHub `main` over HTTPS through gh again and record its SHA. If it is still `8aa32a1`, the trial applies as written; if it moved, re-run this check first.
-2. `git merge --no-ff origin/main` (no rebase, no force-push), with the resolutions above:
+2. `git merge --no-ff --no-commit origin/main` (no rebase, no force-push), with the resolutions above:
    - `delivery/stories.json`: main's file plus this entry last, as text; check by value;
    - `internal/audit/README.md`: both paragraphs, main's first;
    - `internal/store/postgres/store_test.go`: both tables in all three lists;

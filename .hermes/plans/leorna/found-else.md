@@ -286,3 +286,6 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - 2026-10-29 86bcm902w client fixer 2 | P3: client CI's Windows job runs only ./application ./login ./toolconnector/... (workflow line 56), so the story's usage and cmd/import-content-usage tests never run on Windows; a CI change is outside the story (no-CI-change rule).
 - 2026-10-29 86bcm902w client review 3 | P3 (not verified, no Mac): on case-insensitive APFS a session cwd typed in different letter case may not match sameFolder (case-sensitive Unix compare); an os.SameFile fallback would cover it.
 - 2026-10-29 86bcm902w client review 3 | P3 records: fix-2/dispositions.md says Windows slash forms always differ as strings; filepath.Clean on Windows turns / into \, so they match without the fallback (case forms still need it).
+- 2026-10-29 86bcm901z finisher | P3 records: main's `delivery/stories.json` entry for role-based starter packs (#102) lists no PR although #102 merged, so that story's shippable check passes vacuously.
+- 2026-10-29 86bcm901z finisher | P3 records: the 901z auditor's `ac.json` says AC4 has "15/15 subtests"; both its logs show 14 (the hand-over uses 14).
+- 2026-10-29 86bcm901z finisher | info: the shared main checkout is on local `main` e2254e0, behind GitHub 8aa32a1 (the next builder's B0 fast-forwards it).

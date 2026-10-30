@@ -126,7 +126,7 @@ Another company's variant id is refused exactly like an unknown id. Pack version
 
 **Every save goes through the item editor's gate** (`cmd/control-plane/main.go`, `internal/variant/service.go`): `application.SetVariants(variant.NewService(repository, gate.NewGitleaks("gitleaks")))`. Customise, edit and merge run `itembuilder` validation plus `gate.CheckTenantItem` (renders for Claude Code, Codex and Cursor, plus gitleaks) before writing. Without gitleaks they answer 503 and save nothing.
 
-**A forged tick of a clashing variant is ignored** (`internal/web/pack_builder.go`):
+**A forged tick of a clashing variant is refused** (`internal/web/pack_builder.go`; the entry is left out of the ticks map, so `ticksToChange` refuses the tick as invalid):
 
 ```go
 +		// A company variant whose name a later release shipped has no
