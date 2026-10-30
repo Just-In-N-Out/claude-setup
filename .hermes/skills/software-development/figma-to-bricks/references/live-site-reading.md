@@ -37,7 +37,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   lazy loaders fire only when body scrolls, and a wheel event scrolls body unseen. Scroll `document.body` and take the
   page height from it (web-compare fixer 2).
 - Parts from landmarks: many sites have `<header>` and `<footer>` but no `<main>` (Divi, older themes, plain div
-  pages), or only a footer: probe those shapes (web-capture review 2).
+  pages), or only a footer: probe those shapes (web-capture review 2), each with a phone-only box between the parts,
+  and twin pages differing by one tag (`<footer>` vs `<div>`, with or without `<main>`): parts built from boxes shown
+  at the design width lose it (web-capture review 3).
 - `documentElement.scrollWidth` stays wider than the window when html/body has `overflow-x: hidden|clip`, though nobody
   can scroll: a sideways-scroll check also reads the window's effective overflow-x (html's, else body's when html's is
   visible) (web-compare review 1). The same holds for clipping: body's computed overflow goes to the viewport when
@@ -54,7 +56,8 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   on `:focus` (website-importer probe, web-compare).
 - A freeze that only stops transform tracks and slider APIs misses carousels that slide by `scrollLeft` on an
   `overflow:hidden` wrapper (Trustindex); and `scrollIntoView` scrolls every clipping ancestor (carousels, sideways
-  scrollers: their first item can land past the page edge and be dropped), so scroll only the window, or record and
+  scrollers: their first item can land past the page edge and be dropped), so scroll only the page's own scroller (the window, or body when body is the scroll container: "only the window"
+  never moves a body-scroller page; web-capture review 3) and put it back, or record and
   restore every scroll offset (web-compare review 1, web-capture fixer 2).
 - Before an in-page check scrolls the window, move the CDP pointer off the page: Chrome moves `:hover` onto whatever a
   programmatic scroll brings under a resting pointer after ~100 ms, with no input event, opening hover dropdowns. List

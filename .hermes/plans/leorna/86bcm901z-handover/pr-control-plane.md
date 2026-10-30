@@ -50,7 +50,7 @@ ClickUp: [Customise a shipped item (company variant)](https://app.clickup.com/t/
   - `internal/web/library_variants_test.go` and `library_variants_packs_test.go`: AC1–AC4, edit, delete, the bounded preview, the agent rename and the name clash;
   - `internal/web/item_create_integration_test.go` and `pack_versions_test.go`: the item-editor fix;
   - `internal/store/postgres/store_test.go`: `library_variants` in `TestMigrationRoundTrip` and `resetDatabase`.
-- `delivery/stories.json`: this story's entry, appended last. A commit after this PR opens records the PR number in it.
+- `delivery/stories.json`: this story's entry, appended last. `03319a0` records this PR's number in it.
 - **Merge of `main`** (`5e6863d`, with #101, #102 and #103) in `f10da15`, no rebase. Four files that both sides appended to were resolved keeping both:
   - `delivery/stories.json`: main's file unchanged, this story's entry last;
   - `internal/audit/README.md`: the quick start paragraph, then this story's;
@@ -60,7 +60,7 @@ ClickUp: [Customise a shipped item (company variant)](https://app.clickup.com/t/
 
 ## Test Plan
 
-Everything below ran on this PR's head `f10da15` (the merge of GitHub `main` `5e6863d` into `4904333`) on 2026-10-30. The PR finisher ran it in a detached copy with its own fresh `_test` database, using Go 1.27.3, golangci-lint 2.14.0 and govulncheck v1.7.0 (as CI) and gitleaks 8.30.1.
+Unless an item names another commit, everything below ran on `f10da15` (the merge of GitHub `main` `5e6863d` into `4904333`) on 2026-10-30. The PR finisher ran it in a detached copy with its own fresh `_test` database, using Go 1.27.3, golangci-lint 2.14.0 and govulncheck v1.7.0 (as CI) and gitleaks 8.30.1.
 
 - [x] `make check`, exit 0:
   - workspace, contracts-check, fmt and vet;
@@ -95,8 +95,10 @@ Everything below ran on this PR's head `f10da15` (the merge of GitHub `main` `5e
   - the merged tree equals the one a trial predicted before the merge.
 - [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK. `delivery/stories.json`: main's 46 entries unchanged and in order, this story's entry 47th and last.
 - [x] Scope: no `.github` path changed. The branch's 20 commits (19 plus the merge) are by the Leorna identity, with no AI attribution lines. No `CLAUDE.md`.
-- [ ] Not re-run on `f10da15` (they ran on `4904333`, see Assumptions): the mutation checks, the headless-Chrome captures, the release-B update run and the migration fill test. The production image build: CI builds it.
-- [ ] Hosted CI: see Evidence.
+- [x] `03319a0` (on top of `f10da15`) changes only `delivery/stories.json`, adding this PR's number. Unittest OK; main's entries are unchanged by value, with this story last; `scripts/check-story-shippable.py 86bcm901z` prints only the two lines expected while this PR is open ("not merged into main" and "open follow-up references this story").
+- [x] Hosted CI on `03319a0`, which GitHub ran on the merge with `main` `9135f4e` (#104 included): Go quality gates, Publish control-plane image (build only on a PR) and Package admin-portal distribution all passed; see Evidence. Pushing `03319a0` cancelled the run on `f10da15`.
+- [x] Prediction on that same merge (the tree CI checked out), run locally with a fresh database: fmt, vet, build, contracts-check and library-check passed. The Postgres `go test -json` stream had 467 declared top-level tests: 460 passed and 7 accepted skips (the same as above). AC1–AC4 and `TestMigrationRoundTrip` passed.
+- [ ] Not re-run on `f10da15` (they ran on `4904333`, see Assumptions): the mutation checks, the headless-Chrome captures, the release-B update run and the migration fill test.
 
 ## Security, migration, rollback
 
@@ -165,9 +167,9 @@ Everything below ran on this PR's head `f10da15` (the merge of GitHub `main` `5e
 - Customise also runs the gate, because the variant's name changes the rendered paths. A shipped item that fails the tenant rules couldn't be customised; `TestEveryShippedSkillAgentAndPromptCanBeCustomised` shows none does today.
 - If a later release ships an item with a variant's name, the variant stays (packs that hold it keep working) but can't be ticked; the admin customises again under a new name.
 - Older Pack Versions paths (fork, single-item edit, "Add library item"), the quick start (#101) and the role starter packs (#102) pick shipped items only.
-- **Merging with other work** (checked 2026-10-30, 03:47 UTC): GitHub `main` is `5e6863d`, with #101, #102 and #103 merged since this branch's base. The only other open PR is #104 (manage many packs in one admin overview, head `0568191`).
-  - #104 conflicts with `main` itself in `delivery/stories.json` and `internal/store/postgres/pack_versions.go`, a file this PR doesn't touch. Against this PR's head it has the same two conflicts, so only `stories.json` involves this PR: whichever merges second appends its entry last.
-  - The seven other files both PRs change merge cleanly. No top-level name is added by both, and #104 calls none of the functions this PR changed.
+- **Merging with other work** (checked 2026-10-30, 08:52 UTC): GitHub `main` is `9135f4e`. Since this branch's base it has merged #101, #102 and #103, which this PR's merge commit brought in, and #104 (manage many packs in one admin overview), which merged after this PR opened. No other PR is open.
+  - This PR merges with `main` `9135f4e` without conflict: #104 placed its `delivery/stories.json` entry before the previous last one, and it adds no migration. GitHub shows the branch as behind `main`. CI's run on this PR and the local prediction above both tested that merge.
+  - Before #104 merged: the files both PRs change auto-merged, no top-level name is added by both, and #104 calls none of the functions this PR changed.
   - #103's usage counts read pack items by kind and name, so a variant in a pack is counted under its own name.
 - **Follow-ups:**
   1. Edit supporting files in a variant, with a per-file merge.
@@ -185,6 +187,6 @@ Everything below ran on this PR's head `f10da15` (the merge of GitHub `main` `5e
 
 ## Evidence
 
-- Head: `f10da155b9f35e72c35645efea3d20121b72d69f`, the merge of `main` `5e6863d` into `4904333a8fe0def527ad32603e115f2499c6cef8` (story base `b65f797ff6cdc56a802dfaf417b0adec96463317`)
-- Check "Go quality gates": pending
-- Actions run: pending
+- Head: `03319a0ee8c85d22c7038244599d98e0701bf24f` (the PR-number record) on `f10da155b9f35e72c35645efea3d20121b72d69f`, the merge of `main` `5e6863d` into `4904333a8fe0def527ad32603e115f2499c6cef8` (story base `b65f797ff6cdc56a802dfaf417b0adec96463317`)
+- Check "Go quality gates": pass (11m56s), on GitHub's merge of `03319a0` into `main` `9135f4e`
+- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/41027484165
