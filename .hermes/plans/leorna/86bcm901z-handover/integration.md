@@ -102,3 +102,64 @@ One phrase, e.g. **"bring main in and make a PR"** plus a letter for the questio
 - C the full fresh review → verifier → auditor → `ac-check.sh` now, and again after #103 merges.
 
 If #103 merges first, step 2's `stories.json` resolution takes #103's file and appends this entry last. Nothing else changes; the stacked trial above covers it.
+
+---
+
+# 2026-10-30: bring main in + make a PR (PR finisher)
+
+Justin: "ok push pr" (no letter, so the recommended **A**: gates and AC tests on the merged head before pushing; the fresh review of the merge and the full verifier → auditor → `ac-check.sh` after the PR opens).
+
+## Refs (read 2026-10-30 03:43–03:55 UTC)
+
+| Ref | SHA | How it was read |
+| --- | --- | --- |
+| GitHub `main` | `5e6863d45bfca25d6c64be115cf9b5142eac7447` (#103 merged; parents `8aa32a1` + `b4acb2f`) | HTTPS fetch through gh at 03:43, equal to `gh api …/commits/main` at 03:43 and 03:54 |
+| Story head before | `4904333a8fe0def527ad32603e115f2499c6cef8` | worktree, clean |
+| **Merge commit** | **`f10da155b9f35e72c35645efea3d20121b72d69f`** (parents `4904333` + `5e6863d`, tree `c60877c1d5e10ea73a863a60d4b5584530484902`) | `git commit -m "Merge branch 'main' into feat/86bcm901z-customise-shipped-item"`, Leorna identity |
+| Open PR #104 (many packs overview) | `0568191b1e7ade702538d2c3b43153fe63eb8e20` | `pull/104/head` into this worktree's `FETCH_HEAD`, equal to `gh pr view 104 --json headRefOid` at 03:47 |
+
+## The merge
+
+- `5e6863d`'s tree equals #103's head `b4acb2f`'s tree, so section 2's stacked trial (`--merge-base=8aa32a1 fda4f69 b4acb2f`) was an exact prediction: **`git write-tree` before committing gave `c60877c`, the stacked trial tree, byte for byte.**
+- Conflicts: exactly the predicted four (`delivery/stories.json`, `internal/audit/README.md`, `internal/store/postgres/store_test.go`, `internal/web/library.go`). Resolved by `~/.cache/86bcm901z-pr/resolve.py`, which asserts for each block that removing one side's addition gives back the other side's text:
+  - `stories.json`: main's file unchanged plus this entry appended last as text (main's 46 entries equal by value and in order, `86bcm901z` 47th);
+  - audit README: main's quick start paragraph, blank line, this story's paragraph;
+  - `store_test.go`: `"quick_starts", "library_variants"` in both table lists and `quick_starts, pack_script_approvals, library_variants, library_items` in `resetDatabase`;
+  - `library.go`: this story's lede line, then #102's Starter packs section unchanged.
+- Renumber: `git mv` `000025_library_variants.{up,down}.sql` → `000027_…` (blobs `e712ef5` / `1c6d804` unchanged); `internal/library/README.md` "(migration 25)" → 27 and "migration 25's down" → 27. `uniq -d` over up and down versions: empty; the list ends 25 `quick_starts`, 26 `starter_packs`, 27 `library_variants`.
+- Both-sides set (11): `cmd/control-plane/main.go`, `contracts/control-plane.openapi.yaml`, `delivery/stories.json`, `internal/audit/README.md`, `internal/library/README.md`, `internal/pack/README.md`, `internal/store/postgres/store_test.go`, `internal/web/README.md`, `internal/web/handler.go`, `internal/web/library.go`, `packages/contracts/controlplane.gen.go`. #103 added `openapi.yaml` and `controlplane.gen.go` to the set (both merge cleanly).
+
+## Merge proof (`evidence/86bcm901z/pr/merge-proof-f10da15.log`, FAIL COUNT=0)
+
+- One-side files: 21 story-only files equal `4904333`'s blob (plus the renamed pair, absent at the old path); 38 main-only files equal `5e6863d`'s; no deletions on either side.
+- Renumber: the 27 blobs equal the old 25 blobs; `internal/library/README.md` equals `git merge-file -p` except two lines that differ only by 25 → 27.
+- Seven both-sides files equal git's clean 3-way result (`git merge-file -p`); the four conflicted ones are the hand-resolved set.
+- Evil merge: files differing from both parents = the 11 both-sides files + the two `000027` files, nothing else.
+- Patch survived: 32 of 34 story files identical line for line (`-U0`, headers stripped, rename mapped); the two others differ only in the README number lines and the three `store_test.go` lines that now hold both tables.
+- `gitleaks dir` over the 11 both-sides files + the renamed pair from the merged tree: no leaks.
+- Stale wording: no added line names a sibling card or "until/once … merges"; the only `86bcm901z`/"company variant" line near until/once/later is the known `pack_builder.go:378` code comment about a later release.
+
+## Pre-flight (`preflight-f10da15.log`)
+
+Porcelain empty; authors: 1 identity, Leorna OK (20 commits: `HEAD ^b65f797 ^origin/main`); committers likewise; 0 attribution lines; no `.github` path in `origin/main...HEAD` or `b65f797...HEAD`; no `CLAUDE.md`; `merge-tree HEAD origin/main` EXIT=0 and `origin/main` is an ancestor of HEAD.
+
+## Gates on `f10da15` (`evidence/86bcm901z/pr/SUMMARY.txt`)
+
+| Gate | Result | Log |
+| --- | --- | --- |
+| `make check` (CI's golangci-lint 2.14.0 / govulncheck v1.7.0 bound, fresh `leorna_86bcm901z_pr_test`) | EXIT=0 | `make-check-f10da15.log` |
+| `scripts/test-module-add.sh` | EXIT=0 | `module-add-f10da15.log` |
+| Postgres `go test -json` stream (dbcheck, store/postgres, web, variant, textdiff) | go test EXIT=0; first reading VERDICT BAD = exactly #103's five `TestContentUsage*` skipping on `LEORNA_TEST_CLICKHOUSE_URL` (the reader's allowlist predated #103); re-read with those allowed: VERDICT OK, 349 declared, 342 pass, 424 subtests pass, 7 allowed skips, 0 fail, no DB-URL skip | `pg-summary-f10da15.txt`, `pg-summary-f10da15-clickhouse-allowed.txt`, `pg-f10da15.json` |
+| gitleaks `b65f797..HEAD` (80 commits) | EXIT=0 | `gitleaks-story-f10da15.log` |
+| story-shippable unittest | EXIT=0, 5 tests | `story-shippable-unittest-f10da15.log` |
+| `stories.json` by value | EXIT=0 | `stories-by-value-f10da15.log` |
+| AC1–AC4 alone by name | each EXIT=0, 0 fail, 0 skip (7/5/8/14 subtests) | `ac1..4-f10da15.log` |
+| Startup probe (real binary `vcs.revision=f10da15`, `vcs.modified=false`, dev mode, loopback, fresh DB, HTTP only) | EXIT=0 on rerun: library 43 + 4 starter packs loaded; Starter packs section, builder and lede; customise → variant page; chip; builder checkbox; `/admin/packs` 200; 0 error lines. First run's only BAD was the probe's own check expecting `&#39;` for literal template text | `startup-probe-f10da15.log`, `startup-probe-f10da15-lede-check-bug.log` |
+
+## Sibling PR #104 (`sibling-104-f10da15.log`)
+
+- #104 is based on `8aa32a1` (main `5e6863d` is not in it) and adds no migration.
+- `git merge-tree origin/main #104` → EXIT=1: `delivery/stories.json` and `internal/store/postgres/pack_versions.go`. These are #104's own conflicts with #103's content on main.
+- `git merge-tree f10da15 #104` → EXIT=1: the same two. This story doesn't touch `pack_versions.go`, so only `stories.json` (both append last) is this story's; whichever merges second takes the other's file and appends its own entry.
+- Seven files both change (`cmd/control-plane/main.go`, `delivery/stories.json`, `internal/pack/README.md`, `internal/web/README.md`, `internal/web/handler.go`, `internal/web/pack_versions.go`, `pack_versions_test.go`) otherwise auto-merge. No top-level name added by both in the same package; #104's added lines call none of the four functions this story changed or removed (`loadLibraryItems`, `clearFileBodies`, `newItemErrorWithFiles`, a renamed test).
+- Not done: a compile trial of the stacked tree, because it needs #104's own `pack_versions.go` resolution against main (a choice for #104's owner).

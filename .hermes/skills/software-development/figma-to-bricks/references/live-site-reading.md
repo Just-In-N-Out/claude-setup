@@ -26,7 +26,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   layers (web-capture review 1).
 - `documentElement.scrollWidth` stays wider than the window when html/body has `overflow-x: hidden|clip`, though nobody
   can scroll: a sideways-scroll check also reads the window's effective overflow-x (html's, else body's when html's is
-  visible) (web-compare review 1).
+  visible) (web-compare review 1). The same holds for clipping: body's computed overflow goes to the viewport when
+  html's is visible, so a reader collecting clip ancestors must not treat body as a clip box, or `html,body{height:100%}`
+  plus `body{overflow-x:hidden}` drops every word below the first screen (web-compare review 2).
 - Lazy pictures load only after a scroll-through; a resize differs from a fresh load at some widths (fixed boxes at
   767, widths at 390 on bdryswi.com): load each range fresh (web-capture planner).
 

@@ -11,7 +11,7 @@ ClickUp: [Customise a shipped item (company variant)](https://app.clickup.com/t/
   - Columns: kind (skill, agent or prompt), name, version, description, body, files, `upstream_item_id` → the `library_items` row it is based on, and `ignored_upstream_version`.
   - `UNIQUE (tenant_id, kind, name)`, `ON DELETE RESTRICT` on both foreign keys, and an index on `upstream_item_id`.
   - The down file drops the table.
-  - (The branch wrote it as 25. Main's #101 and #102 took 25 and 26, so bringing main in renames the pair to 27 with the same SQL; see Assumptions.)
+  - This branch first numbered it 25. #101 and #102 took 25 and 26, so the merge of `main` renamed the pair to 27 with the same SQL bytes.
 - `internal/store/postgres/library_variants.go`: `LibraryItem`, `CreateVariant`, `ListVariants`, `GetVariant`, `SaveVariant`, `IgnoreUpdate`, `DeleteVariant`.
   - Every read and write runs through `beginOrg`; writes re-check the admin role inside the transaction and filter by `tenant_id`.
   - "Update available" is computed on read: the newest stored row of the same kind and name, versions compared number by number.
@@ -50,61 +50,70 @@ ClickUp: [Customise a shipped item (company variant)](https://app.clickup.com/t/
   - `internal/web/library_variants_test.go` and `library_variants_packs_test.go`: AC1–AC4, edit, delete, the bounded preview, the agent rename and the name clash;
   - `internal/web/item_create_integration_test.go` and `pack_versions_test.go`: the item-editor fix;
   - `internal/store/postgres/store_test.go`: `library_variants` in `TestMigrationRoundTrip` and `resetDatabase`.
-- `delivery/stories.json`: this story's entry, appended last. Its PR list stays empty until this PR exists.
+- `delivery/stories.json`: this story's entry, appended last. A commit after this PR opens records the PR number in it.
+- **Merge of `main`** (`5e6863d`, with #101, #102 and #103) in `f10da15`, no rebase. Four files that both sides appended to were resolved keeping both:
+  - `delivery/stories.json`: main's file unchanged, this story's entry last;
+  - `internal/audit/README.md`: the quick start paragraph, then this story's;
+  - `internal/store/postgres/store_test.go`: `quick_starts` and `library_variants` in both `TestMigrationRoundTrip` lists and in `resetDatabase`;
+  - `internal/web/library.go`: this story's lede, then #102's Starter packs section.
+  - The same commit renames the migration pair to 27 and changes "migration 25" to 27 in `internal/library/README.md`.
 
 ## Test Plan
 
-Everything below ran on head `4904333` on 2026-10-29 (base `b65f797`, GitHub `main` when the branch started). Two independent agents ran it: the pipeline's verifier and a blind AC auditor, each in its own detached copy with its own `_test` database.
+Everything below ran on this PR's head `f10da15` (the merge of GitHub `main` `5e6863d` into `4904333`) on 2026-10-30. The PR finisher ran it in a detached copy with its own fresh `_test` database, using Go 1.27.3, golangci-lint 2.14.0 and govulncheck v1.7.0 (as CI) and gitleaks 8.30.1.
 
-- [x] `make check`, exit 0 (verifier):
+- [x] `make check`, exit 0:
   - workspace, contracts-check, fmt and vet;
   - `go test -race -count=1` on every package with real PostgreSQL;
-  - lint: 0 issues in both modules (golangci-lint 2.14.0, as CI);
-  - govulncheck v1.7.0: no called vulnerability. The "1 vulnerability in modules you require" note predates this branch, which doesn't touch `go.mod` or `go.sum`;
+  - lint: 0 issues in both modules;
+  - govulncheck: no called vulnerability. The "1 vulnerability in modules you require" note predates this branch, which doesn't touch `go.mod` or `go.sum`;
   - gitleaks: no leaks;
   - library gate PASSED (0.8.0, 43 items);
   - build.
-- [x] `scripts/test-module-add.sh`: exit 0 (verifier).
-- [x] Postgres tests (verifier): a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web` and `internal/variant`, read per test.
-  - 320 declared top-level tests: 318 passed, 347 subtests passed, 0 failures.
-  - The 4 skips are the accepted ones: the two ClickHouse subtests, `LEORNA_EVIDENCE_DIR` and `SCW_LIVE`. No skip names `LEORNA_TEST_DATABASE_URL`.
-- [x] gitleaks over the branch's 19 commits: no leaks (verifier).
-- [x] AC tests: the verifier and the auditor each ran them on `4904333`, 0 skips. Each also fails on base `b65f797` with the head's test files copied in: the build fails, because the variant package doesn't exist there.
+- [x] `scripts/test-module-add.sh`: exit 0.
+- [x] Postgres tests: a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web`, `internal/variant` and `internal/textdiff`, read per test.
+  - 349 declared top-level tests: 342 passed, 424 subtests passed, 0 failures. That includes #101's, #102's and #103's tests and `TestMigrationRoundTrip` up and down through migration 27.
+  - 7 skips, all accepted: the two ClickHouse subtests of `TestTeamsAPIWithPostgres`, `LEORNA_EVIDENCE_DIR`, `SCW_LIVE`, and #103's five content-usage tests, which need ClickHouse (`LEORNA_TEST_CLICKHOUSE_URL`). CI runs those with its ClickHouse service. No skip names `LEORNA_TEST_DATABASE_URL`.
+- [x] AC tests, each run alone by name on `f10da15`, 0 skips:
   - [x] AC1 `TestVariantAC1CustomiseCreatesATenantOwnedVariantLinkedToTheUpstreamItemAndVersionWithPostgres` (7 subtests): pass
   - [x] AC2 `TestVariantAC2NewerUpstreamVersionShowsAnUpdateNoticeWithADiffThenMergeOrIgnoreWithPostgres` (5 subtests): pass
   - [x] AC3 `TestVariantAC3VariantIsUsedInPacksExactlyLikeALibraryItemWithPostgres` (8 subtests): pass
-  - [x] AC4 `TestVariantAC4RefusedVariantRequestsWriteNothingAndStayInsideTheTenantWithPostgres` (14 subtests): pass. Covered: member, signed out, bad CSRF, another company's variant, configs and MCP templates, names, stale and unchanged edits, five no-echo secret cases, merge or ignore with no newer upstream or after upstream moved on, unknown ids. Each case also checks that nothing was written.
-- [x] `ac-check.sh` over the verifier's and the auditor's AC reports, with the review check: `ALL ACCEPTED: 4 of 4 ACs on 4904333`; `REVIEWS CLEAN: review-4 at 4904333 is clean`.
-- [x] Real binaries in dev mode on loopback, own database, headless Chrome (verifier and auditor):
-  - release A is `4904333` (`vcs.modified=false`). Customise `incident-postmortem` 1.1.0 → `incident-postmortem-acme` 1.0.0, "Based on incident-postmortem 1.1.0", listed in the library;
-  - release B is the same head with `skill/incident-postmortem` bumped to 1.2.0 (never committed), restarted on the same database. Its startup logs "content library loaded … added 1". The library shows "Update available: 1.2.0"; the variant page shows upstream's diff, "Merging is clean" and Merge 1.2.0 / Ignore 1.2.0. After Merge, the variant is 1.2.0, based on 1.2.0, with the company's line kept;
-  - a pack built from a shipped skill plus the variant lists both with Move and Remove;
-  - a variant edit holding a fake GitHub token is refused with the rule named. The version stays 1.1.0, both boxes are empty, and the page HTML holds no part of the token;
-  - a duplicate name is refused (409).
-- [x] Mutation checks on `4904333`, overlays only (sources unchanged): verifier 36 of 36 killed; auditor 16 of 16 killed. They cover the tenant filters, the admin re-check, the version and upstream checks, the kind and shipped-name checks, the secret no-echo rule, conflict markers, the pack builder's variant ids and the item editor's `required` boxes.
-- [x] Migration on real PostgreSQL (verifier). A database filled by the base binary (migrations 1–24, a tenant, the library, a pack) keeps every row through the head's up, the down file, and up again. The new table's constraints and foreign keys are present. The base binary then refuses to start on the migrated database ("applied migration 25 is missing from embedded migrations"); see Rollback.
-- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK (finisher, on an archive of the head's `scripts/` and `delivery/`). `delivery/stories.json` is valid, with this story's entry last.
-- [x] Scope: no `.github` path in `git diff --name-only b65f797...4904333`. All 19 commits are by the Leorna identity, with no AI attribution lines. No tracked `CLAUDE.md`.
-- [ ] Not re-run on `4904333`: the production image build (`docker build --no-cache` exited 0 on `99382cc`; no build input changed since).
-- [ ] Bringing main in: not done yet (Assumptions). A trial merge with GitHub `main` `8aa32a1` in a scratch copy, with no database, passed fmt, vet, build, the non-DB tests, lint, contracts-check and library-check. That is a prediction, not a gate. The gates and AC tests run again on the merged head before this PR is pushed.
-- [ ] Hosted CI: not run yet. Nothing is pushed.
+  - [x] AC4 `TestVariantAC4RefusedVariantRequestsWriteNothingAndStayInsideTheTenantWithPostgres` (14 subtests): pass
+- [x] gitleaks: no leaks in the 80 commits from this branch's base to `f10da15`, nor in the merged content of the 11 files both sides changed plus the renamed migration.
+- [x] Real binary from `f10da15` (`vcs.modified=false`), dev mode on loopback, fresh database, HTTP requests only (no browser):
+  - the production startup loads ran: the content library (43 items) and #102's four starter packs;
+  - the Content library shows the Starter packs section, the pack builder and this story's lede;
+  - customising `incident-postmortem` as `incident-postmortem-acme` redirects to its variant page;
+  - the library then lists it with the Company variant chip, and the pack builder offers it as a checkbox;
+  - the Packs page answers 200, and the server logged no error.
+- [x] Merge checks:
+  - every file only one side changed equals that side's version;
+  - the renamed migration pair has the same bytes as 25, and the two README lines differ only by the number;
+  - the files whose merged content differs from both parents are exactly the 11 both-sides files plus the renamed pair;
+  - this story's own patch survives line for line, except those two README lines and the three test lines that now hold both tables;
+  - no duplicated migration version: 25 `quick_starts`, 26 `starter_packs`, 27 `library_variants`;
+  - the merged tree equals the one a trial predicted before the merge.
+- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK. `delivery/stories.json`: main's 46 entries unchanged and in order, this story's entry 47th and last.
+- [x] Scope: no `.github` path changed. The branch's 20 commits (19 plus the merge) are by the Leorna identity, with no AI attribution lines. No `CLAUDE.md`.
+- [ ] Not re-run on `f10da15` (they ran on `4904333`, see Assumptions): the mutation checks, the headless-Chrome captures, the release-B update run and the migration fill test. The production image build: CI builds it.
+- [ ] Hosted CI: see Evidence.
 
 ## Security, migration, rollback
 
 - **Security:**
   - Every new route is admin-only (`requireSession` + `requireAdmin`; a member gets 403, AC4). Every store write re-checks the admin role inside its transaction (`beginOrg(ctx, actor, true)`).
-  - Tenant isolation: every variant read and write filters by `tenant_id`, and so does the pack builder's id lookup. Another company's variant id behaves exactly like an unknown id: 404 on its page and its forms, refused in a pack (`INVALID_PACK`), and absent from that company's library. AC4 and `TestPackBuilderCopiesOnlyTheTenantsOwnVariantsWithPostgres` check this, and the mutants that drop each filter are killed.
+  - Tenant isolation: every variant read and write filters by `tenant_id`, and so does the pack builder's id lookup. Another company's variant id behaves exactly like an unknown id: 404 on its page and its forms, refused in a pack (`INVALID_PACK`), and absent from that company's library. AC4 and `TestPackBuilderCopiesOnlyTheTenantsOwnVariantsWithPostgres` check this, and the mutants that drop each filter were killed.
   - The secret gate: customise, edit and merge run the item editor's gate (item rules, renders for Claude Code, Codex and Cursor, gitleaks) before anything is written. Without gitleaks they answer 503 and save nothing.
   - No echo: a refusal for a suspected secret clears every typed field on the variant page and in the item editor, so no part of the token is shown back (five AC4 cases and the item-editor tests; the token check reads the page HTML).
   - CSRF on every form. SQL is parameterized, pages are `html/template`, and the variant preview uses #100's bounded renderer; the unbounded preview stays for shipped content only. Audit records hold ids, names and versions, never text.
   - No auth bypass or dev-login change.
 - **Migration:**
-  - One new table, additive. No existing table or row changes; the fill test above shows every earlier row unchanged.
-  - Its number becomes 27 when main is brought in (#101 took 25, #102 took 26). The SQL is the same as when it was 25.
-  - GitHub `main` never had it, so no shared database ran it as 25. Only this story's own test databases did, and they are dropped.
+  - One new table, additive. No existing table or row changes. The verifier's fill test on the pre-merge head (then numbered 25) kept every earlier row through up, down and up again.
+  - It is migration 27 (#101 took 25, #102 took 26). The SQL is byte-for-byte the same as when this branch numbered it 25.
+  - GitHub `main` never had it, so no shared database ran it as 25; only this story's own test databases did. A database that ran a pre-merge build of this branch stops at startup with "migration 25 checksum mismatch". The SQL bytes are unchanged and the checksum leaves out the number, so `UPDATE schema_migrations SET version = 27 WHERE version = 25` recovers it and keeps its variants; the next start then applies 25 and 26. Dropping `library_variants` and its `schema_migrations` row, or a fresh database, also works.
 - **Rollback:**
-  - **Run the down migration first, then roll back the deploy.** The older binary refuses to start on a database that still records this migration ("applied migration N is missing from embedded migrations"; seen with the base binary, verifier's migration fill).
-  - The down file drops `library_variants`, deleting every variant. Pack versions keep their copies, so teams keep syncing them.
+  - **Run the down migration first, then roll back the deploy.** The older binary refuses to start on a database that still records this migration ("applied migration N is missing from embedded migrations"; seen with the base binary in the verifier's migration fill).
+  - Migration 27's down file drops `library_variants`, deleting every variant. Pack versions keep their copies, so teams keep syncing them.
   - Prefer fix-forward.
 
 ## Assumptions
@@ -118,7 +127,8 @@ Everything below ran on head `4904333` on 2026-10-29 (base `b65f797`, GitHub `ma
 - **Justin's decisions during review:**
   - After review 2: "R2-1: Keep going." On the item editor's same defect: "Fold into this fix". That is the item-editor change above, in its own commit with its own tests. AC wording unchanged.
   - Then, on cleared supporting-file text that could be resubmitted as empty files: "Mark cleared file boxes required". Built in the next fix round.
-- **Migration number (pending "bring main in"):** this branch still says 25. Bringing main in renames the pair to 27 and changes "migration 25" in `internal/library/README.md` to 27. That merge also resolves four record or list conflicts with #101 and #102 (`delivery/stories.json`, `internal/audit/README.md`, `internal/store/postgres/store_test.go`, `internal/web/library.go`), keeping both sides. It needs Justin's OK with "make a PR"; the gates and AC tests run again on the merged head.
+  - Bringing `main` in with this PR: "ok push pr".
+- **Verification so far:** the pre-merge head `4904333` passed four fresh reviews (the last one clean), a verifier and a blind AC auditor (`ac-check.sh`: all 4 ACs accepted), mutation checks (verifier 36 of 36 killed, auditor 16 of 16), a two-release run of the real binaries in headless Chrome, and a migration fill test. On this PR's head, the gates, the AC tests and the startup check above ran; a fresh review of the merge commit, then a new verifier and AC auditor, follow on this PR's head.
 - **Rulings not yet confirmed by Justin** (accepted by the reviews and the verifier):
   - Builder:
     - deleting a library row that a variant is based on fails with SQLSTATE 23001 (`ON DELETE RESTRICT`), not 23503;
@@ -148,14 +158,17 @@ Everything below ran on head `4904333` on 2026-10-29 (base `b65f797`, GitHub `ma
   - Review 1: R1-1, P2, an unedited agent variant couldn't merge an upstream description change. Fixed: the merge compares against upstream renamed to the variant's name.
   - Review 2: R2-1, P2, a suspected secret in an agent's description was shown back in the other box. Fixed, plus the item editor (Justin).
   - Review 3: R3-1, P2, cleared supporting-file text could be resubmitted as 0-byte files. Fixed with `required` (Justin).
-  - Review 4: clean, with one P3 (bring main in, renumber to 27).
-  - The verifier and the blind auditor were clean on `4904333`. Every P3 is a follow-up below or the pending bring-in.
+  - Review 4: clean, with one P3 (bring main in and renumber to 27): done in this PR's merge commit.
+  - The verifier and the blind auditor were clean on `4904333`. Every other P3 is a follow-up below.
 - A variant's category, tags and supported tools are its upstream version's. Its version numbers are its own (1.0.0, then a minor bump per saved change), not upstream's; pack audits and the bundle show them.
 - Updates are computed when a page is read. There is no job and no notification.
 - Customise also runs the gate, because the variant's name changes the rendered paths. A shipped item that fails the tenant rules couldn't be customised; `TestEveryShippedSkillAgentAndPromptCanBeCustomised` shows none does today.
 - If a later release ships an item with a variant's name, the variant stays (packs that hold it keep working) but can't be ticked; the admin customises again under a new name.
 - Older Pack Versions paths (fork, single-item edit, "Add library item"), the quick start (#101) and the role starter packs (#102) pick shipped items only.
-- **Merging with other work** (checked read-only 2026-10-30, 00:08 UTC): GitHub `main` is `8aa32a1`, with #101 and #102 merged since this branch's base. The only open PR is #103 (content usage analytics, head `b4acb2f`). It is up to date with main and adds no migration; stacked on the trial merge, its only conflict is `delivery/stories.json`, where whichever merges second appends its entry last. Its usage counts read pack items by kind and name, so a variant in a pack is counted under its own name.
+- **Merging with other work** (checked 2026-10-30, 03:47 UTC): GitHub `main` is `5e6863d`, with #101, #102 and #103 merged since this branch's base. The only other open PR is #104 (manage many packs in one admin overview, head `0568191`).
+  - #104 conflicts with `main` itself in `delivery/stories.json` and `internal/store/postgres/pack_versions.go`, a file this PR doesn't touch. Against this PR's head it has the same two conflicts, so only `stories.json` involves this PR: whichever merges second appends its entry last.
+  - The seven other files both PRs change merge cleanly. No top-level name is added by both, and #104 calls none of the functions this PR changed.
+  - #103's usage counts read pack items by kind and name, so a variant in a pack is counted under its own name.
 - **Follow-ups:**
   1. Edit supporting files in a variant, with a per-file merge.
   2. A JSON API for variants in OpenAPI.
@@ -172,6 +185,6 @@ Everything below ran on head `4904333` on 2026-10-29 (base `b65f797`, GitHub `ma
 
 ## Evidence
 
-- Head: `4904333a8fe0def527ad32603e115f2499c6cef8` (base `b65f797ff6cdc56a802dfaf417b0adec96463317`); changes after bringing main in
-- Check "Go quality gates": pending (not pushed)
+- Head: `f10da155b9f35e72c35645efea3d20121b72d69f`, the merge of `main` `5e6863d` into `4904333a8fe0def527ad32603e115f2499c6cef8` (story base `b65f797ff6cdc56a802dfaf417b0adec96463317`)
+- Check "Go quality gates": pending
 - Actions run: pending
