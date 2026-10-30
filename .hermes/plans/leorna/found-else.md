@@ -289,3 +289,4 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - 2026-10-29 86bcm901z finisher | P3 records: main's `delivery/stories.json` entry for role-based starter packs (#102) lists no PR although #102 merged, so that story's shippable check passes vacuously.
 - 2026-10-29 86bcm901z finisher | P3 records: the 901z auditor's `ac.json` says AC4 has "15/15 subtests"; both its logs show 14 (the hand-over uses 14).
 - 2026-10-29 86bcm901z finisher | info: the shared main checkout is on local `main` e2254e0, behind GitHub 8aa32a1 (the next builder's B0 fast-forwards it).
+- 2026-10-29 86bcm902w review 4 | P3 (#102 design): LatestStarterVersions lists every role ever loaded and #102 never retires a role, so a curation that renames a role slug or drops a role leaves the old role's pack in the catalog (and as its own line on the content usage page) forever.
