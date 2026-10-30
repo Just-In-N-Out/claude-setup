@@ -29,7 +29,11 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
 ## What counts as shown
 - Hidden is more than `display: none`: `visibility: hidden` (closed dropdowns, megamenus, popups) and screen-reader
   boxes hidden with the old `clip: rect(…)` (Bricks' `.skip-link` is 20×10 with padding, not 1×1) are not visible
-  layers (web-capture review 1).
+  layers (web-capture review 1). But the capture reads after its freeze scrolls back to the top, so reveal-on-scroll
+  content that hides itself again off screen is `visibility: hidden` then: probe a reveal that toggles both ways
+  before changing what counts as shown (web-capture review 2).
+- Parts from landmarks: many sites have `<header>` and `<footer>` but no `<main>` (Divi, older themes, plain div
+  pages), or only a footer: probe those shapes (web-capture review 2).
 - `documentElement.scrollWidth` stays wider than the window when html/body has `overflow-x: hidden|clip`, though nobody
   can scroll: a sideways-scroll check also reads the window's effective overflow-x (html's, else body's when html's is
   visible) (web-compare review 1). The same holds for clipping: body's computed overflow goes to the viewport when
