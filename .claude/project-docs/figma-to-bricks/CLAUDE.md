@@ -7,8 +7,9 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-30)
 
-- **Current build `2026-10-30.19`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.20`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **30.20 social-links (in session):** social icons link to the profiles in the site's Yoast SEO. Paste check **3cg**.
   - **30.19 djtrees-side-panel (quick fix in session):** content drawn against one side of a section reaches that side;
     a lone layer with a Center constraint stays centred. Paste check **3cf**.
   - **30.18 djtrees-drawn-map (quick fix in session):** a picture with a pin over its middle, named as a map or pin,
@@ -759,6 +760,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     and its ☰); everything else converts exactly as before. A call bar right over a plain nav bar is one header
     ("Both are the header"). Wanted, not built: a picture, four short items and a button right under a call bar is
     the main header too ("Main header, as before", follow-up; HANDOFF header-bar review 8).
+- **Social icons link to the business's profiles in Yoast SEO** (Justin, 2026-10-30, chose "From Yoast" over a panel
+  box or links set in Figma; build `2026-10-30.20`): the panel reads Yoast's Other profiles when connected and saves them
+  in the file; small icons named after a network link to them. HANDOFF "Social icons link".
 - **Fonts not on Google Fonts** (user, 2026-10-20: "the fonts will be put on WordPress automatically like a drag
   them"): files, a folder or a .zip dropped on the panel go to WordPress's own Font Library (`wp/v2/font-families`),
   chosen over Bricks Custom Fonts (admin-ajax only, not in REST) plus a helper plugin. It needs an Administrator's
