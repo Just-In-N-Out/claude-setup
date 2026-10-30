@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-30)
 
-- **Current build `2026-10-30.14`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.15`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **30.15 djtrees-hover-label (quick fix in session):** a button's hover copy keeps its words on one line where the
+    button's do. Paste check **3cc**.
   - **30.12 djtrees-wide-hero (quick fix in session, no reviews):** section photos fill wide screens edge to edge (Justin's
     new choice); a menu bar drawn over the hero is pinned above tablets. Paste check **3cb**.
   - **30.11 djtrees-side-photo (quick fix in session, no reviews):** a section's Crop photo drawn against one side reaches
@@ -341,6 +343,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   (a text above) when a test looks the box up by label. An auto-layout `column`/`row` fixture hugs its flowing
   children: a wrapper holding an absolute layer needs its own width and height, or it is only as wide as its words.
   Texts in the scene carry no fills (their colour is in the text data), so a "painted" check never counts plain words.
+  A page column of only two parts reads as one section: give a fixture page three. `vector(name, opts)` ignores `fills`
+  (spread it and set `fills` after); a hover becomes a hover copy (`overlay`) only for a change CSS can't draw, such
+  as an icon's colour.
 - **Shell quirk:** typing the escape text for U+2028/U+2029 in a shell command turns it into the raw character, which
   breaks regex literals. Write such escapes with `String.fromCharCode(92)` or edit the file with the Edit tool.
 
