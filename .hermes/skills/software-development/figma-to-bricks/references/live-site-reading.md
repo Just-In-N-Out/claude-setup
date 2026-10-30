@@ -41,5 +41,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   scroll offsets around it (web-compare noise floor, review 1).
 
 ## Mapping into the Snapshot
+- Serialising an inline SVG with its computed paint (a fingerprint or a vector): write paint only on parts drawn in
+  place, never on a `<symbol>` or a `<use>` target (the instance would take the target's inline style and lose the
+  use's inherited paint), and declare `xmlns:xlink` when the markup uses `xlink:` or the standalone SVG won't parse
+  (web-compare fixer 1).
 - Frame names made from slugs go through normalise's `pageUrl`, which sends any name starting with "home" to `/`:
   `/home-inspections/` would link home. Name own-page frames so only the real home matches (web-capture review 1).
