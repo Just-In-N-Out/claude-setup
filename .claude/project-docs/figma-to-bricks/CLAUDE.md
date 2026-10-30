@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-30)
 
-- **Current build `2026-10-30.10`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.11`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **30.11 djtrees-side-photo (quick fix in session, no reviews):** a section's Crop photo drawn against one side reaches
+    that side of wide screens. Paste check **3ca**.
   - **30.7 djtrees-carousel (quick fix in session, no reviews):** an unclipped frame Figma scrolls sideways is a strip;
     a row of back/on buttons and bars under it moves it and lights the bar; 30.8: no scrollbar, the current or hovered
     card lifts 8px; 30.9: arrows step one card at a time; 30.10: no arrows on phones. Paste check **3bz** (needs code execution on and signed code on the site).
