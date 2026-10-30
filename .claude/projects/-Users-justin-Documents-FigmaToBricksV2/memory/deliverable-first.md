@@ -16,3 +16,5 @@ what is already usable.
 **How to apply:** never cut or rush review rounds to save time unless he asks. As soon as a deliverable he can use (a
 paste file in Downloads) is verified, tell him it's ready and offer the paste steps while the loops continue, and give
 short progress notes (what each round found, what's left). See [[run-without-stopping]].
+
+**His limit (2026-10-29, header-bar):** after 8 review rounds and a second brake he answered the question, then cut in with "just merge": the remaining findings became known limits and the final verifier/auditor were skipped. At a brake after many rounds, always offer "stop fixing, merge as is" as an option; when he says it, merge (still rebase and run the checks) and record the limits and his unbuilt answer as a follow-up.
