@@ -146,3 +146,5 @@ ac-check-release.txt). Setup sync remains blocked by read-only private setup git
 notes/plans/skills are saved locally, no bypass.
 
 **2026-10-29.2 after-faq-sections** (released 3ea33bb, pushed): a footer frame stacking page sections above its links keeps them when the footer is ticked (careful allow-list rule, R13; 1-2-word titles read as a typed logo, so such frames leave whole as before). 11/12 ACs by verifier + blind auditor; live check 3bt owed (the three sections are already on B-Dry /homev2/ from the whole-page paste). Evidence ~/.hermes/plans/figma-to-bricks/evidence/after-faq-sections/.
+
+**2026-10-29.3 header-bar** (released 61bb5fc, pushed; merged on Justin's "just merge" after 8 reviews, final verifier/auditor skipped): header tick recognises a site top bar (call bar, logo+menu+CTA, logo+☰) and leaves it out, a call bar's nav bar with it; unticked, logo links home, phone calls, row spans wide screens. Live check 3bs owed (header already on /homev2/ from the whole-page paste). Follow-ups: "Main header, as before" (R8-1..3), header-menu (☰, needs Offcanvas sample).

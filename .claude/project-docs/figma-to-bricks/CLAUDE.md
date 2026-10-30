@@ -7,8 +7,11 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-29)
 
-- **Current build `2026-10-29.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-29.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **29.3 header-bar:** with the header tick on, a site's top bar (logo, phone line, button, ☰) is recognised as its
+    header and left out, a call bar's nav bar with it; unticked, its logo links home, its phone number calls, and its
+    row spans wide screens. Paste check **3bs** owed (paste the B-Dry header into the staging site's Header template).
   - **29.2 after-faq-sections:** a footer frame that stacks page sections above its links keeps those sections when
     the footer is ticked, painted as drawn. Paste check **3bt** owed (paste the three sections under the FAQ on
     /homev2/).
@@ -30,7 +33,8 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 - **Paste checks owed:** HANDOFF "End-of-run check list" (3c onward); each feature's HANDOFF heading names its check.
   3bj, 3bl, 3bm and 3bq all empty Home and re-paste "Home Page Final" with the header/footer ticks as on the site: copy
   the FAQ answers Justin typed in Bricks first and type them back after. 3bt pastes `after-faq-sections.json` under
-  the FAQ on B-Dry's staging /homev2/. Several older pages need a re-paste too (3ac).
+  the FAQ on B-Dry's staging /homev2/; 3bs pastes `header-paste.json` into B-Dry staging's Header template. Several
+  older pages need a re-paste too (3ac).
 - **Milestones:** M0–M4b of the design (`docs/specs/2026-10-06-v2-design.md`) are done. Next: the user's end-of-run
   check, then the sample-bound parts (M2d phone menu, Tabs, Dropdown, Offcanvas, pop-ups).
 - **Corpus:** 17 results are worse than v1, all from Bricks' cap of every element at its parent's width (live-site
@@ -76,7 +80,9 @@ header spacer) the user runs Bricks → Settings → Custom code → **Regenerat
   `pulse` with CTA/product animations and the generic class name's possible site collision remain follow-ups.
 - **Section rhythm:** a drawing pinned beside a closing's buttons or to its top can land on full-width phone buttons or
   a wrapped heading from 478 down (base too; HANDOFF follow-ups).
-- **Header tick:** GRO's and brainstorm's nav drawn inside the hero stays in the paste.
+- **Header tick:** GRO's and brainstorm's nav drawn inside the hero stays in the paste. A strip under a call bar that
+  has a picture, four short items and a button is read by its words (two-word menus stay, one-word bands leave);
+  Justin wants it read as the main header (follow-up).
 - **Fonts:** fonts may load twice (needs a live paste proof); `localeCompare` may sort fonts differently under Figma's
   SES.
 
@@ -710,6 +716,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     footer went, in red when the paste may double the site's.
   - **The room under the site's header:** measured by a script (chosen over Figma's header height). The site's header
     is `position: fixed` (Bricks' Sticky header too), so it takes no room of its own.
+  - **Which bar is the header** (Justin, 2026-10-29, "Careful rules"; build `2026-10-29.3`): new behaviour only where a
+    bar is clearly a site header (a call bar ending in its ☰; a drawn logo, a menu of 4+ and a call to action; a logo
+    and its ☰); everything else converts exactly as before. A call bar right over a plain nav bar is one header
+    ("Both are the header"). Wanted, not built: a picture, four short items and a button right under a call bar is
+    the main header too ("Main header, as before", follow-up; HANDOFF header-bar review 8).
 - **Fonts not on Google Fonts** (user, 2026-10-20: "the fonts will be put on WordPress automatically like a drag
   them"): files, a folder or a .zip dropped on the panel go to WordPress's own Font Library (`wp/v2/font-families`),
   chosen over Bricks Custom Fonts (admin-ajax only, not in REST) plus a helper plugin. It needs an Administrator's
