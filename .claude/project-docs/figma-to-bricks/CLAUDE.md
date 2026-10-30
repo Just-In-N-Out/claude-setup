@@ -7,10 +7,11 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-29)
 
-- **Current build `2026-10-30.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
-  - **30.2 faq-gaps (quick fix in session):** a row gap drawn past its own box fits it; a label and its small icon
-    keep one line at laptop widths. Paste check **3bv** owed.
+  - **30.2/30.3 faq-gaps, faq-still (quick fixes in session):** a row gap drawn past its own box becomes Auto spacing
+    (the FAQ + at the right edge); a label and its small icon keep one line at laptop widths; FAQ questions don't
+    hover. Paste check **3bv** owed.
   - **30.1 cut-outs (quick fix in session, no review rounds at Justin's word):** a see-through picture Figma shows
     whole is `contain`, so a cut-out of another shape swapped in Bricks shows whole. Paste check **3bu** owed.
   - **29.3 header-bar:** with the header tick on, a site's top bar (logo, phone line, button, ☰) is recognised as its
@@ -377,7 +378,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - Use CSS only for hover and motion.
   - Pop-ups: Bricks pop-ups are templates and can't be pasted. Use the HTML `popover` attribute once the round trip
     proves Bricks keeps it, Offcanvas for drawers, or Bricks Interactions.
-  - **Hover:** exactly as in Figma; on phones a tap does the hover. **Except call-to-action buttons** (below).
+  - **Hover:** exactly as in Figma; on phones a tap does the hover. **Except call-to-action buttons** (below) and
+    **FAQ questions** (Justin, 2026-10-30: "they should stay the same until clicked"): an accordion item and its
+    question never hover; only opening changes them (build `2026-10-30.3`).
   - **Motion:** plays when scrolled into view.
   - **Only Figma's animations** (2026-10-01): convert what the design sets up, faithfully (entering and leaving). Never
     invent motion the design doesn't have: no automatic scroll reveals, hover lifts or added transitions. The
