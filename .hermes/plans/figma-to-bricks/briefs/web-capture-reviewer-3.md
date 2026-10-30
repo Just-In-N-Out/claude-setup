@@ -18,8 +18,7 @@ reviewer's duties", "Records") and the `review-fix-cadence` skill.
 - **Delta round:** only fix pass 2's commits and what they touch: `git diff 519dab4..453d2dc` (5 commits, branch
   `web-capture-fix-2`). Your worktree starts at `main`; run `git checkout --detach
   453d2dc0521dff8b53323f7368b99613e10be86e`. Anything else you notice outside the fix commits is P3.
-- **Earlier rounds:** `evidence/web-capture/review-1/` and `review-2/` (`review.json`, `referee.txt`, round 2's
-  `justin.json`: continue), the fixers' answers `fixer-1/answers.md` and `fixer-2/answers.md` (fix pass 2: all five
+- **Earlier rounds:** `evidence/web-capture/review-1/` and `review-2/` (`review.json`, `referee.txt`), the fixers' answers `fixer-1/answers.md` and `fixer-2/answers.md` (fix pass 2: all five
   R2 findings fixed; rulings F12–F17; mutants and probes in `fixer-2/`). Judge each R2 fix; when a finding is the same
   defect as an earlier one, set `"repeats"` and a 5+ word `"new_fact"` when you have one.
 - **Three trees per probe** (review-loop.md): run each probe with the base `3ea33bb`, the previous round's head
