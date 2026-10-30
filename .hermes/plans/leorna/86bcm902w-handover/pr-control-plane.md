@@ -11,36 +11,40 @@ ClickUp: [Content usage analytics (which items get used)](https://app.clickup.co
 - `contracts/control-plane.openapi.yaml`, `packages/contracts/controlplane.gen.go`: `UsageBatch` gains optional `itemUses` (at most 1,000); new `ItemUse` and `ItemUseKind`. `events` stays required but may be empty, so an item-only batch sends `"events": []`; a batch with neither is still 400.
 - `internal/web/usage_ingest.go`: decodes strictly (unknown fields 400), checks both lists' bounds, validates every item use, resolves an item use's project through the existing attribution, then writes events and item uses. Tenant and user come from the session, never the body. The "store can write" check now runs after decoding and only for the parts the batch has.
 - `internal/metric/clickhouse/store.go`, `internal/metric/clickhouse/item_uses.go`: `CREATE TABLE IF NOT EXISTS item_uses_v1` (ReplacingMergeTree keyed by tenant, user and use ID, so a re-import counts once); `WriteItemUses`; admin-only `QueryItemUsage` reading `FINAL` rows of the actor's tenant, bounded at 10,000 rows (more → 400 "too many rows").
-- `internal/web/content_usage.go`, `internal/web/handler.go`: `GET /admin/content-usage` behind the session and admin guards, a "Content usage" link in the admin nav, a UTC date filter, "Where usage can be measured", "By pack" and "By item". Pack rows: per pack name the company's own newest version; the shared seed's newest version only when the company has none of that name; another company's version never counts. A failing store answers 503 without its error text.
+- `internal/web/content_usage.go`, `internal/web/handler.go`: `GET /admin/content-usage` behind the session and admin guards, a "Content usage" link in the admin nav, a UTC date filter, "Where usage can be measured", "By pack" and "By item". Pack rows: a shared version (the seed or a role starter pack) that a newer release of its line replaced gets no row, even when the release renamed the pack (each starter role is one release line, the seed another); then per pack name the company's own newest version, and a current shared version only when the company has none of that name; a company version is never hidden; another company's version never counts. A failing store answers 503 without its error text.
+- `internal/pack/version.go`, `internal/store/postgres/pack_versions.go`: `PackVersion.StarterRole`; `ListByTenant` now also returns each shared starter version's role (empty for the seed base and every company version), so the page can group shared versions by release line. Read-only, no migration; the other version-history pages ignore the field.
 - Tests:
   - `internal/metric/content_usage_spike_test.go`: AC1 (the write-up's table equals the code's table, row for row and basis for basis).
   - `internal/metric/content_usage_test.go`: validation, the period filter and the report.
   - `internal/metric/clickhouse/item_uses_test.go`: the query tests on real ClickHouse (replay counts once, period bounds, tenant isolation), the additive migration, FINAL tenant-bound reads, fail-closed store.
-  - `internal/web/content_usage_test.go`: AC2, AC4, AC5 on real Postgres and ClickHouse, and the "company's own pack wins" rule with the real seed base.
-  - `internal/web/content_usage_component_test.go`: AC3, newest version per pack, and the company-version rule at the handler.
+  - `internal/web/content_usage_test.go`: AC2, AC4, AC5 on real Postgres and ClickHouse, the "company's own pack wins" rule with the real seed base, and the "hide replaced packs" rule with the control plane's real startup loads plus a starter item release, a starter rename and a seed rename.
+  - `internal/web/content_usage_component_test.go`: AC3, newest version per pack, the company-version rule and the replaced-shared-version rule at the handler.
+  - `internal/store/postgres/starter_packs_test.go`: the version history keeps the role on both versions of a renamed starter pack (real rename release).
   - `internal/web/testdata/content_usage_client_upload.json`: the client's golden upload body, byte-identical to the client's own copy; AC2 posts it.
 - Docs: `internal/metric/README.md` section "Content usage (story 86bcm902w)"; one sentence in the root `README.md` naming `/admin/content-usage`.
 - `delivery/stories.json`: the 86bcm902w entry, appended last, listing this PR and the client PR.
 
 ## Test Plan
 
-Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` with GitHub `main` brought in at `8aa32a1` (after #101 "One-click quick start" and #102 "Role-based starter packs"), with the client at `db3e6b0`. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 (CI's pins), gitleaks 8.30.1; real Postgres in a test container and real ClickHouse from CI's pinned image (`clickhouse-server:25.8@sha256:0152dd51…`).
+Everything below ran on 2026-10-29 on head `b4acb2f` (the review-3 fix on top of `fabbec0`; `main` still at `8aa32a1`), with the client at `db3e6b0`. Tools: Go 1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 (CI's pins), gitleaks 8.30.1; real Postgres in a test container and real ClickHouse from CI's pinned image (`clickhouse-server:25.8@sha256:0152dd51…`).
 
-- [x] Bringing in `main`: only `delivery/stories.json` conflicted (resolved as main's file plus this entry last, every earlier entry unchanged by value); `README.md` and `internal/web/handler.go` equal git's clean 3-way merge. Every file changed on one side only equals that side's version (44 of 44); the files that differ from both parents are exactly the 3 both sides changed; this branch's own changes survive line for line (18 of 18 files); no migration version repeats (`000024`–`000026` are main's; this PR adds none); gitleaks over the 3 both-sides files: no leaks.
-- [x] `make check` with the linter and govulncheck bound to CI's versions: exit 0 (race tests, lint 0 issues in both modules, govulncheck no called vulnerability, gitleaks no leaks, library gate PASSED, build).
+- [x] Review 3's finding reproduced first on `fabbec0`, with the control plane's real startup loads (seed base, content library, starter packs) and a starter-pack rename released the way #102 releases it: the page had 6 pack rows, the old-name `starter-secure-coding-1` beside `starter-secure-coding-2`. On `b4acb2f` the same probe shows 5 rows, one per starter role plus the seed, and no old-name row.
+- [x] `make check` with the linter and govulncheck bound to CI's versions: exit 0 (race tests, lint 0 issues in both modules, govulncheck no called vulnerability, gitleaks no leaks, library gate PASSED, build). `gofmt -l` clean.
 - [x] `bash ./scripts/test-module-add.sh`: exit 0.
-- [x] gitleaks over `b65f797..b78905b` (58 commits, main's included): no leaks.
-- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK.
-- [x] DB tests read per test from a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web` and `internal/metric/...`: 703 passed, 0 failed, 339 of 339 declared top-level tests ran; the only skips are the accepted `TestEvidenceThirdPartyContentPage` and `TestProvisionManagedPostgresLive`; no skip names the test database or ClickHouse variable.
+- [x] gitleaks over `b65f797..b4acb2f` (61 commits, main's included): no leaks.
+- [x] `python3 -m unittest discover -s scripts -p 'test_story_shippable.py'`: 5 tests OK. `scripts/check-story-shippable.py 86bcm902w`: only the expected BLOCKED lines while this PR and the client PR are open.
+- [x] DB tests read per test from a `go test -json` stream over `internal/cloud/dbcheck`, `internal/store/postgres`, `internal/web` and `internal/metric/...`: 709 passed, 0 failed, 341 of 341 declared top-level tests ran; the only skips are the accepted `TestEvidenceThirdPartyContentPage` and `TestProvisionManagedPostgresLive`; no skip names the test database or ClickHouse variable.
 - [x] AC tests by name, each with no skip:
   - [x] AC1 `TestContentUsageAC1SpikeMatchesSupportTable`: pass
   - [x] AC2 `TestContentUsageAC2CountsPerPackAndItemWithPostgres`: pass
   - [x] AC3 `TestContentUsageAC3NotMeasurableIsStated`: pass
   - [x] AC4 `TestContentUsageAC4AdminOnlyAndTenantIsolatedWithPostgres` (6 subtests): pass
   - [x] AC5 `TestContentUsageAC5IngestAcceptsOnlyItemIdentifiersWithPostgres`: pass
-- [x] Cross-repo ties: `cmp` of the client's golden upload body (`db3e6b0`) with `internal/web/testdata/content_usage_client_upload.json`, and of the client's `api/control-plane.openapi.yaml` with `contracts/control-plane.openapi.yaml`, both from `b78905b`: both exit 0.
-- [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff against `main`; all 13 of the branch's own commits (12 plus the merge) by the Leorna identity with no AI attribution lines.
-- [x] Hosted CI: "Go quality gates", "Publish control-plane image" and "Package admin-portal distribution" pass on `fabbec0` (the PR head) and on `b78905b`.
+- [x] Pack-row rule tests by name: `TestContentUsageHidesReplacedSharedPacksWithPostgres` (3 subtests), `TestContentUsageHidesSharedVersionsANewerReleaseReplaced`, `TestStarterPackRenameIsReleasedLikeAnItemChangeWithPostgres` (5 subtests), `TestContentUsageCompanyPackWinsOverSharedSeedWithPostgres` (3 subtests), `TestContentUsageChoosesTheCompanyVersionOfEachPack`: pass.
+- [x] Cross-repo ties: `cmp` of the client's golden upload body (`db3e6b0`) with `internal/web/testdata/content_usage_client_upload.json`, and of the client's `api/control-plane.openapi.yaml` with `contracts/control-plane.openapi.yaml`, both from `b4acb2f`: both exit 0.
+- [x] Mutation checks on the fix (overlay only, source never edited): 12 mutants of the new rule (the old behaviour, hiding by name only, hiding a company version, a company's or another company's version counted as a release, the seed line ignored, keeping the oldest, the store dropping or misreading the role, one line for all shared versions, a parent-only rule) all fail a test; the review-1 rule's 9 mutants re-run: 8 fail a test, 1 is the same documented equivalent as before.
+- [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff against `main`; all 16 of the branch's own commits by the Leorna identity with no AI attribution lines.
+- [x] Hosted CI on `b4acb2f`: "Go quality gates", "Publish control-plane image" and "Package admin-portal distribution" pass (https://github.com/LeornaAI/leorna-control-plane/actions/runs/40976971544).
 
 ## Security, migration, rollback
 
@@ -60,7 +64,9 @@ Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` wi
 - Uses reach the server through an explicit import command run on the engineer's machine (approved option). Automatic upload after Sync is the separate "Upload usage automatically after Sync" card, which should reuse the client's detectors.
 - Only uses of items the last Sync installed leave the machine, so personal skill and command names are never sent (approved option).
 - An item that sits in several packs counts in each pack (approved option); pack totals can overlap, and the page says so.
-- Pack rows: the company's own newest version of each pack name wins; the shared seed shows only when the company has no version of that name (Justin's decision after review 1). Between two versions of one owner, the newer one wins, and on an equal creation time the larger version string.
+- Pack rows: the company's own newest version of each pack name wins; a shared version shows only when the company has no version of that name (Justin's decision after review 1). Between two versions of one owner, the newer one wins, and on an equal creation time the larger version string.
+- Replaced shared packs are hidden (Justin's decision after review 3): a shared version that a newer release of its line replaced gets no row, even when the release renamed the pack. A line is a starter role (a release keeps the role) or the seed (shared versions without a role, which only the seed load writes), so a seed rename is covered too. A company version is never hidden: the company's own copy of a replaced version keeps its row beside the new release. Within a line the newest version is the newest by creation time, the order the page already used; the Content library catalog orders by the role's version number, and the two agree unless two different releases start up at the same instant and change the same role.
+- A team still assigned a replaced shared version has its items counted under the line's current pack; an item that the newer release dropped shows "Not in a current pack". Rows follow the packs, not assignments (Justin kept that rule after review 3).
 - An item is (kind, name): versions of an item count together.
 - Codex skill use is inferred from the first read of `.agents/skills/<name>/SKILL.md` per session; Claude Code counts each `Skill` call and each typed `/name` line in sessions run in the synced project folder (a session started in a subfolder doesn't count). The page labels Codex "Inferred".
 - Agents are "Not measurable" everywhere until a transformer installs agents.
@@ -77,11 +83,14 @@ Everything below ran on 2026-10-29 on head `b78905b`: this branch's `de5fbe0` wi
 4. Cursor: check on a real store whether tool-call parameters name a skill file or command; flip those rows only with a test. Agents: count them once a transformer installs agents.
 5. A CI check that the client's OpenAPI snapshot equals this repo's.
 6. CSV export and team/project filters for content usage; a lighter pack metadata query if the page slows (it loads each pack's latest version).
+7. A test that pins the admin nav's "Content usage" link (review 3 R3-3). Whether pack rows should follow team assignments now that shared starter packs are many (review 3 R3-2; kept as is for now).
 
 ## Evidence
 
-- Head: `fabbec00fa8428bf7e014ba06350efe796002c1c` (base `main` at `8aa32a1`; the branch started from `b65f797`). The local gates above ran on `b78905b`, the merge of `main`; `fabbec0` on top of it only records this PR and the client PR in `delivery/stories.json` (`test_story_shippable.py` 5 OK on it).
-- Before `main` was brought in, the pipeline's independent verifier and a blind AC auditor each accepted all 5 ACs on `de5fbe0`, with mutation checks and a run of the real binary there. A fresh verifier and auditor run on this PR's head next.
-- Required check "Go quality gates": success on `fabbec0`.
-- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40969718620 (`fabbec0`, success); also https://github.com/LeornaAI/leorna-control-plane/actions/runs/40967518059 (`b78905b`, success).
-- Local receipts (one log per gate plus a summary, AC logs, the merge proof) are kept with the story's evidence.
+- Head: `b4acb2f82016990587371a46279c88f416152c42` (base `main` at `8aa32a1`; the branch started from `b65f797`). The local gates above ran on `b4acb2f`: `7f05c9c` fixes review 3's finding and `b4acb2f` only rewords a comment (its code prints identical without comments).
+- `main` was brought in at `b78905b` (earlier on 2026-10-29): only `delivery/stories.json` conflicted (main's file plus this entry last, every earlier entry unchanged by value); `README.md` and `internal/web/handler.go` equal git's clean 3-way merge; every file changed on one side only equals that side's version (44 of 44); no migration version repeats; this branch's own changes survived line for line. `main` has not moved since.
+- Before `main` was brought in, the pipeline's independent verifier and a blind AC auditor each accepted all 5 ACs on `de5fbe0`. Review 3 (on `fabbec0`) found the renamed-starter row fixed here; a fresh review, verifier and auditor run on this head next.
+- Required check "Go quality gates": success on `b4acb2f`.
+- Actions run: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40976971544 (`b4acb2f`, success); earlier heads: https://github.com/LeornaAI/leorna-control-plane/actions/runs/40969718620 (`fabbec0`, success), https://github.com/LeornaAI/leorna-control-plane/actions/runs/40967518059 (`b78905b`, success).
+- Local receipts (one log per gate plus a summary, AC logs, the reproduction and mutation receipts) are kept with the story's evidence.
+

@@ -15,23 +15,25 @@ ClickUp: [Content usage analytics (which items get used)](https://app.clickup.co
 - Tests:
   - `usage/items_test.go`: only synced items count, typed skill commands, every Codex call shape, bounded input, no transcript text in the output, the golden upload body, dedupe/sort, batching.
   - `usage/items_real_test.go`: env-gated, runs a real Claude Code binary in a throwaway home with a faked model API on loopback.
-  - `application/managed_items_test.go`: the last successful Sync per tool, installed files only, read-only open never migrates, the default path.
+  - `application/managed_items_test.go`: the last successful Sync per tool, installed files only, read-only open never migrates, the default path; the stored Claude Code folder matches a session `cwd` naming it in any Windows form (8.3 short path, letter case, forward slashes), and another folder or the parent does not.
   - `cmd/import-content-usage/main_test.go`: sends only identifiers, sends nothing without uses, refuses bad flags before sending.
   - `usage/testdata/items/`: synthetic Claude Code and Codex fixtures modelled on the verified shapes, and `upload.golden.json`, byte-identical to the control plane's copy.
 - `README.md`: section "Content usage import (story 86bcm902w)": command, flags, what is counted, what is sent and what never is, and what happens against an older control plane.
 
 ## Test Plan
 
-Everything below ran on 2026-10-29 on head `db3e6b0` (base `f105e27`, which is still GitHub `main`: nothing to bring in), with the control plane at `b78905b` (the control-plane PR's head after it brought in its `main`). Tools: Go 1.27.3, Node 22, golangci-lint 2.14.0 and govulncheck v1.7.0 (CI's pins).
+Everything below ran on 2026-10-29 on head `cf3df7f` (base `f105e27`, which is still GitHub `main`: nothing to bring in), with the control plane at `fabbec0` (the control-plane PR's current head). Tools: Go 1.27.3, Node 22, golangci-lint 2.14.0 and govulncheck v1.7.0 (CI's pins).
 
 - [x] `make check` (boundary check, generated API check, vet, `go test -race`, build): exit 0.
 - [x] `node --test scripts/*-ui.test.cjs`: 39 of 39 pass.
 - [x] `make lint audit` with golangci-lint 2.14.0 first on PATH: 0 issues, no vulnerabilities.
-- [x] The story's 15 tests by name (`./usage`, `./application`, `./cmd/import-content-usage`): 15 of 15 pass.
-- [x] Real Claude Code 2.1.312 (`TestRealClaudeCodeTranscriptItemUses`, isolated home, faked model API on loopback): pass; 3 sessions, 1 prompt use, 1 skill use. A typed `/skill` is recorded as a command line, as the write-up says.
-- [x] Cross-repo ties: `cmp` of `usage/testdata/items/upload.golden.json` with the control plane's `internal/web/testdata/content_usage_client_upload.json`, and of `api/control-plane.openapi.yaml` with the control plane's `contracts/control-plane.openapi.yaml`, both read from `b78905b`: both exit 0. The control plane's AC2 test posts this golden body.
-- [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff; all 6 commits by the Leorna identity with no AI attribution lines.
-- [ ] Hosted CI on `db3e6b0`: "Go quality gates" and "Clean Windows tool installation" pass; **"Windows client executable" fails** in this PR's two new tests `TestManagedItemsFromLastSuccessfulSync` and `TestOpenReadOnlyNeverMigrates` (`application/managed_items_test.go`). On the Windows runner the test's temporary project path is the short 8.3 form (`RUNNER~1`) while `ManagedItems` returns the long form, so the root comparison fails; the second test's temp-folder cleanup error follows because its failure skips closing the database. The same job passes on `main`. This needs a fix on this branch before merge.
+- [x] The story's 11 tests by name (`./usage`, `./application`, `./cmd/import-content-usage`), including the new `TestStoredClaudeRootMatchesTranscriptFolderForms`: 11 of 11 pass.
+- [ ] Real Claude Code 2.1.312 (`TestRealClaudeCodeTranscriptItemUses`, env-gated): not re-run on `cf3df7f`. The two commits since `db3e6b0` change only `application/managed_items_test.go`; it passed on `db3e6b0`.
+- [x] Cross-repo ties: `cmp` of `usage/testdata/items/upload.golden.json` with the control plane's `internal/web/testdata/content_usage_client_upload.json`, and of `api/control-plane.openapi.yaml` with the control plane's `contracts/control-plane.openapi.yaml`, both read from `fabbec0`: both exit 0. The control plane's AC2 test posts this golden body.
+- [x] Scope: no `.github/` path and no `CLAUDE.md` in the diff; all 8 commits by the Leorna identity with no AI attribution lines.
+- [x] Windows path forms, on a real Windows host (not CI): this repo's `sameFolder` and `validateClaudeProjectRoot`, copied byte for byte into a cgo-free Windows probe, match `C:\Program Files\Common Files` as `C:\PROGRA~1\COMMON~1`, in lower and upper case, with forward slashes and with a trailing separator, and reject the parent and a missing sibling: 20 of 20. Without the symlink fallback, 10 fail.
+- [x] `GOOS=windows CGO_ENABLED=0 go vet ./application` fails only in `toolconnector/cursor/capture.go` (`sqlite3.Error`, `ErrNotADB`, `ErrCantOpen`: the SQLite adapter needs cgo), identically on unchanged `main` `f105e27`; this PR doesn't touch that adapter. CI builds Windows with cgo.
+- [x] Hosted CI on `cf3df7f` ([run 40973788926](https://github.com/LeornaAI/leorna-client/actions/runs/40973788926)): "Go quality gates", "Windows client executable" and "Clean Windows tool installation" pass. On `db3e6b0` the Windows client job had failed in `TestManagedItemsFromLastSuccessfulSync` and `TestOpenReadOnlyNeverMigrates`: the tests compared the stored project folder, which Sync resolves (long name, on-disk case), with the runner's raw temp path, which is the 8.3 short form (`C:\Users\RUNNER~1\…`). The product was right; the tests now compare with the resolved folder and close the read-only database in cleanup.
 
 ## Assumptions
 
@@ -46,15 +48,17 @@ Everything below ran on 2026-10-29 on head `db3e6b0` (base `f105e27`, which is s
 ## Follow-ups (not in this PR)
 
 1. Codex: count only reads under the user's `$HOME/.agents/skills`; today a repository's own `.agents/skills/<name>/SKILL.md` with a synced item's name also counts (review 1 R1-5).
-2. Test the `-server` path rule (review 1 R1-4) and the Claude Code folder match through symlinks (review 2 R2-2); each survives a mutant today.
+2. Test the `-server` path rule (review 1 R1-4); it survives a mutant today. The Claude Code folder match through symlinks (review 2 R2-2) is now pinned in the Windows client job by `TestStoredClaudeRootMatchesTranscriptFolderForms` (case and slash forms always differ from the stored folder there); on Linux it is exercised only with a symlinked `TMPDIR`.
 3. `ManagedItems` reads the newest Sync per tool from `run_logs`, which records no company or server: after switching company, the earlier company's Codex Sync still marks its skills as managed until a Codex Sync for the new company runs. Scope it before "Upload usage automatically after Sync" reuses it (review 2 R2-3).
 4. The real Claude Code test pins only typed `/commands`; add a model-driven `Skill` call (review 2 R2-4).
 5. Test strength: two detector guards survive a mutant in review 1's receipt without being filed as findings: Claude Code lines without a `uuid` are skipped, and a Codex use needs the session ID.
 
 ## Evidence
 
-- Head: `db3e6b0f76652088c11fafa8c3c54509f62116f7` (base `f105e27`). The local gates above ran on this head.
-- Earlier on this same head, in the story's pipeline: the independent verifier and a blind AC auditor ran the story tests and the real Claude Code test; the builder ran it end to end on loopback (a real client Sync to Claude Code, Codex and Cursor, then the built `import-content-usage` against synthetic transcripts: Claude Code 3 uses, Codex 1, the same counts on re-import with nothing doubled, Cursor refused); mutation checks: builder 13 of 13 killed, verifier 4 of 5 (the survivor drops a record-type filter the payload-type switch already covers), the review survivors are follow-ups 2 and 5. A fresh verifier and auditor run on the PR heads next.
-- Required check "Go quality gates": success on `db3e6b0`; "Windows client executable": failure (see the Test Plan).
-- Actions run: https://github.com/LeornaAI/leorna-client/actions/runs/40968292489 (`db3e6b0`, failure in the Windows job).
+- Head: `cf3df7f8cb2af1a6d0a2ef42a6e08b1387ca7f20` (base `f105e27`). The local gates above ran on this head.
+- Earlier, on `db3e6b0` (before the two test-only fix commits for the Windows job), in the story's pipeline: the independent verifier and a blind AC auditor ran the story tests and the real Claude Code test; the builder ran it end to end on loopback (a real client Sync to Claude Code, Codex and Cursor, then the built `import-content-usage` against synthetic transcripts: Claude Code 3 uses, Codex 1, the same counts on re-import with nothing doubled, Cursor refused); mutation checks: builder 13 of 13 killed, verifier 4 of 5 (the survivor drops a record-type filter the payload-type switch already covers), the review survivors are follow-ups 2 and 5. A fresh verifier and auditor run on the PR heads next.
+- Required check "Go quality gates": success on `cf3df7f`; "Windows client executable" and "Clean Windows tool installation": success.
+- Actions run: https://github.com/LeornaAI/leorna-client/actions/runs/40973788926 (`cf3df7f`, success). The earlier failure on `db3e6b0`: https://github.com/LeornaAI/leorna-client/actions/runs/40968292489.
 - Local receipts (one log per gate plus a summary) are kept with the story's evidence.
+
+
