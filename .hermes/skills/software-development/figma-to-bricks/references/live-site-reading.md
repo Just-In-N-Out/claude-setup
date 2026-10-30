@@ -5,8 +5,11 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
 ## Access
 - A site may start answering automated Chrome with a bot check ("Checking your browser…"), as bdryswi.com did on
   2026-10-29 after a day of agent probes. Hiding the automation flag is refused as bot-check circumvention: stop
-  loading that site and hand the live check to Justin (allow-list the capture or pause the check). A bot page can pass
-  a naive "page loaded" check: look for its title and tiny element count (web-capture).
+  loading that site and hand the live check to Justin (allow-list the capture or pause the check). A bot page need not
+  reload itself, so it can pass a naive "page loaded" check: read the document's status
+  (`performance.getEntriesByType('navigation')[0].responseStatus`) and treat a page with no builder template or
+  landmark, no link and under ~20 layers as not the site's page; decide from structure, never from its words
+  (web-capture fixer 1).
 
 ## Writing readers
 - Write in-page readers as typed, self-contained TS functions sent with `Runtime.evaluate` as `(${fn})(args)`: Node's
@@ -18,7 +21,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   keeps a unitless line-height as a number and an unset top/left as `auto`, where `getComputedStyle` gives px
   (web-capture).
 - A list of "facts that changed" (switch points, drift checks) misses whatever isn't on the list: width-only,
-  min-height-only and flex-basis-only media queries must count (web-capture review 1).
+  min-height-only and flex-basis-only media queries must count (web-capture review 1). Compare sizes as the site set
+  them (`computedStyleMap()`: `50%`, `auto`, `1fr 2fr`, `min(100%, 1140px)`), not drawn px, so text wrapping never makes
+  a switch point; count a length as drift only when its step across the boundary equals a neighbouring step (±0.75px),
+  since a 50% column that becomes 100% changes on both sides yet really jumps there (web-capture fixer 1).
 
 ## What counts as shown
 - Hidden is more than `display: none`: `visibility: hidden` (closed dropdowns, megamenus, popups) and screen-reader
