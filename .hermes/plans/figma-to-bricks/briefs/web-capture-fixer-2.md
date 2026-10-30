@@ -46,8 +46,7 @@ covers one, and say which.
   browser tests, Figma replays byte-identical (the five real files, plain and `--site`), and re-capture the two
   reachable homes. **This machine (WSL):** `CHROME_PATH` =
   `~/.hermes/plans/figma-to-bricks/evidence/web-compare/planner/scripts/chrome-cpu.sh`; long gates as a script with
-  `exec > <log> 2>&1` and `trap 'echo EXIT=$?' EXIT`, waiting for `EXIT=`; fix the receipts' wrong commit labels
-  (R1-19's first half) as you re-take them.
+  `exec > <log> 2>&1` and `trap 'echo EXIT=$?' EXIT`, waiting for `EXIT=`.
 - General logic only; `src/web/` stays out of `src/core|plugin|shared|ui` imports and bundles.
 
 ## Output
