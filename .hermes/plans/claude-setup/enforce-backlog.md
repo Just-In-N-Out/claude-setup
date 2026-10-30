@@ -67,3 +67,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-30 | web-capture | figma-to-bricks | test: test/unit/web-architecture.test.ts fails when a src/web file calls scrollIntoView outside an allow-list naming who restores scroll offsets (today only capture.ts shot()); runs in npm run check | offered
 - 2026-10-30 | web-capture | figma-to-bricks | script: a fixer's run-test script refuses to write over an existing *-red*.tap receipt | offered
 - 2026-10-30 | web-compare | figma-to-bricks | test: compare-structure (AC10) same-look list gains a display:block middle line and a flex row of text runs asserting 0 unmatched blocks, plus a moved-target variant in compare-inline-blocks; runs in npm run test:web | offered
+- 2026-10-30 | 86bcm901z | leorna | script: each role's chromedp capture driver's element-screenshot helper takes the text it expects and fails before saving if the captured element's own text lacks it | offered
