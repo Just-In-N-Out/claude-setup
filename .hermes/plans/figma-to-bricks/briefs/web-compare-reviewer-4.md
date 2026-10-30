@@ -36,7 +36,7 @@ reviewer's duties", "Records") and the `review-fix-cadence` skill.
 
 ## Output
 
-1. `review-3/review.json` as `review-loop.md` "Records" says: `"round": 4`, `"scope": "delta"`, `"from":
+1. `review-4/review.json` as `review-loop.md` "Records" says: `"round": 4`, `"scope": "delta"`, `"from":
    "334066da620bc1568faa81c2188467fae51a0cfe"`, `"head": "f136bb0a7605d1d74ca59c12d5c8373c97cffa99"`, findings `R4-<k>` (P0–P3, `file_line`,
    `claim`, a 5+ word real-use `scenario` for every P0–P2, `repeats`/`new_fact` where they apply). Empty findings when
    clean.
