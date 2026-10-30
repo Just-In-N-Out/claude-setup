@@ -7,12 +7,12 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-30)
 
-- **Current build `2026-10-30.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
-  - **30.4 djtrees-links (quick plugin fix, reviews waived):** plain header/footer navigation links to its pages;
-    the header mark and wordmark go home. Paste check **3bw** owed; full DJ Trees export still needed.
-  - **30.4 djtrees-faq (quick plugin fix, reviews waived):** all-closed question rows become native dropdowns;
-    missing answers get editable placeholders. Paste check **3bx** owed; full DJ Trees export still needed.
+  - **30.4/30.5 djtrees-links (quick fixes, reviews waived):** header menus inside the hero now link too; the logo
+    goes home and footer links stay. Full-file clicks proven; failed paste check **3bw** needs a fresh-paste retest.
+  - **30.4/30.5 djtrees-faq (quick fixes, reviews waived):** wrapped titles pair as native FAQ items; the first open
+    answer/look stays and decorative art cannot block taps. Five answers need text; **3bx** needs a fresh-paste retest.
   - **30.2/30.3 faq-gaps, faq-still (quick fixes in session):** a row gap drawn past its own box becomes Auto spacing
     (the FAQ + at the right edge); a label and its small icon keep one line at laptop widths; FAQ questions don't
     hover. Paste check **3bv** owed.
