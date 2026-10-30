@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-30)
 
-- **Current build `2026-10-30.11`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.12`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **30.12 djtrees-wide-hero (quick fix in session, no reviews):** section photos fill wide screens edge to edge (Justin's
+    new choice); a menu bar drawn over the hero is pinned above tablets. Paste check **3cb**.
   - **30.11 djtrees-side-photo (quick fix in session, no reviews):** a section's Crop photo drawn against one side reaches
     that side of wide screens. Paste check **3ca**.
   - **30.7 djtrees-carousel (quick fix in session, no reviews):** an unclipped frame Figma scrolls sideways is a strip;
@@ -554,11 +556,14 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - **A live map drawn across its section's whole width** (user, 2026-10-23, chose "Edge to edge" over "Inside the
       page width"; build `2026-10-23.3`) touches both sides of the window on every screen, phones included: it goes
       beside the Container (`understand/section.ts` `mapAcross`).
-  - **A photo behind a section keeps its drawn size on wider screens** (user, 2026-10-19: "His head should always show,
-    and the full landscape should show regardless of zoom"; "I want it all to be kind of like the same thing"): it
-    shrinks with the words when zooming out, in the middle, its edges fading into the section's colour (the user chose
-    "Hero colour" over a blurred copy of the photo). This replaces build `2026-10-08.8`'s photos reaching the screen's
-    edges; art (waves, hills) still does.
+  - **A photo behind a section fills wider screens edge to edge** (Justin, 2026-10-30, chose "Fill edge to edge" over
+    "Keep 1440, blurred sides" and "Keep as it is", after the DJ Trees hero showed black sides; build `2026-10-30.12`):
+    it covers the whole width, growing with the screen, so a little more of its top and bottom is cut off. This
+    replaces the 2026-10-19 rule (drawn size in the middle, fading into the section's colour). A Crop photo drawn against
+    one side reaches that side of the screen, its inner edge where drawn (30.11).
+  - **A menu bar drawn over the first section's top scrolls with the page** (Justin, 2026-10-30, build `2026-10-30.12`):
+    above tablets its content is pinned at the window's top, solid once the page scrolls; tablets and phones keep it in
+    place (its menu wraps there until the phone menu is built). A painted bar only.
   - **Content Figma draws inside the 64px margin** (user, 2026-10-07; e.g. a sideways text at x=27): exact at the
     design width, hanging into the margin. From tablets down it sits inside the tier's gutter (36/16).
 - **Faint outlines around pictures on a photo** (user, 2026-10-22: "a subtle white border outline around it … needs
