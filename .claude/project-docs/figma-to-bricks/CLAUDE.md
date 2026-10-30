@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-30)
 
-- **Current build `2026-10-30.17`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-30.18`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **30.18 djtrees-drawn-map (quick fix in session):** a picture with a pin over its middle, named as a map or pin,
+    becomes a live Google map of the address near it. Paste check **3ce**.
   - **30.16 djtrees-ruled-rows (quick fix in session):** a row divided by thin line layers evens its items' sides once it
     wraps or stacks. Paste check **3cd**.
   - **30.15 djtrees-hover-label (quick fix in session):** a button's hover copy keeps its words on one line where the
