@@ -53,8 +53,14 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   "grow" read 1.0038 instead of its end scale). Read duration/easing separately; Elementor hover animations also fire
   on `:focus` (website-importer probe, web-compare).
 - A freeze that only stops transform tracks and slider APIs misses carousels that slide by `scrollLeft` on an
-  `overflow:hidden` wrapper (Trustindex); and `scrollIntoView` scrolls every clipping ancestor, so record and restore
-  scroll offsets around it (web-compare noise floor, review 1).
+  `overflow:hidden` wrapper (Trustindex); and `scrollIntoView` scrolls every clipping ancestor (carousels, sideways
+  scrollers: their first item can land past the page edge and be dropped), so scroll only the window, or record and
+  restore every scroll offset (web-compare review 1, web-capture fixer 2).
+- Before an in-page check scrolls the window, move the CDP pointer off the page: Chrome moves `:hover` onto whatever a
+  programmatic scroll brings under a resting pointer after ~100 ms, with no input event, opening hover dropdowns. List
+  what is hidden at the scroll position the reader reads from (the top), not where the scroll-through left the window.
+  A test of the pointer step must put the hover target where the scroll really reaches it, or its mutant survives
+  (web-capture fixer 2, hover-probe.txt).
 
 ## Mapping into the Snapshot
 - Serialising an inline SVG with its computed paint (a fingerprint or a vector): write paint only on parts drawn in

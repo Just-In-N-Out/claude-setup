@@ -81,7 +81,7 @@ Turn a review report into verified fixes and reasoned pushback. Understand the c
 - **Do not send known unfixed blockers to the next reviewer by default.** For multi-review work, load `review-fix-cadence`: verified Sol fixes precede the next unstarted independent review of the corrected candidate. This is not approval for a product-policy change, self-review, release or skipped verification.
 
 - **Verify execution claims against raw receipts and the tested revision.** A source-only review can identify defects but cannot establish passing tests or mutation kills; route missing execution to the authorized review/validation owner.
-- **Disprove a finding with a discriminating test, not intuition.** Green ordinary tests can miss the invariant the reviewer challenged.
+- **Disprove a finding with a discriminating test, not intuition.** Green ordinary tests can miss the invariant the reviewer challenged. When the reviewer's probe shows a consequence with two causes (one of them a separate finding), make a variant probe without the other cause and run it on a base archive and on the fix; on the original probe alone a fixed consequence still looks unfixed (web-capture fixer 2).
 - **Probe competing tool or platform explanations.** Plausible reasoning on either side is not evidence; use the real tool or primary documentation within the approved scope.
 - **Fixing a pre-existing pattern in a feature branch** grows the diff and decides team-wide behaviour alone. List it as a follow-up instead.
 - **Batching fixes without tests** hides which change broke what.
