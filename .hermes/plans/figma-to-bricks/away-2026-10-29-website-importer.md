@@ -193,3 +193,12 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   boundary; a boundary that can't take it without a false alarm becomes a named limit, not another round. Lessons
   saved (code-review-practice: probe every other restart boundary at loosest tolerances; live-site-reading: fade-in
   race varies in trigger or duration). Fixer 7 dispatched from 6fe13b4 (branch web-compare-fix-7).
+
+- 2026-10-31: web-capture fix pass 9 back at adc5d1a (branch web-capture-fix-9): V-F1 fixed (F37 empty declared value
+  skipped), V-F2 fixed (F39 expression sizes checked against the box they size, % of parent content box less borders,
+  every fitted value noted, non-binding limits use the browser's value; notes 30→38 plugin home, 7→10 letsgro), V-F3
+  fixed (F38 CSS font matching). Gates clean, 30 mutants (3 survivors killed by #clash2), 90-page regression corpus
+  77 identical rest intended, Figma replays 20/20. Lessons saved (live-site-reading: Chrome descriptor matching +
+  subset status; count notes before turning a silent fallback into a note; mutation-testing-discipline: a
+  trusted-value swap masks shrinking errors); skipped LENGTH_KEYS (code fact). Review 10 (delta 3705de1..adc5d1a)
+  dispatched; then verifier again.

@@ -36,7 +36,12 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
 - The face a word draws with comes from CSS font matching, not an exact weight/style key: a 700 run in a family that
   declares 400/600 uses 600, and an italic with no italic face is synthesised. Probe font readers with an undeclared
   weight and an italic run, faces loaded and failing, and compare the ink width with the fallback's (web-capture
-  verifier).
+  verifier). Chrome matches on descriptors only: a picked face that failed is drawn with the next family, never another
+  face of the family; Google lists a family's unicode-range subsets latin last, so read a descriptor group's status as
+  loaded, else failed, else first (web-capture fixer 9).
+- Before turning a silent fallback into a note, capture the live homes with and without it and count the notes: a flood
+  shows the wrong base or non-binding cases at once (plugin-made home 30 → 211, one per Bricks `max-width: 100%`); fix
+  the rule the flood shows, not the note (web-capture fixer 9).
 - A list of "facts that changed" (switch points, drift checks) misses whatever isn't on the list: width-only,
   min-height-only and flex-basis-only media queries must count (web-capture review 1). Compare sizes as the site set
   them (`computedStyleMap()`: `50%`, `auto`, `1fr 2fr`, `min(100%, 1140px)`), not drawn px, so text wrapping never makes

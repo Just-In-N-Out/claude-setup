@@ -165,7 +165,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..c931857 100644
+index f2d882d..b7edb57 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,43 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -374,7 +374,18 @@ index f2d882d..c931857 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -175,11 +293,19 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -170,16 +288,29 @@ transcripts in `references/blind-test-patterns.md`.
+    `references/blind-test-patterns.md` for concurrent callback paths.
+ 6. **A redundant fallback masked the primary path.** Two mechanisms resolved
+    the same input, so either could be deleted invisibly. Test each path with a
+-   payload that exercises *only* that path.
++   payload that exercises *only* that path. A rule that swaps in a trusted value
++   whenever the measure looks safe (the browser's own size while a box sits
++   inside its limit) masks every error that shrinks the measure: kill those
++   mutants with a case past the limit whose wrong measure looks inside it
++   (web-capture fixer 9: three box-sizing/border mutants survived until a
++   border-box box with min-width beating max-width).
+ 7. **The test derived its expectation from the code under test.** Reading a
     constant out of the source by regex means changing the source changes the
     test — it can never disagree. Pin external contract values (registered IDs,
     API enums) as literals, with a comment recording where they are registered
@@ -395,7 +406,7 @@ index f2d882d..c931857 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -197,7 +323,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +328,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -407,7 +418,7 @@ index f2d882d..c931857 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -208,6 +337,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -208,6 +342,10 @@ transcripts in `references/blind-test-patterns.md`.
      distinction is selected and authorized within the remaining allowance.
      Missing or skipped required cases block acceptance; report permitted optional
      or platform skips with reasons instead of failing every skip message.
@@ -418,7 +429,7 @@ index f2d882d..c931857 100644
      Full transcript in `references/blind-test-patterns.md`.
  
  11. **Check-then-act races are invisible to sequential tests.** A publisher that
-@@ -240,7 +373,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +378,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -435,7 +446,7 @@ index f2d882d..c931857 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -261,7 +402,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +407,11 @@ transcripts in `references/blind-test-patterns.md`.
     very edits being tested. Stale mutated bytecode can fake either red or green
     despite correct-looking source.
  8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
@@ -448,7 +459,7 @@ index f2d882d..c931857 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +435,73 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +440,73 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
