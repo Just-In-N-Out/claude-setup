@@ -8,7 +8,7 @@ You are a fresh REVIEWER, source read-only and report only. Review the whole sto
 - E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six`.
 - Base/from: `04ab9b189b45917853779a28d889915095d7e4b1`.
 - Head: `TO_BE_PINNED`.
-- Approved plan: `E/plan-approved.md`, SHA256 `6c7e9ca45d5c8706acc52c41e9d702553d56b95a4850c5ac9d94612ca903a052`.
+- Approved plan: `E/plan-approved.md`, SHA256 `863dd8b03dca5c8e89458ff0c60bb7b266921ae741826b822cb059e96eb98321`; includes task8a.1's narrow raw-child provenance extension, all13 ACs unchanged.
 - Previous reviewed head: `f45932bb54690cdd80d5891c2713bfa3cefdaa89`, record `E/review-1/review.json` and report.json.
 - Fixer1 report: `TO_BE_ATTACHED`.
 - Own folder: `E/review-2/`; referee record there as `review.json`.

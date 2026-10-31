@@ -202,3 +202,11 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   subset status; count notes before turning a silent fallback into a note; mutation-testing-discipline: a
   trusted-value swap masks shrinking errors); skipped LENGTH_KEYS (code fact). Review 10 (delta 3705de1..adc5d1a)
   dispatched; then verifier again.
+
+- 2026-10-31: web-capture review 10 (delta 3705de1..adc5d1a): referee REVIEW AGAIN, 1 P2 (R10-1, fix 9 regression:
+  false "a size didn't reproduce" notes on inherited fluid font sizes and em padding, 2 → 118 on a fluid-type page with
+  ids) + 4 P3 (R10-2 % base for grid items/placed boxes; R10-3 font/grid-template var() shorthands; R10-4 font-stretch
+  and latin subset status; R10-5 V-F2's defect in sizing.ts). AC1–AC14 hold. Lessons saved (live-site-reading: count
+  notes on a fluid-type probe with/without ids; % base for grid items and placed boxes); enforce (fluid-type no-false-
+  note test) offered. Fixer 10 dispatched from adc5d1a (branch web-capture-fix-10), R10-2 and R10-5 included since
+  wave 2 reads px[].

@@ -31,7 +31,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   A shorthand through `var()` (`padding: 40px var(--side)`, `gap: var(--g)`) is listed with its longhands after it,
   each with an EMPTY value: skip empty values or they wipe it, then resolve and expand (web-capture verifier). A size
   whose computed value stays an expression (`min(92%, 980px)`) sizes the content box under `content-box`: never check
-  it against the border-box width (probe content-box/border-box twins). `computedStyleMap()` keeps a unitless
+  it against the border-box width (probe content-box/border-box twins). A `%` is of the grid area for a grid item and
+  of the padding box for a placed box, not the parent's content box: probe a grid child and a placed box too
+  (web-capture review 10). `computedStyleMap()` keeps a unitless
   line-height as a number and an unset top/left as `auto`, where `getComputedStyle` gives px (web-capture).
 - The face a word draws with comes from CSS font matching, not an exact weight/style key: a 700 run in a family that
   declares 400/600 uses 600, and an italic with no italic face is synthesised. Probe font readers with an undeclared
@@ -41,7 +43,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   loaded, else failed, else first (web-capture fixer 9).
 - Before turning a silent fallback into a note, capture the live homes with and without it and count the notes: a flood
   shows the wrong base or non-binding cases at once (plugin-made home 30 → 211, one per Bricks `max-width: 100%`); fix
-  the rule the flood shows, not the note (web-capture fixer 9).
+  the rule the flood shows, not the note (web-capture fixer 9). Count on a fluid-type probe too (body text inheriting a
+  `clamp()` size, buttons padded in em), with ids on every element as Bricks writes them and without: homes that set
+  every size per class in px hid a 2 → 118 flood (web-capture review 10).
 - A list of "facts that changed" (switch points, drift checks) misses whatever isn't on the list: width-only,
   min-height-only and flex-basis-only media queries must count (web-capture review 1). Compare sizes as the site set
   them (`computedStyleMap()`: `50%`, `auto`, `1fr 2fr`, `min(100%, 1140px)`), not drawn px, so text wrapping never makes

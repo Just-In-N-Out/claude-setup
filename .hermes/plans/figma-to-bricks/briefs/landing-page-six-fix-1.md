@@ -8,7 +8,7 @@ You are a fresh FIXER. Verify each assigned finding before changing code, implem
 - Base: `04ab9b189b45917853779a28d889915095d7e4b1`.
 - Starting reviewed head: `f45932bb54690cdd80d5891c2713bfa3cefdaa89`.
 - E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six`.
-- Current approved plan: `E/plan-approved.md`, SHA256 `6c7e9ca45d5c8706acc52c41e9d702553d56b95a4850c5ac9d94612ca903a052`.
+- Current approved plan (updated after carrier planner returned): `E/plan-approved.md`, SHA256 `863dd8b03dca5c8e89458ff0c60bb7b266921ae741826b822cb059e96eb98321`. Prior footer amendment6c7e9ca is preserved as `E/plan-approved-v2-before-carrier.md`. Read the added narrow task8a.1 raw-child provenance extension; main showed and approved it under standing auto-go, all13 ACs unchanged. `E/amendment-carrier/report.json` holds independent proof. This update authorizes the previously reported upstream provenance boundary only.
 - Prior approved/review1 contract: `E/plan-approved-v1.md`, hash52ab2df7be0f6c61396511bfcd26488b9444e033aa4d7e579a05e05fc1209957.
 - Review1: `E/review-1/review.json`; full reviewer report: `E/review-1/report.json`. All six P2 findings R1-1 through R1-6 are assigned; read their exact findings, scenarios and supporting artifacts. Main's referee result (exit1): `REVIEW AGAIN: 6 P0-P2 finding(s) in review-1 at f45932b: fix them, then review again (Full: round 2 reviews the whole story from 04ab9b1; Mini: review the fix commits)`.
 - Own evidence: `E/fix-1/`; shared story ledger in W `.superpowers/sdd/2026-10-31-landing-page-six/progress.md`.
