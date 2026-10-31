@@ -248,3 +248,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Main moved to 1aef12f (Build 2026-10-31.2 landing-page six, released) → dispatched rebase finisher (brief website-importer-wave1-rebase.md, branch wave1-final). Verifier/auditor briefs get @HEAD@/@WT@ from its report.
 - Speed (Justin "built fast"): wave-2 builders web-tiers, web-panel, web-embeds dispatched now from 89022ab (not merged main); they finish with `git rebase --onto main 89022ab`.
 - Lessons saved: figma-to-bricks SKILL.md Merging step 1 (test:web when test/web or render*.ts touched; duplicate package.json key after parallel rebases). Two enforce proposals offered in enforce-backlog. Skipped: "wait inside tool calls" (testing-pitfalls already says it).
+
+## 2026-10-31 19:22 — machine restart; all 4 agents resumed
+- WSL restarted ~19:15 (uptime 6 min at 19:21); the Claude Code process and every agent stopped ~10 min in.
+- State left: wave1-final 7a0ac6a (rebase done, 162 commits on 1aef12f, clean; gates killed). web-tiers b44d938, web-panel 6b903d5, web-embeds ff2be67: plan commits only, clean, no build commits yet.
+- Resumed all 4 with SendMessage (same briefs; re-run any gate without EXIT=).

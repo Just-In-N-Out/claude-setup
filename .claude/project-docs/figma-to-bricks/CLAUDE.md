@@ -229,7 +229,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **Build and review:** the builder keeps a ledger in `.superpowers/sdd/<plan>/progress.md` and runs `npm run
     corpus` before Task 1 and at the close. Then two fresh Opus reviews with a fix pass after each (each fix test
     first), then the verifier, the blind AC auditor and `ac-check.sh`, looping until every AC is accepted (global
-    CLAUDE.md steps 5–6). The review diff is `git diff main...HEAD` in the copy, or `git diff <commit before the
+    CLAUDE.md steps 5–6).
+    **Review rounds are capped** (Justin, 2026-10-31: "I need this to be built fast"; memory `review-round-cap`):
+    every AC is still met and accepted with no cap, but review → fix rounds stop after 3 in all (1–2 for major bugs,
+    the rest for the main edge cases); what a later review would still find goes to `follow-ups.md` and HANDOFF
+    "Deferred". This overrides the global "no round cap" for review rounds only. The review diff is `git diff main...HEAD` in the copy, or `git diff <commit before the
     milestone>` on `main`.
   - **Rules for every agent in a copy:**
     - Run `npm run check` and `npm run corpus` there.
