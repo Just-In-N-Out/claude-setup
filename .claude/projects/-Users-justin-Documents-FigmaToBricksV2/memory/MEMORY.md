@@ -16,4 +16,4 @@
 - [Deliverable first](deliverable-first.md) — thorough review rounds finding edge cases are good (Justin); hand over a verified paste file as soon as it is usable
 - [Plugin first](plugin-first.md) — general plugin fixes, prove conversion defects; recognise interaction clues even without prototype metadata (2026-10-30)
 - [Brainstorm goes to a planner](brainstorm-goes-to-planner.md) — ask Justin the questions in session; a planner agent writes the proposal (2026-10-29)
-- [Website importer paused](website-importer-paused.md) — J0/J1 stopped 2026-10-31 after last reviews: capture clean (needs verify+merge), compare 1 P2 left; resume steps, unconfirmed rulings
+- [Website importer](website-importer-paused.md) — paused then RESUMED 2026-10-31 "straight through": capture verifying, compare fix 6; wave 2 after both merge; log has the live state

@@ -155,3 +155,10 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   inline-script line numbers, folded into the Splide line).
 - 2026-10-31 WRAP-UP (Justin's word): pipeline stopped. Capture clean but NOT verified/merged; compare REVIEW AGAIN
   (1 P2) with no fixer dispatched; wave 2 not started. Resume notes: memory website-importer-paused.md.
+
+- 2026-10-31 RESUMED (Justin's word): "I need to implement this importer … I need to get the other nine built", then
+  chose "Go, straight through (Recommended)": start now, take the recommended answer at every decision, report at each
+  merge, stop only for what only he can do (Bricks samples, bdryswi.com allow-list). Order (wave-2 plans need J1 AND
+  J0 merged): capture verifier (brief web-capture-verifier.md) ∥ compare fixer 6 (brief web-compare-fixer-6.md, R7-1
+  from b40a81d, branch web-compare-fix-6; R7-3 a fixer's recommended ruling); then capture auditor → ac-check →
+  finisher → merge; compare delta review 8 → … → merge; then wave 2 builders (web-tiers, web-panel, web-embeds).

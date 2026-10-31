@@ -8,7 +8,7 @@ metadata:
   modified: 2026-10-31T10:15:47.971Z
 ---
 
-Justin, 2026-10-31: "Just wrap things up after this review … We're done." The website importer (plan
+Justin, 2026-10-31: "Just wrap things up after this review … We're done." RESUMED the same day: "Go, straight through (Recommended)" to build all 11 jobs; this note is the state at the pause. The website importer (plan
 `~/.hermes/plans/figma-to-bricks/website-importer-brainstorm.md`, 11 jobs in 4 waves) stopped after wave 1's last
 reviews. Nothing merged into `main`; no wave-2 builder started. Full step log:
 `~/.hermes/plans/figma-to-bricks/away-2026-10-29-website-importer.md` (last entries 2026-10-31).
