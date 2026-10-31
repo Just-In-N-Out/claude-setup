@@ -43,7 +43,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   not visibility (`:not(.brx-animated)[data-interaction-hidden-on-load]`, `.brx-animated[data-animation*=In]`), start
   after `setTimeout(delay)` and then wait for the box to come into view once: a scroll-through faster than the delay
   leaves every plugin `cta-motion` button below the first screen at opacity 0. Probe Bricks pages with Bricks' own
-  rules from the site's `frontend-light-layer.min.css` (web-capture review 5).
+  rules from the site's `frontend-light-layer.min.css` (web-capture review 5). A Bricks Interaction's load fade-in
+  can race a reader's load reading, so its trigger (load/scroll) or duration reads differently between two loads of
+  the same page (web-compare fixer 4: 2 timing findings in a self-compare of the plugin-made home).
 - A page whose body is its scroller (html's overflow not visible, body overflow-y auto/scroll with a set height, e.g.
   `html,body{height:100%;overflow-x:hidden}`): the window never scrolls, so `window.scrollTo`/`scrollY` do nothing,
   lazy loaders fire only when body scrolls, and a wheel event scrolls body unseen. Scroll `document.body` and take the
