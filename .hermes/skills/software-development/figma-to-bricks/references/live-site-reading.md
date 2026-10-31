@@ -45,7 +45,13 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   leaves every plugin `cta-motion` button below the first screen at opacity 0. Probe Bricks pages with Bricks' own
   rules from the site's `frontend-light-layer.min.css` (web-capture review 5). A Bricks Interaction's load fade-in
   can race a reader's load reading, so its trigger (load/scroll) or duration reads differently between two loads of
-  the same page (web-compare fixer 4: 2 timing findings in a self-compare of the plugin-made home).
+  the same page (web-compare fixer 4: 2 timing findings in a self-compare of the plugin-made home). Undoing them takes
+  more than one pass: Bricks arms a box (`.brx-animated` + an "In" `data-animation`) after its timers and re-arms an
+  `enterView` box each time it re-enters view, so remove the marks, keep a MutationObserver on `data-animation`/`class`
+  removing them again, and send `bricks/animation/end/<data-animation-id>` so chained "Animation end" interactions
+  run; lift `data-interaction-hidden-on-load` only when the box's own `contentLoaded`/`enterView` animation targets it
+  (a hover or click overlay keeps it). Bricks' hide rules sit in `@layer bricks`, so a box's own opacity beats them
+  (web-capture fixer 5).
 - A page whose body is its scroller (html's overflow not visible, body overflow-y auto/scroll with a set height, e.g.
   `html,body{height:100%;overflow-x:hidden}`): the window never scrolls, so `window.scrollTo`/`scrollY` do nothing,
   lazy loaders fire only when body scrolls, and a wheel event scrolls body unseen. Scroll `document.body` and take the
