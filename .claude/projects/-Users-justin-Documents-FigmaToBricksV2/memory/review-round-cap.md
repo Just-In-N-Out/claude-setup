@@ -23,5 +23,6 @@ the same day: "I need this to be built fast … stop the fixes and just keep bui
 
 **Why:** the uncapped loop kept finding ever-smaller edge cases while 9 of 11 jobs waited; he wants speed, but with
 the goals met and no major bugs. **How to apply:** this overrides the global CLAUDE.md "no round cap" for review rounds,
-not for AC acceptance. Tell him early when a loop is down to small edge cases. Related: [[run-without-stopping]],
+not for AC acceptance. **This project only** (Justin, 2026-10-31, chose "Only this project" over "All projects"):
+other projects keep the global no-cap loop. Also written into the project CLAUDE.md "Build and review". Tell him early when a loop is down to small edge cases. Related: [[run-without-stopping]],
 [[website-importer-paused]].
