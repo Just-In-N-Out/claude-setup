@@ -171,3 +171,13 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   Lessons saved (live-site-reading: var() shorthand empty longhands + content-box expression sizes folded into the
   getMatchedStyles line; new CSS font matching line); 2 enforce tests offered. Fixer 9 dispatched from 3705de1
   (branch web-capture-fix-9; brief web-capture-fixer-9.md). Next: fresh delta review 10 → verifier again → auditor.
+
+- 2026-10-31: web-compare fix pass 6 back at 6fe13b4 (branch web-compare-fix-6, code final d60695a): R7-1 fixed (R38:
+  a push explains only the pusher's explained/reported move; within-tolerance moves add up down lines and unpainted
+  bands; B6 → 128 findings a direction as c69ef18); R7-4 fixed (generator builds the wrapper band; 6,000-seed
+  property); R7-3 ruling R39 (an icon's own margin is not its room; not yet confirmed); R7-2 follow-up; new limit:
+  painted sections reset the chain at their paint edge (P6, touches Q10 A, follow-up for Justin). Gates clean,
+  19/20 mutants killed (1 equivalent), AC17 0.94×/0.99×; AC16 noise file taken from a later self-compare (reviewer to
+  judge). Lessons saved (testing-pitfalls: R7 chain rule replaces the "named hole" clause + property class-coverage
+  floor; live-site-reading: noise-floor fade-in note); enforce (property class floor) offered. Review 8 (delta
+  b40a81d..6fe13b4) dispatched; brief web-compare-reviewer-8.md.
