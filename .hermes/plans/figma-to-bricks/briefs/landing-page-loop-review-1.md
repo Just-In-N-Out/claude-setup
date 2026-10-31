@@ -1,10 +1,10 @@
 # landing-page-loop — Full review round 1
 
-DISPATCH HOLD: the main session must replace `PENDING_BUILDER_HEAD` with the frozen builder handback SHA before dispatch. Do not begin from an unpinned or actively edited candidate.
+Builder handback is complete at the pinned clean head below, with verdict `implemented-review-candidate-validation-held`. It reports AC1–16 passing builder checks within approved coverage; AC17 remains held and AC18 remains live. Reports are `E/builder/builder-report.md` and `.json`. These are leads, not independent acceptance.
 
 ## Role, scope and ownership
 
-You are a fresh REVIEWER, report only. Worktree: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/landing-page-loop`. Integration branch: local `main`. Story base: `c67128c4cca8eff67afdf3f7e6e8b28a75294deb`. Pinned candidate head: `PENDING_BUILDER_HEAD`. Review the WHOLE story from base to that head (round1, scope `full`). Check the worktree identity and clean status first; report a mismatch to the main session rather than reviewing a moving target.
+You are a fresh REVIEWER, report only. Worktree: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/landing-page-loop`. Integration branch: local `main`. Story base: `c67128c4cca8eff67afdf3f7e6e8b28a75294deb`. Pinned candidate head: `a6fae2b1b631bc93514fd37ffbc72a0b44b3b842`. Review the WHOLE story from base to that head (round1, scope `full`). Check the worktree identity and clean status first; report a mismatch to the main session rather than reviewing a moving target.
 
 Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-loop/plan-approved.md`. Evidence root E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-loop`. Your only writable evidence folder is `E/review-1/`; source/tests/plans/shared skills/memory are read-only. You are not alone: preserve all other work and do not revert it. Do not spawn agents, commit, rebase, edit the main folder or change any live site/Figma content. Scratch probes and isolated base copies belong under your own evidence folder; never mutate the shared candidate to run a mutant or base check.
 

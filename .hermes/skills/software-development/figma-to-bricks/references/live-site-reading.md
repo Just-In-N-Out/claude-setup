@@ -52,13 +52,15 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   can race a reader's load reading, so its trigger (load/scroll) or duration reads differently between two loads of
   the same page (web-compare fixer 4: 2 timing findings in a self-compare of the plugin-made home). Undoing them takes
   more than one pass: Bricks arms a box (`.brx-animated` + an "In" `data-animation`) after its timers and re-arms an
-  `enterView` box each time it re-enters view, so remove the marks, keep a MutationObserver on `data-animation`/`class`
-  removing them again, and send `bricks/animation/end/<data-animation-id>` so chained "Animation end" interactions
-  run; lift `data-interaction-hidden-on-load` only when the box's own `contentLoaded`/`enterView` animation targets it
-  (a hover or click overlay keeps it). Bricks' hide rules sit in `@layer bricks`, so a box's own opacity beats them
-  (web-capture fixer 5). An "Animation end" chained step arms only after its source's end plus its own delay, so an
-  end event sent just before the reading still leaves delayed steps at opacity 0; and the freeze's own scroll-through
-  fires Bricks' scroll-offset triggers (`bricksScrollInteractions`). Probe Interactions with the site's own
+  `enterView` box each time it re-enters view, so remove the marks and keep a MutationObserver on `data-animation`/`class`
+  removing them again; lift `data-interaction-hidden-on-load` only when the box's own `contentLoaded`/`enterView`
+  animation targets it (a hover or click overlay keeps it). Bricks' hide rules sit in `@layer bricks`, so a box's own
+  opacity beats them (web-capture fixer 5). Never send `bricks/animation/end/<id>` to run chained "Animation end"
+  steps: it also runs what the end sets off (a class opening a panel, a hide, a pop-up). Let the first screen play in
+  a bounded wait at the top (still 1 s, 6 s cap; finite opacity/visibility/transform/filter/clip-path animations and
+  transitions counted through their delay, plus inline opacity/visibility tweens) and show chained steps below it from
+  the marks (the step's animationId, or the box's own last earlier startAnimation). The freeze's own scroll-through
+  still fires Bricks' scroll-offset triggers (`bricksScrollInteractions`) (web-capture review 6, fixer 6). Probe Interactions with the site's own
   `bricks.min.js` and `bricksData` served locally (GET the theme file), not a reduced copy, on painted boxes
   (web-capture review 6).
 - A page whose body is its scroller (html's overflow not visible, body overflow-y auto/scroll with a set height, e.g.
@@ -96,7 +98,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   never moves a body-scroller page; web-capture review 3) and put it back, or record and
   restore every scroll offset (web-compare review 1, web-capture fixer 2).
 - Before an in-page check scrolls the window, move the CDP pointer off the page: Chrome moves `:hover` onto whatever a
-  programmatic scroll brings under a resting pointer after ~100 ms, with no input event, opening hover dropdowns. List
+  programmatic scroll brings under a resting pointer after ~100 ms, with no input event, opening hover dropdowns. Park it sideways at
+  mid-height, never at (-50,-50): a move past the top edge fires mouseleave on html and opens exit-intent pop-ups
+  (Bricks `mouseleaveWindow`) that a reader takes for backdrops; during the move stop root-targeted
+  mouseleave/pointerleave with a window capture listener, so element leaves still close menus (web-capture fixer 6). List
   what is hidden at the scroll position the reader reads from (the top), not where the scroll-through left the window.
   A test of the pointer step must put the hover target where the scroll really reaches it, or its mutant survives
   (web-capture fixer 2, hover-probe.txt).
