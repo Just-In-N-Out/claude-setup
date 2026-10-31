@@ -117,3 +117,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   the pointer rule/skip/floor, accept the pulse/blink cost (up to the 6 s cap) as a known limit with a true note, fix
   R8-2's wording + a "page listens for mouse moves" note. Lessons saved (live-site-reading: turn-count threshold
   caveat replaces the two-turn rule; phone probes need a 767 switch point). Fix pass 8 dispatched.
+
+- 2026-10-31: Justin: "Just wrap things up after this review, alright? We're done. All right. Just like good things
+  finished." Read as: let the two running fix passes (capture fix 8, compare fix 5) finish, run one review of each,
+  then stop: no further fix rounds, no verifier/merge, no wave 2. Final report + resume notes; branches kept unmerged.
