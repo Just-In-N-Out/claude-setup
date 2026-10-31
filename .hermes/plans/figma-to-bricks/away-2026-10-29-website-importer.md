@@ -137,3 +137,13 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   (live-site-reading turn-count line replaced + Splide listeners; mutation-testing-discipline test-timeout + two-set
   guards; testing-pitfalls hunk split); enforce for a default --test-timeout offered. Last review (round 9, delta
   a2ef3ba..3705de1) dispatched. web-compare review 7 also resumed after the same network cut.
+
+- 2026-10-31: web-compare review 7 (LAST before the pause; delta 6aaf985..b40a81d): fix 5's R33–R37 hold on hold-out
+  probes; AC1–AC18 hold. Referee REVIEW AGAIN: 1 P2 (R7-1: small drift chains with no limit; 8 Elementor-like
+  sections each 8px lower = 64px drift, exit 0 at 16 widths; older trees caught it; suggested fix: carry each row's
+  and band's unexplained remainder down and report once the sum passes the tolerance) + 3 P3 (R7-2 two neighbouring
+  blocks each moving alone go unnamed; R7-3 a one-sided icon's own margin isn't counted as its room, a ruling for
+  Justin; R7-4 generator never builds a multi-block wrapper band, coverage only). Per Justin's wrap-up: STOPPED here,
+  no fixer dispatched. Resume = fixer 6 for R7-1 (+P3s) from b40a81d on branch web-compare-fix-5. Skipped lesson:
+  "pre-R27 trees read drift as a shorter closing section" (story fact, kept here). Saved: code-review-practice
+  tolerance-chain probe; enforce offered.
