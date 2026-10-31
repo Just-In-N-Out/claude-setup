@@ -121,3 +121,10 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - 2026-10-31: Justin: "Just wrap things up after this review, alright? We're done. All right. Just like good things
   finished." Read as: let the two running fix passes (capture fix 8, compare fix 5) finish, run one review of each,
   then stop: no further fix rounds, no verifier/merge, no wave 2. Final report + resume notes; branches kept unmerged.
+
+- 2026-10-31: web-compare fix pass 5 back at b40a81d (branch web-compare-fix-5, code final 4a6eec1): R6-1..R6-6 fixed
+  as rules R33–R37; property generator now builds the reader's bands (81/937 missed moves on 6aaf985 → 0/937);
+  corpus family review6 (22 probes, 15 fail on 6aaf985); 28 new mutants killed; gates clean; AC16 floor clean; AC17
+  1.11×. Lessons saved (testing-pitfalls band measuring + arrangement boundary + source-under-run; mutation tie-break
+  wording); enforce "MIXED SOURCE" runner check offered. Last review (round 7, delta 6aaf985..b40a81d) dispatched per
+  Justin's wrap-up.
