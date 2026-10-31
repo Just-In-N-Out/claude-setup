@@ -17,4 +17,4 @@
 - [Plugin first](plugin-first.md) — general plugin fixes, prove conversion defects; recognise interaction clues even without prototype metadata (2026-10-30)
 - [Brainstorm goes to a planner](brainstorm-goes-to-planner.md) — ask Justin the questions in session; a planner agent writes the proposal (2026-10-29)
 - [Website importer](website-importer-paused.md) — resumed 2026-10-31; wave 1 combined, rebasing onto new main → AC check → merge; wave 2 builders running from 89022ab; log has the live state
-- [Review round cap](review-round-cap.md) — goals and ACs accepted first (no cap), then 1-2 bug-fix rounds, edge cases at most 3 review→fix rounds in all; leftovers to follow-ups (Justin 2026-10-31)
+- [Review round cap](review-round-cap.md) — goals and ACs accepted first (no cap), then 1-2 bug-fix rounds, edge cases at most 3 review→fix rounds in all; leftovers to follow-ups; this project only (Justin 2026-10-31)
