@@ -218,3 +218,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   gates and report; no review 11 / review 9, no verifier/auditor. Then one finisher rebases both onto main and runs the
   gates, ff-merge, after-merge (BUILD, build, push), and wave 2's three builders at once with at most 2 review→fix
   rounds each. These two fix passes are unreviewed at Justin's word.
+
+- 2026-10-31: Justin refined it into a standing rule (memory review-round-cap): "keep iterating until they hit their
+  goals, then run one to two rounds of bug fixes … Loop over edge cases, up to three rounds … Hit their goals and accept
+  acceptance criteria." So wave 1 still gets its AC check before the merge: finisher combines both on main → verifier
+  ∥ auditor for each job on that head → ac-check.sh → merge. Wave 2+: builder until every AC passes, at most 3
+  review→fix rounds, then AC check and merge.

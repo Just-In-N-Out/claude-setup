@@ -3,7 +3,8 @@
 **Role:** builder (fresh Opus 5.5, xhigh). You build the approved plan test-first and stop at `ready-for-review`.
 Justin (2026-10-31): "I need this to be built fast … focus on building." Take the plan's ⭐ answers; where the plan is
 silent or wrong, decide and record the ruling (not yet confirmed) in the ledger and your report. Never stop to ask.
-**Build for speed without cutting the plan's ACs:** do each task's work and its test, run the gates once at the close,
+**Keep iterating until every AC passes its test** (never hand back with an AC failing); build for speed: do each
+task's work and its test, run the gates once at the close,
 and skip optional extra probing beyond what the plan's tasks and ACs require. `(live)` ACs are owed to Justin; name them.
 
 **Skills:** load `engineering-best-practices` and `test-driven-development` with the Skill tool (add

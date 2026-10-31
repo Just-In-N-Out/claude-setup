@@ -1,7 +1,7 @@
 - [User workflow](user-workflow.md) — Figma (desktop only) → own plugin → Bricks 2.3.9; plain explanations
 - [Git and parallel agents](git-and-parallel-agents.md) — private GitHub as Just-In-N-Out (not Justin-Leorna); claude -w per feature; CLAUDE.md copied via .worktreeinclude
 - [v2 rewrite](v2-rewrite.md) — rewrite/output target; DJ Trees hero-links+FAQ-toggles30.5/live3bw+3bx (two quick agents, no reviews); faq-still30.3 + faq-gaps30.2/live3bv + cut-outs30.1/live3bu (quick fixes; FAQ questions never hover, his rule); header-bar29.3/live3bs; after-faq29.2/live3bt; headline-marker29.1/live3br with known phone issues; section rhythm28.5/live3bq, hotspots28.4/live3bp, autoplay28.3/live3bo; release evidence
-- [Run without stopping](run-without-stopping.md) — build straight through; when away: recommended options, research, resume limit-stopped agents, full report; parallel agents again (2026-10-29); compact Status/HANDOFF records (2026-10-28); explicit quick fix → in-session or direct builders as requested, no review rounds, log it (2026-10-30); importer: 1-2 fix rounds then keep building (2026-10-31)
+- [Run without stopping](run-without-stopping.md) — build straight through; when away: recommended options, research, resume limit-stopped agents, full report; parallel agents again (2026-10-29); compact Status/HANDOFF records (2026-10-28); explicit quick fix → in-session or direct builders as requested, no review rounds, log it (2026-10-30); review rounds capped (2026-10-31)
 - [GRO phone pass](gro-phone-pass.md) — phones for free-floating designs: the user's 4 decoration choices (2026-10-07), rules must be general
 - [Site and team](site-and-team.md) — live site on Hostinger, WPForms Pro team; after a paste: regenerate code signatures, LiteSpeed Purge All
 - [Port v1 when it worked](port-v1-when-it-worked.md) — user said "just do what v1 did": port v1's approach, no new UI, no option questions
@@ -16,4 +16,5 @@
 - [Deliverable first](deliverable-first.md) — thorough review rounds finding edge cases are good (Justin); hand over a verified paste file as soon as it is usable
 - [Plugin first](plugin-first.md) — general plugin fixes, prove conversion defects; recognise interaction clues even without prototype metadata (2026-10-30)
 - [Brainstorm goes to a planner](brainstorm-goes-to-planner.md) — ask Justin the questions in session; a planner agent writes the proposal (2026-10-29)
-- [Website importer](website-importer-paused.md) — resumed 2026-10-31; then "built fast": 1-2 fix rounds per job, wave 1 straight to merge; log has the live state
+- [Website importer](website-importer-paused.md) — resumed 2026-10-31; wave 1 past its rounds → combine on main, AC check, merge; wave 2 briefs ready; log has the live state
+- [Review round cap](review-round-cap.md) — goals and ACs accepted first (no cap), then 1-2 bug-fix rounds, edge cases at most 3 review→fix rounds in all; leftovers to follow-ups (Justin 2026-10-31)
