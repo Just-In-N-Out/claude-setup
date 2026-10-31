@@ -58,7 +58,8 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   opacity beats them (web-capture fixer 5). Never send `bricks/animation/end/<id>` to run chained "Animation end"
   steps: it also runs what the end sets off (a class opening a panel, a hide, a pop-up). Let the first screen play in
   a bounded wait at the top (still 1 s, 6 s cap; finite opacity/visibility/transform/filter/clip-path animations and
-  transitions counted through their delay, plus inline opacity/visibility tweens) and show chained steps below it from
+  transitions counted through their delay, plus inline opacity/visibility tweens; a 20 s Ken Burns zoom, a script's opacity pulse or a blinking script cursor
+  holds such a wait to its cap, so probe those beside spinners) and show chained steps below it from
   the marks (the step's animationId, or the box's own last earlier startAnimation). The freeze's own scroll-through
   still fires Bricks' scroll-offset triggers (`bricksScrollInteractions`) (web-capture review 6, fixer 6). Probe Interactions with the site's own
   `bricks.min.js` and `bricksData` served locally (GET the theme file), not a reduced copy, on painted boxes
@@ -100,8 +101,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
 - Before an in-page check scrolls the window, move the CDP pointer off the page: Chrome moves `:hover` onto whatever a
   programmatic scroll brings under a resting pointer after ~100 ms, with no input event, opening hover dropdowns. Park it sideways at
   mid-height, never at (-50,-50): a move past the top edge fires mouseleave on html and opens exit-intent pop-ups
-  (Bricks `mouseleaveWindow`) that a reader takes for backdrops; during the move stop root-targeted
-  mouseleave/pointerleave with a window capture listener, so element leaves still close menus (web-capture fixer 6). List
+  (Bricks `mouseleaveWindow`) that a reader takes for backdrops; yet stopping root-targeted
+  mouseleave/pointerleave during the move keeps leave-hidden cursor rings and pointer glows shown, and jQuery's
+  `$(document).on('mouseleave')` binds a native mouseout such a hold misses: probe both reactions to the same event
+  (web-capture fixer 6, review 7). List
   what is hidden at the scroll position the reader reads from (the top), not where the scroll-through left the window.
   A test of the pointer step must put the hover target where the scroll really reaches it, or its mutant survives
   (web-capture fixer 2, hover-probe.txt).

@@ -72,3 +72,12 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   page opens on its own timer is now read open (F31); chained steps >1 s apart and mark-less reveals below the first
   screen stay limits. Lessons saved (live-site-reading x2, testing-pitfalls x2, mutation-testing-discipline x1).
   Review round 7 (delta f66e0c0..2e47c23) dispatched.
+
+- 2026-10-31: web-capture review 7 (delta f66e0c0..2e47c23): the fade wait, chained marks and "never send a fade's end"
+  hold. 1 P2 (R7-1: fix 6's pointer park keeps leave-hidden cursor rings / hero glows shown; the glow reaches the paste
+  at opacity 0.6), 3 P3 (R7-2 the wait held to 6 s by Ken Burns/pulse/blink with a false note; R7-3 four exit-intent
+  variants still open, not a regression; R7-4 the wait skipped with a false "0 s" note when the freeze budget is spent).
+  Referee: ASK JUSTIN (brake c, 1 vs 1). Not the fade family. Under the away grant: recommended route = fix R7-1 as one
+  general rule (read the page as loaded with no pointer), fold P3s in where covered (review-7/justin.json). Lessons saved
+  (live-site-reading x2, folded into the pointer and wait lines); skipped the "J1 replay doesn't paste floating boxes"
+  lesson (a story fact until J5). Fix pass 7 dispatched (branch web-capture-fix-7).
