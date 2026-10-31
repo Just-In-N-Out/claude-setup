@@ -242,3 +242,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   Wave-1 finisher dispatched (brief website-importer-wave1-finisher.md): capture-final then compare-final on main
   04ab9b1, combined gates. Next: verifier ∥ auditor for each job on the combined head → ac-check → merge → wave 2.
 - 2026-10-31: Justin asked why everything stopped. Nothing had: the wave-1 finisher's combined test:web run was ~30 min in (compare-corpus test). Killed orphaned headless Chromes from web-capture fix 8 (12h old) and a day-old /tmp f2b profile, which were loading the machine (load 49). Another job's browser suites (~/.hermes/l6r4-*) also run on this machine; left alone.
+
+## 2026-10-31 19:10 — wave-1 finisher back; rebase + wave 2 started
+- Finisher: web-capture-final 8761b0c, web-compare-final 89022ab (holds both, 162 commits on 04ab9b1). Gates by name = main: check 2874/0 fail/39 skip, test:browser same 10 main failures, test:web 131/0 fail/1 skip (AC14), corpus same, 20/20 replays identical. One combine-only fix 159e4eb (compare tool counted main's native fade-in twice; nativeKeyframes shared; 3 mutants killed).
+- Main moved to 1aef12f (Build 2026-10-31.2 landing-page six, released) → dispatched rebase finisher (brief website-importer-wave1-rebase.md, branch wave1-final). Verifier/auditor briefs get @HEAD@/@WT@ from its report.
+- Speed (Justin "built fast"): wave-2 builders web-tiers, web-panel, web-embeds dispatched now from 89022ab (not merged main); they finish with `git rebase --onto main 89022ab`.
+- Lessons saved: figma-to-bricks SKILL.md Merging step 1 (test:web when test/web or render*.ts touched; duplicate package.json key after parallel rebases). Two enforce proposals offered in enforce-backlog. Skipped: "wait inside tool calls" (testing-pitfalls already says it).

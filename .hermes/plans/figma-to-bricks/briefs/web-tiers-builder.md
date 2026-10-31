@@ -14,16 +14,17 @@ and skip optional extra probing beyond what the plan's tasks and ACs require. `(
 
 ## Start
 
-Your agent worktree is a copy of `~/Documents/FigmaToBricksV2`. Wave 1 (J1 web-capture and J0 web-compare) is merged
-into local `main` at `@MAIN@`. Put your copy there and bring the plan in:
-`git checkout --detach @MAIN@`, `git switch -c web-tiers`, `git cherry-pick 503dc8b` (the planner's commit(s), made on
+Your agent worktree is a copy of `~/Documents/FigmaToBricksV2`. Wave 1 (J1 web-capture and J0 web-compare) is combined, every gate green, on
+branch `web-compare-final` at `89022abbef4e3584a93a68cd7118dea69aa93f2b` (its acceptance checks and merge into `main` run while you
+build; the main session tells you if they change wave-1 code). Put your copy there and bring the plan in:
+`git checkout --detach 89022abbef4e3584a93a68cd7118dea69aa93f2b`, `git switch -c web-tiers`, `git cherry-pick 503dc8b` (the planner's commit(s), made on
 `3ea33bb`; it only adds `docs/plans/2026-10-30-web-tiers.md`). Then `diff docs/plans/2026-10-30-web-tiers.md ~/.hermes/plans/figma-to-bricks/evidence/web-tiers/plan-approved.md`
-must be empty. Your base is `@MAIN@`. Planner probes: `~/.hermes/plans/figma-to-bricks/evidence/web-tiers/planner/`.
+must be empty. Your base is `89022abbef4e3584a93a68cd7118dea69aa93f2b`; at the finish your branch moves onto `main` with `git rebase --onto main 89022ab`, so only your own commits move. Planner probes: `~/.hermes/plans/figma-to-bricks/evidence/web-tiers/planner/`.
 
 **Task 0 matters more than usual:** wave 1's last fix passes (web-capture fix 10: % bases of grid items and placed boxes,
 `font`/`grid-template` shorthands through `var()`, notes only where a site value was lost; web-compare fix 7: section
 heights carry their remainder) were merged without a further review at Justin's word. Re-check every wave-1 fact your
-plan depends on against the merged code (`docs/specs/web-capture.md`, HANDOFF's web-capture and web-compare sections,
+plan depends on against the combined code (`docs/specs/web-capture.md`, HANDOFF's web-capture and web-compare sections,
 `src/web/`, `test/web/lib/`), adapt the task a changed fact feeds (never an AC's meaning), and record each in the ledger.
 If a fact breaks an AC, record it and carry on with the rest; say so in your report.
 
@@ -55,7 +56,7 @@ you rely on into `builder/scripts/` as soon as you write it.
 
 ## Report back (ready-for-review)
 
-Branch, head SHA, base (`@MAIN@`), commits in order; each AC → test → evidence file; gate tallies against Task 0 by test
+Branch, head SHA, base (`89022abbef4e3584a93a68cd7118dea69aa93f2b`), commits in order; each AC → test → evidence file; gate tallies against Task 0 by test
 name; Task 0's changed facts; rulings you made; `(live)` ACs owed; anything left undone and why. Then
 `skill_lessons[{skill, lesson, evidence, enforce}]` (reusable lessons only; `enforce` is `none` or a one-line check
 proposal; empty is normal; never edit skills or memory yourself), ending with:
