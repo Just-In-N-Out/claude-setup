@@ -28,10 +28,12 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   (web-capture planner).
 - `CSS.getMatchedStylesForNode` lists matched rules in cascade order (specificity, then source order): the last normal
   declaration, then the last `!important` one, wins. It returns only rules matching now: read once per width range.
-  A shorthand through `var()` (`padding: 40px var(--side)`, `gap: var(--g)`) is listed with its longhands after it,
-  each with an EMPTY value: skip empty values or they wipe it, then resolve and expand (web-capture verifier). A size
-  whose computed value stays an expression (`min(92%, 980px)`) sizes the content box under `content-box`: never check
-  it against the border-box width (probe content-box/border-box twins). A `%` is of the grid area for a grid item and
+  A shorthand through `var()` (`padding: 40px var(--side)`, `gap: var(--g)`, `font`, `grid-template`, `grid`) is listed
+  with its longhands after it, each with an EMPTY value: skip empty values or they wipe it, then resolve and expand
+  every shorthand that sets a longhand you read (web-capture verifier, fixer 10). A size the site set whose computed
+  value stays an expression (`min(92%, 980px)`) sizes the content box under `content-box`: never check it against the
+  border-box width (probe content-box/border-box twins); a value the capture makes up (a box with no width of its own)
+  must still reproduce the border box. A `%` is of the grid area for a grid item and
   of the padding box for a placed box, not the parent's content box: probe a grid child and a placed box too
   (web-capture review 10). `computedStyleMap()` keeps a unitless
   line-height as a number and an unset top/left as `auto`, where `getComputedStyle` gives px (web-capture).
@@ -45,7 +47,8 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   shows the wrong base or non-binding cases at once (plugin-made home 30 → 211, one per Bricks `max-width: 100%`); fix
   the rule the flood shows, not the note (web-capture fixer 9). Count on a fluid-type probe too (body text inheriting a
   `clamp()` size, buttons padded in em), with ids on every element as Bricks writes them and without: homes that set
-  every size per class in px hid a 2 → 118 flood (web-capture review 10).
+  every size per class in px hid a 2 → 118 flood (web-capture review 10). Decide a note inside the helper that knows
+  whether the site set a value, not at each caller (fixer 10).
 - A list of "facts that changed" (switch points, drift checks) misses whatever isn't on the list: width-only,
   min-height-only and flex-basis-only media queries must count (web-capture review 1). Compare sizes as the site set
   them (`computedStyleMap()`: `50%`, `auto`, `1fr 2fr`, `min(100%, 1140px)`), not drawn px, so text wrapping never makes

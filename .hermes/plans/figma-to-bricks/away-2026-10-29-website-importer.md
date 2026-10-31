@@ -224,3 +224,11 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   acceptance criteria." So wave 1 still gets its AC check before the merge: finisher combines both on main → verifier
   ∥ auditor for each job on that head → ac-check.sh → merge. Wave 2+: builder until every AC passes, at most 3
   review→fix rounds, then AC check and merge.
+
+- 2026-10-31: web-capture fixer 10 done (wrapped up early at Justin's speed word): head 66159a8 on web-capture-fix-10.
+  R10-1 fixed (F40; notes 118 → 2 on the fluid probe, corpus length notes 80 → 17), R10-2/R10-5 fixed (F41,
+  map/containing.ts), R10-3 fixed (F42), R10-4 follow-up. 45 mutants killed. npm run check clean (2706/2646/0 fail/60
+  skip; 0 lost vs adc5d1a). NOT run: whole test:web, test:browser, AC14 live, the five Figma replays: the wave-1
+  finisher's combined gates cover them. Lessons folded into live-site-reading (var() shorthands incl. font/grid; made-up
+  values reproduce the border box; decide notes in the helper that knows the site set a value). Waiting on compare
+  fixer 7.
