@@ -5,10 +5,13 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-10-30)
+## Status (2026-10-31)
 
-- **Current build `2026-10-30.20`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-31.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **31.1 landing-page-loop (test integration; full validation held):** centered sticky navigation, inset panels,
+    editable diagram and manual review slider. Paste check **3ch** on an isolated installation owed; original AC17
+    required/non-live/held (headline font/source mode), AC18 live/owed (Figma/installed Bricks/Safari/iPhone).
   - **30.20 social-links (in session):** social icons link to the profiles in the site's Yoast SEO. Paste check **3cg**.
   - **30.19 djtrees-side-panel (quick fix in session):** content drawn against one side of a section reaches that side;
     a lone layer with a Center constraint stays centred. Paste check **3cf**.
