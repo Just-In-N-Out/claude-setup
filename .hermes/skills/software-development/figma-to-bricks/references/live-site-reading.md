@@ -119,10 +119,13 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   mouseout, window and side-edge checks) and hides cursor rings and pointer glows, so no park or held leave reads it
   right. To wake first-input loaders send only a `mouseWheel` with no `mouseMoved` before it: it arrives as a trusted
   wheel while Chrome keeps the pointer's place unknown (no enter, move, `:hover` or later leave) (web-capture fixers
-  2, 6 and 7, review 7). Splide (Bricks' Slider Nestable) binds `touchstart mousedown` and `keydown` on the document
-  for good, so a page-wide "listens for first input" check counting touchstart fires on every Bricks slider page: read
-  a live page's handlers with `DOMDebugger.getEventListeners` plus `Debugger.getScriptSource` before fixing such a
-  check's event list (web-capture fixer 8). List what is hidden at the scroll position the reader reads from (the top), not where the
+  2, 6 and 7, review 7). Libraries listen page-wide for good: Splide (Bricks' Slider Nestable) binds `touchstart mousedown` and `keydown`
+  on the document, Swiper (Elementor's carousels, Bricks' legacy Carousel/Slider) `pointermove` on desktops, and
+  jQuery's delegated `mouseenter`/`mouseover` handlers a native `mouseover`, so a page-wide "listens for first input"
+  check fires on ordinary slider and menu pages with nothing missing. Read a live page's handlers with
+  `DOMDebugger.getEventListeners` before fixing such a check's event list; for an inline `<script>` its
+  line/column count the HTML document's lines (0-based), so read the page's HTML there, not
+  `Debugger.getScriptSource` (web-capture fixer 8, review 9). List what is hidden at the scroll position the reader reads from (the top), not where the
   scroll-through left the window. A test of a hover step must put the target where the scroll really reaches it, or
   its mutant survives (web-capture fixer 2, hover-probe.txt).
 

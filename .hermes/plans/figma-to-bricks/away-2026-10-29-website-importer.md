@@ -147,3 +147,11 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   no fixer dispatched. Resume = fixer 6 for R7-1 (+P3s) from b40a81d on branch web-compare-fix-5. Skipped lesson:
   "pre-R27 trees read drift as a shorter closing section" (story fact, kept here). Saved: code-review-practice
   tolerance-chain probe; enforce offered.
+
+- 2026-10-31: web-capture review 9 (LAST; delta a2ef3ba..3705de1): CLEAN, referee MOVE ON. R8-1 fixed (every finite
+  in-out-in entrance read at its end), F35/F32 hold, corpus of 60 sites as intended, live homes the same, AC1–AC14
+  hold (bdryswi part owed). 3 P3 → evidence/web-capture/follow-ups.md (the mouse-move note fires on Swiper/jQuery
+  hover pages; no range test; late listeners). Lessons saved (live-site-reading: Swiper/jQuery listeners and the
+  inline-script line numbers, folded into the Splide line).
+- 2026-10-31 WRAP-UP (Justin's word): pipeline stopped. Capture clean but NOT verified/merged; compare REVIEW AGAIN
+  (1 P2) with no fixer dispatched; wave 2 not started. Resume notes: memory website-importer-paused.md.
