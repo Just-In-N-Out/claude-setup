@@ -26,6 +26,8 @@ Immutable source inputs are in `E/inputs/`; the saved live page URL and all25 wi
 
 Node22: `/home/justin/.local/node-v22.23.3/bin/node`; Chrome wrapper: `/home/justin/.cache/chrome-for-testing/chrome-f2b`. Use your own wrapper/profile clearing DISPLAY/WAYLAND_DISPLAY and using the established Linux launch flags. Read the project skill's testing-pitfalls reference and shared `corpus-paths-on-desktop.md` memory before gates. Mac-path missing-input skips are not passing cases. Distinguish original/default-path limitations from the actual configured five-file corpus inputs, with their case counts and provenance. Do not mutate shared dependencies or copy another role's pass receipts as your own. Preserve exact command exit statuses. Large outputs/profiles should be in your disk-backed evidence folder, not shared `/tmp` RAM. Setup sync remains unavailable due a read-only bare repo; do not bypass it.
 
+Plan Task11's `test/golden/convert-sample.json` is shorthand for the sole actual convert-sample fixture at `test/golden/files/convert-sample.json`; narrow approved-effect pin updates apply to that file. This path clarification does not authorize other fixture changes or weaken snapshot assertions. Independently inspect the final delta and its claimed scope.
+
 ## Deliverables
 
 Write `E/review-1/review.json` with round1, scope `full`, full40-character `from` and `head`, findings per review-loop schema. IDs `R1-1`, `R1-2`, etc.; each P0–P2 needs a concrete plausible real-use scenario of at least5 words. Apply Justin's severity rubric; report P3 separately, and do not promote hypothetical evasion or unsupported machine configurations. The main session does not decide severities. No prior round exists.
