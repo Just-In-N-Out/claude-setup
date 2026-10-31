@@ -1,18 +1,20 @@
 # Landing page six — fresh full reviewer, round 1
 
-Dispatch state: DRAFT — main must record the committed HEAD before dispatch.
+Dispatch state: full review1 of the clean committed implementation candidate. Its validation holds remain explicit; this is not release approval.
 
 You are a fresh REVIEWER, source read-only, report only. Review the whole story from the base below through the pinned head. You are not alone in the repository: preserve others' work; do not edit production, tests, docs, shared dependencies, instructions, skills or memory, commit, rebase, merge, push or start agents. Write only your own evidence and private scratch. Never inspect another role's credentials or browser profile.
 
 - W: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/landing-page-six`.
 - E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six`.
 - Base/from: `04ab9b189b45917853779a28d889915095d7e4b1`.
-- Head: TO_BE_PINNED.
-- Approved plan: `E/plan-approved.md`, SHA256 `52ab2df7be0f6c61396511bfcd26488b9444e033aa4d7e579a05e05fc1209957`.
+- Head: `f45932bb54690cdd80d5891c2713bfa3cefdaa89`.
+- Approved plan for this review: `E/plan-approved-v1.md`, SHA256 `52ab2df7be0f6c61396511bfcd26488b9444e033aa4d7e579a05e05fc1209957`. This frozen version will not change while you review.
 - Own folder: `E/review-1/`; write referee record there as `review.json`.
 - Actual input: immutable `E/inputs/figma-debug.json` and `figma-reference.png`, provenance in manifest. Do not commit or alter them.
 
 Load engineering-best-practices, project figma-to-bricks and relevant references, requesting-code-review, code-review-practice and review-fix-cadence. Use systematic-debugging for unexpected test behavior. Read the approved plan including all thirteen ACs, measurement contract, Q1A–Q4A defaults, complete-gate requirements and explicit limits. Do not import the old story's release exception or font waiver. AC13 alone is live. Main has shown the plan under the standing auto-go; this is Full round1. Do not start a review of uncommitted/mixed source: return that precise blocker if HEAD/worktree fails the dispatch contract.
+
+Builder has returned implemented-review-candidate-validation-held, not ready for release. Its final documentation-only commit follows tested production0af6ff0fc87ad30385459e2956d15def6f4ca6fc; root independently checked that src/test/tools did not change and W is clean. Known non-live holds are AC7's source-word wrapping mismatch (source paragraph settings/font-source metadata requested from Justin) and AC10's empty footer carrier/AUTO line-height geometry. A separate planner is proposing a scoped footer implementation amendment outside W; it will not edit your source or this frozen plan. Root will wait for your report before a fixer changes W. AC12 independent acceptance and AC13 live proof are not claimed complete. Review all current work and its tests now, including known holds as your evidence/severity rules require; do not hide, accept or waive them. Your report must distinguish reviewed implementation from unmet acceptance. This full review makes independent progress while source input and planning remain pending; it does not authorize merge or bypass later checks.
 
 Review implementation correctness, regressions, security and maintainability against the plan. Independently exercise credible failure cases and negative controls; green counts alone do not prove checks meaningful. Use the actual new source as a reproduction plus generic variations. Keep renderer-versus-installed evidence distinct, and preserve unresolved fonts/paint/media/native limits. Do not make a missing prototype invent autoplay or a source-specific heuristic look general. A source/AC defect, ineffective test, normal-use regression or UI failure is not cosmetic.
 

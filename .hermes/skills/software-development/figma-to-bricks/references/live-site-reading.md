@@ -62,7 +62,7 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   leaves every plugin `cta-motion` button below the first screen at opacity 0. Probe Bricks pages with Bricks' own
   rules from the site's `frontend-light-layer.min.css` (web-capture review 5). A Bricks Interaction's load fade-in
   can race a reader's load reading, so its trigger (load/scroll) or duration reads differently between two loads of
-  the same page (web-compare fixer 4: 2 timing findings in a self-compare of the plugin-made home), so a noise-floor run that happened to read them alike mutes nothing: take as the noise file a self-compare report that holds the variation, and say so (web-compare fixer 6). Undoing them takes
+  the same page (web-compare fixer 4: 2 timing findings in a self-compare of the plugin-made home), so a noise-floor run that happened to read them alike mutes nothing: take as the noise file a self-compare report that holds the variation, and say so (web-compare fixer 6). The race varies in either of two fields, trigger (load → scroll) or duration (1000 → 1500): a noise key that includes the field mutes only the one its floor read (web-compare review 8). Undoing them takes
   more than one pass: Bricks arms a box (`.brx-animated` + an "In" `data-animation`) after its timers and re-arms an
   `enterView` box each time it re-enters view, so remove the marks and keep a MutationObserver on `data-animation`/`class`
   removing them again; lift `data-interaction-hidden-on-load` only when the box's own `contentLoaded`/`enterView`

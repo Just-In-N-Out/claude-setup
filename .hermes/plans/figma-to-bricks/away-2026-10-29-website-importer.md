@@ -181,3 +181,15 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   judge). Lessons saved (testing-pitfalls: R7 chain rule replaces the "named hole" clause + property class-coverage
   floor; live-site-reading: noise-floor fade-in note); enforce (property class floor) offered. Review 8 (delta
   b40a81d..6fe13b4) dispatched; brief web-compare-reviewer-8.md.
+
+- 2026-10-31: network drop (EAI_AGAIN) cut capture fixer 9 and compare reviewer 8 mid-run; both resumed with SendMessage (check no mutant left applied, re-run cut runs into new folders).
+
+- 2026-10-31: web-compare review 8 (delta b40a81d..6fe13b4): referee ASK JUSTIN (1 P2, no fewer than review 7's 1).
+  R8-1 repeats R7-1: painted sections restart the drift chain at their paint edge (P4: 8 painted sections each 4px
+  taller, footer 34px lower, exit 0 at 1440/1100/390 on every tree); R8-2 P3 section-height number includes a reported
+  inner move; R8-3 P3 fade-in race noise keyed by field. Hold-out probes otherwise clean (27, same-look silent, no
+  misses outside the painted class); AC1–AC18 hold. Route taken under Justin's "straight through, recommended" word
+  (review-8/justin.json): ONE last fix pass for the drift family as a single rule carrying remainders across every
+  boundary; a boundary that can't take it without a false alarm becomes a named limit, not another round. Lessons
+  saved (code-review-practice: probe every other restart boundary at loosest tolerances; live-site-reading: fade-in
+  race varies in trigger or duration). Fixer 7 dispatched from 6fe13b4 (branch web-compare-fix-7).
