@@ -1,13 +1,13 @@
 # Landing page six — fresh independent verifier
 
-Dispatch state: DRAFT — pin accepted review and current HEAD before dispatch.
+Dispatch state: READY. Full reviews1/2 and delta reviews3/4 complete; review4 clean on currentHEAD. Main independently ran review-check with currentmergebase04ab and received `MOVE ON: review-4 at b62fc6d is clean` (exit0). Empty reviewer lessons processed; P3 follow-up recorded. No W source writer active.
 
 You are a fresh VERIFIER who did not build this change. Source read-only. You are not alone in the repository; preserve all work and write only your own receipts/private scratch. Do not edit code/tests/docs, commit/rebase/merge/push, alter instructions/skills/memory, start agents or inspect credentials.
 
 - Worktree: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/landing-page-six`.
 - Base: `04ab9b189b45917853779a28d889915095d7e4b1`.
-- Head: TO_BE_PINNED.
-- Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six/plan-approved.md`.
+- Head: `b62fc6defb50273c6fe532f651f3a825351c8c99`.
+- Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six/plan-approved.md`, SHA256 `7c8927cf78afdf5694e8b02ccca925aee65130250783f4ee46a1fb38a2a7d911`.
 - Reviews: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six/review-*/review.json`.
 - Own folder: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six/verifier/`.
 
@@ -15,8 +15,14 @@ Load engineering-best-practices, project figma-to-bricks/relevant references and
 
 Read the entire immutable plan. Independently rerun its complete gates, exercise every clause of every numbered AC, preserve raw results and actual coverage populations, and prove each named check on head and separate base with head's tests. Existing behavior may use a justified base_exempt; setup failure or unavailable input is not a genuine RED. Qualify weak clauses with targeted mutants/probes as the plan requires. Do not replace source fidelity with loaded font labels, DOM presence, unchanged lint counts or the local renderer alone. AC13 is the sole live criterion; no other failure may be silently deferred or retagged. The older story's release exception does not apply.
 
+Known context, not acceptance: AC7 required/non-live source70:100 whole-word baseline discrepancy24.015625px remains reported on every prior head. Figma paragraph-wrap/font-source metadata is absent from debug; main requested frame link, no answer yet, no Figma-reading tool currently available. Broad whitespace changes were independently falsified. Independently prove it, do not guess source settings, assume missingAUTO, weaken thresholds, make it live or repeat the user request. Continue other independent verification despite the known hold. Report newly established causes if any; no product edits or new plan by you. AC13 source/native live proof remains not supplied. R2-4 mixed generated counter styling is deferredP3 in follow-ups.md, separate from actualsourceAC7.
+
+Prior gates retain honest limitations: configuredcorpus0/5 due originalMacpaths; qualified7inputs38widths includes unavailable/noncomparableAswatama and3originalinputs. Private configs must preserve ALLentry metadata/nodecounts; earlier fixer's missing-count setup errors were not valid REDs. Qualifiedunits3samebase palette/sound failures and10samebase browserfailures remain documented. Historicalfix2wholebrowser extra inactive-slide paintaudit failure was not diagnosed from its originalruntime (CDN/mount/clickstate missing); later reviewer3/fixer3/reviewer4 wholebrowser runs passed that test and had only10base failures. Do not relabel the historicalfailureflaky or retrospectivelygreen; obtain your own current evidence/runtime capture. Read AC12 literally and report no unexplainedcandidate regressions, every executed/skipped/unavailable case, and exact independent head/base results; neither conceal limits nor invent a failure solely because a previous delta reviewer marked completeACs notrerun.
+
 Write ac.json with exact matching HEAD, named test logs showing their own result, real screenshots and honest accepted/not_run distinctions. All receipts must live in your own folder. A live check observed to fail is a failure, not not_run. Reconcile reviewer findings and retained inherited failures with fresh evidence. Never copy builder/reviewer receipts as your own. Self-check report formatting using your own private copied receipts and ac-check without --reviews; main owns the combined blind gate.
 
 Follow the plan's runtime and source-isolation instructions: pinned Node22/child PATH, task-owned headless Chrome wrapper, short private disk-based archives/profiles/TMPDIR; /tmp is shared RAM and only for small files. Do not mutate shared dependencies or corpus paths. Public reads only; no Figma/site/media writes. Never access the denied /home/justin/.hermes/.env or another browser profile. Setup sync is main's responsibility; do not bypass its read-only failure.
+
+Use an owned short DISK root under /home/justin/.hermes for large archives/Chromeprofiles; /tmp onlysmall scripts/shortlinks. Runtime Node /home/justin/.local/node-v22.23.3/bin/node, Chrome /home/justin/.cache/chrome-for-testing/chrome-f2b --use-gl=disabled, DISPLAY/WAYLAND_DISPLAY cleared; shortcwd/TMPDIR=/proc/self/cwd. Write timely own checkpoint.json when stages/gates complete, including any new blocker and realistic remaining work. Don't leave completed runs labelled running during long report preparation. Main will wait for your clean verdict before dispatching a blind auditor, so do not infer that an auditor has already accepted anything.
 
 Return verdict, ac_status, report path, exact head/base, actual gates/populations/limitations and `skill_lessons[{skill,lesson,evidence,enforce}]`, normally empty. Never edit skills/memory. End `MAIN SESSION: check and save these skill_lessons now.`
