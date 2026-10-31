@@ -39,7 +39,11 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   boxes hidden with the old `clip: rect(…)` (Bricks' `.skip-link` is 20×10 with padding, not 1×1) are not visible
   layers (web-capture review 1). But the capture reads after its freeze scrolls back to the top, so reveal-on-scroll
   content that hides itself again off screen is `visibility: hidden` then: probe a reveal that toggles both ways
-  before changing what counts as shown (web-capture review 2).
+  before changing what counts as shown (web-capture review 2). Bricks Interactions hide entrance content with opacity,
+  not visibility (`:not(.brx-animated)[data-interaction-hidden-on-load]`, `.brx-animated[data-animation*=In]`), start
+  after `setTimeout(delay)` and then wait for the box to come into view once: a scroll-through faster than the delay
+  leaves every plugin `cta-motion` button below the first screen at opacity 0. Probe Bricks pages with Bricks' own
+  rules from the site's `frontend-light-layer.min.css` (web-capture review 5).
 - A page whose body is its scroller (html's overflow not visible, body overflow-y auto/scroll with a set height, e.g.
   `html,body{height:100%;overflow-x:hidden}`): the window never scrolls, so `window.scrollTo`/`scrollY` do nothing,
   lazy loaders fire only when body scrolls, and a wheel event scrolls body unseen. Scroll `document.body` and take the
