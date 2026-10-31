@@ -12,6 +12,11 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   (web-capture fixer 1).
 
 ## Writing readers
+- Don't tokenise words per text node: the plugin's own markup splits `(800) 457-3160.`, `50+`, `100%` into pieces;
+  glue pieces with no space between them whose drawings touch (in any ground-truth script too). Don't measure places
+  from structural section tops: space given as margin on one page and padding on the other moves every section top
+  while no word moves; measure from the first matched words unless both pages paint the section (web-compare
+  amendment 1).
 - Write in-page readers as typed, self-contained TS functions sent with `Runtime.evaluate` as `(${fn})(args)`: Node's
   type stripping keeps `fn.toString()` valid JS; the function must not close over imports or outer variables
   (web-capture planner).
