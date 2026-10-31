@@ -28,9 +28,15 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   (web-capture planner).
 - `CSS.getMatchedStylesForNode` lists matched rules in cascade order (specificity, then source order): the last normal
   declaration, then the last `!important` one, wins. It returns only rules matching now: read once per width range.
-  Shorthands (`gap`) come without longhands and values behind `var()`: resolve, then expand. `computedStyleMap()`
-  keeps a unitless line-height as a number and an unset top/left as `auto`, where `getComputedStyle` gives px
-  (web-capture).
+  A shorthand through `var()` (`padding: 40px var(--side)`, `gap: var(--g)`) is listed with its longhands after it,
+  each with an EMPTY value: skip empty values or they wipe it, then resolve and expand (web-capture verifier). A size
+  whose computed value stays an expression (`min(92%, 980px)`) sizes the content box under `content-box`: never check
+  it against the border-box width (probe content-box/border-box twins). `computedStyleMap()` keeps a unitless
+  line-height as a number and an unset top/left as `auto`, where `getComputedStyle` gives px (web-capture).
+- The face a word draws with comes from CSS font matching, not an exact weight/style key: a 700 run in a family that
+  declares 400/600 uses 600, and an italic with no italic face is synthesised. Probe font readers with an undeclared
+  weight and an italic run, faces loaded and failing, and compare the ink width with the fallback's (web-capture
+  verifier).
 - A list of "facts that changed" (switch points, drift checks) misses whatever isn't on the list: width-only,
   min-height-only and flex-basis-only media queries must count (web-capture review 1). Compare sizes as the site set
   them (`computedStyleMap()`: `50%`, `auto`, `1fr 2fr`, `min(100%, 1140px)`), not drawn px, so text wrapping never makes

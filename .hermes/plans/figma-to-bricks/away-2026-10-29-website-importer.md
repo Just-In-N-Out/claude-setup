@@ -162,3 +162,12 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   J0 merged): capture verifier (brief web-capture-verifier.md) ∥ compare fixer 6 (brief web-compare-fixer-6.md, R7-1
   from b40a81d, branch web-compare-fix-6; R7-3 a fixer's recommended ruling); then capture auditor → ac-check →
   finisher → merge; compare delta review 8 → … → merge; then wave 2 builders (web-tiers, web-panel, web-embeds).
+
+- 2026-10-31: web-capture VERIFIER at 3705de1: findings. 12/14 ACs accepted (AC14 on letsgro + plugin-made home only;
+  bdryswi.com part owed to Justin's allow-list). AC3 and AC6 not accepted, 3 P2: V-F1 var() inside a shorthand lost
+  (empty longhands overwrite it, authored.ts settle); V-F2 a content-box padded max-width:min(...) checked against the
+  border box → silent fitted calc (node.ts); V-F3 faces matched by exact weight/style, not CSS font matching (fonts.ts
+  usedFaces; live letsgro Inter 600 listed system). Gates clean, 17/18 mutants killed, Figma replays identical.
+  Lessons saved (live-site-reading: var() shorthand empty longhands + content-box expression sizes folded into the
+  getMatchedStyles line; new CSS font matching line); 2 enforce tests offered. Fixer 9 dispatched from 3705de1
+  (branch web-capture-fix-9; brief web-capture-fixer-9.md). Next: fresh delta review 10 → verifier again → auditor.
