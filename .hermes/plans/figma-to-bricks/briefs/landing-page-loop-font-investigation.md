@@ -1,0 +1,11 @@
+# landing-page-loop — planner follow-up: unresolved font evidence
+
+Continue your planning role with a narrow, read-only investigation while the builder implements the independent approved tasks. You own only `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-loop/font-investigation/` and a proposed amendment document there if justified. You are not alone: do not edit source, tests, the worktree plan or `plan-approved.md`; preserve the builder's work. Do not start agents.
+
+Goal: determine whether the AC17 font/source discrepancy can be resolved with existing Figma debug/render/SVG evidence, actual delivered font files and authoritative Figma/font-source documentation, without waiting for material the user may not have. Your initial finding (opsz9 metadata versus two-line drawing; correct full-variable font at display sizes fits) remains a lead, not authority to substitute a value. Investigate documented variable-font export/render semantics and actual font identity/version/provenance as needed. Never infer a page-specific axis value simply because it resembles the screenshot.
+
+The main session has asked Justin for the headline font style/Optical size and Free Estimate destination; no answer yet. Builder is explicitly holding Task9b/AC17. If current evidence is genuinely insufficient after a bounded focused investigation, say exactly which observation distinguishes the remaining explanations and how Justin can obtain it in one simple action. Do not repeat the already completed broad page audit.
+
+Use the same engineering/planning/debugging skills as your planner role, and primary sources for technical research. Existing evidence: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-loop/{inputs,planner}/`; approved plan in the evidence root. No source, live-site, Figma or setup mutations. Keep sizable outputs in your owned disk-backed evidence folder. Setup sync remains read-only; do not bypass permissions.
+
+Send an early status to `/root`, then a concise result: established facts, remaining uncertainty, exact material needed or evidence-based amendment proposal, and `skill_lessons` with `enforce` (`none` if no check proposal). Never edit skills/memory. End `MAIN SESSION: check and save these skill_lessons now.`

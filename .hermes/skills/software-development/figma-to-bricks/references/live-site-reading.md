@@ -30,7 +30,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   overscroll-behavior, tap-highlight colour, text-size-adjust, whose inherited values flag every box) where the quick
   list finds nothing; all ~479 properties cost ~0.7 s per 864 elements, so keep b+1 in the page and re-read only what
   differs. Time it on a page with ~30 mostly empty boundaries and ~1500 elements, not the corpus homes (2–5
-  boundaries): it took bdryswi-like discovery from 19.5 s to 75.9 s (web-capture fixer 3, review 4).
+  boundaries): it took bdryswi-like discovery from 19.5 s to 75.9 s (web-capture fixer 3, review 4). Reusing the
+  last width's reading spares only a boundary right under another empty one (82 → 73 s there): count shared widths
+  in the candidate list before estimating a reuse saving (web-capture fixer 4).
 
 ## What counts as shown
 - Hidden is more than `display: none`: `visibility: hidden` (closed dropdowns, megamenus, popups) and screen-reader
@@ -45,7 +47,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   under the site's `scroll-behavior: smooth` a plain `scrollTop` assignment only starts an async scroll (web-capture
   fixer 3). Don't find a body scroller with a small test move at all: `scroll-snap-type: y` snaps a 1px move back, so
   body reads as not scrolling and the page as one window tall; decide from html's overflow, body's overflow-y and its
-  scrollHeight, or move it to its far end (web-capture review 4).
+  scrollHeight, or move it to its far end (web-capture review 4). With `mandatory` snapping and no snap area at the
+  top, Chrome rests the scroller at its first snap area from the load on and snaps every `scrollTo(0)` back there:
+  turn snapping off for the page load (`* { scroll-snap-type: none !important }`, which draws nothing) before the
+  first scroll (web-capture fixer 4).
 - Parts from landmarks: many sites have `<header>` and `<footer>` but no `<main>` (Divi, older themes, plain div
   pages), or only a footer: probe those shapes (web-capture review 2), each with a phone-only box between the parts,
   and twin pages differing by one tag (`<footer>` vs `<div>`, with or without `<main>`): parts built from boxes shown
