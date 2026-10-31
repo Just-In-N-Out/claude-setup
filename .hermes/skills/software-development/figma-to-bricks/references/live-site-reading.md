@@ -51,7 +51,11 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   removing them again, and send `bricks/animation/end/<data-animation-id>` so chained "Animation end" interactions
   run; lift `data-interaction-hidden-on-load` only when the box's own `contentLoaded`/`enterView` animation targets it
   (a hover or click overlay keeps it). Bricks' hide rules sit in `@layer bricks`, so a box's own opacity beats them
-  (web-capture fixer 5).
+  (web-capture fixer 5). An "Animation end" chained step arms only after its source's end plus its own delay, so an
+  end event sent just before the reading still leaves delayed steps at opacity 0; and the freeze's own scroll-through
+  fires Bricks' scroll-offset triggers (`bricksScrollInteractions`). Probe Interactions with the site's own
+  `bricks.min.js` and `bricksData` served locally (GET the theme file), not a reduced copy, on painted boxes
+  (web-capture review 6).
 - A page whose body is its scroller (html's overflow not visible, body overflow-y auto/scroll with a set height, e.g.
   `html,body{height:100%;overflow-x:hidden}`): the window never scrolls, so `window.scrollTo`/`scrollY` do nothing,
   lazy loaders fire only when body scrolls, and a wheel event scrolls body unseen. Scroll `document.body` and take the
