@@ -81,3 +81,12 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   general rule (read the page as loaded with no pointer), fold P3s in where covered (review-7/justin.json). Lessons saved
   (live-site-reading x2, folded into the pointer and wait lines); skipped the "J1 replay doesn't paste floating boxes"
   lesson (a story fact until J5). Fix pass 7 dispatched (branch web-capture-fix-7).
+
+- 2026-10-31: web-compare amendment 1 built at 6aaf985 (branch web-compare-matching, 14 commits from 69a6fa7):
+  AC12–AC18 pass skipped 0 (corpus 5/5 families; on c69ef18 0/5 with review 5's 26 misses), AC1–AC11 still pass,
+  src untouched, 25 mutants killed, cost 0.985× c69ef18 (limit 1.25×), live floor 0 layout findings + the 2 known
+  hero fade-in timing findings marked noise. Builder rulings (not confirmed): R30 findings name words on both pages'
+  boxes; R31 a word change owns later moves in its box (limit: a second move there is folded in); R32 row above via
+  lines; embeds before the first words / after the last count. Lessons saved (testing-pitfalls property-test
+  invariants; live-site-reading four-edge truth + Hostinger pause; memory tool-escape-quirk widened); enforce for raw
+  invisible characters offered. Review round 6 (delta c69ef18..6aaf985) dispatched with hold-out probes.

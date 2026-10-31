@@ -9,11 +9,15 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   reload itself, so it can pass a naive "page loaded" check: read the document's status
   (`performance.getEntriesByType('navigation')[0].responseStatus`) and treat a page with no builder template or
   landmark, no link and under ~20 layers as not the site's page; decide from structure, never from its words
-  (web-capture fixer 1).
+  (web-capture fixer 1). The plugin-made Hostinger site can stop answering for about a minute after several
+  back-to-back 16-width compares ("didn't finish loading within 60s"): keep those runs, confirm with one curl and
+  re-run into new folders (web-compare amendment-1 builder).
 
 ## Writing readers
 - Don't tokenise words per text node: the plugin's own markup splits `(800) 457-3160.`, `50+`, `100%` into pieces;
-  glue pieces with no space between them whose drawings touch (in any ground-truth script too). Don't measure places
+  glue pieces with no space between them whose drawings touch (in any ground-truth script too). A word-by-word
+  ground truth compares all four edges of each word's Range rect (left and top alone call a letter-spaced word alike)
+  and includes pictures' boxes. Don't measure places
   from structural section tops: space given as margin on one page and padding on the other moves every section top
   while no word moves; measure from the first matched words unless both pages paint the section (web-compare
   amendment 1).
