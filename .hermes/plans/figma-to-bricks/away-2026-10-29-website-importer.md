@@ -90,3 +90,13 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   lines; embeds before the first words / after the last count. Lessons saved (testing-pitfalls property-test
   invariants; live-site-reading four-edge truth + Hostinger pause; memory tool-escape-quirk widened); enforce for raw
   invisible characters offered. Review round 6 (delta c69ef18..6aaf985) dispatched with hold-out probes.
+
+- 2026-10-31: web-compare review 6 (delta c69ef18..6aaf985, hold-out probes): 4 P2 + 2 P3. Design sound; leaks:
+  R6-1 whitespace between flex items splits words (Elementor counter false alarm); R6-2 a band's reference word never
+  place-checked (heading line-height drift silent, moves blamed on neighbours); R6-3 R31 silences a line after a
+  one-sided icon; R6-4 side-by-side columns read as stacks, a move dropped. The property test didn't model the
+  reader's bands. Live self-compare still clean, cost 1.04–1.15×. Referee ASK JUSTIN (brake c, 4 vs 2). Under the
+  away grant: recommended = fix inside the amendment's design as general rules + property test on the reader's bands +
+  hold-out probes into the corpus (review-6/justin.json). Lessons saved (live-site-reading flex whitespace;
+  testing-pitfalls generator must build the reader's structures; memory corpus-paths-on-desktop TMPDIR); 2 enforce
+  tests offered. Fix pass 5 dispatched (branch web-compare-fix-5).

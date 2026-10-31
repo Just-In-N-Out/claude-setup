@@ -15,7 +15,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
 
 ## Writing readers
 - Don't tokenise words per text node: the plugin's own markup splits `(800) 457-3160.`, `50+`, `100%` into pieces;
-  glue pieces with no space between them whose drawings touch (in any ground-truth script too). A word-by-word
+  glue pieces with no space between them whose drawings touch (in any ground-truth script too). A whitespace-only text
+  node between flex or grid items is never drawn (Elementor's counter: `98` `%` on their own source lines), so test it
+  with a Range client rect before letting it end a word (web-compare review 6). A word-by-word
   ground truth compares all four edges of each word's Range rect (left and top alone call a letter-spaced word alike)
   and includes pictures' boxes. Don't measure places
   from structural section tops: space given as margin on one page and padding on the other moves every section top

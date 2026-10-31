@@ -72,3 +72,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-31 | web-capture fixer 6 | figma-to-bricks (live-site-reading) | test: capture-entrances 'R6-3 …' pins "never send bricks/animation/end" (already built in the story; nothing more to build) | offered
 - 2026-10-31 | web-capture fixer 6 | figma-to-bricks (live-site-reading) | test: capture-entrances 'moving the pointer off the page opens no exit-intent pop-up' (already built in the story; nothing more to build) | offered
 - 2026-10-31 | web-compare amendment 1 | memory: tool-escape-quirk | unit test or pre-commit hook: fail when a tracked .ts file under src/ test/ tools/ contains a raw U+00AD, U+200B–U+200D, U+2060 or U+FEFF | offered
+- 2026-10-31 | web-compare review 6 | figma-to-bricks (live-site-reading) | test: an AC13-style test/web/compare-words case comparing a formatted and a minified flex counter (same look, no finding) | offered
+- 2026-10-31 | web-compare review 6 | figma-to-bricks (testing-pitfalls) | test: a test/web case rendering one generated property-test page in Chrome and asserting measure-layout's bands match the generator's | offered
