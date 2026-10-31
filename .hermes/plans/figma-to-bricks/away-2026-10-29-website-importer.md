@@ -100,3 +100,11 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   hold-out probes into the corpus (review-6/justin.json). Lessons saved (live-site-reading flex whitespace;
   testing-pitfalls generator must build the reader's structures; memory corpus-paths-on-desktop TMPDIR); 2 enforce
   tests offered. Fix pass 5 dispatched (branch web-compare-fix-5).
+
+- 2026-10-31: web-capture fix pass 7 back at a2ef3ba (branch web-capture-fix-7): R7-1 and R7-3 fixed by one rule, the
+  capture's pointer never comes onto the page (first-input wake = a wheel only; all 7 exit checks closed, rings and
+  glows hidden); R7-2/R7-4: long finite animations and twice-turning loops don't hold the wait, floor of one still
+  spell (Ken Burns 6.0→1.0 s). Gates clean, replays 20/20, live homes 0 layer differences. Ruling F32 changes the
+  plan's "first mouse move and wheel" to a wheel only (a mouse-move-only widget stays as it loads): for Justin.
+  Lessons saved (live-site-reading pointer line replaced, wait line; testing-pitfalls background-script and
+  node --test order). Review round 8 (delta 2e47c23..a2ef3ba) dispatched.
