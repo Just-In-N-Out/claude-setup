@@ -1,22 +1,24 @@
 # Landing page six — fresh full reviewer, round 2
 
-Dispatch state: DRAFT. Do not dispatch until fixer1 returns a clean committed head, main processes lessons and pins HEAD below.
+Dispatch state: READY. Fixer1 handed off a clean committed head; main checked Git state, docs-only final delta and plan hash, and processed empty skill_lessons.
 
 You are a fresh REVIEWER, source read-only and report only. Review the whole story from base to pinned head, including the first fix pass and approved footer amendment. You are not alone in the repository: preserve others' work; do not edit production, tests, docs, shared dependencies, instructions, skills or memory, commit, rebase, merge, push or start agents. Write only your own evidence and private scratch.
 
 - W: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/landing-page-six`, branch `worktree-landing-page-six`.
 - E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six`.
 - Base/from: `04ab9b189b45917853779a28d889915095d7e4b1`.
-- Head: `TO_BE_PINNED`.
-- Approved plan: `E/plan-approved.md`, SHA256 `863dd8b03dca5c8e89458ff0c60bb7b266921ae741826b822cb059e96eb98321`; includes task8a.1's narrow raw-child provenance extension, all13 ACs unchanged.
+- Head: `605fbb2fb8bf316e29eda72857abcff13f130198`.
+- Approved plan: `E/plan-approved.md`, SHA256 `7c8927cf78afdf5694e8b02ccca925aee65130250783f4ee46a1fb38a2a7d911`; includes task8a.1's raw-child provenance extension and task8d's bounded record-media ownership/planning/reflow correction. All13 ACs unchanged. Independently cover these new changes in the whole-story review, including explicit/native/drawn-phone/constraint negatives, copied keys, actual versus planned widths, kept-layout crop and responsive reading order.
 - Previous reviewed head: `f45932bb54690cdd80d5891c2713bfa3cefdaa89`, record `E/review-1/review.json` and report.json.
-- Fixer1 report: `TO_BE_ATTACHED`.
+- Fixer1 report: `E/fix-1/report.json`; complete actual matrix: `E/fix-1/matrix-aggregate.json`.
 - Own folder: `E/review-2/`; referee record there as `review.json`.
 - Actual immutable inputs: `E/inputs/figma-debug.json`, figma-reference.png, manifest.json.
 
 Load engineering-best-practices first, project figma-to-bricks/relevant references, requesting-code-review, code-review-practice and review-fix-cadence; use systematic-debugging for surprises. Read the approved plan and all thirteen ACs, unchanged measurement tolerances, task8a–8c footer amendment, Q1A–Q4A defaults, full-gate requirements and limits. AC13 alone is live. The old story's test-integration/font exception does not apply. This is Full round2: review the entire story from base, not only fixes.
 
 Verify pinned HEAD and a clean W before review; return a precise blocker if mismatched. Main will keep production frozen while you review. Known source paragraph wrapping AC7 remains a required non-live hold unless actual new evidence resolves it; Justin's frame link/source metadata is pending. Broad break-spaces was independently falsified against another equivalent source paragraph. Do not assume absent metadata is AUTO, waive this hold, relabel it live, substitute equal line counts for whole-word baseline agreement or guess font files. Review implementation and unmet acceptance distinctly. Installed Bricks/native media/fonts/Safari proof is still owed under AC13.
+
+Fixer returned implemented-review-candidate-validation-held. All six R1 findings fixed; eighteen intended causal mutants killed,46 protected conversion states preserved. Full check/browser receipts belong to743337b (2695unit/rule passes60skip; browser477pass10inheritedfail1fontskip). Later20e4c17 changed test/helper/tool code only, with16 focused checks and both tsconfigs; product source unchanged. Both-mode23width matrices at20e4c17 audit9062textunits, zero paint/geometry failures and353 disjoint ink pairs. Final605fbb2 changes HANDOFF/ledger only; main independently confirmed src/test/tools unchanged from20e4c17 and tracked plan hash7c8927cf. Do not transpose old gate receipts onto your reviewed head; execute required independent checks. Configured corpus0/5; available7inputs/38widths, missingAswatama and3originalinputs remain qualified. Additional available-unit runs had10matching failures:7 arose from private config missing node-count metadata (later14focused corrected-load checks passed),3 inherited palette/sound assertions remained. Keep original failure evidence/limitations visible, use complete actual config metadata in your own private comparisons, and do not misreport unavailable or setup-failed cases as covered. AC7/AC12 held and AC13 live owed; other ACs locally observed, not independently accepted.
 
 Independently test the six R1 findings and all current implementation/acceptance checks, realistic variations and negative controls. Read review1/fix1 evidence as leads, never as proof. Preserve independent stationary review artwork/actions, record trailing/wrapped/copied structures, strict native ownership, responsive empty carrier behavior and narrow source-qualified AUTO metrics. Verify source-derived geometry/overlap/image assertions detect relevant failures rather than just report passing presence/paint observations. Do not infer generality from the sample alone or make missing interactions invent motion. Security, correctness, credible regressions and meaningful sensitivity matter; don't repeat full gates without changed source/failure/unresolved requirement, but execute all necessary required gates and comparisons yourself. Distinguish inherited failures, unavailable configured inputs, qualified available corpus, missing Aswatama and renderer simulation from installed Bricks.
 

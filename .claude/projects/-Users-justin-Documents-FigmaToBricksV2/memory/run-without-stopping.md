@@ -1,6 +1,6 @@
 ---
 name: run-without-stopping
-description: "Build straight through without check-ins (2026-10-07); when away take the recommended options, tell lost agents to research, resume limit-stopped agents, full report on return; agents in parallel again (2026-10-29)"
+description: "Build straight through without check-ins (2026-10-07); when away take the recommended options, tell lost agents to research, resume limit-stopped agents, full report on return; agents in parallel again (2026-10-29); importer: 1-2 fix rounds then keep building (2026-10-31)"
 metadata:
   type: feedback
 ---
@@ -20,3 +20,5 @@ On 2026-10-27, going to sleep mid-pipeline (label-floor), he said: keep it runni
 On 2026-10-28, after the usage limit kept stopping four parallel agents, he asked for one agent at a time. **On 2026-10-29 he lifted it:** "If you're an orchestrator, you can start multiple plans and orchestrate multiple agents and everything", and asked that a finished plan go straight to its builder. So run separate jobs side by side again (rule now in `~/.claude/CLAUDE.md` "Several jobs at once"); if usage limits start stopping agents again, say so and ask.
 
 **2026-10-30 (low usage):** asked Full or Mini for a plugin fix, he answered "we're super low on usage, I need this to be a quick fix. No need for review rounds", then "just keep it going not say yes everytime and log it". When he explicitly asks for that quick-fix route, follow his requested execution: in-session, or direct separate builder agents when he asks to delegate (DJ Trees, later on 2026-10-30: "give it to each agent" and "no need for reviews or anything"). Skip the planner/review pipeline for that named work, keep focused regression tests, `npm run check` and available real-file replay evidence, then integrate to main, bump/build/push, and log it in HANDOFF + CLAUDE.md Status instead of stopping to ask; edit prompts come from the permission mode (Shift+Tab → accept edits is his switch). See [[plugin-first]].
+
+**2026-10-31 (website importer, after wave 1 ran 10 and 7 fix rounds):** "brother wahat you you building why is it taking so long?", then "I need this tio be built fast … stop the fixes and just keep building lets focus on building run 1-2 round fixing and keep going." So for the importer's jobs: builder → review → fix → (at most one more review → fix) → finish and merge; leftovers that remain go to `follow-ups.md`/HANDOFF, never another round; no verifier/auditor loop. Tell him early when a loop reaches small edge cases instead of running on. See [[website-importer-paused]].

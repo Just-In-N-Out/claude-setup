@@ -1,6 +1,6 @@
 ---
 name: website-importer-paused
-description: "Website importer (J0 web-compare, J1 web-capture) paused 2026-10-31 at Justin's word after their last reviews; where each job stands and how to resume"
+description: "Website importer (11 jobs): paused then resumed 2026-10-31; Justin then said build fast, 1-2 fix rounds per job; wave 1 going straight to merge"
 metadata:
   node_type: memory
   type: project
@@ -8,7 +8,7 @@ metadata:
   modified: 2026-10-31T10:15:47.971Z
 ---
 
-Justin, 2026-10-31: "Just wrap things up after this review … We're done." RESUMED the same day: "Go, straight through (Recommended)" to build all 11 jobs; this note is the state at the pause. The website importer (plan
+Justin, 2026-10-31: "Just wrap things up after this review … We're done." RESUMED the same day: "Go, straight through (Recommended)" to build all 11 jobs. **Later that day: "I need this to be built fast … run 1-2 round fixing and keep going"** ([[run-without-stopping]]): web-capture fix 10 (branch web-capture-fix-10) and web-compare fix 7 (web-compare-fix-7) are the last fix passes, then straight to finisher and merge, no more reviews or verifier/auditor; wave 2+ jobs get at most 2 review→fix rounds. The bullets below are the state at the pause. The website importer (plan
 `~/.hermes/plans/figma-to-bricks/website-importer-brainstorm.md`, 11 jobs in 4 waves) stopped after wave 1's last
 reviews. Nothing merged into `main`; no wave-2 builder started. Full step log:
 `~/.hermes/plans/figma-to-bricks/away-2026-10-29-website-importer.md` (last entries 2026-10-31).

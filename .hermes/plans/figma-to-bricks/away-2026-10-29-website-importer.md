@@ -210,3 +210,11 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   notes on a fluid-type probe with/without ids; % base for grid items and placed boxes); enforce (fluid-type no-false-
   note test) offered. Fixer 10 dispatched from adc5d1a (branch web-capture-fix-10), R10-2 and R10-5 included since
   wave 2 reads px[].
+
+- 2026-10-31: Justin asked why it's taking so long, chose "Cap rounds", then: "I need this tio be built fast … stop the
+  fixes and just keep building lets focus on building run 1-2 round fixing and keep going." New route: web-capture
+  fix 10 (6 fix commits e2486d4..2945310 on web-capture-fix-10: R10-1 F40, R10-2/R10-5 F41, R10-3 F42) and web-compare
+  fix 7 (b7fb833..8086dff on web-compare-fix-7: R40 section-height chain, R8-2, R8-3) are told to finish their running
+  gates and report; no review 11 / review 9, no verifier/auditor. Then one finisher rebases both onto main and runs the
+  gates, ff-merge, after-merge (BUILD, build, push), and wave 2's three builders at once with at most 2 review→fix
+  rounds each. These two fix passes are unreviewed at Justin's word.

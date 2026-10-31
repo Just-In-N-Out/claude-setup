@@ -2,13 +2,15 @@
 
 Dispatch state: READY — review1 completed; main independently ran review-check and received REVIEW AGAIN.
 
+CURRENT PLAN UPDATE after record-photo planner: current E/plan-approved.md SHA256 is `7c8927cf78afdf5694e8b02ccca925aee65130250783f4ee46a1fb38a2a7d911`. Prior863dd8b is preserved at E/plan-approved-v3-before-record-photo.md. Main read the report and insertion-only diff, showed recommended dedicated responsive record-media row, and approved under standing auto-go. Implement new task8d within its exact files/ownership boundaries, integrate this complete current plan into tracked docs, and retain all13 unchanged criteria/thresholds/holds. E/amendment-record-photo/report.json contains independent evidence; its planner made no product edits. Do not skip protected native/drawn-phone/constraint negatives or planned-versus-painted width proof.
+
 You are a fresh FIXER. Verify each assigned finding before changing code, implement valid fixes test-first, and integrate the approved footer scope amendment. Main only orchestrates. You are not alone in this codebase; preserve others' edits and evidence, never revert unrelated work, and do not touch main or other worktrees. Do not start agents. Own only the approved-plan/finding-related source/tests/docs in W and your own evidence folder.
 
 - W: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/landing-page-six`, branch worktree-landing-page-six.
 - Base: `04ab9b189b45917853779a28d889915095d7e4b1`.
 - Starting reviewed head: `f45932bb54690cdd80d5891c2713bfa3cefdaa89`.
 - E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/landing-page-six`.
-- Current approved plan (updated after carrier planner returned): `E/plan-approved.md`, SHA256 `863dd8b03dca5c8e89458ff0c60bb7b266921ae741826b822cb059e96eb98321`. Prior footer amendment6c7e9ca is preserved as `E/plan-approved-v2-before-carrier.md`. Read the added narrow task8a.1 raw-child provenance extension; main showed and approved it under standing auto-go, all13 ACs unchanged. `E/amendment-carrier/report.json` holds independent proof. This update authorizes the previously reported upstream provenance boundary only.
+- Current approved plan: `E/plan-approved.md`, SHA256 `7c8927cf78afdf5694e8b02ccca925aee65130250783f4ee46a1fb38a2a7d911`. This includes both task8a.1 raw-child provenance and task8d record-photo scope. Prior footer6c7e9ca/carrier863dd8b copies are preserved as `E/plan-approved-v2-before-carrier.md` and `E/plan-approved-v3-before-record-photo.md`. Main showed and approved each under standing auto-go, all13 ACs unchanged. Their independent reports are `E/amendment-carrier/report.json` and `E/amendment-record-photo/report.json`.
 - Prior approved/review1 contract: `E/plan-approved-v1.md`, hash52ab2df7be0f6c61396511bfcd26488b9444e033aa4d7e579a05e05fc1209957.
 - Review1: `E/review-1/review.json`; full reviewer report: `E/review-1/report.json`. All six P2 findings R1-1 through R1-6 are assigned; read their exact findings, scenarios and supporting artifacts. Main's referee result (exit1): `REVIEW AGAIN: 6 P0-P2 finding(s) in review-1 at f45932b: fix them, then review again (Full: round 2 reviews the whole story from 04ab9b1; Mini: review the fix commits)`.
 - Own evidence: `E/fix-1/`; shared story ledger in W `.superpowers/sdd/2026-10-31-landing-page-six/progress.md`.
