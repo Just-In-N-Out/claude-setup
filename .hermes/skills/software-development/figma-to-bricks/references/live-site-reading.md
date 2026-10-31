@@ -66,8 +66,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   a bounded wait at the top (still 1 s, 6 s cap; finite opacity/visibility/transform/filter/clip-path animations and
   transitions counted through their delay, plus inline opacity/visibility tweens). Count only what can be seen
   ending: a finite animation longer than the wait's time left (a 20 s Ken Burns zoom) doesn't hold it and is finished
-  at its end anyway; a box whose own inline opacity/visibility turns back twice is a loop (pulse, blink), while a fade
-  in and back out once is still waited for; give the wait a floor of one still spell. Test such a reader on motion
+  at its end anyway; give the wait a floor of one still spell. Counting a box's opacity turns to call it a loop
+  (pulse, blink) can't tell it from a finite entrance with as many turns: a word-swap intro (in, out, final words in)
+  was read at 0.575 under a two-turn rule (web-capture review 8), so probe that shape before using any threshold. Test such a reader on motion
   started after it attaches, not only at load, or it never sees a tween's first write (web-capture review 7, fixer 7).
   Show chained steps below the first screen from
   the marks (the step's animationId, or the box's own last earlier startAnimation). The freeze's own scroll-through
@@ -95,7 +96,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   html's is visible, so a reader collecting clip ancestors must not treat body as a clip box, or `html,body{height:100%}`
   plus `body{overflow-x:hidden}` drops every word below the first screen (web-compare review 2).
 - Lazy pictures load only after a scroll-through; a resize differs from a fresh load at some widths (fixed boxes at
-  767, widths at 390 on bdryswi.com): load each range fresh (web-capture planner).
+  767, widths at 390 on bdryswi.com): load each range fresh (web-capture planner). A probe page with no media query is
+  captured as one range, so the phone path (touch wake, phone layout) never runs on it: give phone probes a switch
+  point at 767 (web-capture review 8).
 
 ## Hover, focus and motion
 - To read a hover/focus end state with `CSS.forcePseudoState`, first finish the target's transitions and stop its

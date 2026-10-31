@@ -108,3 +108,12 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   plan's "first mouse move and wheel" to a wheel only (a mouse-move-only widget stays as it loads): for Justin.
   Lessons saved (live-site-reading pointer line replaced, wait line; testing-pitfalls background-script and
   node --test order). Review round 8 (delta 2e47c23..a2ef3ba) dispatched.
+
+- 2026-10-31: web-capture review 8 (delta 2e47c23..a2ef3ba): pointer rule, time-left skip and floor hold; regression
+  R8-1 (P2): fix 7's two-turn loop rule reads an in-out-in entrance mid-fade (word-swap intro 0.575, pasted at 0.57;
+  prev read 1). R8-2 (P3): F32's cost wider than worded (mouse/touch-only widgets lost). Referee ASK JUSTIN (1 vs 1).
+  Fade family again, so per what Justin was told: no more heuristics. Recommended route under the away grant
+  (review-8/justin.json): remove the turn-counting loop rule (back to waiting every finite entrance to its end), keep
+  the pointer rule/skip/floor, accept the pulse/blink cost (up to the 6 s cap) as a known limit with a true note, fix
+  R8-2's wording + a "page listens for mouse moves" note. Lessons saved (live-site-reading: turn-count threshold
+  caveat replaces the two-turn rule; phone probes need a 767 switch point). Fix pass 8 dispatched.
