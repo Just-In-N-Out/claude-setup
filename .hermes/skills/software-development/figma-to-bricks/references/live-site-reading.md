@@ -66,9 +66,11 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   a bounded wait at the top (still 1 s, 6 s cap; finite opacity/visibility/transform/filter/clip-path animations and
   transitions counted through their delay, plus inline opacity/visibility tweens). Count only what can be seen
   ending: a finite animation longer than the wait's time left (a 20 s Ken Burns zoom) doesn't hold it and is finished
-  at its end anyway; give the wait a floor of one still spell. Counting a box's opacity turns to call it a loop
-  (pulse, blink) can't tell it from a finite entrance with as many turns: a word-swap intro (in, out, final words in)
-  was read at 0.575 under a two-turn rule (web-capture review 8), so probe that shape before using any threshold. Test such a reader on motion
+  at its end anyway; give the wait a floor of one still spell. Never count a box's opacity turns to
+  call it a loop: any threshold N is beaten by a finite entrance with N turns (a word swap and a restarted fade turn
+  twice, a bounce 6 times, a flicker 17; a two-turn rule read a swap intro at 0.575). Wait for every inline
+  opacity/visibility change and accept that an endless pulse or blink holds the wait to its cap, with a note that the
+  page was still moving (web-capture review 8, fixer 8). Test such a reader on motion
   started after it attaches, not only at load, or it never sees a tween's first write (web-capture review 7, fixer 7).
   Show chained steps below the first screen from
   the marks (the step's animationId, or the box's own last earlier startAnimation). The freeze's own scroll-through
@@ -117,7 +119,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   mouseout, window and side-edge checks) and hides cursor rings and pointer glows, so no park or held leave reads it
   right. To wake first-input loaders send only a `mouseWheel` with no `mouseMoved` before it: it arrives as a trusted
   wheel while Chrome keeps the pointer's place unknown (no enter, move, `:hover` or later leave) (web-capture fixers
-  2, 6 and 7, review 7). List what is hidden at the scroll position the reader reads from (the top), not where the
+  2, 6 and 7, review 7). Splide (Bricks' Slider Nestable) binds `touchstart mousedown` and `keydown` on the document
+  for good, so a page-wide "listens for first input" check counting touchstart fires on every Bricks slider page: read
+  a live page's handlers with `DOMDebugger.getEventListeners` plus `Debugger.getScriptSource` before fixing such a
+  check's event list (web-capture fixer 8). List what is hidden at the scroll position the reader reads from (the top), not where the
   scroll-through left the window. A test of a hover step must put the target where the scroll really reaches it, or
   its mutant survives (web-capture fixer 2, hover-probe.txt).
 

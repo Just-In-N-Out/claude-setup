@@ -128,3 +128,12 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   1.11×. Lessons saved (testing-pitfalls band measuring + arrangement boundary + source-under-run; mutation tie-break
   wording); enforce "MIXED SOURCE" runner check offered. Last review (round 7, delta 6aaf985..b40a81d) dispatched per
   Justin's wrap-up.
+
+- 2026-10-31: web-capture fix pass 8 back at 3705de1 (branch web-capture-fix-8), resumed once after an EAI_AGAIN
+  network cut (no mutant left applied): R8-1 fixed (turn-counting loop rule removed; swap 0.575→1, restart 0.857→1,
+  bounce 0.994→1); F35 the pulse/blink 6 s cost accepted as a limit with a true note; R8-2 fixed (wording + a
+  listeners note naming mouse/pointer moves and mouseovers; F36 left touchstart out because Splide binds it on every
+  Bricks slider page). Gates clean, replays 20/20, live homes layer for layer the same. Lessons saved
+  (live-site-reading turn-count line replaced + Splide listeners; mutation-testing-discipline test-timeout + two-set
+  guards; testing-pitfalls hunk split); enforce for a default --test-timeout offered. Last review (round 9, delta
+  a2ef3ba..3705de1) dispatched. web-compare review 7 also resumed after the same network cut.
