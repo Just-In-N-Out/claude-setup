@@ -7,8 +7,11 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-10-31)
 
-- **Current build `2026-10-31.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-10-31.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **31.2 landing-page-six (merged at Justin's direction; proof limits remain):** responsive records, navigation,
+    grouped photos and native reviews. Paste check **3ci** owed; AC7 required/non-live/source wrap held, AC13 live
+    Figma/installed Bricks/Safari/iPhone proof owed; blind audit not run.
   - **31.1 landing-page-loop (test integration; full validation held):** centered sticky navigation, inset panels,
     editable diagram and manual review slider. Paste check **3ch** on an isolated installation owed; original AC17
     required/non-live/held (headline font/source mode), AC18 live/owed (Figma/installed Bricks/Safari/iPhone).

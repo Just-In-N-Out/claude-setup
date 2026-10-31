@@ -83,3 +83,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-31 | web-compare fixer 6 | figma-to-bricks | test: each property test asserts a minimum count for every structural class its name claims | offered
 - 2026-10-31 | web-capture review 10 | figma-to-bricks | test: a test/web capture of a fluid-type fixture page (clamp() body text, em-padded buttons, ids on every element) asserts no 'a size didn't reproduce' notes; runs in npm run test:web | offered
 - 2026-10-31 | web-compare | figma-to-bricks testing-pitfalls | script: a RED-receipt helper that refuses a test path outside the tree under test | offered
+- 2026-10-31 | website-importer wave 1 | figma-to-bricks | test in test/unit (npm run check) that reads package.json's text and fails on a repeated key in the scripts block | offered
+- 2026-10-31 | website-importer wave 1 | figma-to-bricks | finisher/verifier gate script adds npm run test:web whenever git diff main...HEAD touches test/web/ or test/browser/render*.ts | offered
