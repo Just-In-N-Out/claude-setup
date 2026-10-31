@@ -241,3 +241,4 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   tree for a RED run); lesson 1 skipped (story fact, in HANDOFF); enforce (RED-receipt helper) offered.
   Wave-1 finisher dispatched (brief website-importer-wave1-finisher.md): capture-final then compare-final on main
   04ab9b1, combined gates. Next: verifier ∥ auditor for each job on the combined head → ac-check → merge → wave 2.
+- 2026-10-31: Justin asked why everything stopped. Nothing had: the wave-1 finisher's combined test:web run was ~30 min in (compare-corpus test). Killed orphaned headless Chromes from web-capture fix 8 (12h old) and a day-old /tmp f2b profile, which were loading the machine (load 49). Another job's browser suites (~/.hermes/l6r4-*) also run on this machine; left alone.
