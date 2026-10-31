@@ -232,3 +232,12 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
   finisher's combined gates cover them. Lessons folded into live-site-reading (var() shorthands incl. font/grid; made-up
   values reproduce the border box; decide notes in the helper that knows the site set a value). Waiting on compare
   fixer 7.
+
+- 2026-10-31: web-compare fixer 7 done: head 9195ab6 (code 8086dff) on web-compare-fix-7. R8-1 fixed (R40: no boundary
+  restarts a drift chain unless a report is made; no named limit left), R8-2 fixed, R8-3 fixed (R41 noise key by
+  animation). 36/36 mutants killed. Gates on 8086dff: check 2688/2623/0 fail/65 skip, test:web 77/77 skipped 0,
+  test:browser the same 10 font-environment fails as 6fe13b4. Not run: AC16 live floor, AC17 cost, Chrome mutants B1/B5/
+  B7–B9, drift probes at 16 widths on the final code. Lesson saved (testing-pitfalls: copy the test file into the old
+  tree for a RED run); lesson 1 skipped (story fact, in HANDOFF); enforce (RED-receipt helper) offered.
+  Wave-1 finisher dispatched (brief website-importer-wave1-finisher.md): capture-final then compare-final on main
+  04ab9b1, combined gates. Next: verifier ∥ auditor for each job on the combined head → ac-check → merge → wave 2.

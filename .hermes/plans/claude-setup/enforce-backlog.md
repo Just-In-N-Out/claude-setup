@@ -82,3 +82,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-31 | web-capture verifier | figma-to-bricks | test: a capture-fonts case with a <strong> run in a failing family declaring only 400/600 asserts it is error and measured with the stand-in (or named fallback with a note); runs in npm run test:web | offered
 - 2026-10-31 | web-compare fixer 6 | figma-to-bricks | test: each property test asserts a minimum count for every structural class its name claims | offered
 - 2026-10-31 | web-capture review 10 | figma-to-bricks | test: a test/web capture of a fluid-type fixture page (clamp() body text, em-padded buttons, ids on every element) asserts no 'a size didn't reproduce' notes; runs in npm run test:web | offered
+- 2026-10-31 | web-compare | figma-to-bricks testing-pitfalls | script: a RED-receipt helper that refuses a test path outside the tree under test | offered

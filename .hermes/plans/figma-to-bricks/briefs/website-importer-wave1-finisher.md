@@ -9,21 +9,21 @@ tree passes, and stop. Never stop to ask; decide and record.
 Read: `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`. Read the repo's CLAUDE.md "Finish" steps
 (step 1 is yours).
 
-## Steps (in your agent worktree; local `main` is at `@MAIN@`)
+## Steps (in your agent worktree; local `main` is at `04ab9b189b45917853779a28d889915095d7e4b1`)
 
-1. **web-capture:** `git checkout --detach @CAP@` then `git switch -c web-capture-final`. Move the ledger
+1. **web-capture:** `git checkout --detach 66159a86f01871e1a2e6b17bd743ce464df477ae` then `git switch -c web-capture-final`. Move the ledger
    `.superpowers/sdd/2026-10-29-web-capture/progress.md` to `docs/plans/2026-10-29-web-capture-ledger.md`; in HANDOFF's
    web-capture section add one line: fix pass 10 merged without a review at Justin's word (2026-10-31), its rulings
    F40–F42 not yet confirmed; append `~/.hermes/plans/figma-to-bricks/evidence/web-capture/follow-ups.md`'s open items to
    HANDOFF "Deferred" where they aren't already. Commit. Then `git rebase main`.
-2. **web-compare:** `git checkout --detach @CMP@` then `git switch -c web-compare-final`. The same for its ledger
+2. **web-compare:** `git checkout --detach 9195ab6e02001f4fae86533a4dbfecbd4d72734a` then `git switch -c web-compare-final`. The same for its ledger
    (`.superpowers/sdd/2026-10-29-web-compare/progress.md` → `docs/plans/2026-10-29-web-compare-ledger.md`), its
    HANDOFF line (fix pass 7 unreviewed, its rulings not yet confirmed, named limits as fix 7 left them) and its
    `evidence/web-compare/follow-ups.md`. Commit. Then `git rebase web-capture-final`, so one line holds both.
 3. **Conflicts:** keep both sides' meaning. HANDOFF sections both stay. The two jobs share the `test:web` script line
    in `package.json` and the `Page.cdp(method, params)` method, written character for character the same: keep one.
    If the rebase stops on a real code conflict, resolve it, run that file's tests, and list it in your report.
-4. **Gates on `web-compare-final`'s head** (the combined tree), each compared by test name with `main` (`@MAIN@`):
+4. **Gates on `web-compare-final`'s head** (the combined tree), each compared by test name with `main` (`04ab9b189b45917853779a28d889915095d7e4b1`):
    both typechecks, `npm run check`, `npm run test:web` (`skipped 0` apart from AC14's live sites, which need
    `F2B_WEB_SITES`), `npm run test:browser`, `npm run corpus`, and the five real Figma files replayed byte-identical
    with `main`. A failure that main doesn't have and that comes from putting the two together: fix it test first in the
