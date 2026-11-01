@@ -13,7 +13,7 @@
 - [Checks on the desktop](corpus-paths-on-desktop.md) — Mac corpus paths do not resolve; cached Linux Chrome is available via CHROME_PATH; local corpus copies and base comparisons required
 - [B-Dry home copy](bdry-home-copy.md) — bdryswi.com Home → B-Dry staging; v3 paste (slider, flip boxes, dots) 2026-10-29; site class names to avoid
 - [WSL clipboard](wsl-clipboard.md) — read the clipboard back through a UTF-8 file, never stdout (non-ASCII gets mangled)
-- [Deliverable first](deliverable-first.md) — thorough review rounds finding edge cases are good (Justin); hand over a verified paste file as soon as it is usable
+- [Deliverable first](deliverable-first.md) — hand over usable results early; importer: working and visible after each merge (demo shots + paste), not continuous building (2026-10-31)
 - [Plugin first](plugin-first.md) — general plugin fixes, prove conversion defects; recognise interaction clues even without prototype metadata (2026-10-30)
 - [Brainstorm goes to a planner](brainstorm-goes-to-planner.md) — ask Justin the questions in session; a planner agent writes the proposal (2026-10-29)
 - [Website importer](website-importer-paused.md) — resumed 2026-10-31; wave 1 combined, rebasing onto new main → AC check → merge; wave 2 builders running from 89022ab; log has the live state

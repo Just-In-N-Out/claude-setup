@@ -258,3 +258,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Session ended ~19:50 (Justin got off); WSL restarted ~21:04. Agents run only while this Claude Code session is open.
 - Progress before the stop: web-tiers 9a3e7f7 (through Tasks 23-24 unit parts), web-panel 5a9ecdf (Task 10a + uncommitted WIP), web-embeds d4a1a90 (Task 6 + WIP), wave1-final 7a0ac6a (gates partly run).
 - Resumed all 4 with SendMessage.
+
+## 2026-10-31 21:12 — Justin: "working and can see it", sleeping, keep going
+- Dispatched demo runner (brief website-importer-demo-1.md) on wave1-final 7a0ac6a: capture his Hostinger site + letsgro.ai (home + ≤2 pages), replay to Bricks paste, side-by-side shots at 390/768/1024/1440/design, verdict per page, paste file + steps. Evidence: evidence/website-importer-demo-1/.
+- Plan for the night: wave-1 gates → verifier+auditor ×2 → ac-check → merge/push; wave-2 builders → ≤3 review rounds → checks → merge; demo again after each merge; publish shots as a page for the morning.
+- Memory: deliverable-first.md now holds "working and visible, not continuous building".

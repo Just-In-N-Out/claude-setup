@@ -1,6 +1,6 @@
 ---
 name: deliverable-first
-description: Thorough review loops that find edge cases are good (Justin, 2026-10-29); meanwhile hand over a verified paste file as soon as it's usable
+description: Hand over something usable as soon as it works; 2026-10-31 he wants the website importer working and visible, not continuous building (review rounds now capped)
 metadata:
   type: feedback
 ---
@@ -13,8 +13,10 @@ plugin work merged.
 **Why:** he wants the plugin to handle any designer's file, so edge-case rounds are the point; he just likes knowing
 what is already usable.
 
-**How to apply:** never cut or rush review rounds to save time unless he asks. As soon as a deliverable he can use (a
+**How to apply:** don't cut review rounds below [[review-round-cap]] unless he asks. As soon as a deliverable he can use (a
 paste file in Downloads) is verified, tell him it's ready and offer the paste steps while the loops continue, and give
 short progress notes (what each round found, what's left). See [[run-without-stopping]].
 
 **His limit (2026-10-29, header-bar):** after 8 review rounds and a second brake he answered the question, then cut in with "just merge": the remaining findings became known limits and the final verifier/auditor were skipped. At a brake after many rounds, always offer "stop fixing, merge as is" as an option; when he says it, merge (still rebase and run the checks) and record the limits and his unbuilt answer as a follow-up.
+
+**Working and visible, not continuous building (2026-10-31, website importer, going to sleep):** "I do not want continuous building, I want this to actually get working and can see it … just keep going." After each merge (and before it when the code is combined and green), run a demo agent that uses the built tools end to end on the allowed real sites and leaves side-by-side shots (live vs copy at 390/768/1024/1440), a plain verdict naming which later job fixes each difference, and a paste file with steps; publish the shots as a page he can open. Brief: `~/.hermes/plans/figma-to-bricks/briefs/website-importer-demo-1.md`.
