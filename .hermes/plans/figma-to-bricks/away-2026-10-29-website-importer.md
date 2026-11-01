@@ -253,3 +253,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - WSL restarted ~19:15 (uptime 6 min at 19:21); the Claude Code process and every agent stopped ~10 min in.
 - State left: wave1-final 7a0ac6a (rebase done, 162 commits on 1aef12f, clean; gates killed). web-tiers b44d938, web-panel 6b903d5, web-embeds ff2be67: plan commits only, clean, no build commits yet.
 - Resumed all 4 with SendMessage (same briefs; re-run any gate without EXIT=).
+
+## 2026-10-31 21:07 — second stop; all 4 resumed again
+- Session ended ~19:50 (Justin got off); WSL restarted ~21:04. Agents run only while this Claude Code session is open.
+- Progress before the stop: web-tiers 9a3e7f7 (through Tasks 23-24 unit parts), web-panel 5a9ecdf (Task 10a + uncommitted WIP), web-embeds d4a1a90 (Task 6 + WIP), wave1-final 7a0ac6a (gates partly run).
+- Resumed all 4 with SendMessage.
