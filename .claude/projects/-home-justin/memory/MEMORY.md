@@ -1,1 +1,2 @@
 - [Finding lost sessions](finding-lost-sessions.md) — where a "deleted" or "cloud" session usually is and how to reopen it
+- [Desktop freezes under agent load](desktop-freezes-under-agent-load.md) — 2026-11-02 PC freezes with many agents + Chrome; WSL 26/32 GB; how to diagnose
