@@ -33,7 +33,7 @@ MERGE TRAIN (2026-11-02, to avoid re-verifying after every merge): each ready jo
 rebased head (not main) and verified with --base = that car; merges go in train order, ff-only. If a car fails, the
 cars behind it re-rebase.
   car 1: cta-center 1a64378 — MERGED
-  car 2: storm-photo b0d8f65 → verifier+auditor CLEAN; ac-check READY (AC12 live 3cq) → ff-merge after the cta-center finisher puts main back to clean 1a64378; ONE build commit for cars 1+2; then cars 3–5 re-rebased onto that build commit before verification (no extra verification cost)
+  car 2: storm-photo b0d8f65 → verifier+auditor CLEAN; ac-check READY (AC12 live 3cq) → MERGED main → b0d8f65; finisher doing ONE build (2026-11-02.2) for cars 1+2; then cars 3–5 re-rebased onto that build commit before verification (no extra verification cost)
   car 3: strip-edge (now ba83c44 on 1424081) → re-rebase onto car 2's head, then verify with base = car 2
 
 2026-11-02 (second restart): 11 agents stopped; worktrees intact; all resumed by SendMessage (reviewers 7, 9; verifier+auditor 3; verifier 5; fixers 1, 4, 6, 13; rebaser 8 (b0d8f65); phone-menu part 2 with 16 uncommitted files).
