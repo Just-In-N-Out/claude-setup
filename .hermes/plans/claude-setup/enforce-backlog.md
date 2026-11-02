@@ -90,3 +90,6 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | djtrees-phone-menu | figma-to-bricks | script: test/browser/chrome.ts fails fast with a clear message when TMPDIR is longer than ~50 characters | offered
 - 2026-11-02 | djtrees-phone-menu | feature-dispatch | Claude Code hook: PreToolUse on Write/Bash for subagents refuses new files directly in the session scratchpad root (a <job>-<role>/ subfolder required) | offered
 - 2026-11-02 | djtrees-faq-art | figma-to-bricks | lint: an art-over-text rule in test/browser/lint.ts flagging a positioned wordless picture/drawing that paints above and covers ≥1/3 of a visible text box (re-record corpus baseline) | offered
+- 2026-11-02 | djtrees-stack-lines | figma-to-bricks | test: a browser-test helper that throws when a counted selector matches no element at all, used instead of raw querySelectorAll counts | offered
+- 2026-11-02 | djtrees-stack-lines | figma-to-bricks | script: a per-width watchdog in tools/snap.ts that exits non-zero "stalled at <w>" after N idle minutes | offered
+- 2026-11-02 | djtrees-phone-headline | memory tool-escape-quirk | test: a unit test scanning src/ and test/ .ts files for raw U+2028/U+2029 characters, failing on any (runs in npm run check) | offered

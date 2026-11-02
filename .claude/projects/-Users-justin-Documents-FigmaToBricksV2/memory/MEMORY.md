@@ -7,7 +7,7 @@
 - [Port v1 when it worked](port-v1-when-it-worked.md) — user said "just do what v1 did": port v1's approach, no new UI, no option questions
 - [Play back the problem first](play-back-the-problem.md) — after a bug report, restate it in plain numbered words before any choice question
 - [Figma sandbox globals](figma-sandbox-globals.md) — no URL/TextDecoder in the plugin sandbox; Node tests pass anyway; diff pbpaste with replay first
-- [Tool escape quirk](tool-escape-quirk.md) — backslash-u for a space or invisible chars (U+200B–200D, 2060, FEFF) lands raw in Write/Edit; use x-escapes or code points
+- [Tool escape quirk](tool-escape-quirk.md) — backslash-u for a space, invisible chars (U+200B–200D, 2060, FEFF) or U+2028/2029 lands raw in Write/Edit; use x-escapes or code points
 - [Reading the live site](reading-the-live-site.md) — LiteSpeed cache-bust, page list, site-header-room marker, stacked pastes
 - [Old site gallery](old-site-gallery.md) — Gallery paste: 38 photos rebuilt 2026-10-26 as Media AVIFs (ids 837–874) with alt text; hotlinked until pasted
 - [Checks on the desktop](corpus-paths-on-desktop.md) — Mac corpus paths do not resolve; cached Linux Chrome is available via CHROME_PATH; local corpus copies and base comparisons required

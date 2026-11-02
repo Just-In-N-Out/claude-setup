@@ -1,6 +1,6 @@
 ---
 name: tool-escape-quirk
-description: In Write/Edit tool parameters backslash-u escapes for a space and for invisible characters (U+200B-200D, U+2060, U+FEFF) land as raw characters; use backslash-x escapes or code points
+description: In Write/Edit tool parameters backslash-u escapes for a space and for invisible characters (U+200B-200D, U+2060, U+FEFF) and U+2028/2029 land as raw characters; use backslash-x escapes or code points
 metadata:
   node_type: memory
   type: feedback
@@ -12,7 +12,7 @@ A backslash-u escape for the space character (u plus 0020), typed in a Write or 
 file as a literal space. The same text in `old_string` also matches a space. The backslash-u escapes for NUL and DEL,
 and every backslash-x escape, are written as typed. zsh's `echo` also turns these escapes into characters. So write
 regex ranges with backslash-x escapes (x00 to x20), and check the bytes with `od -c`. The backslash-u escapes for the
-invisible characters (U+200B–U+200D, U+2060, U+FEFF) also land as the raw characters (web-compare amendment-1 builder,
+invisible characters (U+200B–U+200D, U+2060, U+FEFF) and the line/paragraph separators U+2028/U+2029 (djtrees-phone-headline builder, 2026-11-02: write `String.fromCharCode(0x2028)`) also land as the raw characters (web-compare amendment-1 builder,
 2026-10-31: a regex class read back as bytes 342 200 213): build such classes from code points (`String.fromCharCode`).
 
 **Why:** on 2026-10-23 `src/core/model/url.ts` got a literal space where its control-character range should end. It

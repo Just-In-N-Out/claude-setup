@@ -38,7 +38,9 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   `exec $HOME/.cache/chrome-for-testing/chrome-f2b --use-gl=disabled --disable-software-rasterizer "$@"`, with DISPLAY and
   WAYLAND_DISPLAY cleared. `launchChrome` passes a fixed flag list, so flags only take effect through the wrapper; the
   bare `chrome-f2b` stalled `snap` on the DJ Trees file silently for 18 minutes (strip-edge planner). Record executable
-  and flags; same profile for base and head (memory `corpus-paths-on-desktop.md`). A browser test counts only when its output says `skipped 0`.
+  and flags; same profile for base and head (memory `corpus-paths-on-desktop.md`). `snap` at ≥ 992 (1440 especially) still
+  stalls on the DJ Trees file with either profile: prove wide widths with an in-process replay plus a layout-box
+  comparison or a page probe waiting for `document.fonts.ready` + a short delay, never by waiting on snap. A browser test counts only when its output says `skipped 0`.
 - `npm run check` must pass. **`npm run corpus` measures nothing here** (Mac paths): never edit `corpus/corpus.json` in
   the worktree; for corpus-backed tests use scratch `git archive` trees of head and base with only `corpus.json`
   re-pointed to `corpus/files/` and `node_modules` linked, compared by test name (memory note above).
