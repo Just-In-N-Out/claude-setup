@@ -37,3 +37,5 @@ cars behind it re-rebase.
   car 3: strip-edge (now ba83c44 on 1424081) → re-rebase onto car 2's head, then verify with base = car 2
 
 2026-11-02 (second restart): 11 agents stopped; worktrees intact; all resumed by SendMessage (reviewers 7, 9; verifier+auditor 3; verifier 5; fixers 1, 4, 6, 13; rebaser 8 (b0d8f65); phone-menu part 2 with 16 uncommitted files).
+
+2026-11-02 15:16: Windows unexpected restart (Kernel-Power 41 + 6008) with 11 agents running. Resumed in waves to limit load: wave A (6) = cta-center verifier+auditor, storm-photo rebaser, top-align verifier, step-sides + stack-gaps reviewers; wave B later = fixers 1, 4, 6, 13 + phone-menu part 2 (16 uncommitted files).
