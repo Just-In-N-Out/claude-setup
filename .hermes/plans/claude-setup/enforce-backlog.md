@@ -94,3 +94,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | djtrees-stack-lines | figma-to-bricks | script: a per-width watchdog in tools/snap.ts that exits non-zero "stalled at <w>" after N idle minutes | offered
 - 2026-11-02 | djtrees-phone-headline | memory tool-escape-quirk | test: a unit test scanning src/ and test/ .ts files for raw U+2028/U+2029 characters, failing on any (runs in npm run check) | offered
 - 2026-11-02 | djtrees-strip-edge | figma-to-bricks | test: a stripPage-style fixture of a free-layout, unclipped track in an auto-layout section, added to every strip run-out guard test | offered
+- 2026-11-02 | website-importer demo-1 | figma-to-bricks | script: site-compare warns and exits 2 when both sides draw pictures but 0 are paired or any fingerprint is 'broken' (test/web/lib/compare.ts) | offered
+- 2026-11-02 | website-importer demo-1 | feature-dispatch | Claude Code hook: when the main session saves a brief, flag lines asking an agent for a summary.md/report .md file | offered

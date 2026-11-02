@@ -42,6 +42,8 @@ For each of the two sites you may read, **the home page plus up to two more page
 Don't change source code. If a command fails or a page can't be captured, record the exact error and try the next
 page; a bug you find goes in your report as a finding (file:line, the command, what happened), not a fix.
 
+**Reuse (demo-1, 2026-11-02):** `evidence/website-importer-demo-1/scripts/` (`page.sh` capture → check → replay → compare; `demo-compare.mts` labelled shots with the site's own pictures; `make-paste.mts` fills `fill:<hash>` from the capture's `web.pictures[hash].url`, `node:` renders and `svg:` markup, so the paste shows real photos with nothing uploaded). Put the summary in your report, not in a `summary.md` (Claude Code refuses subagent report files).
+
 ## Rules
 
 - **bdryswi.com serves a bot-check page to automated Chrome: don't load it**, and never try to hide automation. Live

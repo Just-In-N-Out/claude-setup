@@ -20,7 +20,7 @@ Live: https://djtreeservice.staging.growithgro.com/home/?bricks_preview=17936357
 | 10 | djtrees-faq-art | mobile | 3cs | a65220e19f422f1a2 | plan f112f67 frozen; WAIT: builder starts from main after 4 merges (its Q5) ; laptop 992–1150 overlap = follow-up job (Q4 B) |
 | 13 | djtrees-faint-picture | all | 3cv | adb3a0238cfd712cd | plan d0a9447 frozen; builder afabbdb7c4e4f34fc done → head c8dbbd2 (wt agent-afabbdb7c4e4f34fc); reviewer running (only the FAQ tree was black; 3cs needs this merged) |
 | 11 | djtrees-phone-headline | mobile | 3ct | a296e9ec92299c7cd | plan 8e96cbb frozen; MERGED to main (ff 1aef12f→4a40305, ac-check READY FOR THE USER, AC8 live 3ct); DONE: Build 2026-11-02.1 (1424081) pushed; CLAUDE.md Status updated; lock released |
-| 12 | djtrees-strip-edge | desktop | 3cu | ab5230f33934f89c0 | plan 1d2645b frozen; builder a6c9fc7c6ea4e0695 done → head a14d439 (wt agent-a6c9fc7c6ea4e0695); review-1: REVIEW AGAIN (R1-1 P2 hand-placed strip cards; P3s → follow-ups); fixer running; replaces 30.7 "track stays clipped" ruling |
+| 12 | djtrees-strip-edge | desktop | 3cu | ab5230f33934f89c0 | plan 1d2645b frozen; builder a6c9fc7c6ea4e0695 done → head a14d439 (wt agent-a6c9fc7c6ea4e0695); review-1: REVIEW AGAIN (R1-1 P2 hand-placed strip cards; P3s → follow-ups); fixer done → 3a2f915 (wt agent-a5efc2f89102539e1); rebaser running → then verifier + auditor; replaces 30.7 "track stays clipped" ruling |
 
 Justin: everything except #1 is mobile.
 Justin (leaving): "Going forward whatever the planner agent recommends go with it" → take every ⭐ answer, dispatch builders at once, run each job through review → verification → merge without asking. Issue 2 waits for the Nav (Nestable) sample unless its planner recommends otherwise.
