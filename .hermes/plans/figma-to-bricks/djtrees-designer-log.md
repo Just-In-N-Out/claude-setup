@@ -42,3 +42,8 @@ cars behind it re-rebase.
 NOTE: ticks are a JSON STRING (snapshot.site = JSON.stringify({...})); object form silently untick'd — checks done that way (stack-gaps reviewer's tick probe, maybe others) tested nothing.
 
 Wave 2 started (user: 'in 5 minutes run wave 2'): side-art fixer-1, panel-edge fixer (no rebase now), stack-lines fixer-2 (no rebase now), faint-picture fixer, phone-menu part 2. Running now: those 5 + cta-center verifier+auditor, top-align verifier, step-sides reviewer = 9. Hold storm-photo verification until the cta-center pair finishes.
+
+2026-11-02 15:34: second Windows crash (Kernel-Power 41) ~7 min after wave 2 brought it to 9 agents. Justin: "run it by waves". Now ≤4 at once:
+  wave 1 (running): cta-center verifier + auditor, top-align verifier, step-sides reviewer
+  wave 2: side-art fixer-1 (3 dirty), faint-picture fixer (1 dirty), panel-edge fixer (2 dirty, no rebase), storm-photo verification pair? -> pick by train priority
+  wave 3: stack-lines fixer-2 (no rebase), phone-menu part 2 (16 dirty), storm-photo verifier+auditor, then train rebases
