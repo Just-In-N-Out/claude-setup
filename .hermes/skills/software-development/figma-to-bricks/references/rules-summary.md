@@ -4,7 +4,7 @@ CLAUDE.md wins. Read its current compact Status and relevant standing rules/HAND
 
 ## Pipeline and hard constraints
 - Figma→editable Bricks2.3.9/ExampleBricks; v1 read-only. General structural logic, never sample names/IDs/text/pixels/colours/fonts/order. Generic controls/fallback; ask special cases.
-- extract→normalise→understand→style→adapt→emit; only extract calls Figma, pure Node core. No earlier mutation/type change/double conversion; typed CSS until emit. Only adapt/rules writes bp styles, sizes PageFacts/widths ctx.layout, explicit cascade restores/collision overrides.
+- extract→normalise→understand→style→adapt→emit; only extract calls Figma, pure Node core. No earlier mutation/type change/double conversion; typed CSS until emit. Only adapt/rules writes bp styles, sizes PageFacts/widths ctx.layout, explicit cascade restores/collision overrides; an overriding rule writing a property at a tier must also write it at every narrower tier the overridden rule writes, or `engine.ts` reports "X undoes Y" (djtrees-stack-lines).
 - Deterministic IDs/shared breakpoints, purpose classes, native controls first, emitters from samples; never guess native keys. No silent fonts, unsafe URLs or uncertain-write retries. Cancel ownership survives finish awaits.
 - **Always open `references/core-constraints.md` for architecture/emit/Bricks, fonts, media, address safety, cancellation, fixtures or SES/build changes**; it preserves the detailed constraints moved out of this summary. SKILL.md pitfalls and relevant HANDOFF/ledger still bind.
 
