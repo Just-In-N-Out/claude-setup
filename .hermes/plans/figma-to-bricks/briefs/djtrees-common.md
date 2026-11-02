@@ -43,7 +43,8 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   comparison or a page probe waiting for `document.fonts.ready` + a short delay, never by waiting on snap. A browser test counts only when its output says `skipped 0`.
 - `npm run check` must pass. **`npm run corpus` measures nothing here** (Mac paths): never edit `corpus/corpus.json` in
   the worktree; for corpus-backed tests use scratch `git archive` trees of head and base with only `corpus.json`
-  re-pointed to `corpus/files/` and `node_modules` linked, compared by test name (memory note above).
+  re-pointed to `corpus/files/` and `node_modules` linked to the MAIN folder's copy
+  (`/home/justin/Documents/FigmaToBricksV2/node_modules`; a worktree's copy has no `.bin`), compared by test name.
 - Real files for byte-identity/blast-radius checks: `corpus/files/hydraulics-home.json`, `corpus/files/gro-home.json`,
   repo-root `figma-to-bricks-debug-page-1.json` and `figma-to-bricks-debug-design-inspo-brainstorm.json`, Services
   (`git show 2199895:figma-to-bricks-debug-page-1.json` into E, never the worktree), and the DJ Trees debug file
