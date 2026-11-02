@@ -5,10 +5,13 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-10-31)
+## Status (2026-11-02)
 
-- **Current build `2026-10-31.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-02.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-02.1 djtrees-phone-headline:** big headings of two or more words are at most 72px upright and 93px
+    sideways on phones; a tight one opens to line height 1 where its words wrap into more lines than drawn. Paste
+    check **3ct**.
   - **31.2 landing-page-six (merged at Justin's direction; proof limits remain):** responsive records, navigation,
     grouped photos and native reviews. Paste check **3ci** owed; AC7 required/non-live/source wrap held, AC13 live
     Figma/installed Bricks/Safari/iPhone proof owed; blind audit not run.
@@ -643,6 +646,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **Every call-to-action button is full width** on phones, cards included (not tags, floating layers, icon buttons).
   - **One photo per slide.** A photo group without text splits into slides; a card with text keeps its largest photo.
   - **Footer** last on the page and centred; text and spacing: whole-pixel type, balanced headings, capped gaps.
+  - **Big multi-word headings on phones** (DJ Trees designer note 11, 2026-11-02; the planner's ⭐ answers under
+    Justin's "whatever the planner agent recommends", not yet confirmed): a text of two or more words is at most 72px
+    upright and 93px sideways (21% of the narrowest column; one word keeps its step); one drawn at 28px+ tighter than
+    line height 1 gets line height 1 from the widest tier where its words wrap into more lines than Figma drew
+    (facts.ts displayCap/wrapsMore, rule type.leading).
 - **Typed line breaks** (user, 2026-10-21, L1A L2A): in a text box of fixed width (Figma's fixed or auto-height box),
   typed breaks that only copy Figma's own wrap go out as spaces, so the words wrap by the box on every screen, never
   by the screen's width. A text hugging its words keeps its breaks from the design width up and loses them below.
