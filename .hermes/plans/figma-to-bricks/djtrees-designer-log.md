@@ -18,8 +18,8 @@ Live: https://djtreeservice.staging.growithgro.com/home/?bricks_preview=17936357
 | 8 | djtrees-storm-photo | mobile | 3cq | a357a3a9bf3370792 | plan 0e1a79d frozen; builder a15a7d44ced8063a2 running |
 | 9 | djtrees-stack-gaps | mobile | 3cr | a896112426e93f3be | planning; align with 5/6/7 |
 | 10 | djtrees-faq-art | mobile | 3cs | a65220e19f422f1a2 | planning; same rule as 4 — builder starts after 4 merges |
-| 11 | djtrees-phone-headline | mobile | 3ct | a296e9ec92299c7cd | planning |
-| 12 | djtrees-strip-edge | desktop | 3cu | ab5230f33934f89c0 | planning; replaces 30.7 "track stays clipped" ruling |
+| 11 | djtrees-phone-headline | mobile | 3ct | a296e9ec92299c7cd | plan 8e96cbb frozen; builder a83fd9594f25d3b40 running |
+| 12 | djtrees-strip-edge | desktop | 3cu | ab5230f33934f89c0 | plan 1d2645b frozen; builder a6c9fc7c6ea4e0695 running; replaces 30.7 "track stays clipped" ruling |
 
 Justin: everything except #1 is mobile.
 Justin (leaving): "Going forward whatever the planner agent recommends go with it" → take every ⭐ answer, dispatch builders at once, run each job through review → verification → merge without asking. Issue 2 waits for the Nav (Nestable) sample unless its planner recommends otherwise.
