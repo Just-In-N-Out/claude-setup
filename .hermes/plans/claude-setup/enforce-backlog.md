@@ -85,3 +85,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-10-31 | web-compare | figma-to-bricks testing-pitfalls | script: a RED-receipt helper that refuses a test path outside the tree under test | offered
 - 2026-10-31 | website-importer wave 1 | figma-to-bricks | test in test/unit (npm run check) that reads package.json's text and fails on a repeated key in the scripts block | offered
 - 2026-10-31 | website-importer wave 1 | figma-to-bricks | finisher/verifier gate script adds npm run test:web whenever git diff main...HEAD touches test/web/ or test/browser/render*.ts | offered
+- 2026-11-02 | djtrees-panel-edge | figma-to-bricks | test: run every edge-extension fixture (edge-photo/wide.ts keys) a second time with clipsContent: true and assert in Chrome the extended layer's pixels reach the window edge | offered
