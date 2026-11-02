@@ -34,7 +34,7 @@ rebased head (not main) and verified with --base = that car; merges go in train 
 cars behind it re-rebase.
   car 1: cta-center 1a64378 — MERGED
   car 2: storm-photo b0d8f65 → verifier+auditor CLEAN; ac-check READY (AC12 live 3cq) → MERGED main → b0d8f65; finisher doing ONE build (2026-11-02.2) for cars 1+2; then cars 3–5 re-rebased onto that build commit before verification (no extra verification cost)
-  car 3: strip-edge (now ba83c44 on 1424081) → re-rebase onto car 2's head, then verify with base = car 2
+  car 3: strip-edge 038c4d5 (branch train-strip-edge), car 4: top-align df4ac9c (train-top-align), car 5: faint-picture ea7afd8 (train-faint-picture) — chain on b0d8f65 by train rebaser afea5ba57d0795ac5 (gates green, HANDOFF-only conflicts). NEXT: once the finisher commits Build 2026-11-02.2 on main, resume the train rebaser to re-rebase the chain onto it, then verifier+auditor per car (base = previous car).
 
 2026-11-02 (second restart): 11 agents stopped; worktrees intact; all resumed by SendMessage (reviewers 7, 9; verifier+auditor 3; verifier 5; fixers 1, 4, 6, 13; rebaser 8 (b0d8f65); phone-menu part 2 with 16 uncommitted files).
 
