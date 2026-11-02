@@ -236,7 +236,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     **Review rounds are capped** (Justin, 2026-10-31: "I need this to be built fast"; memory `review-round-cap`):
     every AC is still met and accepted with no cap, but review → fix rounds stop after 3 in all (1–2 for major bugs,
     the rest for the main edge cases); what a later review would still find goes to `follow-ups.md` and HANDOFF
-    "Deferred". This overrides the global "no round cap" for review rounds only. The review diff is `git diff main...HEAD` in the copy, or `git diff <commit before the
+    "Deferred". This overrides the global "no round cap" for review rounds only. **Website importer, tightened
+    (2026-11-02: "focus on building and not too much of edge cases"):** one review per job, reporting only bugs a
+    real site or normal use hits; edge cases go straight to follow-ups; a second review only to check a major fix. The review diff is `git diff main...HEAD` in the copy, or `git diff <commit before the
     milestone>` on `main`.
   - **Rules for every agent in a copy:**
     - Run `npm run check` and `npm run corpus` there.

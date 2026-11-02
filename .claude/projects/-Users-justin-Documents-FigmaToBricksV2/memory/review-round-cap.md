@@ -26,3 +26,5 @@ the goals met and no major bugs. **How to apply:** this overrides the global CLA
 not for AC acceptance. **This project only** (Justin, 2026-10-31, chose "Only this project" over "All projects"):
 other projects keep the global no-cap loop. Also written into the project CLAUDE.md "Build and review". Tell him early when a loop is down to small edge cases. Related: [[run-without-stopping]],
 [[website-importer-paused]].
+
+**Tightened 2026-11-02 (website importer):** "again focus on building and not too much of edge cases that will lead us nowhere" (after "we have worked a lot on it and … got nowhere"). Now: **one** fresh review per job, briefed to report only bugs a real site or normal use would hit (P0/P1, and P2 that breaks a real page); edge cases go straight to `follow-ups.md` as P3. A second review only to check the fix of a major bug from the first. ACs still accepted by verifier + auditor + `ac-check.sh` before merge. Same shape as [[designer-feedback-mini]].
