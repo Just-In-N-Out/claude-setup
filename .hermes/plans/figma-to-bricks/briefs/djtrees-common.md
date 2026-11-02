@@ -50,6 +50,9 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   `/home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-designer/figma-to-bricks-debug-djtrees-home.json`
   (SHA256 `1a6a2751…557d`, read-only, 16 MB: replay is slow, snap slower; run long gates writing a log ending
   `EXIT=<code>`).
+- Fonts: the DJ Trees display fonts aren't installed here, so the renderer wraps headings far more: inject `@font-face`
+  rules for the local copies in `/home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-side-art/builder/fonts/`
+  (Google's files) into the rendered page only; never write `~/.local/share/fonts`.
 - Scratch: your own `~/.cache/<job>-<role>/` (create fresh with `mkdir`, not `-p`; `TMPDIR` there, short path for
   Chrome). The session `/tmp` is a small shared RAM disk: keep only small files there. Copy scripts worth keeping into
   `E/<role>/`. Remove only your own scratch, by its literal absolute path.
