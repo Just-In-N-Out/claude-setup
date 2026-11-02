@@ -35,3 +35,5 @@ cars behind it re-rebase.
   car 1: cta-center 1a64378 (on main 1424081) — verifying
   car 2: storm-photo → rebase onto 1a64378 (rebaser running), then verifier+auditor with base 1a64378
   car 3: strip-edge (now ba83c44 on 1424081) → re-rebase onto car 2's head, then verify with base = car 2
+
+2026-11-02 (second restart): 11 agents stopped; worktrees intact; all resumed by SendMessage (reviewers 7, 9; verifier+auditor 3; verifier 5; fixers 1, 4, 6, 13; rebaser 8 (b0d8f65); phone-menu part 2 with 16 uncommitted files).
