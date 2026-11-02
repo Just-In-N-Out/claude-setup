@@ -272,3 +272,10 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-02 13:52 — PC restarted 13:45 (clean, no crash event); all 5 resumed again
 - Windows LastBootUpTime 13:45:38; System log 109+6006 at 13:45:22, no 41/6008/1001 (no crash), no 1074 (not the Start menu). 10-31: two Start-menu power-offs (20:00, 21:24) and a clean shutdown at 21:02. PC has 32 GB; WSL capped at 16 GB.
 - Agents had run ~6 min since 13:40. Resumed all 5 again; demo told to get one page end to end first; embeds told to commit finished pieces sooner.
+
+## 2026-11-02 14:45 — demo-1 done and published; 3 mini jobs planned
+- Demo-1 (wave1-final 7a0ac6a): 4 pages captured (Hostinger home/contact/gallery, letsgro home), replayed, compared at 390/768/1024/1440/design. Desktop close (home 1440: sections 0–2px, 102/151 boxes ≤4px). Summary saved as evidence/website-importer-demo-1/summary.md (agent's write was refused by the harness). Paste: hostinger/home/paste-home.json.
+- Published page: https://claude.ai/artifact/76BiLSkg3KkfmnZs9oCKcP (JPEGs made with PowerShell System.Drawing; no PIL/ImageMagick/ffmpeg on WSL).
+- New Mini jobs (Justin's 11-02 rule: one job per problem; standing "take recommended"): web-header-spacer, web-video-autoplay, web-compare-pictures — planners dispatched on 7a0ac6a. Follow-ups (no job): svg: assets grey in replay preview; letsgro click-to-begin.
+- Told web-tiers and web-embeds builders about the demo captures as real-site probes (no scope change).
+- Lessons saved: testing-pitfalls (compare pairing can silently drop), review-loop.md (harness refuses subagent report files), demo brief "Reuse" line; 2 enforce proposals offered.
