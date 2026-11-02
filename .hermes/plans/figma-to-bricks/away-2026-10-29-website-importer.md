@@ -297,3 +297,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 
 ## 2026-11-02 17:12 — 4th stop: Start-menu restart 16:54 after WSL memory pressure at 16:52 (~5 agents); resumed both
 - web-panel's gates had waited for a free browser slot (16:35→16:49), then test:web reached 16 results (R8-1 entrances test not ok, maybe memory). wave1-final 41330bb7 gates unfinished. .wslconfig now memory=20GB.
+
+## 2026-11-02 17:25 — web-panel built (8c1e84b on 89022ab); one review + verifier dispatched
+- All ACs pass except AC16 (live, owed to Justin). Gates base→head by name: unit +20 new all pass; browser +9 new, same 10 font failures; web 132/131/1 skip (AC14 cleared separately with F2B_WEB_CAPTURES). Rulings R1, R10, R11 not yet confirmed.
+- Lessons saved to testing-pitfalls: F2B_WEB_CAPTURES clears AC14's skip; Monitor's inline poll is refused in a worktree session (use bash <script>). Skipped: the designOf/leaveOut mutant fixture tip (narrow to one guard).
+- Dispatched web-panel reviewer (brief web-panel-reviewer-1.md): one review, real bugs only, plus the verifier's AC work. Importer agents now: wave-1 finisher + panel reviewer (2).
