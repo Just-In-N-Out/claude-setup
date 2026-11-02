@@ -33,7 +33,7 @@ MERGE TRAIN (2026-11-02, to avoid re-verifying after every merge): each ready jo
 rebased head (not main) and verified with --base = that car; merges go in train order, ff-only. If a car fails, the
 cars behind it re-rebase.
   car 1: cta-center 1a64378 — MERGED
-  car 2: storm-photo b0d8f65 (rebased onto 1a64378) → verifier CLEAN; auditor running, base 1a64378
+  car 2: storm-photo b0d8f65 → verifier+auditor CLEAN; ac-check READY (AC12 live 3cq) → ff-merge after the cta-center finisher puts main back to clean 1a64378; ONE build commit for cars 1+2; then cars 3–5 re-rebased onto that build commit before verification (no extra verification cost)
   car 3: strip-edge (now ba83c44 on 1424081) → re-rebase onto car 2's head, then verify with base = car 2
 
 2026-11-02 (second restart): 11 agents stopped; worktrees intact; all resumed by SendMessage (reviewers 7, 9; verifier+auditor 3; verifier 5; fixers 1, 4, 6, 13; rebaser 8 (b0d8f65); phone-menu part 2 with 16 uncommitted files).
@@ -51,3 +51,4 @@ Wave 2 started (user: 'in 5 minutes run wave 2'): side-art fixer-1, panel-edge f
 Justin: PC limit raised to 8 across sessions (website importer session figmatobricksv2-6c shares it). Split: DJ Trees ≤5, importer ≤3. DJ running: step-sides reviewer, storm-photo verifier+auditor, cta-center post-merge finisher, side-art fixer-1. Queue: faint-picture fixer, panel-edge fixer, stack-lines fixer-2, phone-menu part 2, then train rebases/verifications (5, 12, 9 …).
 
 Justin: 'whenever one finishes, start another one' (keep DJ Trees at 5 running). Running: step-sides reviewer, storm-photo auditor (car 2), cta-center post-merge finisher, train rebaser cars 3–5 (strip-edge, top-align, faint-picture), side-art review-2. Queue: panel-edge fixer, stack-lines fixer-2, phone-menu part 2, then verify cars 3–5, stack-gaps train slot, side-art train slot, faq-art builder.
+LESSON: a post-merge BUILD commit on main breaks the merge train (cars sit on the pre-build head; ff fails, rebase forces re-verification). Do the BUILD commit once per batch of consecutive cars, or rebase the not-yet-verified cars onto it before their verification.
