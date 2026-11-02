@@ -47,3 +47,5 @@ Wave 2 started (user: 'in 5 minutes run wave 2'): side-art fixer-1, panel-edge f
   wave 1 (running): cta-center verifier + auditor, top-align verifier, step-sides reviewer
   wave 2: side-art fixer-1 (3 dirty), faint-picture fixer (1 dirty), panel-edge fixer (2 dirty, no rebase), storm-photo verification pair? -> pick by train priority
   wave 3: stack-lines fixer-2 (no rebase), phone-menu part 2 (16 dirty), storm-photo verifier+auditor, then train rebases
+
+Justin: PC limit raised to 8 across sessions (website importer session figmatobricksv2-6c shares it). Split: DJ Trees ≤5, importer ≤3. DJ running: step-sides reviewer, storm-photo verifier+auditor, cta-center post-merge finisher, side-art fixer-1. Queue: faint-picture fixer, panel-edge fixer, stack-lines fixer-2, phone-menu part 2, then train rebases/verifications (5, 12, 9 …).
