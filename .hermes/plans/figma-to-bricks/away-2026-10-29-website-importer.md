@@ -284,3 +284,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Before the crash: web-tiers 0e24722 (Task 25), web-panel 2e786ac (Task 15 docs, last task), web-embeds 4faa8d1 (20 work commits). Planners saved nothing. Main moved to 1424081 (Build 2026-11-02.1 DJ Trees headings) → wave1-final needs another rebase.
 - Justin: "ok run it in wave" and "we have worked a lot on it and like we got nowhere". Planners deferred until the 4 builders finish.
 - Slots: DJ Trees session (figmatobricksv2-56) holds 4 now; messaged it to drop to 2 and tell me. Importer wave A: wave-1 rebase/merge + web-panel. Wave B: web-tiers + web-embeds. Then the 3 bug planners.
+
+## 2026-11-02 15:55 — limit raised to 8 (Justin via the DJ Trees session); importer up to 3; wave A started
+- DJ Trees session relayed Justin: "raise the limit to 8" across the PC; split DJ Trees 5 / importer 3 (its memory edit records it).
+- Main now 1a64378 (17 DJ Trees commits, none in importer files). Rebase brief re-pinned to 1a64378. Resumed: wave-1 rebase finisher (rebase 7a0ac6a → 1a64378, gates, no further chase) and web-panel builder (last task). Third slot reserved for wave-1 checkers. Asked DJ Trees to hold merges briefly when wave 1 is ready.
+- Tiers, embeds and the 3 bug planners wait (wave B after Justin tries wave A).

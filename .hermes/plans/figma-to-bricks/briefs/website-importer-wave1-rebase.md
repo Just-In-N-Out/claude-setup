@@ -7,7 +7,7 @@ decide and record.
 `04ab9b1`: branch `web-compare-final` = `89022abbef4e3584a93a68cd7118dea69aa93f2b` (162 commits; its report's gates all
 matched main by test name; one combine-only fix, `159e4eb`, in `test/web/lib/timing-read.ts` with `nativeKeyframes`
 exported from `test/browser/render-motion.ts`). While it ran, local `main` moved to
-`1aef12fae0c3b5b1f63bbcc842c85c99ebcba14e` ("Build 2026-10-31.2: landing-page six", released). Your job: move the
+`1a6437862fb207bfd78310e6bc75d2024c9f4367` (2026-11-02: landing-page six, then DJ Trees builds up to 2026-11-02.1 and later; first rebase was onto 1aef12f as `7a0ac6a`). Your job: move the
 combined line onto that main, prove the combined tree passes, and stop.
 
 **Skills:** load `git-commit-rules` and `engineering-best-practices` with the Skill tool; read the project skill with
@@ -17,13 +17,13 @@ Read: `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md` ("Merging
 ## Steps (in your agent worktree)
 
 1. `git checkout --detach 89022abbef4e3584a93a68cd7118dea69aa93f2b`, `git switch -c wave1-final`, then
-   `git rebase 1aef12fae0c3b5b1f63bbcc842c85c99ebcba14e`.
+   `git rebase 1a6437862fb207bfd78310e6bc75d2024c9f4367`.
 2. **Conflicts:** keep both sides' meaning. HANDOFF: the compare section first, then the capture section, then main's
    blocks unchanged; prove it with the first finisher's
    `~/.hermes/plans/figma-to-bricks/evidence/website-importer-wave1/finisher/scripts/check-handoff-union.mjs` (adapt
    its paths). Main changed `test/browser/render.ts` (default `background-position`) and `test/browser/text-visibility.ts`;
    keep both sides there. After the rebase: `grep -c '"test:web"' package.json` is 1 and every other `scripts` key
-   appears once; `src/shared/build.ts` equals main's (`2026-10-31.2`); every commit that didn't conflict has the same
+   appears once; `src/shared/build.ts` equals main's; every commit that didn't conflict has the same
    patch-id as before.
 3. **Gates on the rebased head**, each compared by test name with main `1aef12f`: both typechecks, `npm run check`,
    `npm run test:web` first among the browser suites (`skipped 0` apart from AC14, which needs `F2B_WEB_CAPTURES`; main's
