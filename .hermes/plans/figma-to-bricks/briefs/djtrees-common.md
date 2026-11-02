@@ -39,6 +39,12 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   `until ! pgrep -f "node --test.*test/(browser|web)"; do sleep 5; done` and also check no other agent's Chrome is
   running (`pgrep -f 'chrome-linux64/chrome.*--headless'`, from a script file so it doesn't match your own shell;
   `pgrep -f chrome-f2b` never finds one: the launcher execs the real binary); never run two Chrome jobs yourself at once.
+  Take the slot the moment one check is clear (a "quiet for 20 s" wait never fires behind a file-by-file suite), then
+  run your WHOLE Chrome sequence (base and head, measure/snap/probes included) under one lock other agents can see:
+  `flock ~/.cache/f2b-chrome.lock bash <your-steps.sh>`, and inside it keep a lock process named like a test,
+  `exec -a 'node --test test/browser/<role>.lock' node -e 'setTimeout(()=>{},7200e3)' &` (killed at the end), so
+  waits that look only for `node --test` see you too. Back off if a foreign Chrome appears within 2 s of starting.
+  (top-align verifier, 2026-11-02: a renamed `sleep` lock let another agent's Chrome start mid-measurement.)
 - Chrome: from the start, point `CHROME_PATH` at your own wrapper script (in your scratch) containing
   `exec $HOME/.cache/chrome-for-testing/chrome-f2b --use-gl=disabled --disable-software-rasterizer "$@"`, with DISPLAY and
   WAYLAND_DISPLAY cleared. `launchChrome` passes a fixed flag list, so flags only take effect through the wrapper; the
