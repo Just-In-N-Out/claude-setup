@@ -8,14 +8,16 @@ each reviewed job is rebased onto the newest local `main`. You are that rebaser 
 
 1. You start in your own worktree (`isolation: worktree`, made from `origin/main`). Record `pwd` and the branch, then
    `git reset --hard <job head>` (your job brief; the job's branch is in the same repository).
-2. `git log --oneline -1 main` (local main; read it, don't assume) and `git rebase main`.
+2. Rebase onto the **target** your job brief names (`git rebase <target>`): the merge train's last car (the previous
+   job's rebased head) or, when the brief says so, local `main` (`git log --oneline -1 main`; read it, don't assume).
+   Gates compare with the target, not with main.
 3. **Conflicts:** keep both sides' meaning. Typical ones: `docs/HANDOFF.md` (both sections stay, newest on top; the
    End-of-run check list keeps every entry), `src/core/adapt/rules/index.ts` (the `RULES` array is one line: keep every
    rule from both sides in the order each side had them relative to its neighbours; a rule that overrides another
    stays after it), shared rule files (merge by meaning, reading both commits' intent; if two rules now write the same
    node/tier/property, say so). Never drop the other side's change. Record every conflict and how you resolved it in
    `E/rebase/conflicts.md`.
-4. Gates on the rebased head: `npm run check` (compare by name with `main`'s own `npm run check`: no new failures),
+4. Gates on the rebased head: `npm run check` (compare by name with the target's own `npm run check`: no new failures),
    the job's own AC tests by name (the plan's test lines) and, if the job touches shared rules, the job's real-file
    check scripts from `E/builder/` (run only, write logs to `E/rebase/`).
 5. Don't push, don't merge, don't bump BUILD, don't edit CLAUDE.md.

@@ -28,3 +28,9 @@ Justin (leaving): "Going forward whatever the planner agent recommends go with i
 2026-11-02 ~14:00: Claude Code session restarted; 12 agents stopped. Worktrees intact (commits kept); all 12 resumed by SendMessage with their context (builders 1,4,7,9,13; fixers 5,6,8; reviewers 3,11,12; Nav researcher).
 
 Merge order rule now: main moved, so every remaining job rebases onto newest main BEFORE its verification (pure rebase keeps review coverage; conflict resolution gets a fresh review of the conflict). Jobs verified on old heads (5, 6, 8) need verifier+auditor again on their rebased head.
+
+MERGE TRAIN (2026-11-02, to avoid re-verifying after every merge): each ready job is rebased onto the previous car's
+rebased head (not main) and verified with --base = that car; merges go in train order, ff-only. If a car fails, the
+cars behind it re-rebase.
+  car 1: cta-center 1a64378 (on main 1424081) — verifying
+  car 2: storm-photo → rebase onto 1a64378 (rebaser running), then verifier+auditor with base 1a64378
