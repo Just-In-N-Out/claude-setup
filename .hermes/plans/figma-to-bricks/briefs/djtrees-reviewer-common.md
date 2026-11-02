@@ -53,8 +53,8 @@ concrete real-use scenario (5+ words), or it counts as P3.
 - **Self-checks before you hand back** (you never act on their verdict, only fix your files):
   `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.sh --repo <builder worktree> --base <base> E`
   (exit 2 = your file is wrong) and, from a scratch copy of your `verifier/` folder,
-  `ac-check.sh --repo <builder worktree> --base <base> --plan E/plan-approved.md <scratch>/ac.json <scratch>/ac.json`
-  (format check only; delete the copy after).
+  `ac-check.sh --repo <builder worktree> --base <base> --plan E/plan-approved.md E/verifier/ac.json <scratch>/ac.json`
+  (your report against a `cp` of your folder; the same file twice exits 2; delete the copy after).
 
 ## Return
 

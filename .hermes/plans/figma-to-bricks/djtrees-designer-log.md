@@ -15,7 +15,7 @@ Live: https://djtreeservice.staging.growithgro.com/home/?bricks_preview=17936357
 | 5 | djtrees-top-align | phones | 3cn | a13d146673301e221 | plan 7df98bc frozen (not the divided-row code: shares.ts button()); builder a955a6278526de73d done → head c2a3d2c (wt agent-a955a6278526de73d); reviewer aa2ba7a90aabecd55 running |
 | 6 | djtrees-stack-lines | phones | 3co | a8436899053f7eaec | plan 10e316e frozen; builder a605ace0a8e3f3af3 done → head 8464f71 (wt agent-a605ace0a8e3f3af3); reviewer a6c9a02d9ef1f4861 running; changes 30.16 "loses the lines" rule |
 | 7 | djtrees-step-sides | phones | 3cp | aaf95af31490f27d2 | plan 04858af frozen; builder a679766c7d46e51f2 running |
-| 8 | djtrees-storm-photo | mobile | 3cq | a357a3a9bf3370792 | plan 0e1a79d frozen; builder a15a7d44ced8063a2 done → head a10aed1 (wt agent-a15a7d44ced8063a2); reviewer aa6159915b8f05e49 running |
+| 8 | djtrees-storm-photo | mobile | 3cq | a357a3a9bf3370792 | plan 0e1a79d frozen; builder a15a7d44ced8063a2 done → head a10aed1 (wt agent-a15a7d44ced8063a2); review-1: REVIEW AGAIN (R1-1 P2 placed layers; P3s → follow-ups.md); fixer running |
 | 9 | djtrees-stack-gaps | mobile | 3cr | a896112426e93f3be | plan b1dbc71 frozen; builder af85fd290cf656db8 running |
 | 10 | djtrees-faq-art | mobile | 3cs | a65220e19f422f1a2 | plan f112f67 frozen; WAIT: builder starts from main after 4 merges (its Q5) ; laptop 992–1150 overlap = follow-up job (Q4 B) |
 | 13 | djtrees-faint-picture | all | 3cv | adb3a0238cfd712cd | plan d0a9447 frozen; builder afabbdb7c4e4f34fc running (only the FAQ tree was black; 3cs needs this merged) |
