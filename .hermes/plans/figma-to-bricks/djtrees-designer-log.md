@@ -40,3 +40,5 @@ cars behind it re-rebase.
 
 2026-11-02 15:16: Windows unexpected restart (Kernel-Power 41 + 6008) with 11 agents running. Resumed in waves to limit load: wave A (6) = cta-center verifier+auditor, storm-photo rebaser, top-align verifier, step-sides + stack-gaps reviewers; wave B later = fixers 1, 4, 6, 13 + phone-menu part 2 (16 uncommitted files).
 NOTE: ticks are a JSON STRING (snapshot.site = JSON.stringify({...})); object form silently untick'd — checks done that way (stack-gaps reviewer's tick probe, maybe others) tested nothing.
+
+Wave 2 started (user: 'in 5 minutes run wave 2'): side-art fixer-1, panel-edge fixer (no rebase now), stack-lines fixer-2 (no rebase now), faint-picture fixer, phone-menu part 2. Running now: those 5 + cta-center verifier+auditor, top-align verifier, step-sides reviewer = 9. Hold storm-photo verification until the cta-center pair finishes.
