@@ -36,8 +36,9 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   or the node binary by absolute path, and write scripts with the Write tool.
 - **One Chrome-driven run on the whole PC at a time** (it froze and was forced off three times on 2026-11-02 under
   overlapping Chrome suites): before every browser test, snap or Chrome probe, wait with
-  `until ! pgrep -f "node --test.*test/(browser|web)"; do sleep 5; done` and also check no other agent's Chrome probe is
-  running (`pgrep -f chrome-f2b`); never run two Chrome jobs yourself at once.
+  `until ! pgrep -f "node --test.*test/(browser|web)"; do sleep 5; done` and also check no other agent's Chrome is
+  running (`pgrep -f 'chrome-linux64/chrome.*--headless'`, from a script file so it doesn't match your own shell;
+  `pgrep -f chrome-f2b` never finds one: the launcher execs the real binary); never run two Chrome jobs yourself at once.
 - Chrome: from the start, point `CHROME_PATH` at your own wrapper script (in your scratch) containing
   `exec $HOME/.cache/chrome-for-testing/chrome-f2b --use-gl=disabled --disable-software-rasterizer "$@"`, with DISPLAY and
   WAYLAND_DISPLAY cleared. `launchChrome` passes a fixed flag list, so flags only take effect through the wrapper; the

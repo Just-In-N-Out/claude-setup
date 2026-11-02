@@ -294,3 +294,6 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - All three 41 events have PowerButtonTimestamp ≠ 0; WSL journal ends 15:31 and 16:17 with no OOM: PC freezes under overlapping Chrome suites, then forced off.
 - Justin: "just run the AGENTS". DJ Trees session (now figmatobricksv2-77) set 3/2; both sides wait for no other `node --test … test/(browser|web)` before a Chrome run.
 - Resumed wave-1 finisher (wave1-final 41330bb7 on 1a64378; finish gates, don't chase main b0d8f65) and web-panel builder (2e786ac + WIP).
+
+## 2026-11-02 17:12 — 4th stop: Start-menu restart 16:54 after WSL memory pressure at 16:52 (~5 agents); resumed both
+- web-panel's gates had waited for a free browser slot (16:35→16:49), then test:web reached 16 results (R8-1 entrances test not ok, maybe memory). wave1-final 41330bb7 gates unfinished. .wslconfig now memory=20GB.

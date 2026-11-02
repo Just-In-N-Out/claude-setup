@@ -7,8 +7,13 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-02)
 
-- **Current build `2026-11-02.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-02.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-02.2 djtrees-cta-center:** on phones a stretched call-to-action pill centres its words and icon together;
+    a pill's own hover layer never wraps it. Paste check **3cl**.
+  - **2026-11-02.2 djtrees-storm-photo:** a section whose photo fill sits on one side fading into its colour stacks
+    from 991 down: photo on top fading into the section colour, words below; a section holding a placed layer keeps its
+    old look. Paste check **3cq**.
   - **2026-11-02.1 djtrees-phone-headline:** big headings of two or more words are at most 72px upright and 93px
     sideways on phones; a tight one opens to line height 1 where its words wrap into more lines than drawn. Paste
     check **3ct**.
@@ -588,6 +593,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     it covers the whole width, growing with the screen, so a little more of its top and bottom is cut off. This
     replaces the 2026-10-19 rule (drawn size in the middle, fading into the section's colour). A Crop photo drawn against
     one side reaches that side of the screen, its inner edge where drawn (30.11).
+  - **A side photo goes on top on tablets and phones** (DJ Trees designer note 8, 2026-11-02; the planner's ⭐ answers
+    under Justin's "whatever the planner agent recommends", not yet confirmed): a section's own photo fill cropped
+    against one side, fading (or not) into its solid colour with the words on the other side, stacks from 991 down —
+    photo on top as tall as its drawn shape up to 480/320/360px, its lower half fading into the shade's colour, the
+    words below (rule photo.stack); heroes and sections holding a placed layer keep today's look.
   - **A menu bar drawn over the first section's top scrolls with the page** (Justin, 2026-10-30, build `2026-10-30.12`):
     above tablets its content is pinned at the window's top, solid once the page scrolls; tablets and phones keep it in
     place (its menu wraps there until the phone menu is built). A painted bar only.
@@ -646,6 +656,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **Hero without a photo** (a colour or gradient behind its words; the user left it to what looks nicer,
     2026-10-07): its buttons stay where they are, right under its words, full width. No buttons band.
   - **Every call-to-action button is full width** on phones, cards included (not tags, floating layers, icon buttons).
+  - **Stretched buttons centre their content** (DJ Trees designer note 3, 2026-11-02; the planner's ⭐ answers under
+    Justin's "whatever the planner agent recommends", not yet confirmed): from 767 down a call-to-action pill Figma
+    draws with its content in the middle centres its words and icon together (rule cta.center), long words wrapping
+    onto centred lines; buttons drawn off-centre keep their drawing; tablets and desktops unchanged.
   - **One photo per slide.** A photo group without text splits into slides; a card with text keeps its largest photo.
   - **Footer** last on the page and centred; text and spacing: whole-pixel type, balanced headings, capped gaps.
   - **Big multi-word headings on phones** (DJ Trees designer note 11, 2026-11-02; the planner's ⭐ answers under
