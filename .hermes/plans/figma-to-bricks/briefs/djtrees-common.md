@@ -50,6 +50,9 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   `/home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-designer/figma-to-bricks-debug-djtrees-home.json`
   (SHA256 `1a6a2751…557d`, read-only, 16 MB: replay is slow, snap slower; run long gates writing a log ending
   `EXIT=<code>`).
+- Ticks: every real-file and fixture check also converts with the panel's ticks on (`snapshot.site = {header: true,
+  footer: true}`): the header tick adds a src-less spacer section first, and code calling `heroOf`/`topBars` at adapt
+  time throws there while untick'd gates stay green (side-art review, P1).
 - Fonts: the DJ Trees display fonts aren't installed here, so the renderer wraps headings far more: inject `@font-face`
   rules for the local copies in `/home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-side-art/builder/fonts/`
   (Google's files) into the rendered page only; never write `~/.local/share/fonts`.
