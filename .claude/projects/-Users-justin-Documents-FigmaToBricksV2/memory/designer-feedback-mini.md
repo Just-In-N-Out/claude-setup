@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: feedback
   originSessionId: 8e80bfe0-369d-4e32-84a6-8d63e5215658
-  modified: 2026-11-02T16:51:36.699Z
+  modified: 2026-11-02T16:54:39.463Z
 ---
 
 Justin, 2026-11-02, on his UI designer's Figma feedback for the DJ Trees page (a few desktop items, many phone items):
@@ -17,6 +17,11 @@ mobile or desktop, you'll run a planner agent, a builder, and all that."
 one fresh reviewer → one verification (blind AC check) → merge into local `main` (BUILD bump, build, push), the Mini
 pipeline with no second review round. Every fix changes the plugin's logic for the whole class of designs, never the
 DJ Trees file alone ([[plugin-first]]).
+
+**His answers the same day:** if the one reviewer finds a real bug, a fixer just fixes it and the verification checks
+it (no re-review; `ac-check.sh --reviews` will refuse the fix commit, so run it without `--reviews` and say so). Jobs
+are never combined: each branches off `main`, runs in parallel, and rebases onto the newest `main` before its merge.
+Live page: djtreeservice.staging.growithgro.com/home/.
 
 **Why:** small fixes; he wants speed without dropping the plan/review/verify roles. **How to apply:** standing
 auto-go still applies; ACs are still proven before merge. Related: [[review-round-cap]], [[run-without-stopping]].
