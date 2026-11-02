@@ -9,7 +9,7 @@ Live: https://djtreeservice.staging.growithgro.com/home/?bricks_preview=17936357
 | # | job | tier | paste check | planner agent | state |
 |---|-----|------|-------------|---------------|-------|
 | 1 | djtrees-panel-edge | desktop | 3cj | a077b19fead3fb115 | plan 14cfa28 frozen; builder a270eaf5b45b4d563 running |
-| 2 | djtrees-phone-menu | mobile | 3ck | afb31f02cc4ac7b7c | plan c5a9481 frozen (planner: Full, ~7 files); part-1 builder afb732edbd2ac1c70 (Tasks 0–3) running; Tasks 4–6 wait for Nav (Nestable) sample + a draft staging page's preview link |
+| 2 | djtrees-phone-menu | mobile | 3ck | afb31f02cc4ac7b7c | plan c5a9481 frozen (planner: Full, ~7 files); part-1 builder afb732edbd2ac1c70 STOPPED at 8388ad6 (wt agent-afb732edbd2ac1c70; Tasks 1–3 behind an off switch, byte-identical); Tasks 4–6 wait for Nav (Nestable) sample + a draft staging page's preview link |
 | 3 | djtrees-cta-center | mobile | 3cl | a0fa5f312fbf482c6 | plan 192567f frozen; builder a7e20dbd6f83af3ab running |
 | 4 | djtrees-side-art | mobile | 3cm | a67f6eeed4f0938cc | plan 320ef82 frozen (planner: Full, one job, 3-round cap); builder a5392028d6f9d6031 running |
 | 5 | djtrees-top-align | phones | 3cn | a13d146673301e221 | plan 7df98bc frozen (not the divided-row code: shares.ts button()); builder a955a6278526de73d done → head c2a3d2c (wt agent-a955a6278526de73d); reviewer aa2ba7a90aabecd55 running |
