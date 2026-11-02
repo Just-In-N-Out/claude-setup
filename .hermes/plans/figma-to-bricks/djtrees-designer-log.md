@@ -56,3 +56,5 @@ LESSON: a post-merge BUILD commit on main breaks the merge train (cars sit on th
 2026-11-02 16:22: THIRD crash (Kernel-Power 41) with ~8 agents across sessions + Codex browser suites. DJ Trees now ≤3 at once (importer asked to keep ≤2). Resumed: combined build finisher (main has its uncommitted .2 work), side-art review-2, step-sides fixer. Queue: stack-lines fixer-2 (1 dirty), phone-menu part 2 (16 dirty), train re-rebase onto build .2, car 3–6 verifications, stack-gaps/stack-lines/step-sides train, faq-art builder.
 
 Justin (16:3x): 'how many slots or agents or issues do we have, run them' → all startable work started: 5 DJ agents (combined build finisher, side-art review-2, step-sides fixer, stack-lines fixer-2, phone-menu part 2). Importer found the crash cause (PC freezes under overlapping Chrome suites, then forced off): rule now = ONE Chrome-driven run on the whole PC at a time (pgrep wait), agent count can stay at 5.
+
+2026-11-02 16:54: PC restarted from the Start menu (Event 1074, not a crash). All 5 DJ agents resumed (finisher still uncommitted on b0d8f65; phone-menu 4e55d6e+5 dirty; stack-lines 53c1707+1; step-sides c575e3b+1; side-art review-2).
