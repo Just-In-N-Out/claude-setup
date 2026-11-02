@@ -165,7 +165,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..cc16c55 100644
+index f2d882d..de157c8 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,43 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -223,7 +223,7 @@ index f2d882d..cc16c55 100644
 +`except` (rewrite it to run to completion), or a mutant that is the better code: run
 +both behaviours through the real tool before adding a killing test (dash's `sh -sc`
 +runs stdin after `-c`, harness-guards fix 2). It is not a pass and does not by
-+itself prove that the entire test is worthless. Likewise not every kill is behavioural: a mutant that drops a null guard and dies on a TypeError ("Cannot read properties of undefined") is a crash kill; name it so in the receipt and give the runner's broken-mutant pattern such errors (header-bar fixer 7, F7M16/F7M25). Read the failing frame first: a TypeError from the test's own cast (`(x as {color}).color` on a missing value) is a weak assertion, not a production crash; write such reads with `?.` so absence fails as an assertion (djtrees-stack-lines M4/M22/M23). A mutant of a tie-break both sides resolve alike changes only a finding's wording, never whether it exists: kill it by pinning the text of a finding another difference triggers where the tie occurs (web-compare fixer 5, A5).
++itself prove that the entire test is worthless. Likewise not every kill is behavioural: a mutant that drops a null guard and dies on a TypeError ("Cannot read properties of undefined") is a crash kill; name it so in the receipt and give the runner's broken-mutant pattern such errors (header-bar fixer 7, F7M16/F7M25). Read the failing frame first: a TypeError from the test's own cast (`(x as {color}).color` on a missing value) is a weak assertion, not a production crash; write such reads with `?.` so absence fails as an assertion (djtrees-stack-lines M4/M22/M23). In a test looping over positive and negative cases, collect every mismatch and assert the list once: asserting per case lets a mutant that breaks a positive first hide which negative it broke (djtrees-panel-edge M17/M19). A mutant of a tie-break both sides resolve alike changes only a finding's wording, never whether it exists: kill it by pinning the text of a finding another difference triggers where the tie occurs (web-compare fixer 5, A5).
  
  ## Procedure
  

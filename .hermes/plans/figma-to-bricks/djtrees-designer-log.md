@@ -8,7 +8,7 @@ Live: https://djtreeservice.staging.growithgro.com/home/?bricks_preview=17936357
 
 | # | job | tier | paste check | planner agent | state |
 |---|-----|------|-------------|---------------|-------|
-| 1 | djtrees-panel-edge | desktop | 3cj | a077b19fead3fb115 | plan 14cfa28 frozen; builder a270eaf5b45b4d563 running |
+| 1 | djtrees-panel-edge | desktop | 3cj | a077b19fead3fb115 | plan 14cfa28 frozen; builder a270eaf5b45b4d563 done → head 4ec8614 (wt agent-a270eaf5b45b4d563); reviewer running |
 | 2 | djtrees-phone-menu | mobile | 3ck | afb31f02cc4ac7b7c | plan c5a9481 frozen (planner: Full, ~7 files); part-1 builder afb732edbd2ac1c70 STOPPED at 8388ad6 (wt agent-afb732edbd2ac1c70; Tasks 1–3 behind an off switch, byte-identical); Justin: research the sample → researcher ac24820d90b471bdc running (E/research/); Tasks 4–6 wait for Nav (Nestable) sample + a draft staging page's preview link |
 | 3 | djtrees-cta-center | mobile | 3cl | a0fa5f312fbf482c6 | plan 192567f frozen; builder a7e20dbd6f83af3ab done → head af33737 (wt agent-a7e20dbd6f83af3ab); reviewer a54f86617d242312d running |
 | 4 | djtrees-side-art | mobile | 3cm | a67f6eeed4f0938cc | plan 320ef82 frozen (planner: Full, one job, 3-round cap); builder a5392028d6f9d6031 running |
