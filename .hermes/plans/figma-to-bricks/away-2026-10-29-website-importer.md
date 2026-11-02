@@ -279,3 +279,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - New Mini jobs (Justin's 11-02 rule: one job per problem; standing "take recommended"): web-header-spacer, web-video-autoplay, web-compare-pictures — planners dispatched on 7a0ac6a. Follow-ups (no job): svg: assets grey in replay preview; letsgro click-to-begin.
 - Told web-tiers and web-embeds builders about the demo captures as real-site probes (no scope change).
 - Lessons saved: testing-pitfalls (compare pairing can silently drop), review-loop.md (harness refuses subagent report files), demo brief "Reuse" line; 2 enforce proposals offered.
+
+## 2026-11-02 15:45 — two PC crashes (15:16, 15:34; 9–11 agents across sessions); run by waves, ≤4 agents on the PC
+- Before the crash: web-tiers 0e24722 (Task 25), web-panel 2e786ac (Task 15 docs, last task), web-embeds 4faa8d1 (20 work commits). Planners saved nothing. Main moved to 1424081 (Build 2026-11-02.1 DJ Trees headings) → wave1-final needs another rebase.
+- Justin: "ok run it in wave" and "we have worked a lot on it and like we got nowhere". Planners deferred until the 4 builders finish.
+- Slots: DJ Trees session (figmatobricksv2-56) holds 4 now; messaged it to drop to 2 and tell me. Importer wave A: wave-1 rebase/merge + web-panel. Wave B: web-tiers + web-embeds. Then the 3 bug planners.
