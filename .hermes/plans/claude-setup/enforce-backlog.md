@@ -102,3 +102,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | djtrees-storm-photo rebase | figma-to-bricks | script: a shared helper (tools/lib/site-flag.ts tickSnapshot(s)) that gate scripts call instead of assigning snapshot.site directly | offered
 - 2026-11-02 | djtrees-cta-center postmerge | figma-to-bricks | script: a machine-wide flock (~/.cache/f2b-browser.lock) taken by a test:browser wrapper every agent's brief uses, so one browser suite runs on the desktop at a time | offered
 - 2026-11-02 | djtrees-step-sides | figma-to-bricks | test: in adapt-rows.test.ts, every divided-row-kind fixture whose row breaks at tablet_portrait asserts each item's desktop _padding (the fluid clamp) equals its drawn value | offered
+- 2026-11-02 | dark-structure-recognition | figma-to-bricks | script: reject duplicate controller/worker output destinations before gate launch in the shared gate runner | offered

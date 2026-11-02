@@ -1,13 +1,13 @@
-# DRAFT — root must pin the completed builder head before dispatch
+# Review 1 of 2 — pinned clean candidate
 
 Role: fresh `pipeline_reviewer`, report only. Do not start agents or edit product source/tests/docs/refs. You are not alone; preserve others' work. Own only E/review-1/ and fresh private scratch. This is review round1 of Justin's maximum **two** review rounds. Root controls later dispatch/counting; no hidden extra review rounds or reopening unrelated old story goals.
 
 W: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
 E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
-Base: `1aef12fae0c3b5b1f63bbcc842c85c99ebcba14e` (refresh/pin if main changes before dispatch).
-Review HEAD: `ROOT_MUST_PIN`.
+Base: `14240810effc26254e2fc6771fdeb6e67910c429` (current merge-base HEAD main at dispatch; original story base1aef12f is historical).
+Review HEAD: `c6405a52a5416d46a255ad82e3471adb79c6fd31`.
 Approved plan: E/plan-approved.md, SHA256 `23fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511`; approval/Q1A–Q3A/cap in E/approval.json.
-Builder report: `ROOT_MUST_PIN_REPORT`.
+Builder report: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/builder-finalize/report.md`.
 Scope: full story from base through head, source/config/tests/tools and actual conversion/panel behaviors. Current diagnosis is E/planner/plan-proposed.md. Inputs are E/inputs/figma-debug.json and the two earlier sources named in approval/build brief; these are three actual source structures, not interchangeable screenshots.
 
 Load engineering-best-practices, requesting-code-review, code-review-practice and project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` including pertinent testing-pitfalls. Follow reviewer report/security/quality requirements; user/global/project rules win over generic skill ceremony.
@@ -27,3 +27,5 @@ Return verdict, exact base/head, finding count/severity, review.json/report path
 Additional validation-tool scope to inspect independently: on 2026-11-02 the builder reported a screenshot capture stall caused by attempting to freeze a ScrollTimeline animation as a document-timed animation (`settleCapture`). It is adding a tool-only regression repair to finish the required corpus. Review any resulting source/tests and measurement implications, prove the repair does not manufacture green by skipping material behavior, and require identical capture policy for paired old/new comparisons. Original interrupted receipts and changed-policy recaptures must stay distinctly labeled. This is a reported cause, not independent review proof. Final builder report must name actual final commits and runs.
 
 Integration scope note: a later local-main phone-heading release (`1424081`) was brought into this story before review. Root will pin the actual integration base/head below; do not review the unrelated phone-heading feature as this story's change, but assess its combined behavior and any conflict resolutions. Builder-finalize additionally reported the newly reached pinned-header keyframe path embedding plain palette colour; require its causal regression proof and assess final typed colour/animation-name behavior. Final report and Git diff, not these progress notes, establish the exact change and validation scope.
+
+Pinned handoff qualifications: clean final candidate c6405a5 has the identical src/test/tools/config/build bytes of tested source4ddcbed; final commit moves ledger and records evidence. Current-base1424081 was included by early rebase with HANDOFF-only conflict; reviewer covers that resolution and all story changes. Later independent CTA-centering/storm-photo main commits are not in this candidate and must not be confused with its review base. Full browser retained base10 failures versus candidate11, same platform skip; the extra unchanged-marquee timing result has byte-identical executable inputs and whole-file sequential controls10/10 on each side. Independently assess that qualification, not a claim the full browser run passed. Qualified units retain three inherited failures and a separately corrected private input-count metadata fault; corpus43 matching input-width IDs has Aswatama non-comparability. See final report for exact receipts and populations. Final ledger is already moved; no routine post-review ledger commit should be needed.
