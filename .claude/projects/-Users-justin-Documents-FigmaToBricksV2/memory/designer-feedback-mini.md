@@ -26,5 +26,8 @@ Evansville Final Content", 1440 wide), read-only copy for every planner:
 `~/.hermes/plans/figma-to-bricks/evidence/djtrees-designer/figma-to-bricks-debug-djtrees-home.json` (this machine
 only; evidence folders don't sync).
 
+**Planner's call stands (Justin, 2026-11-02, leaving):** "Going forward whatever the planner agent recommends go
+with it": take every ⭐ answer and run each job to merge without asking; report rulings at the end.
+
 **Why:** small fixes; he wants speed without dropping the plan/review/verify roles. **How to apply:** standing
 auto-go still applies; ACs are still proven before merge. Related: [[review-round-cap]], [[run-without-stopping]].
