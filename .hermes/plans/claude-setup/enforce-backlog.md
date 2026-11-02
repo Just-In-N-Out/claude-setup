@@ -89,3 +89,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | djtrees-phone-menu | figma-to-bricks | test: a test/browser case runs settleCapture on a pinned-embedded-header fixture at 1024 under a 30s timeout | offered
 - 2026-11-02 | djtrees-phone-menu | figma-to-bricks | script: test/browser/chrome.ts fails fast with a clear message when TMPDIR is longer than ~50 characters | offered
 - 2026-11-02 | djtrees-phone-menu | feature-dispatch | Claude Code hook: PreToolUse on Write/Bash for subagents refuses new files directly in the session scratchpad root (a <job>-<role>/ subfolder required) | offered
+- 2026-11-02 | djtrees-faq-art | figma-to-bricks | lint: an art-over-text rule in test/browser/lint.ts flagging a positioned wordless picture/drawing that paints above and covers ≥1/3 of a visible text box (re-record corpus baseline) | offered
