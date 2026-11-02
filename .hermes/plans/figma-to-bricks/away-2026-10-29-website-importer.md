@@ -268,3 +268,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Nothing moved 10-31 21:10 → 11-02 13:37. Main still 1aef12f. web-panel reached 6ac79c4 (Tasks 9-13) before the stop; tiers 9a3e7f7, embeds d4a1a90 (+WIP), wave1-final 7a0ac6a (gates partial), demo barely started.
 - Another session (DJ Trees designer feedback, mini chain) runs ~6 browser jobs now (load ~25); told every agent: browser suites one at a time, re-run a failing timing test once alone.
 - Resumed all 5 via SendMessage. Demo is the priority (Justin: "working and can see it").
+
+## 2026-11-02 13:52 — PC restarted 13:45 (clean, no crash event); all 5 resumed again
+- Windows LastBootUpTime 13:45:38; System log 109+6006 at 13:45:22, no 41/6008/1001 (no crash), no 1074 (not the Start menu). 10-31: two Start-menu power-offs (20:00, 21:24) and a clean shutdown at 21:02. PC has 32 GB; WSL capped at 16 GB.
+- Agents had run ~6 min since 13:40. Resumed all 5 again; demo told to get one page end to end first; embeds told to commit finished pieces sooner.
