@@ -18,7 +18,7 @@ Live: https://djtreeservice.staging.growithgro.com/home/?bricks_preview=17936357
 | 8 | djtrees-storm-photo | mobile | 3cq | a357a3a9bf3370792 | plan 0e1a79d frozen; builder a15a7d44ced8063a2 running |
 | 9 | djtrees-stack-gaps | mobile | 3cr | a896112426e93f3be | plan b1dbc71 frozen; builder af85fd290cf656db8 running |
 | 10 | djtrees-faq-art | mobile | 3cs | a65220e19f422f1a2 | plan f112f67 frozen; WAIT: builder starts from main after 4 merges (its Q5) ; laptop 992–1150 overlap = follow-up job (Q4 B) |
-| 13 | djtrees-faint-picture | all | 3cv | adb3a0238cfd712cd | planning (F1 from job 10: faded image fill shows at full strength) |
+| 13 | djtrees-faint-picture | all | 3cv | adb3a0238cfd712cd | plan d0a9447 frozen; builder afabbdb7c4e4f34fc running (only the FAQ tree was black; 3cs needs this merged) |
 | 11 | djtrees-phone-headline | mobile | 3ct | a296e9ec92299c7cd | plan 8e96cbb frozen; builder a83fd9594f25d3b40 running |
 | 12 | djtrees-strip-edge | desktop | 3cu | ab5230f33934f89c0 | plan 1d2645b frozen; builder a6c9fc7c6ea4e0695 running; replaces 30.7 "track stays clipped" ruling |
 
