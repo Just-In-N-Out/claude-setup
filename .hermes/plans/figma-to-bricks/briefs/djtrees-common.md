@@ -34,6 +34,10 @@ newest `main` just before its merge. Several touch the same files (divided rows:
 - Node `/home/justin/.local/node-v22.23.3/bin/node` (its folder first in PATH for child processes). The worktree guard
   refuses `PATH=/x:$PATH npm run …` and a heredoc followed by node in one command: use `env PATH=<literal dirs> npm run …`
   or the node binary by absolute path, and write scripts with the Write tool.
+- **One Chrome-driven run on the whole PC at a time** (it froze and was forced off three times on 2026-11-02 under
+  overlapping Chrome suites): before every browser test, snap or Chrome probe, wait with
+  `until ! pgrep -f "node --test.*test/(browser|web)"; do sleep 5; done` and also check no other agent's Chrome probe is
+  running (`pgrep -f chrome-f2b`); never run two Chrome jobs yourself at once.
 - Chrome: from the start, point `CHROME_PATH` at your own wrapper script (in your scratch) containing
   `exec $HOME/.cache/chrome-for-testing/chrome-f2b --use-gl=disabled --disable-software-rasterizer "$@"`, with DISPLAY and
   WAYLAND_DISPLAY cleared. `launchChrome` passes a fixed flag list, so flags only take effect through the wrapper; the
