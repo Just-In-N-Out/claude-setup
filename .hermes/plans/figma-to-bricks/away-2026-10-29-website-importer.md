@@ -263,3 +263,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Dispatched demo runner (brief website-importer-demo-1.md) on wave1-final 7a0ac6a: capture his Hostinger site + letsgro.ai (home + ≤2 pages), replay to Bricks paste, side-by-side shots at 390/768/1024/1440/design, verdict per page, paste file + steps. Evidence: evidence/website-importer-demo-1/.
 - Plan for the night: wave-1 gates → verifier+auditor ×2 → ac-check → merge/push; wave-2 builders → ≤3 review rounds → checks → merge; demo again after each merge; publish shots as a page for the morning.
 - Memory: deliverable-first.md now holds "working and visible, not continuous building".
+
+## 2026-11-02 13:40 — third stop (session closed 10-31 ~21:10); all 5 resumed
+- Nothing moved 10-31 21:10 → 11-02 13:37. Main still 1aef12f. web-panel reached 6ac79c4 (Tasks 9-13) before the stop; tiers 9a3e7f7, embeds d4a1a90 (+WIP), wave1-final 7a0ac6a (gates partial), demo barely started.
+- Another session (DJ Trees designer feedback, mini chain) runs ~6 browser jobs now (load ~25); told every agent: browser suites one at a time, re-run a failing timing test once alone.
+- Resumed all 5 via SendMessage. Demo is the priority (Justin: "working and can see it").
