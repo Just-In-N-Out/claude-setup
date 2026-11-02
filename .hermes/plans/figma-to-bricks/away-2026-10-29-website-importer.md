@@ -289,3 +289,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - DJ Trees session relayed Justin: "raise the limit to 8" across the PC; split DJ Trees 5 / importer 3 (its memory edit records it).
 - Main now 1a64378 (17 DJ Trees commits, none in importer files). Rebase brief re-pinned to 1a64378. Resumed: wave-1 rebase finisher (rebase 7a0ac6a → 1a64378, gates, no further chase) and web-panel builder (last task). Third slot reserved for wave-1 checkers. Asked DJ Trees to hold merges briefly when wave 1 is ready.
 - Tiers, embeds and the 3 bug planners wait (wave B after Justin tries wave A).
+
+## 2026-11-02 16:40 — third freeze (16:17 freeze, 16:22 power button); agents resumed, 2 importer / 3 DJ Trees
+- All three 41 events have PowerButtonTimestamp ≠ 0; WSL journal ends 15:31 and 16:17 with no OOM: PC freezes under overlapping Chrome suites, then forced off.
+- Justin: "just run the AGENTS". DJ Trees session (now figmatobricksv2-77) set 3/2; both sides wait for no other `node --test … test/(browser|web)` before a Chrome run.
+- Resumed wave-1 finisher (wave1-final 41330bb7 on 1a64378; finish gates, don't chase main b0d8f65) and web-panel builder (2e786ac + WIP).
