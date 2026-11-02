@@ -9,8 +9,8 @@ Live: https://djtreeservice.staging.growithgro.com/home/?bricks_preview=17936357
 | # | job | tier | paste check | planner agent | state |
 |---|-----|------|-------------|---------------|-------|
 | 1 | djtrees-panel-edge | desktop | 3cj | a077b19fead3fb115 | plan 14cfa28 frozen; builder a270eaf5b45b4d563 running |
-| 2 | djtrees-phone-menu | mobile | 3ck | afb31f02cc4ac7b7c | planning; needs Nav (Nestable) sample from Justin |
-| 3 | djtrees-cta-center | mobile | 3cl | a0fa5f312fbf482c6 | planning |
+| 2 | djtrees-phone-menu | mobile | 3ck | afb31f02cc4ac7b7c | plan c5a9481 frozen (planner: Full, ~7 files); part-1 builder afb732edbd2ac1c70 (Tasks 0–3) running; Tasks 4–6 wait for Nav (Nestable) sample + a draft staging page's preview link |
+| 3 | djtrees-cta-center | mobile | 3cl | a0fa5f312fbf482c6 | plan 192567f frozen; builder a7e20dbd6f83af3ab running |
 | 4 | djtrees-side-art | mobile | 3cm | a67f6eeed4f0938cc | planning |
 | 5 | djtrees-top-align | phones | 3cn | a13d146673301e221 | planning (may share divided-row code with 6/7) |
 | 6 | djtrees-stack-lines | phones | 3co | a8436899053f7eaec | planning; changes 30.16 "loses the lines" rule |

@@ -31,7 +31,9 @@ newest `main` just before its merge. Several touch the same files (divided rows:
 
 ## This machine (Linux/WSL desktop): checks
 
-- Node `/home/justin/.local/node-v22.23.3/bin/node` (its folder first in PATH for child processes).
+- Node `/home/justin/.local/node-v22.23.3/bin/node` (its folder first in PATH for child processes). The worktree guard
+  refuses `PATH=/x:$PATH npm run …` and a heredoc followed by node in one command: use `env PATH=<literal dirs> npm run …`
+  or the node binary by absolute path, and write scripts with the Write tool.
 - Chrome: `export CHROME_PATH=$HOME/.cache/chrome-for-testing/chrome-f2b`, headless, `--use-gl=disabled`, DISPLAY and
   WAYLAND_DISPLAY cleared. If Chrome stalls (no animation frames, screenshot timeouts), use the CPU/CSS profile in
   `~/.claude/projects/-home-justin-Documents-FigmaToBricksV2/memory/corpus-paths-on-desktop.md` and record executable
