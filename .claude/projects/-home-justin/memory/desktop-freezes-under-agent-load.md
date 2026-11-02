@@ -12,7 +12,7 @@ On 2026-11-02 the Windows desktop (32 GB RAM, `.wslconfig` memory=26GB swap=8GB)
 
 **Why:** the user reports these as "Claude keeps crashing when running agents"; it is the whole PC freezing, not Claude Code.
 
-**Cause found 16:53 (crashlogs):** one `node` process went 0→17 GB in 12 s, 3 s after a builder ran `mutate.ts` (mutation testing, no memory cap); Linux used all of its 20 GB plus 7.7 of 8 GB swap and locked up, while Windows kept 5 GB free and stayed up. Mutation runs also preceded the 15:31 and 16:17 freezes. More RAM won't fix a runaway like this; the fix is a killer for runaway memory (earlyoom, offered) plus per-mutant `systemd-run` caps (skill lesson saved).
+**Cause found 16:53 (crashlogs):** one `node` process went 0→17 GB in 12 s, 3 s after a builder ran `mutate.ts` (mutation testing, no memory cap); Linux used all of its 20 GB plus 7.7 of 8 GB swap and locked up, while Windows kept 5 GB free and stayed up. Mutation runs also preceded the 15:31 and 16:17 freezes. More RAM won't fix a runaway like this; the fix is earlyoom (installed 17:06, `-m 5 -s 100 --prefer node|chrome --avoid claude`; a test runaway was killed at 17.4 GB, 10% free) plus per-mutant `systemd-run` caps (skill lesson saved).
 
 2026-11-02 changes: `.wslconfig` memory 26GB→20GB (backup `.wslconfig.bak-2026-11-02`); 5-second memory loggers write `~/crashlog/linux-<date>.log` (`~/.local/bin/crash-logger.sh`, user service `crash-logger`) and `C:\Users\Admin\crashlog\windows-<date>.log` (`log-memory.ps1`, scheduled task `CrashMemoryLogger`). Auto-start was left for Justin to switch on (the auto-mode classifier blocks Claude from adding persistence).
 
