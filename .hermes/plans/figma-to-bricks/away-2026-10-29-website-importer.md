@@ -347,3 +347,10 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Panel rebase: 19 commits, no conflicts, patch-ids 19/19 identical, 38/38 file diffs identical, tree composition clean; unit by name 0 changed (+22 panel tests), panel-capture 9/9, AC5 receipt 0 diff. Re-verify on c2f6a16 (verifier + auditor, quick) deferred until wave 1's checkers finish, so the CPU isn't overloaded (load 54).
 - Justin: "I want to be able to import a live website, not related to Figma, using my plugin" → "Address in the panel" (helper on the PC reads the site; panel gets the result; no file step). New job web-address: planner (web-address-planner.md) on c2f6a16. Memory website-importer-paused.md updated.
 - Lesson saved: `tail --pid` wait (testing-pitfalls).
+
+## web-capture blind auditor: clean, ALL ACCEPTED 14/14 on a2ae004 (AC14 bdryswi part owed to Justin). found_else: fixed header bar inside a root (spec documents it); AC12 test leaves stop/shadow colours unchecked (probe shows match). Waiting: capture verifier-2, compare verifier + auditor.
+
+## 2026-11-02 21:20 — web-address plan done (10c7ddc on c2f6a16), auto-go → builder dispatched
+- ⭐: panel asks http://127.0.0.1:47811 with CORS * (Figma desktop disables Local Network Access checks; browser Figma can't); `npm run capture:serve` per session, pairing code typed once, Host check, http(s) only, one capture at a time; WSL→Windows localhost works with no setup; one page per address (sitemap pick = follow-up). AC1–AC12 proposed, AC13 live (Justin on the Windows desktop). Plugin code untouched (dist/code.js identical).
+- plan-approved.md installed read-only. Builder (web-address-builder.md) on web-address-build; extra preference: helper finds Chrome itself if CHROME_PATH unset.
+- Lessons saved: panel-validation.md "Panel network" (Figma desktop LNA off; 127.0.0.1 not localhost; no init requests); memory corpus-paths-on-desktop (WSL localhost forwarding).

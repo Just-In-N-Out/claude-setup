@@ -29,3 +29,7 @@ On the WSL desktop grep is ugrep: a context regex like `grep -o '.\{0,400\}X.\{0
 System.Drawing does it: a `.ps1` run with `powershell.exe -File \\wsl.localhost\Ubuntu\<path>` that resizes to 1200px
 wide and saves JPEG quality 70 (demo-1's 18 side-by-sides went from ~100 MB of PNG to 8 MB). Script:
 `/tmp/claude-1000/.../scratchpad/demo-page/convert.ps1` pattern (Image.FromFile → Bitmap → Graphics.DrawImage → Save with the JPEG encoder).
+
+**WSL → Windows localhost (2026-11-02, web-address planner):** a server in WSL bound to 127.0.0.1 or 0.0.0.0 is
+reachable from Windows at `127.0.0.1:<port>` and `localhost:<port>` (wslrelay), not at `[::1]`; the Host header arrives
+unchanged; nothing to configure. Test from WSL with Windows' own `/mnt/c/Windows/System32/curl.exe`.
