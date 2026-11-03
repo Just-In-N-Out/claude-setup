@@ -504,3 +504,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - 3cw collision: embeds-merge and worktree-dark-structure-recognition both claim it; embeds renumbers at its rebase if the other merges first.
 - Next: embeds auditor → rebase embeds-merge onto main → quick re-check → merge + build → STOP.
 - Lessons saved: SKILL.md (paste-check ids across branches; .superpowers must be empty in the build commit). Two enforce proposals offered.
+
+## 2026-11-03 (≈07:00) — DJ: phone menu rebasing onto 9212c477, merging as Build .6+; it changes test/browser/render.ts (linked Image prints <a id class=brxe-image…><img>). → When embeds rebases onto that main, run test:web (compare tool renders) and the embeds browser files, not only the quick gates.
