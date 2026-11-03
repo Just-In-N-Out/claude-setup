@@ -1,0 +1,30 @@
+# DRAFT — fourth review explicitly authorized; pin integrated head/base first
+
+Fresh pipeline_reviewer, report only, no agents. Own E/review-4 and fresh short private disk scratch only. You are not alone; preserve others' work. No code/test/docs/ref edits or commits, main edits, rebase, BUILD bump, push, live/Figma/media writes, shared config/dependency changes, skill or memory edits.
+
+Justin's latest instruction: "do the 4th review then finish idnependent verification then wait for me to tell you to merge". Review4 and subsequent independent verification/audit are authorized. MERGE/RELEASE IS HELD pending a NEW explicit user instruction. No fifth review is authorized by this sentence. Do not turn this task into a merge or acceptance waiver.
+
+W `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
+E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
+Last reviewed HEAD / delta FROM `dbbfe0c6f115db6110a27308758087628cf5485a`.
+Old integration base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`.
+New integrated HEAD ROOT_MUST_PIN_HEAD.
+New integration base ROOT_MUST_PIN_BASE.
+Approved plan E/plan-approved.md SHA25623fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511, unchanged.
+Prior reviews E/review-1/review.json, E/review-2/review.json, E/review-3/review.json; latest report E/review-3/report.md. Final rating repair E/fixer-3/report.md/summary.json/ac-status.json, original fixed commit72dd5d549ffc89e36e6dd3f5e1207a97a76524cb. Current integration report ROOT_MUST_PIN_INTEGRATION_REPORT.
+
+Load engineering-best-practices, requesting-code-review, code-review-practice, review-fix-cadence and project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` with applicable testing pitfalls. Follow feature-dispatch/references/review-loop.md and actual referee schema.
+
+Normal round4 scope is DELTA: rating/attribution repair and what it touches, plus this rebase's actual conflict resolutions and necessary integration records. Because local main advanced, inspect the integration range-diff comparing old-base..last-reviewed-head with new-base..current-head instead of naively treating unrelated main additions as this story's changes. Set from to the actual prior reviewed HEAD dbbfe0c, as review-loop requires for rebases. Independently assess union/conflict evidence and any relevant new main interaction. Do not rewrite review1–3 records. If actual review-check explicitly demands a full review from the new base, complete that required full scope within this authorized fourth round and accurately record scope/from; never label an unperformed review full or skip the coverage rule.
+
+R3-1: a short numeric rating either replaced a missing author or suppressed a real author under the prior exactly-two-text predicate. Fixer reports unchanged reviewer assertion and a new96-case metadata test RED/GREEN,12 principal methods,9 earlier witnesses,8 panel/tick/mode paths,328 browser matrix and104 targeted metadata comparisons. Independently validate closure with original witness and meaningful normal-use positive/negative variants, retaining short Latin/non-Latin authors, explicit actions and ambiguity safety. General conditions only; no literal fixture rating/name/ID/font/colour exceptions. Concrete real-use scenarios for P0–P2; repeats/new_fact accurately. Unrelated observations outside this delta go to P3.
+
+All approved criteria remain: recognition-header-ownership; recognition-header-actions; recognition-footer-navigation; recognition-review-candidate; recognition-preservation-matrix; recognition-panel-contract; recognition-browser-matrix; recognition-installed-round-trip (live). Q1A truthful static review content/counts, no fabricated testimonials/timings/runtime; Q2A uniquely owned navigation omission; Q3A existing page-link policy. AC8 native Figma/Bricks2.3.9/Safari/iPhone still owed; staging2.4.4 is not substitute proof. Report every unmet criterion honestly; do not manufacture acceptance or consent.
+
+Run required in-copy npm run check and npm run corpus plus meaningful affected browser/probe checks. Preserve configured vs qualified outcomes, exact inherited failure/skipped/unavailable-input/font populations and original partial receipts. Whole corrected-head browser suite remains assigned to the subsequent verifier; do not repeat a broad paired full-browser suite merely for this review absent a new concern. No required release gate is waived. Receipt controllers and semantic outputs have distinct paths and schema validation.
+
+Runtime: pin Node `/home/justin/.local/node-v22.23.3/bin/node` and child PATH; own Chrome wrapper --use-gl=disabled, clear DISPLAY/WAYLAND; short owned DISK scratch/TMPDIR/profiles under /home/justin/.hermes, not RAM/tmp. No shared Chrome slot cap; ONE own Chrome job at a time, base/head sequential, no wait for old slots/foreign Chrome. Global agents8/root one role. Owned cleanup only; no denied env/private profiles. Root owns setup sync.
+
+All mutation-TEST runs use systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0. SIGTERM/137/143/Killed may be earlyoom; inspect journalctl -u earlyoom, identify/report runaway, rerun affected check under4GB cap, never bare. Report unavailable cap prerequisite instead of bypassing it. Root checks every report/dispatch too.
+
+Write checkpoint.json promptly with phase/forecast. Write E/review-4/review.json in actual schema, self-check its format and return verdict, exact head/base/from/scope, all finding dispositions/evidence, ac_status for AC1–AC8 and skill_lessons[{skill,lesson,evidence,enforce}] (normally empty). Never edit skills/memory. End MAIN SESSION: check and save these skill_lessons now.
