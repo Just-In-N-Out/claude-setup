@@ -7,8 +7,16 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-02)
 
-- **Current build `2026-11-02.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-02.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-02.3 djtrees-strip-edge:** a carousel strip Figma leaves unclipped runs its cards on to the window's
+    right edge from 992 up, its first card where drawn. Paste check **3cu**.
+  - **2026-11-02.3 djtrees-top-align:** label/value pairs stacked as label over value line up at the top once a value
+    wraps. Paste check **3cn**.
+  - **2026-11-02.3 djtrees-faint-picture:** a picture shown from its own file keeps its fill's opacity (the FAQ tree is
+    faint again). Paste check **3cv**.
+  - **2026-11-02.3 djtrees-panel-edge:** a panel drawn against a section's side reaches the window's side on screens
+    wider than 1440; its words stay in place. Paste check **3cj**.
   - **2026-11-02.2 djtrees-cta-center:** on phones a stretched call-to-action pill centres its words and icon together;
     a pill's own hover layer never wraps it. Paste check **3cl**.
   - **2026-11-02.2 djtrees-storm-photo:** a section whose photo fill sits on one side fading into its colour stacks
@@ -502,6 +510,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - Its layers keep their drawn size on every desktop and tablet width.
     - On a desktop-only design's phones it is adapted like the rest of the page.
     - It is not a pinned scroll: that moves where Figma doesn't, so ask first.
+    - **A strip Figma leaves unclipped runs on to the window's edge** (DJ Trees designer note 12, 2026-11-02; the
+      planner's ⭐ answers under Justin's "whatever the planner agent recommends", not yet confirmed): from 992 up its
+      cards run on to the window's right edge with the first card where drawn and scrolling stops at the page margin;
+      this replaces 30.7's "the track stays clipped at its own box" (HANDOFF "DJ Trees services strip").
     - **Card arrows** (user, 2026-10-08, "automatically assume if it has the arrow"; build `2026-10-08.5`):
       - **On the desktop design** (desktop and tablet), a card's arrow in a strip glides the strip to the next card.
         The last card's arrow goes back to the first, and at the strip's end an arrow goes back to the start.
@@ -588,6 +600,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - **A live map drawn across its section's whole width** (user, 2026-10-23, chose "Edge to edge" over "Inside the
       page width"; build `2026-10-23.3`) touches both sides of the window on every screen, phones included: it goes
       beside the Container (`understand/section.ts` `mapAcross`).
+    - **A panel against a section's side reaches the window's side** (DJ Trees designer note 1, 2026-11-02, ⭐ answers
+      not yet confirmed): above the Container's width its colour, drawing or grouped photo continues to the window's
+      edge; words and buttons stay in the Container.
   - **A photo behind a section fills wider screens edge to edge** (Justin, 2026-10-30, chose "Fill edge to edge" over
     "Keep 1440, blurred sides" and "Keep as it is", after the DJ Trees hero showed black sides; build `2026-10-30.12`):
     it covers the whole width, growing with the screen, so a little more of its top and bottom is cut off. This
