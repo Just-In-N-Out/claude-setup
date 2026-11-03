@@ -1,4 +1,4 @@
-USER MERGE HOLD (2026-11-03): Review4 and independent verification are authorized. Stop after accepted checks; do not merge, bump BUILD, publish/push a release or write main until Justin explicitly instructs a merge. This supersedes all standing auto-finish text below.
+CURRENT CONDITIONAL AUTHORIZATION (2026-11-03): Justin said "yes last  review then go". Root announced final fifth review, independent acceptance, then eligible merge/rebuild. The old merge hold is superseded only after current reviewed-head acceptance. Do not dispatch this draft before root has accepted receipts, acquired the release lock and completed the ff merge.
 
 # DRAFT — dispatch only after root confirms accepted ff merge and merge-lock ownership
 
@@ -7,9 +7,12 @@ Role: fresh pipeline_finisher, postmerge release only. No agents. You are not al
 M: `/home/justin/Documents/FigmaToBricksV2`, must be main.
 E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Own evidence: E/finish-postmerge/.
+Approved plan E/plan-approved.md; AC1 header ownership, AC2 header actions, AC3 footer navigation, AC4 review candidate, AC5 preservation, AC6 panel contract, AC7 browser matrix; AC8 installed round trip remains live/owed.
 Root-confirmed merged accepted head: ROOT_MUST_PIN_HEAD.
 Root-confirmed merge-lock owner: ROOT_MUST_PIN_OWNER.
 Acceptance result: ROOT_MUST_PIN_RESULT.
+
+Check main still equals the root-pinned accepted merged head and that the release lock is owned by this story before modifying anything. If another session moved main or started a release, report it without overwriting or requalifying on your own. Paste check 3cw was free on main at preparation but is also claimed by unmerged web-embeds work; inspect actual current main and allocate an unambiguous release ID under the lock, preserving other features.
 
 Perform only project after-merge steps: re-read current BUILD and choose the next date/build number; update the existing HANDOFF feature entry/ledger as necessary for actual release and live paste check; run npm run build to rebuild manifest-loaded dist; commit release metadata with a plain `git commit -m "Build <BUILD>: general structure recognition"`; push main only through this repo's authorized personal identity. Read CLAUDE.md immediately before writing its compact status build/feature line; never stage/commit it, and leave a pending exact status edit under E's parent if its write is refused. No unrelated narrative in private rules.
 
@@ -27,4 +30,4 @@ Justin's latest shared memory update (~2026-11-02 20:15, `memory/run-without-sto
 
 ## Windows Desktop: Runaway Memory (mandatory, latest AGENTS)
 
-Mutation runs always use `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`. A command ending SIGTERM, exit143/137, or Killed may be earlyoom rather than a test result. Check `journalctl -u earlyoom --since "-30 min" -o short-iso` for sending lines, identify the killed command and growth, and report it to the orchestrator. A killed check must be rerun under the same 4 GB cap, never bare. Do not weaken or bypass the cap; report a concrete unavailable cgroup/systemd prerequisite if one occurs. Preserve owned-process cleanup and the current no-slot-cap/one-own-Chrome-job rule. Include relevant kill facts in checkpoints/handback. Root checks earlyoom since its last check on every report and before dispatching the next role; it maps killed paths to owners and notifies Justin, including unowned kills.
+Mutation-TEST runs always use `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`. A command ending SIGTERM, exit143/137, or Killed may be earlyoom rather than a test result. Check `journalctl -u earlyoom --since "-30 min" -o short-iso` for sending lines, identify the killed command and growth, and report it to the orchestrator. A killed check must be rerun under the same 4 GB cap, never bare. Do not weaken or bypass the cap; report a concrete unavailable cgroup/systemd prerequisite if one occurs. Preserve owned-process cleanup and the current no-slot-cap/one-own-Chrome-job rule. Include relevant kill facts in checkpoints/handback. Root checks earlyoom since its last check on every report and before dispatching the next role; it maps killed paths to owners and notifies Justin, including unowned kills.

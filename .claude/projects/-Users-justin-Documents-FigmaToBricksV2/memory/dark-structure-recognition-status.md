@@ -1,11 +1,17 @@
 ---
 name: dark-structure-recognition-status
-description: General header/footer/review recognition branch; fourth review done, audit footer defect repaired, further coverage decision pending, merge explicitly held.
+description: General header/footer/review recognition; final fifth review running on integrated main, independent acceptance next, merge authorized only after acceptance.
 metadata:
   node_type: memory
   type: project
-  modified: 2026-11-03T16:12:00Z
+  modified: 2026-11-03T17:28:00Z
 ---
+
+## Current authorization — 2026-11-03
+
+Latest Justin instruction: **"yes last  review then go"**. Root announced it means one LAST fifth review, independent acceptance, then eligible merge/rebuild. This supersedes the prior merge hold conditionally; no sixth review, failed-AC waiver or blind publication is authorized. Integration-prep-3 completed at clean367f443 on local main9212c477. Final reviewer `/root/dark_structure_review5` is running; all five authorized rounds are now started. Read evidence/status.md and approval.json for live phase/head. Root owns ff merge only after reviewed independent acceptance; finisher owns build/release.
+
+## Previous state (history only)
 
 Authoritative live records: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/status.md` and `approval.json`. Read them before resuming; this note may become historical.
 

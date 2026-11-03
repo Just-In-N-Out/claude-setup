@@ -1,0 +1,24 @@
+# DRAFT — fresh independent verifier after final fifth review
+
+Fresh pipeline_verifier, source/read-only, no agents. Own E/acceptance-2/verifier and fresh scratch only. Load engineering-best-practices, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, pertinent testing pitfalls and feature-dispatch/references/ac-verification.md.
+
+W `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
+E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
+Approved plan E/plan-approved.md SHA25623fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511.
+HEAD ROOT_MUST_PIN_HEAD; BASE ROOT_MUST_PIN_BASE.
+Root current-head review referee ROOT_MUST_PIN_REFEREE.
+Own evidence `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/acceptance-2/verifier`.
+
+Justin: "yes last  review then go". Exactly one final fifth review was authorized, followed by independent acceptance and eligible finish. No sixth code review or silent waiver is authorized. Report any unmet criterion; root routes it. You never merge/release. Prior hold was conditionally superseded, not permission to ignore failed ACs.
+
+Independently prove all eight approved criteria. Required exact named methods are in the immutable plan. Q1A is truthful static supplied review content/counts and warning, not an invented numbered review runtime. Q2A removes only uniquely owned navigation; Q3A retains current page-link policy. AC8 alone is live; local replay cannot establish installed Figma/Bricks2.3.9/Safari/iPhone/touch proof, and staging2.4.4 does not silently amend it.
+
+Historical verifier E/verifier/ac.json accepted7ce37fe, but historical blind auditor E/auditor/ac.json rejected AC3/AC5. Required closure: unchanged standalone E/auditor/footer-counterexample-reproduce.mjs and the actual footer eligibility/preservation contract, with your own execution. E/fixer-4/report.md describes repair7a473bc; current integration report E/integration-prep-3/report.md is supporting context only. Never reuse any prior role's logs/screenshots as your proof. Check all earlier review witnesses from actual reports/log file lists, not only filenames matching probe.
+
+Run required current-project gates on this integrated head and pinned base. The complete current-head browser gate is owed here; earlier full runs belong to7ce37fe. Run base/head sequentially and compare exact common case populations and failures, with head's AC tests on base for causal checks and untouched base suites for population comparison. Do not pollute whole base suites with head-only fixtures that wildcard imports might load. Independently check source/panel preservation, cross-factor fixtures/negative twins, actual visible/hit-reachable actions and retained content across plan widths, not DOM existence/lint totals alone. All required checks must finish; no extra broad reruns after complete results absent a concrete unresolved discrepancy. Report inherited failures honestly without calling failed gates green.
+
+Runtime: pin Node `/home/justin/.local/node-v22.23.3/bin/node` and child PATH; own Chrome wrapper --use-gl=disabled, DISPLAY/WAYLAND cleared. Short owned DISK scratch/profile/TMPDIR under /home/justin/.hermes, not RAM/tmp. No shared Chrome-slot cap; ONE own Chrome job at a time, base/head sequential; do not wait for old locks or foreign Chrome. Own cleanup only. No denied env/private profiles, shared dependency/config writes, site/Figma/media writes or source/ref/skill/memory edits. You are not alone; preserve others' work. Root owns setup sync.
+
+Mutation-TEST runs and reruns after memory kills require systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0. This is mutation testing, not ordinary Git operations/checks. Scope bus failed previously even escalated; ordinary checks need no cap prerequisite, but a required capped check cannot bypass it. SIGTERM/137/143/Killed may be earlyoom: check journalctl, identify/report the killed command and growth, rerun affected check capped. Root checks every report/dispatch.
+
+Keep checkpoints and send concise phase-completion/blocker updates. Use exact named AC results, actual command/exit/head stamps, own real screenshots, and causal base controls or explicit justified preservation exemptions. Missing fixtures/setup errors are not behavioral RED. Keep configured vs qualified input populations, failures/skips and incomplete runs separate; no baseline edits, fake green or borrowed proof. Receipt controllers and semantic artifacts use distinct paths. Use complete raw input metadata. Self-check own ac.json using private copied receipts without --reviews, retaining blindness. Return verdict, complete ac_status, exact head/base, report/evidence paths, gate qualifications and skill_lessons[{skill,lesson,evidence,enforce}] (normally empty). End MAIN SESSION: check and save these skill_lessons now.

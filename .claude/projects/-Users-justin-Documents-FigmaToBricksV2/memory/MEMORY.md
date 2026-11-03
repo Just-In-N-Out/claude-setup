@@ -21,4 +21,4 @@
 - [Designer feedback, mini chain](designer-feedback-mini.md) — DJ Trees designer notes 2026-11-02: one job per problem; planner → builder → 1 reviewer → 1 verification → merge; general rules
 - [Bricks source research](bricks-source-research.md) — no sample? GPL Bricks PHP on GitHub + his sites assets + schema; Bricks versions per site (darksalmon 2.3.9, DJ staging 2.4.4)
 - [Runaway tests](runaway-tests.md) — earlyoom stops a test at 15–17 GB: a stopped run is a crash, never a normal failure; orchestrator watches (>6 GB or earlyoom) and tells the agent (2026-11-02)
-- [Dark structure recognition](dark-structure-recognition-status.md) — fourth review done; audit footer regression fixed at7a473bc; fifth-review decision pending; merge explicitly held
+- [Dark structure recognition](dark-structure-recognition-status.md) — final fifth review and conditional finish approved; integrating current main first; evidence/status.md has live state
