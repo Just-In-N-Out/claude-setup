@@ -7,6 +7,14 @@ metadata:
   modified: 2026-11-03T20:52:29.644896+00:00
 ---
 
+## Merge-order clarification — 2026-11-03T22:08:32.109083+00:00
+
+Other session handoff E/MAIN-MOVED-2026-11-03-embeds.md records Justin chose Embeds now, removed this story lock, and importer restored original owner after release. Root corrected its initial inference of an uncoordinated lock bypass. Importer waves1+2 are complete and further building is stopped per website-importer-paused.md. Optional user coordination question withdrawn; no reply needed. Fresh integration-prep5 is active, then actual combined-head acceptance remains required.
+
+## Current transition — 2026-11-03T22:04:56.950668+00:00
+
+Main advanced again to70be9c09bee3eb2384399fe19972a0e35cddff2a (web-embeds BUILD2026-11-03.2) while root still held the story lock; Claude Code ignores that lock. Verifier5 has a stop request, with complete check/browser proofs and partial web preserved, no acceptance. Fresh integration-prep5 is prepared to rebase3b77b2d onto70be9c09 after handoff, then fresh independent acceptance. User was asked to coordinate holding other merges; no answer presumed. Still no recognition merge. Fixer6 cleanup-only continuation was interrupted with scratch still present/no removal result; nonblocking, do not repeatedly restart it.
+
 ## Latest gate progress — 2026-11-03T21:47:35.640721+00:00
 
 Verifier5 full browser pair complete95base/99head files:549common cases,5new cases passing,no head-only failures,ten inherited failures preserved; one base-only give-way failure passes on head. Complete paired test:web is now active; qualified corpus/final receipts and blind auditor5 remain. A transient model-capacity error was recovered on the same agent/controller with no duplicate suite. This is progress, not acceptance or merge.
