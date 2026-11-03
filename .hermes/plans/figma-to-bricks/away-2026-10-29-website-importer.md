@@ -397,3 +397,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - web-embeds fixer 1: R1-1 (`how: "made"` live frame markup), R1-2 (`withLiveSrc`), R1-3 (`later`: script-revealed own boxes pasted shown with a note; hidden-on-purpose kept) all fixed test first; AC10 108/108, AC11 7/7; live letsgro dot nav shows. 3 new limits → follow-ups.
 - Dispatched web-embeds-verifier-2.md and web-embeds-auditor.md on 5e3fea8 (base 89022ab). After wave 1 merges, embeds rebases and gets a quick re-check.
 - Lesson saved: testing-pitfalls (background until-grep false "done"; bound back-off loops). Skipped: the `later` detection recipe (in code + HANDOFF).
+
+## 2026-11-02 23:45 — web-address ACCEPTED: ac-check --reviews READY FOR THE USER (12/13 on 7100612; AC13 live owed); reviews CLEAN
+- Blind auditor clean (10 mutants killed; dist/code.js identical; Windows curl reaches the helper). found_else: >1 MB POST resets instead of 413 (misuse only); cosmetic window/size lines; 8 plan test names wrap across lines.
+- Merge after panel: rebase --onto main c2f6a16, quick re-check. Lessons saved: mutation-testing-discipline (open handle: judge by not ok under a deadline), testing-pitfalls (HOME redirect details).
