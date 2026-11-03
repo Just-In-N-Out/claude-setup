@@ -1,6 +1,6 @@
 USER MERGE HOLD (2026-11-03): Review4 and independent verification are authorized. Stop after accepted checks; do not merge, bump BUILD, publish/push a release or write main until Justin explicitly instructs a merge. This supersedes all standing auto-finish text below.
 
-# DRAFT — dispatch only after root pins a reviewed clean head
+# Independent verifier — current reviewed head pinned
 
 Role: fresh read-only `pipeline_verifier`; no agents and no product/source/test/doc/ref changes. You are not alone; preserve all other work. Own only your evidence folder and fresh private scratch.
 
@@ -9,7 +9,7 @@ Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structu
 Head: `7ce37fe5fab4c14bb01564f5941a21e1ca6b860b`.
 Base: `6cfd3e6681b7d0e121173ed746ab49206c672c4e`.
 Own evidence: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/verifier`.
-Root's completed current-head review referee: `ROOT_MUST_PIN_REFEREE`.
+Root's completed current-head review referee: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/review-4/root-referee.log`.
 
 Load engineering-best-practices, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, pertinent testing-pitfalls and `/home/justin/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md`. Independently prove all eight approved criteria and run required gates on head and base with head's checks. Do not reuse another role's screenshots/receipts as your proof. Each criterion needs its exact named pass/fail line, actual head-stamped command/log, real screenshot and causal base failure (or justified existing-behavior exemption). Missing fixtures/setup errors are not behavioral RED; preserve and qualify them.
 
