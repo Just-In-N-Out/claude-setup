@@ -10,10 +10,10 @@ case its words cover); an edge case beyond its text goes in `found_else`.
 
 ## The only inputs
 - Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/plan-approved.md` (AC1–AC18). Use each exact test name the plan gives.
-- The head `@HEAD@` and base `@BASE@` (below), and your own folder `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/auditor/` (new).
+- The head `a2ae004dff5de3f1405bde34c7d93dc79e329403` and base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1` (below), and your own folder `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/auditor/` (new).
 - The job: `npm run compare -- <left> <right>` compares two pages (a live page and its Bricks copy) word by word through the aligned word sequence at every width and reports what differs; it is the oracle every later importer job is judged by. It lives in `test/web/` and `tools/`; `src/` is untouched by it.
 - **AC11 on the combined head:** the head also holds web-capture's `src/web` and main's newer `src` changes, so judge AC11 by
-  this job's own commits: `git diff --name-only web-capture-final...HEAD -- src` (or the merge-base with the commit
+  this job's own commits: `git diff --name-only <C>..HEAD -- src`, where `<C>` is the line's "web-capture finish: ledger moved…" commit (`git log --format='%H %s' b09727f..HEAD | grep 'web-capture finish'`; the line is capture's commits, then compare's) (or the merge-base with the commit
   before web-compare's first commit) must be empty; say which range you used.
 - **AC15/AC16 are receipts (base-exempt, as the plan says).** AC16's live self-compare of the plugin-made home (its
   floor, then a second self-compare with it as the noise file) and AC17's cost pair were not re-run on the final code:
@@ -22,10 +22,10 @@ case its words cover); an edge case beyond its text goes in `found_else`.
   right now): keep such runs, check with one curl, re-run into a new folder.
 
 ## Your copy
-You start in your own throwaway worktree. Run `git checkout --detach @HEAD@` and confirm `git rev-parse HEAD`, a clean
-`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `@BASE@`. This head is the finisher's
+You start in your own throwaway worktree. Run `git checkout --detach a2ae004dff5de3f1405bde34c7d93dc79e329403` and confirm `git rev-parse HEAD`, a clean
+`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`. This head is the finisher's
 combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-final`, rebased onto main after the DJ Trees build .3, canonical copy
-`@WT@`). Your `ac.json` names head `@HEAD@` and base `@BASE@`. Never write in any other worktree.
+`/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a680c7790c2a103c5`). Your `ac.json` names head `a2ae004dff5de3f1405bde34c7d93dc79e329403` and base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`. Never write in any other worktree.
 
 ## Work
 Load `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, its `references/rules-summary.md` and

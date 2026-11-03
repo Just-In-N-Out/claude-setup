@@ -337,3 +337,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 
 ## 2026-11-02 22:00 — DJ build .3 pushed (main b09727f); DJ holds merges until "wave 1 merged"
 - No importer-shared files in DJ's 43 changed files. Resumed wave-1 finisher: rebase --onto b09727f 1a64378, proofs, quick gates (typechecks, check, replays); evidence rebase3/. Asked DJ to keep the window for the panel merge right after.
+
+## 2026-11-02 (after DJ build .3) — wave 1 rebased to a2ae004 on b09727f; 4 checkers + panel rebase dispatched
+- rebase3: HANDOFF conflict only (EXACT), 150/162 patch-ids unchanged (12 HANDOFF context-only), main's 43-file change carried exactly, tree composition 0 wrong. check by name: every main name same result; 206 new pass. Replays 20/20 identical. Long suites left to the checkers.
+- Dispatched: web-capture verifier-2 + auditor, web-compare verifier + auditor (briefs filled: HEAD a2ae004, WT agent-a680c779…, BASE b09727f; AC11 range = after the "web-capture finish" commit), and web-panel rebase finisher (845e601 --onto a2ae004 89022ab → web-panel-final).
+- Lesson saved: patch-id --full-index (SKILL.md). Importer agents now 7 (tiers, embeds, 4 checkers, panel rebase). Memory 5/20 GB at dispatch; earlyoom 0 kills.

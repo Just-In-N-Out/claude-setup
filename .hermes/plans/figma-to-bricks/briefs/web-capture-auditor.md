@@ -10,7 +10,7 @@ case its words cover); an edge case beyond its text goes in `found_else`.
 
 ## The only inputs
 - Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-capture/plan-approved.md` (AC1–AC14). Use each exact test name the plan gives.
-- The head `@HEAD@` and base `@BASE@` (below), and your own folder `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-capture/auditor/` (new).
+- The head `a2ae004dff5de3f1405bde34c7d93dc79e329403` and base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1` (below), and your own folder `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-capture/auditor/` (new).
 - The job: `npm run capture -- <url>` reads a live web page (header, page, footer as tagged parts, every switch point, stretchy values, pictures, fonts, links, floating extras) into one capture file the plugin's `loadSnapshot` replays like a Figma debug file; `src/web/` is never imported by `src/core`, `src/plugin`, `src/shared` or `src/ui`; Figma replays stay byte-identical.
 - **AC14 and bdryswi.com:** bdryswi.com serves a bot-check page to automated Chrome. **Never load it** and never try to
   hide automation (Justin owes the allow-list). Prove AC14 on the reachable homes (`https://www.letsgro.ai/` and the
@@ -21,10 +21,10 @@ case its words cover); an edge case beyond its text goes in `found_else`.
   `git show 2199895:figma-to-bricks-debug-page-1.json`) replay byte-identical (payload and warnings) on head and base.
 
 ## Your copy
-You start in your own throwaway worktree. Run `git checkout --detach @HEAD@` and confirm `git rev-parse HEAD`, a clean
-`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `@BASE@`. This head is the finisher's
+You start in your own throwaway worktree. Run `git checkout --detach a2ae004dff5de3f1405bde34c7d93dc79e329403` and confirm `git rev-parse HEAD`, a clean
+`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`. This head is the finisher's
 combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-final`, rebased onto main after the DJ Trees build .3, canonical copy
-`@WT@`). Your `ac.json` names head `@HEAD@` and base `@BASE@`. Never write in any other worktree.
+`/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a680c7790c2a103c5`). Your `ac.json` names head `a2ae004dff5de3f1405bde34c7d93dc79e329403` and base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`. Never write in any other worktree.
 
 ## Work
 Load `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, its `references/rules-summary.md` and

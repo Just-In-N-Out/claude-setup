@@ -11,10 +11,10 @@ when its own text is broken: its named test, or a realistic case its words cover
 goes in `found_else` (it becomes a follow-up), not a finding. Be thorough on the ACs, not exploratory past them.
 
 ## Your copy
-You start in your own throwaway worktree. Run `git checkout --detach @HEAD@` and confirm `git rev-parse HEAD`, a clean
-`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `@BASE@`. This head is the finisher's
+You start in your own throwaway worktree. Run `git checkout --detach a2ae004dff5de3f1405bde34c7d93dc79e329403` and confirm `git rev-parse HEAD`, a clean
+`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`. This head is the finisher's
 combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-final`, rebased onto main after the DJ Trees build .3, canonical copy
-`@WT@`). Your `ac.json` names head `@HEAD@` and base `@BASE@`. Never write in any other worktree.
+`/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a680c7790c2a103c5`). Your `ac.json` names head `a2ae004dff5de3f1405bde34c7d93dc79e329403` and base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`. Never write in any other worktree.
 
 ## What to verify
 - **Approved plan (the oracle):** `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-capture/plan-approved.md`, AC1–AC14. Never change an AC's id, oracle or tag.
@@ -45,7 +45,7 @@ must show a check can fail.
    clause on a generic fixture of your own.
 3. **A fresh screenshot per AC** in your folder (a terminal image for a non-visual one).
 4. Write `<your evidence>/ac.json` (ac-check.sh's schema) and `report.json`; self-check with `ac-check.sh` on a copy of
-   your own files, `--repo` your own worktree, base `@BASE@` (no `--reviews`).
+   your own files, `--repo` your own worktree, base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1` (no `--reviews`).
 
 ## Machine
 - **This machine (WSL):** `CHROME_PATH=/home/justin/.hermes/plans/figma-to-bricks/evidence/web-capture/planner/scripts/chrome-cpu.sh`, Node `/home/justin/.local/node-v22.23.3/bin` first on PATH, `TMPDIR`

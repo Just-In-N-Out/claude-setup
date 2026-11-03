@@ -86,3 +86,4 @@ Importer agreement: DJ merges cars 3–6 (build .3) as soon as car 3 + car 6 ver
 21:1x: car 6 panel-edge verifier CLEAN; ac-check READY 10/11 (AC11 live 3cj). Merge lock djtrees-build3 taken; main ff 9a2a966 → f425e79 (cars 3–6, 35 commits). Post-merge finisher aa1e5ae3708e3ff94 running (Build .3). Next: release lock after push, message importer 'DJ build .3 pushed', then hold merges until 'wave 1 merged'.
 21:2x: side-art train rebase DONE: car 10 train-side-art f154d91 on car 9 a8bef6c (merge commit: photo.stack overrides section.top; AC5 test line tightened). Gates green. Verifier+auditor after wave 1 with cars 7–9.
 21:3x: Build 2026-11-02.3 = b09727f pushed (origin/main equal); merge lock released; importer told 'DJ build .3 pushed' — DJ main merges HELD until 'wave 1 merged'. rules-summary lines 26/36 updated from finisher's proposal.
+21:3x: importer adds web-panel J4 to the same window → DJ holds main merges until 'panel merged' (they'll say if window > ~3 h).
