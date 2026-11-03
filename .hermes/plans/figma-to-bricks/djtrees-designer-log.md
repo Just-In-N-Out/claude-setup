@@ -107,3 +107,4 @@ Importer agreement: DJ merges cars 3–6 (build .3) as soon as car 3 + car 6 ver
 01:xx: car 12 phone-menu ac-check NOT ACCEPTED (AC5, AC8): blind auditor found A1 P1 — linked picture logo renders ~60px smaller and actions float mid-bar where the menu folds (<a> is the flex item). Fixer-2 started on 228d28b. Plan: merge cars 7–11 as Build .4 once car 10 + 11 verifiers are clean; phone menu after its fix (its own build).
 01:xx: car 11 faq-art verifier CLEAN; ac-check above. Waiting only car 10 verifier for Build .4 (cars 7–11).
 01:xx: cars 10 + 11 ACCEPTED. Merge lock djtrees-build4; main ff b09727f → 5a5beeb (cars 7–11, 72 commits). Finisher Build .4 started (5 jobs). Phone menu (car 12) out: fixer-2 on the linked-logo bug.
+01:xx: Build 2026-11-02.4 = 6cfd3e6 pushed (origin/main equal); lock released; importer told; DJ merges HELD until importer's 'wave 1 merged' + 'panel merged'. Phone menu waits (fixer-2).

@@ -7,8 +7,19 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-02)
 
-- **Current build `2026-11-02.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-02.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-02.4 djtrees-faq-art:** faint art in the empty space of the row under a section's heading moves beside
+    the heading once that row stacks, under its words (the FAQ tree). Paste check **3cs**.
+  - **2026-11-02.4 djtrees-side-art:** faint art over a section's first heading moves beside it, smaller, once its row
+    stacks; a frozen section with its words at its bottom keeps its top space, stepped, from 991 down. Paste check
+    **3cm**.
+  - **2026-11-02.4 djtrees-step-sides:** steps each drawing a line along their top line up on phones, each line midway
+    between two steps' words. Paste check **3cp**.
+  - **2026-11-02.4 djtrees-stack-lines:** a divided row stacked one per line gets a line like its dividers between every
+    two points, midway. Paste check **3co**.
+  - **2026-11-02.4 djtrees-stack-gaps:** a broken divided row's points keep their own top and bottom as the space
+    between them, no gap added on top. Paste check **3cr**.
   - **2026-11-02.3 djtrees-strip-edge:** a carousel strip Figma leaves unclipped runs its cards on to the window's
     right edge from 992 up, its first card where drawn. Paste check **3cu**.
   - **2026-11-02.3 djtrees-top-align:** label/value pairs stacked as label over value line up at the top once a value
@@ -663,8 +674,14 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     it, 2026-10-01); at most 16px between cards; stacked rows of alike cards swipe as one slider.
   - **Spacing:** one capped, whole-pixel, monotone scale: sections at most 64px top and bottom, gaps 48.
   - **Section intro on phones:** heading, text, then its button. Photo cards keep their photo's shape, two per row
-    where they can't slide. Stacked items' divider padding evens out; a row split by its items' own divider lines
-    loses the lines once it wraps, goes two per row or stacks, its sides even out and the space becomes its gap.
+    where they can't slide. Stacked items' divider padding evens out.
+  - **A row split by dividers** (DJ Trees designer notes 6, 7 and 9, 2026-11-02; the planner's ⭐ answers under Justin's
+    "whatever the planner agent recommends", not yet confirmed; replaces "loses the lines once it wraps, goes two per
+    row or stacks, its sides even out and the space becomes its gap"): once it wraps or goes two per row it loses its
+    lines and its sides even out; its points' own top and bottom even out and are the space between them, the gap only
+    topping it up; once it stacks one per line a line like its dividers runs between every two points, midway between
+    their words, at least 16px from each. Steps each drawing a line along their top keep it; stacked, their sides even
+    out and the steps under a line line up, each line midway.
   - **Side padding** (2026-10-21, P1A P2B: "padding must look clean on any layout"): upright phones get a box's own
     side padding back after a sideways phone's squeeze; a tablet's squeeze carries on to sideways phones.
   - **Hero, photo beside text:** text, then photo, then buttons.
@@ -696,6 +713,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **Big decorative numbers** go right above the item they label.
   - **A sideways label beside a heading** turns upright, a small line above it (where its row stacks; where the row
     keeps its line, the label keeps running beside it, M2b).
+  - **Faint art by a heading** (DJ Trees designer notes 4 and 10, 2026-11-02; the planner's ⭐ answers under Justin's
+    "whatever the planner agent recommends", not yet confirmed): faint placed art over or near a section's heading moves
+    beside the heading once the layout stacks, smaller, under the words where nothing is painted between; the words
+    never move. A frozen section's (fixed height, words at its bottom) top space steps down as section padding.
 - **Website rules** (2026-10-02: HTML5 semantics, WCAG 2.2 AA, search and speed basics; the user means technical
   rules, not laws). The design stays as drawn except for the two label minimums below and the section rhythm
   (Layout):
