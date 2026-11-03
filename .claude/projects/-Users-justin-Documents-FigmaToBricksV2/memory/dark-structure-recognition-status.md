@@ -1,15 +1,21 @@
 ---
 name: dark-structure-recognition-status
-description: Fifth review clean; fixing later phone-menu integration regression, then independent acceptance under explicit final-review cap.
+description: Logo preservation repaired at3b77b2d; fresh independent verifier5 active, blind audit pending, no merge.
 metadata:
   node_type: memory
   type: project
-  modified: 2026-11-03T18:47:32Z
+  modified: 2026-11-03T20:52:29.644896+00:00
 ---
+
+## Current execution — 2026-11-03T20:52:29.644896+00:00
+
+Verifier4 rejected V4-1 logo geometry. Fresh fixer7 repaired the general generated-Nav row-budget issue and committed clean3b77b2d643627a02ca51e94a61f6455b65f87c02. Fresh /root/dark_structure_verifier5 is running against unchanged main/base88a6aa49; evidence acceptance-5/verifier, brief verifier-5. All independent non-live ACs plus full paired check/browser/web/corpus qualification remain required, then fresh blind auditor5 and combined ac-check. Root holds merge lock. Latest user approval and five-review exception below remain; no merge yet. Historical verifier4 details below explain repaired finding, not current acceptance.
 
 ## Current authorization — 2026-11-03
 
-Latest Justin instruction: **"yes last  review then go"**. Review5 passed at367f443. Later phone-menu main88a6aa49 required conflict resolutions; PREP4-MENU was repaired and committed282d075. Fresh verifier3 then found an unmet approved centered compound-brand variation (AC1/AC2/AC5); older footer and phone-menu cases still pass. Fresh fixer `/root/dark_centered_brand_fix` is active under brief fix-6.md on282d075/base88a6aa49. Verifier3 stopped expensive gates fail-fast and preserved partial evidence in acceptance-3/verifier. No full release-gate acceptance yet. Next drafts verifier-4/auditor-4 are unpinned; targeted independent criteria go before costly full pairs, which remain mandatory for clean acceptance.
+Latest Justin instruction: **"yes last  review then go"**. Review5 passed at367f443. Later phone-menu main88a6aa49 required integration; PREP4-MENU was repaired at282d075. Verifier3 then found unmet approved centered compound-brand AC1/AC2/AC5. Fresh fixer committed repair3012144e8fd5ab645059dadd0e05d85e7bb5b3cb with local checks passing and earlier regressions preserved. Fresh verifier `/root/dark_structure_verifier4` is active against base88a6aa49, evidence/acceptance-4/verifier. Targeted independent AC/cross-factor cases run before costly full paired gates, which remain mandatory. Blind auditor4 draft is pinned but undispatched until verifier clean. No full acceptance or merge yet. Fixer6 Chrome jobs completed; temporary scratch cleanup after interrupted tool call unconfirmed. Root saved its proven Nav viewport-initialization lesson in project testing-pitfalls.
+
+Current verifier4 outcome: not_clean. New V4-1 desktop native-image logo shrink/distortion violates AC5/AC6/AC7; font-qualified unchanged portable witness RED head/GREEN base. Named tests and prior repairs pass; complete browser comparison has identical inherited failures, qualified corpus reveals two new distortion errors. Full web was deliberately stopped and remains pending. Fresh fixer /root/dark_logo_geometry_fix is running under fix-7 brief, then fresh independent verifier5 and blind auditor5 still required. Verifier4 finished and removed own scratch; required web pair remains pending. No release accepted.
 
 Root explicitly announced it will honor the user's final-review limit: **five dedicated code reviews, no sixth**. This is a disclosed review-stage exception for necessary post-review integration/repair, not a waiver of failing ACs or project gates. Preserve actual REVIEW AGAIN receipts and never claim later integration code was reviewed. Fresh independent verifier and blind auditor still must accept every non-live AC, with current full browser/web gates and qualified corpus comparison. Root final AC referee omits --reviews only for this documented cap exception, recording acceptance separately from code-review coverage. See approval.json final_review_limit_application for exact words and reasoning.
 

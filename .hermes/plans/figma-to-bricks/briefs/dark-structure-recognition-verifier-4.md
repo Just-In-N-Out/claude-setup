@@ -1,12 +1,12 @@
-# DRAFT — fresh verifier after centered-brand repair, final-review limit applies
+# Independent verifier — centered-brand repair pinned, final-review limit applies
 
 Fresh pipeline_verifier, source/read-only, no agents. Own E/acceptance-4/verifier and fresh scratch only. Load engineering-best-practices, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, pertinent testing pitfalls and feature-dispatch/references/ac-verification.md.
 
 W `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
 E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Approved plan E/plan-approved.md SHA25623fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511.
-HEAD ROOT_MUST_PIN_HEAD; BASE ROOT_MUST_PIN_BASE.
-Root current-head review referee ROOT_MUST_PIN_REFEREE records the honest post-review coverage rejection. Root approval.json final_review_limit_application records the disclosed bounded exception under Justin's "yes last  review then go": five dedicated reviews total, no sixth. Do not claim new integration changes were code-reviewed or rewrite review receipts. This exception only removes another dedicated review; independently enforce every non-live AC and required project gate.
+HEAD 3012144e8fd5ab645059dadd0e05d85e7bb5b3cb; BASE 88a6aa49fb617bea4fe4257df9d3392e8bed14d8.
+Root current-head review referee /home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/fixer-6/root-referee.log records the honest post-review coverage rejection. Root approval.json final_review_limit_application records the disclosed bounded exception under Justin's "yes last  review then go": five dedicated reviews total, no sixth. Do not claim new integration changes were code-reviewed or rewrite review receipts. This exception only removes another dedicated review; independently enforce every non-live AC and required project gate.
 Own evidence `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/acceptance-4/verifier`.
 
 Justin: "yes last  review then go". Exactly one final fifth review was authorized, followed by independent acceptance and eligible finish. No sixth code review. Root explicitly applies the final-review cap to necessary post-review integration and repair, as announced to Justin; no failing AC or project-gate waiver. Report any unmet criterion; root routes it. You never merge/release. Prior hold was conditionally superseded, not permission to ignore failed ACs.
@@ -32,3 +32,5 @@ Historical verifier3 at E/acceptance-3/verifier found approved AC1/AC2/AC5 unmet
 FIRST finish the approved-AC independent cases, meaningful cross-factor/negative controls and closure witnesses. If you confirm a real unmet non-live AC, preserve a concrete minimal finding and fail-fast handback, listing all unfinished gates as pending; do not spend the long full paired release cycle on a candidate already known unacceptable. This is ordering only, not permission to omit any required gate for a clean verdict. Once targeted/independent AC behavior is clean, finish required current head/base check, full browser, full test:web and corpus/qualified comparisons, own screenshots and receipts. No broad rerun after complete results absent actual changes/failures/unresolved discrepancies.
 
 The final five-review limit covers necessary repairs within the unchanged approved story; it does not authorize unrelated scope or waive any non-live AC/project gate. Root final acceptance command records the review exception separately.
+
+Fixer6 formal handback confirms all Chrome jobs completed and clean committed source. Its temporary scratch cleanup was interrupted/unconfirmed; do not touch that sibling scratch. Root saved the proven native Nav viewport initialization lesson in testing-pitfalls.md. Qualify your own harness and preserve actual closed/open hit-target proof.

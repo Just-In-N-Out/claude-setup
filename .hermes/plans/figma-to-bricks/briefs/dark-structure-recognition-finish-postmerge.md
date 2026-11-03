@@ -1,4 +1,4 @@
-CURRENT CONDITIONAL AUTHORIZATION (2026-11-03): Justin said "yes last  review then go". Root announced final fifth review, independent acceptance, then eligible merge/rebuild. The old merge hold is superseded only after current reviewed-head acceptance. Do not dispatch this draft before root has accepted receipts, acquired the release lock and completed the ff merge.
+CURRENT CONDITIONAL AUTHORIZATION (2026-11-03): Justin said "yes last  review then go". Root announced final fifth review, independent acceptance, then eligible merge/rebuild. The old merge hold is superseded only after current-head independent acceptance, with the disclosed five-review-cap qualification below. Do not dispatch this draft before root has accepted receipts, acquired the release lock and completed the ff merge.
 
 # DRAFT — dispatch only after root confirms accepted ff merge and merge-lock ownership
 
@@ -13,6 +13,8 @@ Root-confirmed merge-lock owner: ROOT_MUST_PIN_OWNER.
 Acceptance result: ROOT_MUST_PIN_RESULT.
 
 Check main still equals the root-pinned accepted merged head and that the release lock is owned by this story before modifying anything. If another session moved main or started a release, report it without overwriting or requalifying on your own. Paste check 3cw was free on main at preparation but is also claimed by unmerged web-embeds work; inspect actual current main and allocate an unambiguous release ID under the lock, preserving other features.
+
+Use the same pinned Node /home/justin/.local/node-v22.23.3/bin/node and child PATH for the build, and record the actual runtime.
 
 Perform only project after-merge steps: re-read current BUILD and choose the next date/build number; update the existing HANDOFF feature entry/ledger as necessary for actual release and live paste check; run npm run build to rebuild manifest-loaded dist; commit release metadata with a plain `git commit -m "Build <BUILD>: general structure recognition"`; push main only through this repo's authorized personal identity. Read CLAUDE.md immediately before writing its compact status build/feature line; never stage/commit it, and leave a pending exact status edit under E's parent if its write is refused. No unrelated narrative in private rules.
 
