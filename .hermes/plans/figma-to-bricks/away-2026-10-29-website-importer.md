@@ -419,3 +419,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Lessons: none new (done-marker and sibling TMPDIRs already in testing-pitfalls).
 
 ## 2026-11-03 00:25 — web-tiers verifier-2 clean (READY FOR THE USER 14/15 on ecd7b89); fit holds on every capture except the known R1-2/R1-3; follow-ups appended (hidden-layer view case, two test gaps). Waiting: tiers auditor.
+
+## 2026-11-03 00:40 — web-tiers blind auditor: AC8 NOT ACCEPTED (F1: Gallery phone slider of measured photos via inferred rows); fixer 2 dispatched
+- 13/14 runnable accepted; 22 mutants killed; AC12 receipt 201/201. F1 not a regression (base does it too) but breaks AC8's text on a real capture → web-tiers-fixer-2.md (branch web-tiers-fix-2 from ecd7b89). Then verifier + auditor again (final check after rebase anyway).
+- Lessons saved: live-site-reading (measured guard misses inferred rows), ac-verification.md (pair-looping tests pass on base with 0 pairs). Two enforce proposals offered.

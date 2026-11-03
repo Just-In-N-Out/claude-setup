@@ -123,3 +123,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | web-compare | feature-dispatch | script: ac-check.sh prints the missing module path of an import-failure base log on that AC's line, so a missing test helper shows as such | offered
 - 2026-11-02 | web-capture | figma-to-bricks | test: web-architecture.test.ts prints a TAP skip line when dist/ is absent instead of passing silently | offered
 - 2026-11-03 | web-tiers | figma-to-bricks | test: adapt-site-tiers unit case for a moved fixed-height box with a layer hidden in one range, asserting min height only | offered
+- 2026-11-03 | web-tiers | figma-to-bricks | test: site-phone-copies converts a capture whose box is layout NONE with inferred photo rows and asserts no copy:/slider: key copies a measured layer | offered
+- 2026-11-03 | web-tiers | feature-dispatch | review-checklist line: every pair-looping AC browser test in test/web asserts a minimum pair count inside that test | offered
