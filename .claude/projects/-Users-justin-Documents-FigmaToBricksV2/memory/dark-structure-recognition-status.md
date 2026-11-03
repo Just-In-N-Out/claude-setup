@@ -7,6 +7,10 @@ metadata:
   modified: 2026-11-03T20:52:29.644896+00:00
 ---
 
+## Latest gate progress — 2026-11-03T21:47:35.640721+00:00
+
+Verifier5 full browser pair complete95base/99head files:549common cases,5new cases passing,no head-only failures,ten inherited failures preserved; one base-only give-way failure passes on head. Complete paired test:web is now active; qualified corpus/final receipts and blind auditor5 remain. A transient model-capacity error was recovered on the same agent/controller with no duplicate suite. This is progress, not acceptance or merge.
+
 ## Current execution — 2026-11-03T20:52:29.644896+00:00
 
 Verifier4 rejected V4-1 logo geometry. Fresh fixer7 repaired the general generated-Nav row-budget issue and committed clean3b77b2d643627a02ca51e94a61f6455b65f87c02. Fresh /root/dark_structure_verifier5 is running against unchanged main/base88a6aa49; evidence acceptance-5/verifier, brief verifier-5. All independent non-live ACs plus full paired check/browser/web/corpus qualification remain required, then fresh blind auditor5 and combined ac-check. Root holds merge lock. Latest user approval and five-review exception below remain; no merge yet. Historical verifier4 details below explain repaired finding, not current acceptance.

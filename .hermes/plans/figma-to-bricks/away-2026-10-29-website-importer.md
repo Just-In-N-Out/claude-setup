@@ -533,3 +533,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 16:42 local — Justin removed the lock himself; took it (website-importer) and ff-merged main 88a6aa49 → a8b83660 (embeds). After-merge finisher dispatched (website-importer-merge-finisher-2.md: BUILD 2026-11-03.2, build, check, push, CLAUDE.md Status).
 
 ## 2026-11-03 16:55 local — DONE. Build 2026-11-03.2 pushed (main = origin/main = 70be9c09; embeds). Lock released; dark-structure's lock owner line put back; note left in its evidence; DJ told. Memory updated. Importer building STOPPED per Justin. Next (his words): try importing bdryswi.com once he allow-lists its bot check. Lesson saved: SKILL.md merge-lock exit 4 on Linux / only Justin removes another's lock.
+
+## 2026-11-03 17:05 local — Justin asked how to build again; chose 'bdry first, then decide' (over wave 3 + bdry, wave 3 only, follow-ups first). No building yet. Next: he turns off bdryswi.com's bot check (WordPress.com site; likely Defensive mode), then we capture and look at the paste together.
