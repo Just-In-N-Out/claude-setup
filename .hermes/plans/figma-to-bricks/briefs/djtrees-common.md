@@ -30,13 +30,13 @@ newest `main` just before its merge. Several touch the same files (divided rows:
 - Leave your worktree and branch in place at the end: the next role starts from your last commit.
 - **Never end your turn to wait.** Ending your turn (even with a Monitor or background command still running) ends you as
   an agent: nothing wakes you, and root gets "waiting…" instead of your report (cars 3–6 rebaser, 2026-11-02). Wait in
-  blocking calls (`timeout 590 tail --pid=<pid> -f /dev/null`, repeated) until your work is done, then report.
+  blocking calls (`timeout 170 tail --pid=<pid> -f /dev/null`, repeated: a Bash call blocks at most ~180 s) until your work is done, then report.
 
 ## This machine (Linux/WSL desktop): checks
 
 - Node `/home/justin/.local/node-v22.23.3/bin/node` (its folder first in PATH for child processes). The worktree guard
   refuses `PATH=/x:$PATH npm run …` and a heredoc followed by node in one command: use `env PATH=<literal dirs> npm run …`
-  or the node binary by absolute path, and write scripts with the Write tool.
+  or the node binary by absolute path, and write scripts with the Write tool; it also refuses git in a shell `for` loop, `$VAR` paths in node calls and `$((…))` on variables: put loops in a script run with bash and use literal paths.
 - **One Chrome-driven run on the whole PC at a time** (it froze and was forced off three times on 2026-11-02 under
   overlapping Chrome suites): before every browser test, snap or Chrome probe, wait with
   `until ! pgrep -f "node --test.*test/(browser|web)"; do sleep 5; done` and also check no other agent's Chrome is

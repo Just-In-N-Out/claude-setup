@@ -11,6 +11,8 @@ each reviewed job is rebased onto the newest local `main`. You are that rebaser 
 2. Rebase onto the **target** your job brief names (`git rebase <target>`): the merge train's last car (the previous
    job's rebased head) or, when the brief says so, local `main` (`git log --oneline -1 main`; read it, don't assume).
    Gates compare with the target, not with main.
+   A HANDOFF conflict whose `theirs` side ends with an old copy of a line the target changed (a heading's
+   `build <BUILD>` filled in) keeps that line once, the target's version: never both.
 3. **Conflicts:** keep both sides' meaning. Typical ones: `docs/HANDOFF.md` (both sections stay, newest on top; the
    End-of-run check list keeps every entry), `src/core/adapt/rules/index.ts` (the `RULES` array is one line: keep every
    rule from both sides in the order each side had them relative to its neighbours; a rule that overrides another
