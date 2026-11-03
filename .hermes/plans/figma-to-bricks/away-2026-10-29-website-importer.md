@@ -512,3 +512,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 10:40 — embeds ACCEPTED on 3a39c11 (READY FOR THE USER 11/13) after the auditor resumed. Final rebase finisher dispatched (web-embeds-final-rebase.md → embeds-final on main 9212c477; ledger move; 3cw). Told DJ: first ready merges first. Lessons saved (hybrid tree; capture fetch-failed under load). Follow-ups appended.
 
 ## 2026-11-03 11:00 — embeds-final c9ce258 on main 9212c477 (pure rebase, 31/31 patch-ids equal, no conflicts; ledger moved; 3cw kept and listed; gates by name 0 changed, +16; replays identical; capture-embeds 11/11). Dispatched web-embeds-final-verifier.md (verifier-4) and web-embeds-final-auditor.md (auditor-3). Then ac-check → lock → ff → after-merge build → push → tell DJ → STOP.
+
+## 2026-11-03 (embeds final verifier) clean: READY FOR THE USER 11/13 on c9ce258; 7/7 mutants; 120/120 byte-identical; AC11 7/7. Waiting: embeds final auditor. Lesson saved (grep --exclude-dir=evidence for paste ids).
