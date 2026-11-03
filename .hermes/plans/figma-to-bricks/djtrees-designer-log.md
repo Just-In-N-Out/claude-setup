@@ -68,3 +68,4 @@ Justin 17:2x: 'ok run more agents' (16 GB free). Started: car 3 strip-edge verif
 18:3x: car 5 faint-picture verifier CLEAN (6/7, AC7 live 3cv); waiting on its blind auditor. P3 hover-fade source → follow-ups.
 18:4x: car 3 strip-edge blind auditor CLEAN (6/7, AC7 live 3cu); waiting on car 3 verifier.
 18:5x: train rebaser cars 3–6 DONE: no head changes (779c830 → ea1a46e → 5b312ae → f425e79, ff chain on 9a2a966). Car 6 Chrome ACs left to its verifier/auditor.
+19:55: Justin: 'lets do three' → Chrome slots raised from 1 to 3 (lock files f2b-chrome.lock, -2, -3); all 8 DJ agents + importer session told; memwatch background alert under 4 GB.

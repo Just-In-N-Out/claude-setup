@@ -37,17 +37,16 @@ newest `main` just before its merge. Several touch the same files (divided rows:
 - Node `/home/justin/.local/node-v22.23.3/bin/node` (its folder first in PATH for child processes). The worktree guard
   refuses `PATH=/x:$PATH npm run …` and a heredoc followed by node in one command: use `env PATH=<literal dirs> npm run …`
   or the node binary by absolute path, and write scripts with the Write tool; it also refuses git in a shell `for` loop, `$VAR` paths in node calls and `$((…))` on variables: put loops in a script run with bash and use literal paths.
-- **One Chrome-driven run on the whole PC at a time** (it froze and was forced off three times on 2026-11-02 under
-  overlapping Chrome suites): before every browser test, snap or Chrome probe, wait with
-  `until ! pgrep -f "node --test.*test/(browser|web)"; do sleep 5; done` and also check no other agent's Chrome is
-  running (`pgrep -f 'chrome-linux64/chrome.*--headless'`, from a script file so it doesn't match your own shell;
-  `pgrep -f chrome-f2b` never finds one: the launcher execs the real binary); never run two Chrome jobs yourself at once.
-  Poll every 1 s and take the slot the moment one check is clear (a "quiet for 20 s" or 5 s poll keeps losing it behind file-by-file suites), then
-  run your WHOLE Chrome sequence (base and head, measure/snap/probes included) under one lock other agents can see:
-  `flock ~/.cache/f2b-chrome.lock bash <your-steps.sh>`, and inside it keep a lock process named like a test,
-  `exec -a 'node --test test/browser/<role>.lock' node -e 'setTimeout(()=>{},7200e3)' &` (killed at the end), so
-  waits that look only for `node --test` see you too. Back off if a foreign Chrome appears within 2 s of starting.
-  (top-align verifier, 2026-11-02: a renamed `sleep` lock let another agent's Chrome start mid-measurement.)
+- **Three Chrome slots on the whole PC** (Justin, 2026-11-02 19:5x: "lets do three", a trial; it froze and was forced
+  off three times earlier that day under overlapping Chrome suites, so never more than three): run your WHOLE Chrome sequence
+  (browser tests, snap, measure, probes; base and head) while holding ONE of three locks, `~/.cache/f2b-chrome.lock`,
+  `~/.cache/f2b-chrome-2.lock` or `~/.cache/f2b-chrome-3.lock`. In a script file: loop every 1 s over all three with `flock -n <fd>` (open the file on that
+  fd first) until one is yours; keep it until the sequence ends. While holding it keep a marker process named like a
+  test, `(exec -a 'node --test test/browser/<role>.lock' /home/justin/.local/node-v22.23.3/bin/node -e
+  'setTimeout(()=>{},7200e3)') &` (killed at the end). Never hold two locks, never run two Chrome jobs yourself, and
+  don't wait for "no other Chrome" any more: getting a slot is the wait. If root says "back to N slots", use only the first N
+  lock files. (top-align verifier, 2026-11-02: a renamed `sleep` marker let another agent's Chrome start
+  mid-measurement; 5 s polls kept losing the slot.)
 - Chrome: from the start, point `CHROME_PATH` at your own wrapper script (in your scratch) containing
   `exec $HOME/.cache/chrome-for-testing/chrome-f2b --use-gl=disabled --disable-software-rasterizer "$@"`, with DISPLAY and
   WAYLAND_DISPLAY cleared. `launchChrome` passes a fixed flag list, so flags only take effect through the wrapper; the

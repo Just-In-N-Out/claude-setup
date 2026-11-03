@@ -2,7 +2,10 @@
 name: run-without-stopping
 description: "Build straight through without check-ins (2026-10-07); when away take the recommended options, tell lost agents to research, resume limit-stopped agents, full report on return; agents in parallel again (2026-10-29); review rounds capped at 3 after ACs (2026-10-31)"
 metadata:
+  node_type: memory
   type: feedback
+  originSessionId: 8e80bfe0-369d-4e32-84a6-8d63e5215658
+  modified: 2026-11-03T00:52:13.087Z
 ---
 
 On 2026-10-07, after M3a, the user said: "just continue building we will check everything at the end. Do the rest of
@@ -20,5 +23,7 @@ On 2026-10-27, going to sleep mid-pipeline (label-floor), he said: keep it runni
 On 2026-10-28, after the usage limit kept stopping four parallel agents, he asked for one agent at a time. **On 2026-10-29 he lifted it:** "If you're an orchestrator, you can start multiple plans and orchestrate multiple agents and everything", and asked that a finished plan go straight to its builder. So run separate jobs side by side again (rule now in `~/.claude/CLAUDE.md` "Several jobs at once"); if usage limits start stopping agents again, say so and ask.
 
 **2026-10-30 (low usage):** asked Full or Mini for a plugin fix, he answered "we're super low on usage, I need this to be a quick fix. No need for review rounds", then "just keep it going not say yes everytime and log it". When he explicitly asks for that quick-fix route, follow his requested execution: in-session, or direct separate builder agents when he asks to delegate (DJ Trees, later on 2026-10-30: "give it to each agent" and "no need for reviews or anything"). Skip the planner/review pipeline for that named work, keep focused regression tests, `npm run check` and available real-file replay evidence, then integrate to main, bump/build/push, and log it in HANDOFF + CLAUDE.md Status instead of stopping to ask; edit prompts come from the permission mode (Shift+Tab → accept edits is his switch). See [[plugin-first]].
+
+**2026-11-02 ~19:55, Chrome slots:** the one-Chrome rule left 8 agents queueing for Chrome while memory sat at 3 of 20 GB. Asked "can we run more agents", then "lets try to add another chrome test", I suggested two; he chose **three** ("lets do three"). Rule now: three shared lock files (`~/.cache/f2b-chrome.lock`, `-2`, `-3`), each Chrome sequence holds one (`flock -n` loop, node-named marker), both sessions told; a background memory watch wakes the session under 4 GB available. If the PC freezes again, drop back and tell him.
 
 **2026-10-31:** review rounds are capped (goals and ACs first, then at most 3 review→fix rounds): [[review-round-cap]]. Tell him early when a loop reaches small edge cases.
