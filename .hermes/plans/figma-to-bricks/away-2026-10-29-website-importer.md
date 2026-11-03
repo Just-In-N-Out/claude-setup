@@ -417,3 +417,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - FE-1 (compare exits 0 with no report when Chrome dies → a crash reads as identical) is a real oracle bug: added to wave1-fix-1 (exit 2, CLI test). FE-2 by design; FE-3 (mouse move may fire exit-intent pop-ups) → note for wave 2+.
 - Wave 1 status: capture auditor ALL ACCEPTED, compare auditor ALL ACCEPTED, compare verifier ALL ACCEPTED (all on a2ae004); capture verifier rejected AC3 (fixing) and AC4 (plan amended by Justin). After the fixer: quick re-check (verifier + auditor for both plans) on the new head, then merge.
 - Lessons: none new (done-marker and sibling TMPDIRs already in testing-pitfalls).
+
+## 2026-11-03 00:25 — web-tiers verifier-2 clean (READY FOR THE USER 14/15 on ecd7b89); fit holds on every capture except the known R1-2/R1-3; follow-ups appended (hidden-layer view case, two test gaps). Waiting: tiers auditor.

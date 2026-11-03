@@ -122,3 +122,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | web-tiers | figma-to-bricks | test: in adapt-site-tiers, a captured column whose y position differs between ranges keeps _heightMin (never _height) at every tier | offered
 - 2026-11-02 | web-compare | feature-dispatch | script: ac-check.sh prints the missing module path of an import-failure base log on that AC's line, so a missing test helper shows as such | offered
 - 2026-11-02 | web-capture | figma-to-bricks | test: web-architecture.test.ts prints a TAP skip line when dist/ is absent instead of passing silently | offered
+- 2026-11-03 | web-tiers | figma-to-bricks | test: adapt-site-tiers unit case for a moved fixed-height box with a layer hidden in one range, asserting min height only | offered
