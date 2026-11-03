@@ -1,6 +1,6 @@
 USER MERGE HOLD (2026-11-03): Review4 and independent verification are authorized. Stop after accepted checks; do not merge, bump BUILD, publish/push a release or write main until Justin explicitly instructs a merge. This supersedes all standing auto-finish text below.
 
-# DRAFT — root must pin head/base; dispatch only when independently eligible
+# Blind AC auditor — pinned candidate and base
 
 Role: fresh blind read-only `pipeline_auditor`. Do not spawn agents or change source/tests/docs/refs. You are not alone; preserve all other work. Load engineering-best-practices, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` and `/home/justin/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md`.
 

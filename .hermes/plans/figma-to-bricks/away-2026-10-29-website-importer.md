@@ -506,3 +506,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Lessons saved: SKILL.md (paste-check ids across branches; .superpowers must be empty in the build commit). Two enforce proposals offered.
 
 ## 2026-11-03 (≈07:00) — DJ: phone menu rebasing onto 9212c477, merging as Build .6+; it changes test/browser/render.ts (linked Image prints <a id class=brxe-image…><img>). → When embeds rebases onto that main, run test:web (compare tool renders) and the embeds browser files, not only the quick gates.
+
+## 2026-11-03 10:16 — embeds auditor died on an internet/DNS blip (EAI_AGAIN); network back (DNS ok, api reachable, Windows: Internet). Resumed it via SendMessage.
