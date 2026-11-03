@@ -470,3 +470,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Open for Justin: should a capture's floating extras also be site.tiers-measured layers (neither job built it)?
 - Dispatched panel + address stack re-checks (verifier + blind auditor each; briefs web-<job>-stack-*.md). Tiers + embeds re-checks start when wave 1's checkers finish (load).
 - Lessons saved: SKILL.md (run every stacked job's AC files on the top head), live-site-reading (site.tiers owns capture layers; read yielded). Enforce offered.
+
+## 2026-11-03 05:40 — panel stack verifier clean (READY FOR THE USER 16/17 on 293ad1f). found_else: a phone-only fixed header bar (fixedbars) is dropped by convert (base too; J2's area) → added a probe of it to the tiers stack-verifier brief. Lesson saved (capture lower job's fixtures fresh when stacking).

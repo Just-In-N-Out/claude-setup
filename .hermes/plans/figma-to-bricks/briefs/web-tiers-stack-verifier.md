@@ -19,8 +19,12 @@ Load `engineering-best-practices`; read the project skill `~/.hermes/skills/soft
    rule, field or test as a finding (P0–P2 with a real-use scenario), else say so in one line.
 2. Gates on head, by test name against the base: both typechecks, `npm test`, the five Figma replays byte-identical, and
    this job's AC files plus: AC14 live with `F2B_LIVE=1` (GET only); AC8 on real captures with `F2B_REAL_CAPTURES=/home/justin/.hermes/plans/figma-to-bricks/evidence/website-importer-demo-1/hostinger`; the fit check (document `scrollWidth` of the contact, home, gallery and letsgro pastes at 320, 390, 478, 767, 991, 1440; known exceptions: 786 at 768, the home's 359 at 320). Not the whole test:web or test:browser suites.
-3. Every AC's named test on head and on base, a screenshot or terminal image per AC.
-4. Write `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-tiers/verifier-3/ac.json` (ac-verification.md format: head, base, `ac_status` per AC; AC15 `not_run`, owed),
+3. Probe the case the panel's stack verifier found: wave 1's `fixedbars` fixture site (a header of a desktop fixed bar plus
+   a phone-only fixed bar), captured fresh with head's code (`test/fixtures/web/capture.ts` `captureFixture`): does the
+   phone-only bar's words reach the Header paste and show from 767 down, now that `site.tiers` is present? Report it
+   (a finding only if an AC's text covers it; else `found_else`).
+4. Every AC's named test on head and on base, a screenshot or terminal image per AC.
+5. Write `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-tiers/verifier-3/ac.json` (ac-verification.md format: head, base, `ac_status` per AC; AC15 `not_run`, owed),
    then self-check with `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh` (no `--reviews`) on a
    copy of your report.
 
