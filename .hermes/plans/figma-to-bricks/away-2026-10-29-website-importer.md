@@ -369,3 +369,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - R1-1 YouTube player built by Elementor's script → empty box; R1-2 lazy-loaded frames → about:blank; R1-3 letsgro's script-revealed fixed boxes pasted at opacity 0 (AC12's dot-nav check would fail). ⭐ ruling for R1-3: script-revealed boxes pasted visible with a note; deliberately hidden ones stay. R1-4..6 P3 → follow-ups.
 - Fixer: web-embeds-fixer-1.md (branch web-embeds-fix-1 from db801e5) → then verifier + auditor (no re-review).
 - Lessons saved: live-site-reading (served vs live markup: script-made frames, lazy src, script-revealed boxes); memory (grep is a ugrep function: use `command grep`). Enforce proposal offered (capture fixture with player + lazy frame).
+
+## 2026-11-02 22:20 — web-address built (7100612 on c2f6a16); one review + verifier dispatched
+- AC1–AC12 pass; AC13 live (Justin in Figma desktop). Live receipt: helper found Chrome by itself, captured darksalmon home over HTTP in 2:52 (37/37 pictures, 8.5 MB). dist/code.js identical; replays identical; 19 mutants caught. Two pieces written before their tests (compensated: RED on an archive without the box; mutations). Real bug found by the browser test: Chrome accepts a space in a host; fixed 1f57e81. Rulings R10–R15 not yet confirmed. Proposed CLAUDE.md standing rule for the finisher (helper at 127.0.0.1:47811 with pairing code).
+- Lessons saved: panel-validation (space in host), mutation-testing-discipline (capped run with no TAP = unknown; bound exit waits). Enforce proposal offered.
+- Dispatched web-address-reviewer-1.md (with security-best-practices).
