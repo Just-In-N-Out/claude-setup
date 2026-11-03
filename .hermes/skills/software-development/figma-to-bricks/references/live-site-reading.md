@@ -148,6 +148,7 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   its mutant survives (web-capture fixer 2, hover-probe.txt).
 
 ## Mapping into the Snapshot
+- A capture range is read at its anchor (the middle, 880 for 768–991) while compares and real tablets read the tier's edge (991), so anchor px drift there: px grid tracks that fill the grid become `fr`, a `max-width: 100%` stored as px is no cap, and a range's own CSS width (`calc(…vw …)`) is written as CSS. Diagnose by saving the capture in the live test and comparing the paste's rects with the capture's `web.boxes` at the compare width (web-tiers AC14: 104 → 45 findings at 991).
 - A site fact mapped as a Figma annotation (an `img alt` → `alt:`/`decorative`) outranks the panel's saved description in `normalise/notes.ts`, and the uploader's `syncAlts` writes it back to WordPress: any imported value the user can edit needs a test that the edit survives a re-conversion (web-panel review 1, 29 of 31 photos lost a typed description).
 - Serialising an inline SVG with its computed paint (a fingerprint or a vector): write paint only on parts drawn in
   place, never on a `<symbol>` or a `<use>` target (the instance would take the target's inline style and lose the

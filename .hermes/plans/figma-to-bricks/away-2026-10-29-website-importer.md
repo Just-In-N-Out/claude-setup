@@ -358,3 +358,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-02 21:35 — web-embeds built (db801e5 on 89022ab); one review + verifier dispatched
 - All testable ACs pass (AC1–AC11); AC12, AC13 live (AC13 waits for bdryswi allow-list). Gates by name vs base: unit +10, web +7, browser 0 differences (same 10 failures). Task 11 / AC6 conditional part skipped (needs J2's site.tiers). Paste check id 3cj must be renumbered at finish (3ct used). Many rulings not yet confirmed (HANDOFF).
 - Dispatched web-embeds-reviewer-1.md. Lesson saved: judge slot locks only by flock -n (lslocks blind across sandboxes).
+
+## 2026-11-02 21:45 — web-tiers built (8753722 on 89022ab); one review + verifier dispatched
+- AC1–AC14 pass; AC15 live (bdryswi). AC14 live: plugin-made home 6523 shown/hidden checks + 1043 arrangements, 0 wrong; J0 findings head < base at every tier (991: 45 vs 63). Five AC14 fixes in a7a5295 (fr tracks, 100% max-width no cap, range CSS width, wrapping rows, phone-only fill). Mutants M1–M19 killed (4G cap). Gates by name: check +66 new 0 changed; web 140/137/3 skip; browser same 10 failures.
+- Follow-ups: header logo squeezed at 991; lint more clipped text at 478/390 on the home; content-box CSS widths; two J1 limits.
+- Lessons saved: live-site-reading (anchor vs tier edge), testing-pitfalls (EXIT= copied from sub-logs; pgrep chromium matches earlyoom).
+- Dispatched web-tiers-reviewer-1.md. Importer agents: address builder, 3 wave-1 checkers, embeds reviewer, tiers reviewer.
