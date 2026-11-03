@@ -20,3 +20,4 @@
 - [Review round cap](review-round-cap.md) — ACs accepted first (no cap); importer since 2026-11-02: ONE real-bug review per job, edge cases straight to follow-ups; this project only
 - [Designer feedback, mini chain](designer-feedback-mini.md) — DJ Trees designer notes 2026-11-02: one job per problem; planner → builder → 1 reviewer → 1 verification → merge; general rules
 - [Bricks source research](bricks-source-research.md) — no sample? GPL Bricks PHP on GitHub + his sites assets + schema; Bricks versions per site (darksalmon 2.3.9, DJ staging 2.4.4)
+- [Runaway tests](runaway-tests.md) — earlyoom stops a test at 15–17 GB: a stopped run is a crash, never a normal failure; orchestrator watches (>6 GB or earlyoom) and tells the agent (2026-11-02)
