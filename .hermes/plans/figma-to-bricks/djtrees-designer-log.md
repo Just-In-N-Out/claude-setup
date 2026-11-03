@@ -78,3 +78,4 @@ Justin 17:2x: 'ok run more agents' (16 GB free). Started: car 3 strip-edge verif
 Importer agreement: DJ merges cars 3–6 (build .3) as soon as car 3 + car 6 verifiers are clean and messages "DJ build .3 pushed"; then DJ holds all main merges until importer says "wave 1 merged" (~2–3 h); DJ cars 7–10 then rebase onto that main and get re-verified + audited.
 20:2x: faq-art builder done (head c9b50da on e1dc5a6; 26/26 mutants; AC1–AC6 receipts) → reviewer-1 started (one review). earlyoom: no kills since 17:18.
 20:3x: car 3 strip-edge verifier CLEAN; ac-check above. Waiting only on car 6 verifier for build .3.
+20:4x: car 7 stack-gaps verifier CLEAN on 9599c9e (8/9, AC9 live 3cr); zigzag found_else judged P3 (stays follow-up). Blind auditor deferred to the final head after wave 1.
