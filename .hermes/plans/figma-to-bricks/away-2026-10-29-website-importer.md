@@ -310,3 +310,6 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 
 ## 2026-11-02 19:50 — Justin: "can we run more agents?" → importer 2 → 4
 - Resumed web-tiers (0e24722 + WIP) and web-embeds (4faa8d1) with the shared Chrome flock rule and "build for the ACs, not edge cases". Running: wave-1 finisher, web-panel fixer, tiers, embeds. WSL 3/20 GB at the time. Told DJ Trees session (now figmatobricksv2-d3); this session is now figmatobricksv2-68.
+
+## 2026-11-02 20:00 — Chrome slots 1 → 3 (Justin's trial, via the DJ Trees session)
+- Three lock files ~/.cache/f2b-chrome{,-2,-3}.lock; each agent holds one for its whole Chrome sequence (flock -n loop, marker process). Passed the snippet to all 4 importer agents. testing-pitfalls line updated. DJ Trees runs 8 agents; plans a 35-commit merge (Build 2026-11-02.3) within the hour.
