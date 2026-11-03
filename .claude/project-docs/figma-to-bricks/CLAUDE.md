@@ -5,10 +5,22 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-02)
+## Status (2026-11-03)
 
-- **Current build `2026-11-02.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-02.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-02.5 web-address (website importer):** type a site's address in the panel and press Capture; the
+    importer helper (`npm run capture:serve`, once per work session) captures it and the capture box opens. Paste
+    check **3cy** (AC13, live).
+  - **2026-11-02.5 web-panel (website importer J4):** drop a `.f2b-capture.json` on the panel (or Open website
+    capture…), choose Page, Header or Footer and Convert and copy; pictures, the old site's alt text and font files
+    come from the file. Paste check **3cx** (AC16, live; bdryswi.com's captures once its bot check lets them in).
+  - **2026-11-02.5 web-tiers (website importer J2):** a captured page keeps the old site's own layout at Bricks'
+    tablet and phone tiers (one rule, `site.tiers`); Figma designs convert byte for byte as before. No paste check of
+    its own (seen in 3cx); AC15 (bdryswi.com, live) owed.
+  - **2026-11-02.5 web-capture, web-compare (website importer wave 1, tooling):** `npm run capture -- <address>` saves
+    a live page as a capture file; `npm run compare` measures a paste against the live site. No paste check; AC15
+    (every bdryswi.com page, live) owed once Justin allow-lists the capture.
   - **2026-11-02.4 djtrees-faq-art:** faint art in the empty space of the row under a section's heading moves beside
     the heading once that row stacks, under its words (the FAQ tree). Paste check **3cs**.
   - **2026-11-02.4 djtrees-side-art:** faint art over a section's first heading moves beside it, smaller, once its row
@@ -303,6 +315,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - `npm run watch` rebuilds while you work.
 - **The panel** (`src/ui/`): DOM-free modules plus `main.ts`. Browser features (fetch, image decoding, canvas, Web
   Workers) go through `src/ui/env.ts`, so tests stand in for them (`test/fixtures/panel.ts`).
+- **The website importer's helper:** the panel reaches the importer helper only at `http://127.0.0.1:47811` with its
+  pairing code; Figma desktop runs with Chrome's LocalNetworkAccessChecks off (Figma in a browser can't reach it). The
+  helper binds 127.0.0.1 only and never writes to a site.
 - **The plugin's conversion** (`src/plugin/convert.ts`) must stay byte-identical to `npm run replay` for the same
   snapshot (`test/unit/plugin-convert.test.ts`).
 - **Checks:** `npm run check` runs typecheck, build and the unit and rule tests. Tests use `node --test` on `.ts` files
@@ -840,6 +855,13 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **Videos** (user, 2026-10-19: "just do what v1 did"): an address in the layer name (`Video: https://…`) or an Open
   link to a video makes Bricks' Video, muted and looping where it is a background behind words. Without one, the
   panel finds the file in WordPress Media by its exact name, or the user chooses it in the panel's Videos box.
+- **Website captures** (Justin, 2026-11-02, on the capture plan, confirmed; HANDOFF "Capturing a live page"):
+  - **A part's own fixed content stays in its part** (AC4, "Keep it in the Header"): a sticky header bar stays inside
+    its part's root, marked `web.position: "fixed"`; every other fixed box (chat bubbles, plugin buttons, the site's
+    own call button, cookie bars) goes to the footer part's floating extras.
+  - **bdryswi.com's pages are a live check owed to him** (AC14/AC15, "Mark it mine, merge now"): its bot check stops
+    every automated Chrome, so every sitemap page is captured and checked only once he allow-lists the capture; AC14
+    covers the other corpus sites' homes.
 - **Lists a visitor searches and filters** (user, 2026-10-19): "In the page" (the plugin pastes every row and a small
   script; no WordPress post type) and "Spreadsheet in the panel" (a CSV per list, kept in the Figma file).
   - **On tablets and phones** (user, 2026-10-19, screenshots at 990/766/477: "whenever there's a panel, it looks clean
