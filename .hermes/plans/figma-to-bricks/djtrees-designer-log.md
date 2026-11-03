@@ -104,3 +104,4 @@ Importer agreement: DJ merges cars 3–6 (build .3) as soon as car 3 + car 6 ver
 01:xx: car 11 faq-art blind auditor CLEAN (6/7). Waiting: car 10 pair, car 11 verifier, car 12 pair.
 01:xx: car 12 phone-menu verifier CLEAN (9/10, AC10 live 3ck). Waiting: car 10 pair, car 11 verifier, car 12 auditor.
 01:xx: car 10 side-art blind auditor CLEAN (9/10). Waiting: car 10 verifier, car 11 verifier, car 12 auditor.
+01:xx: car 12 phone-menu ac-check NOT ACCEPTED (AC5, AC8): blind auditor found A1 P1 — linked picture logo renders ~60px smaller and actions float mid-bar where the menu folds (<a> is the flex item). Fixer-2 started on 228d28b. Plan: merge cars 7–11 as Build .4 once car 10 + 11 verifiers are clean; phone menu after its fix (its own build).
