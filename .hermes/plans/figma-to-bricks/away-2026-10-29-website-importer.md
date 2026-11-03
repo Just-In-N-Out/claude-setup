@@ -327,3 +327,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Finisher (rebase2): HANDOFF conflict only; 150/162 patch-ids unchanged (12 HANDOFF context-only); tree composition exact. check 2987/2948/0 fail; replays 20/20 identical; test:web 132/131/1 skip (AC14); test:browser same 10 font failures as main; corpus same. No fix needed. earlyoom: no kills of ours.
 - Main moved to 9a2a966 (Build 2026-11-02.2); DJ plans a 35-commit merge (2026-11-02.3). Asked DJ: merge first, then hold merges while wave 1 rebases (~20 min) and its checkers run (~2–3 h).
 - Lessons saved: per-file browser suite runs (testing-pitfalls), re-rebase proofs (SKILL.md Merging step 1).
+
+## 2026-11-02 21:20 — web-panel verifier-2 clean on 845e601: READY FOR THE USER (16/17, AC16 live owed). Waiting for the blind auditor. found_else: record-shot test writes outside its folder; AC9 plan text names the old file pattern; no unit round-trip for pictured boxes (real captures cover it). earlyoom: 0 kills.
