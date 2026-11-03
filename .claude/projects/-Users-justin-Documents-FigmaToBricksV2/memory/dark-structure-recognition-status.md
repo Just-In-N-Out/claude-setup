@@ -1,11 +1,15 @@
 ---
 name: dark-structure-recognition-status
-description: Logo preservation repaired at3b77b2d; fresh independent verifier5 active, blind audit pending, no merge.
+description: Recognition fixes rebased onto released importer; verifier6 running on2299142/base70be9c09, blind audit and merge pending.
 metadata:
   node_type: memory
   type: project
-  modified: 2026-11-03T20:52:29.644896+00:00
+  modified: 2026-11-03T22:24:08.683202+00:00
 ---
+
+## Current candidate — 2026-11-03T22:24:08.683202+00:00
+
+Clean22991422eca32a2b2fc17c80ce896c28163a9139 on main70be9c09 (web-embeds BUILD2026-11-03.2). Integration5 preserved1469paths with zero mismatches, only additive HANDOFF conflicts; bounded checks passed with original qualifications. Fresh /root/dark_structure_verifier6 active in acceptance-6/verifier, brief verifier-6. Fresh blind auditor6 is pinned but must wait for clean verifier, then root combined AC referee and authorized merge/release. Five dedicated reviews remain final; later code has independent acceptance requirements and explicit code-review coverage exception. Root lock held. No recognition merge or new build yet.
 
 ## Merge-order clarification — 2026-11-03T22:08:32.109083+00:00
 

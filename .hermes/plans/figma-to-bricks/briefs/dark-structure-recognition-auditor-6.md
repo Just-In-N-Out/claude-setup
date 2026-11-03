@@ -4,7 +4,7 @@ Fresh pipeline_auditor, source/read-only, no agents. Load engineering-best-pract
 
 Approved plan `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/plan-approved.md`.
 Worktree `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
-HEAD ROOT_MUST_PIN_INTEGRATED_HEAD.
+HEAD 22991422eca32a2b2fc17c80ce896c28163a9139.
 BASE 70be9c09bee3eb2384399fe19972a0e35cddff2a.
 Own evidence `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/acceptance-6/auditor`.
 

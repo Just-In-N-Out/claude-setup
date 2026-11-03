@@ -1,11 +1,11 @@
-# DRAFT independent verifier — pin integrated web-embeds head before dispatch
+# Independent verifier — combined recognition and web-embeds release candidate
 
 Fresh pipeline_verifier, source/read-only, no agents. Own E/acceptance-6/verifier and fresh scratch only. Load engineering-best-practices, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, pertinent testing pitfalls and feature-dispatch/references/ac-verification.md.
 
 W `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
 E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Approved plan E/plan-approved.md SHA25623fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511.
-HEAD ROOT_MUST_PIN_INTEGRATED_HEAD; BASE 70be9c09bee3eb2384399fe19972a0e35cddff2a.
+HEAD 22991422eca32a2b2fc17c80ce896c28163a9139; BASE 70be9c09bee3eb2384399fe19972a0e35cddff2a.
 Root current-head review referee /home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/integration-prep-5/root-referee.log records the honest post-review coverage rejection. Root approval.json final_review_limit_application records the disclosed bounded exception under Justin's "yes last  review then go": five dedicated reviews total, no sixth. Do not claim new integration changes were code-reviewed or rewrite review receipts. This exception only removes another dedicated review; independently enforce every non-live AC and required project gate.
 Own evidence `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/acceptance-6/verifier`.
 

@@ -9,7 +9,13 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   reload itself, so it can pass a naive "page loaded" check: read the document's status
   (`performance.getEntriesByType('navigation')[0].responseStatus`) and treat a page with no builder template or
   landmark, no link and under ~20 layers as not the site's page; decide from structure, never from its words
-  (web-capture fixer 1). The plugin-made Hostinger site can stop answering for about a minute after several
+  (web-capture fixer 1). The layer count misses real checks: bdryswi.com's is 38 layers (10 hidden decoy label+input
+  pairs), 0 links, HTTP 403. A check a person can pass reads as an error status or a self-reload, no link to another
+  page of the site, and a shown control (button, input, iframe); one with nothing to press stays a plain refusal
+  (web-human-check planner). A CDP-driven Chrome reports `navigator.webdriver` true even in a visible window launched
+  with only `--remote-debugging-port` (Chrome 156). On the Windows desktop a visible Chrome opens through WSLg straight
+  from the shell: `/mnt/wslg/weston.log` `appId: Chromium-browser` proves the window reached Windows, while Wayland
+  reports its position as -32730. The plugin-made Hostinger site can stop answering for about a minute after several
   back-to-back 16-width compares ("didn't finish loading within 60s"): keep those runs, confirm with one curl and
   re-run into new folders (web-compare amendment-1 builder).
 
