@@ -307,3 +307,6 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - R1-1 P2: a typed description for a photo with an old-site alt is lost on re-convert and written back to WordPress (AC7 false). R1-2 P2: font file names break italic woff2 and two-word families. R1-3..7 P3 → follow-ups.
 - referee REVIEW AGAIN; ac-check (no --reviews) NOT ACCEPTED (AC7). Following the one-review rule: fixer (web-panel-fixer-1.md) → fresh verifier + blind auditor → ac-check without --reviews (no re-review), as Justin set for the mini chain.
 - Chrome: switched importer agents to the shared `flock ~/.cache/f2b-chrome.lock` + marker (the pgrep wait starved 50+ min). Lessons saved: testing-pitfalls (shared flock, --test-skip-pattern), live-site-reading (imported value edits must survive re-convert). 2 enforce proposals offered.
+
+## 2026-11-02 19:50 — Justin: "can we run more agents?" → importer 2 → 4
+- Resumed web-tiers (0e24722 + WIP) and web-embeds (4faa8d1) with the shared Chrome flock rule and "build for the ACs, not edge cases". Running: wave-1 finisher, web-panel fixer, tiers, embeds. WSL 3/20 GB at the time. Told DJ Trees session (now figmatobricksv2-d3); this session is now figmatobricksv2-68.
