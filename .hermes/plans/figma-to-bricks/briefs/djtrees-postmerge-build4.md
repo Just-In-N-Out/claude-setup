@@ -22,8 +22,8 @@ equals it and the tracked status is clean; if not, stop and report).
   strength) is now fixed by djtrees-faint-picture (Build .3), and check 3cs's "after djtrees-faint-picture is merged
   too" is met; side-art: check 3cm's step about trees at full strength is out of date (faint-picture merged); phone-menu:
   on the train the panel's action pill is centred from 767 down by `cta.center`; stack-gaps/stack-lines: the merged
-  rule (on an across tier each lower point keeps its own top, outer sides keep the row's ends; stack-gaps' AC3 narrowed
-  for flat-colour lines on upright phones).
+  rule (on an across tier each lower point keeps its own top, outer sides keep the row's ends; stack-gaps' AC2 and AC3
+  narrowed for flat-colour lines on upright phones, where stack-lines' gap 0 and each point's own top apply).
 - Commit message: `Build <BUILD>: DJ Trees divided rows, side art, FAQ tree, phone menu (djtrees-stack-gaps, djtrees-stack-lines, djtrees-step-sides, djtrees-side-art, djtrees-faq-art, djtrees-phone-menu)`.
 - `npm run build`, check the bundle carries BUILD, push main; `origin/main` must equal main.
 
