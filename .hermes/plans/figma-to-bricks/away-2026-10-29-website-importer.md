@@ -490,3 +490,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 07:20 — embeds stack verifier clean (READY FOR THE USER 11/13 on 3a39c11; stack fix 3 proven; 3cw free). found_else → follow-ups: phone-only floating extras show at no width (Task 11, ties to Justin's question); map how flips (servedHtml swallows failed fetch). Lesson saved. Waiting: embeds auditor; wave 1's 3 checkers.
 
 ## 2026-11-03 (≈06:10 local) — web-capture ACCEPTED on wave1-merge 0f9e870: ac-check READY FOR THE USER (14/15; AC15 live). Verifier-4 clean (mutants killed; live letsgro + plugin home ok). Follow-ups appended (--list drops fragment links; snippets carry every script of a host). Lesson saved (pty prompt proof via script -qec). Waiting: compare verifier-3 + auditor-3, embeds auditor.
+
+## 2026-11-03 (≈06:25) — web-compare auditor-3 clean on 0f9e870: ALL ACCEPTED 18/18 (AC17 0.858×; AC16 floor caught the race). Lessons saved (CHROME_PATH=/nonexistent lists names; F2B_CAPTURE_CONFIG for --owned). Waiting: compare verifier-3 (then wave 1 merges), embeds auditor.

@@ -6,8 +6,8 @@ Role: fresh blind read-only `pipeline_auditor`. Do not spawn agents or change so
 
 Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/plan-approved.md`.
 Worktree: `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
-Head: `ROOT_MUST_PIN`.
-Base: `ROOT_MUST_PIN_BASE`.
+Head: `7ce37fe5fab4c14bb01564f5941a21e1ca6b860b`.
+Base: `6cfd3e6681b7d0e121173ed746ab49206c672c4e`.
 Own evidence folder: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/auditor`.
 
 Prove every approved AC yourself on the pinned head and base using independent logs/screenshots and meaningful causal controls. The raw source inputs named by the approved plan are allowed; resolve their original evidence paths explicitly. Do not open sibling builder/review/verifier reports, receipts or screenshots. Do not accept the plan's causal diagnosis as execution proof: run the checks yourself. A preserving-behavior base exemption needs an explicit reason; an input/setup failure is never behavioral RED. Each criterion needs its exact named result, command, head stamp, screenshot and honest status.
@@ -25,3 +25,5 @@ Justin's latest shared memory update (~2026-11-02 20:15, `memory/run-without-sto
 ## Windows Desktop: Runaway Memory (mandatory, latest AGENTS)
 
 Mutation runs always use `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`. A command ending SIGTERM, exit143/137, or Killed may be earlyoom rather than a test result. Check `journalctl -u earlyoom --since "-30 min" -o short-iso` for sending lines, identify the killed command and growth, and report it to the orchestrator. A killed check must be rerun under the same 4 GB cap, never bare. Do not weaken or bypass the cap; report a concrete unavailable cgroup/systemd prerequisite if one occurs. Preserve owned-process cleanup and the current no-slot-cap/one-own-Chrome-job rule. Include relevant kill facts in checkpoints/handback. Root checks earlyoom since its last check on every report and before dispatching the next role; it maps killed paths to owners and notifies Justin, including unowned kills.
+
+Executor clarification: the systemd user scope was unavailable even escalated during preparation. This is relevant only to required mutation-TEST runs or reruns after memory kills. Routine read-only checks may proceed normally. Do not bypass the cap for a required mutation test or memory-killed rerun; report that concrete prerequisite if needed. This runtime note supplies no sibling acceptance outcome.

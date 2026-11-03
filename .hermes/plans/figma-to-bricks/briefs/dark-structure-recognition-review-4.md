@@ -1,4 +1,4 @@
-# DRAFT — fourth review explicitly authorized; pin integrated head/base first
+# Fourth review — explicitly authorized, integrated commit pinned
 
 Fresh pipeline_reviewer, report only, no agents. Own E/review-4 and fresh short private disk scratch only. You are not alone; preserve others' work. No code/test/docs/ref edits or commits, main edits, rebase, BUILD bump, push, live/Figma/media writes, shared config/dependency changes, skill or memory edits.
 
@@ -8,10 +8,10 @@ W `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recog
 E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Last reviewed HEAD / delta FROM `dbbfe0c6f115db6110a27308758087628cf5485a`.
 Old integration base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`.
-New integrated HEAD ROOT_MUST_PIN_HEAD.
-New integration base ROOT_MUST_PIN_BASE.
+New integrated HEAD 7ce37fe5fab4c14bb01564f5941a21e1ca6b860b.
+New integration base 6cfd3e6681b7d0e121173ed746ab49206c672c4e.
 Approved plan E/plan-approved.md SHA25623fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511, unchanged.
-Prior reviews E/review-1/review.json, E/review-2/review.json, E/review-3/review.json; latest report E/review-3/report.md. Final rating repair E/fixer-3/report.md/summary.json/ac-status.json, original fixed commit72dd5d549ffc89e36e6dd3f5e1207a97a76524cb. Current integration report ROOT_MUST_PIN_INTEGRATION_REPORT.
+Prior reviews E/review-1/review.json, E/review-2/review.json, E/review-3/review.json; latest report E/review-3/report.md. Final rating repair E/fixer-3/report.md/summary.json/ac-status.json, original fixed commit72dd5d549ffc89e36e6dd3f5e1207a97a76524cb. Current integration report /home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/integration-prep-2/report.md.
 
 Load engineering-best-practices, requesting-code-review, code-review-practice, review-fix-cadence and project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` with applicable testing pitfalls. Follow feature-dispatch/references/review-loop.md and actual referee schema.
 
@@ -28,3 +28,5 @@ Runtime: pin Node `/home/justin/.local/node-v22.23.3/bin/node` and child PATH; o
 All mutation-TEST runs use systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0. SIGTERM/137/143/Killed may be earlyoom; inspect journalctl -u earlyoom, identify/report runaway, rerun affected check under4GB cap, never bare. Report unavailable cap prerequisite instead of bypassing it. Root checks every report/dispatch too.
 
 Write checkpoint.json promptly with phase/forecast. Write E/review-4/review.json in actual schema, self-check its format and return verdict, exact head/base/from/scope, all finding dispositions/evidence, ac_status for AC1–AC8 and skill_lessons[{skill,lesson,evidence,enforce}] (normally empty). Never edit skills/memory. End MAIN SESSION: check and save these skill_lessons now.
+
+Integration handback: two HANDOFF-only conflicts; ir.ts additive merge. Root confirmed exact head and merge-base above. E/integration-prep-2/range-diff-reviewed-final.txt and range-diff-starting-final.txt are supporting evidence, not a substitute for your review. Systemd user scope currently failed even escalated; this blocks mutation TESTS and memory-killed reruns, not ordinary Git reads or ordinary checks. Do not require cap availability before routine checks; do not bypass it for an actual required mutation test or memory-killed rerun. No memory kills reported.
