@@ -12,7 +12,7 @@ case its words cover); an edge case beyond its text goes in `found_else`.
 
 ## The only inputs
 - Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/plan-approved.md` (AC1–AC18). Use each exact test name the plan gives.
-- The head `@HEAD@` and base `6cfd3e6681b7d0e121173ed746ab49206c672c4e` (below), and your own folder `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/auditor-3/` (new).
+- The head `0f9e870be571a961f4b363f72069e0370324d378` and base `6cfd3e6681b7d0e121173ed746ab49206c672c4e` (below), and your own folder `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/auditor-3/` (new).
 - The job: `npm run compare -- <left> <right>` compares two pages (a live page and its Bricks copy) word by word through the aligned word sequence at every width and reports what differs; it is the oracle every later importer job is judged by. It lives in `test/web/` and `tools/`; `src/` is untouched by it.
 - **AC11 on the combined head:** the head also holds web-capture's `src/web` and main's newer `src` changes, so judge AC11 by
   this job's own commits: `git diff --name-only <C>..HEAD -- src`, where `<C>` is the line's "web-capture finish: ledger moved…" commit (`git log --format='%H %s' 6cfd3e6..HEAD | grep 'web-capture finish'`; the line is capture's commits, then compare's) (or the merge-base with the commit
@@ -24,10 +24,10 @@ case its words cover); an edge case beyond its text goes in `found_else`.
   right now): keep such runs, check with one curl, re-run into a new folder.
 
 ## Your copy
-You start in your own throwaway worktree. Run `git checkout --detach @HEAD@` and confirm `git rev-parse HEAD`, a clean
+You start in your own throwaway worktree. Run `git checkout --detach 0f9e870be571a961f4b363f72069e0370324d378` and confirm `git rev-parse HEAD`, a clean
 `git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `6cfd3e6681b7d0e121173ed746ab49206c672c4e`. This head is the finisher's
-combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-fix-1`, canonical copy
-`@WT@`). Your `ac.json` names head `@HEAD@` and base `6cfd3e6681b7d0e121173ed746ab49206c672c4e`. Never write in any other worktree.
+combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-merge`, canonical copy
+`/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a8728f5f7b81a8fe9`). Your `ac.json` names head `0f9e870be571a961f4b363f72069e0370324d378` and base `6cfd3e6681b7d0e121173ed746ab49206c672c4e`. Never write in any other worktree.
 
 ## Work
 Load `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, its `references/rules-summary.md` and

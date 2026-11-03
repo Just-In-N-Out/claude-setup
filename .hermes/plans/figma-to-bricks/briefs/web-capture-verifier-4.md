@@ -13,10 +13,10 @@ goes in `found_else` (it becomes a follow-up), not a finding. Be thorough on the
 **Final check (2026-11-03):** this head is wave 1's line (`wave1-final` + fix 1 + fix 2) rebased onto main `6cfd3e6`. Since your earlier round it gained fix 2 (`bb7f5aa`..`38dc0ca`: fixed boxes only other widths show are read in the range that shows them, a phone-only full-window dim layer is the page's backdrop, the compare FE-1 test's short temp folder). The capture plan is amended (AC4 part-own fixed content; AC14 letsgro + plugin home; AC15 live). Prove every AC on this head yourself; earlier receipts don't count.
 
 ## Your copy
-You start in your own throwaway worktree. Run `git checkout --detach @HEAD@` and confirm `git rev-parse HEAD`, a clean
+You start in your own throwaway worktree. Run `git checkout --detach 0f9e870be571a961f4b363f72069e0370324d378` and confirm `git rev-parse HEAD`, a clean
 `git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `6cfd3e6681b7d0e121173ed746ab49206c672c4e`. This head is the finisher's
-combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-fix-1`, canonical copy
-`@WT@`). Your `ac.json` names head `@HEAD@` and base `6cfd3e6681b7d0e121173ed746ab49206c672c4e`. Never write in any other worktree.
+combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-merge`, canonical copy
+`/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a8728f5f7b81a8fe9`). Your `ac.json` names head `0f9e870be571a961f4b363f72069e0370324d378` and base `6cfd3e6681b7d0e121173ed746ab49206c672c4e`. Never write in any other worktree.
 
 ## What to verify
 - **Approved plan (the oracle):** `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-capture/plan-approved.md`, AC1–AC15 (amendment 1: AC15 is `(live)`, owed to Justin; mark it `not_run`). Never change an AC's id, oracle or tag.

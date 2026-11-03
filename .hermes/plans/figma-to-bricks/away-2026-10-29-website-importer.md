@@ -455,3 +455,10 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Dispatched rebase finisher (website-importer-wave1-rebase-4.md → branch wave1-merge on 6cfd3e6; evidence rebase4/).
 - Prepared web-capture-verifier-4, web-capture-auditor-3, web-compare-verifier-3, web-compare-auditor-3 (placeholders @HEAD@/@HEAD7@/@WT@, base 6cfd3e6, TMPDIR ≤ 38 chars).
 - Lessons saved: live-site-reading (build hidden fixed boxes in their range; window-relative tests), memory (Mac socket limit 103).
+
+## 2026-11-03 04:20 — wave 1 rebased to 0f9e870 on 6cfd3e6 (wave1-merge); 4 final checkers + stack finisher dispatched
+- rebase4: HANDOFF conflict only; 162/174 patch-ids unchanged (12 HANDOFF context); tree composition 0 wrong; check by name 0 changed (+207); replays 20/20.
+- Final checkers: web-capture-verifier-4, web-capture-auditor-3, web-compare-verifier-3, web-compare-auditor-3 (TMPDIR ≤ 38).
+- Stack finisher (website-importer-stack-1.md): panel → address → tiers → embeds onto 0f9e870 as panel-merge/address-merge/tiers-merge/embeds-merge; real code conflicts expected (normalise.ts, scene.ts, style.ts, types.ts, ir.ts, understand.ts, designs.ts, snapshot/web.ts).
+- Merge plan: ff wave1-merge, then each stacked head in order once its quick re-check (verifier + auditor) accepts; ONE after-merge build commit at the end (Build 2026-11-02.5 or next) so the ff chain isn't broken; push; tell DJ "wave 1 merged" / "panel merged".
+- Lesson saved: testing-pitfalls (redirects refused; hash-object proof).
