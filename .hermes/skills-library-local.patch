@@ -165,7 +165,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..3be2410 100644
+index f2d882d..b343762 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,51 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -192,7 +192,7 @@ index f2d882d..3be2410 100644
 +  not `$(…)`, because an orphan holding the pipe hangs the run. A mutant removing a
 +  wait's limit hangs forever on motion that never ends: run batches with `node --test
 +  --test-timeout=<ms>` sized above each file's normal run (under process isolation it
-+  bounds the whole file, so too small a value records no later kills; web-capture fixer 8). A run that hits its cap with no ok/not-ok lines is "unknown", never "survived"; bound every exit wait in tests that spawn long-lived commands, and kill any child the mutant left holding a port (web-address M10). A mutant that leaves a handle open (stdin readline, a server) can print its test's own `not ok … timed out` and then never exit: judge by that line under a deadline and kill leftover runners by their cwd (web-address auditor M6).
++  bounds the whole file, so too small a value records no later kills; web-capture fixer 8). A run that hits its cap with no ok/not-ok lines is "unknown", never "survived"; bound every exit wait in tests that spawn long-lived commands, and kill any child the mutant left holding a port (web-address M10). A mutant that leaves a handle open (stdin readline, a server) can print its test's own `not ok … timed out` and then never exit: judge by that line under a deadline and kill leftover runners by their cwd (web-address auditor M6). A test that awaits one promise before attaching a handler to the next turns a mutant that leaves the first hanging into an unhandledRejection, not an assertion kill: attach settle handlers when each promise is made (`p.then(ok, e => e)`) and race each against a bound (wave-1 fixer 11, FE1M2).
 +  A mutant can also allocate without end faster than any timeout (one reached 17 GB in
 +  12 s and froze the WSL desktop, djtrees-phone-menu builder: not a loop but node's
 +  `assert.deepEqual` diff of two whole IR trees once the mutant made them differ; compare

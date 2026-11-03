@@ -427,3 +427,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 00:50 — web-embeds fix 2 done (78c0b9b): only JavaScript counts as a widget's script; inline scripts count by host only when they load/call it; Yoast schema and data layers never pasted; R1-1 fallback applies. AC10 108/108, AC11 7/7, mutants killed. 3 P3 follow-ups (held-back script types, mixed loader+data inline script, J1 snippetFor). Final check after rebase onto merged main. Lesson saved (live-site-reading).
 
 ## 2026-11-03 01:00 — web-tiers fix 2 done (9eb26ab): siteLayers gates every phone copy (slider, hero band, intro button, turns); Gallery 7 → 0 phone-only nodes; AC12 93/93; AC10/11/14 pass; follow-ups: hold-only path untested, other own-only measured guards (no hits on real captures). Final check after rebase onto merged main. Lesson skipped (bounded back-off already in testing-pitfalls).
+
+## 2026-11-03 01:30 — wave-1 fixer 11 done (5b52fe7 on b09727f); plan amended; 4 re-checkers dispatched
+- V2-F2 fixed (ownWidth via widthKept; probe home 72/0; live kept widths 20→28 home, 1→2 letsgro; 12 mutants killed). FE-1 fixed (chrome.ts BrowserLost; site-compare starts at exit 2; one-line reason). Plan amendment 1 committed (42b341a): AC4 part-own fixed content; AC14 = letsgro + plugin home; AC15 (live) bdryswi. Gates by name vs a2ae004: no changes; check 2946/65; replays 24/24; compare 80 (+2), capture 54/1 (+1), browser 507/10/2 same.
+- plan-approved.md re-installed from the amended plan (old kept as plan-approved-v1-before-amendment-1.md).
+- Dispatched re-checks on 5b52fe7: web-capture-verifier-3, web-capture-auditor-2, web-compare-verifier-2, web-compare-auditor-2 (WT agent-a87b95c4…). Then ac-check both → merge (ask DJ to keep holding).
+- Lessons saved: mutation-testing-discipline (attach settle handlers), testing-pitfalls (CLI exit-code start failing; CDP navigate quirk; pgrep --). Enforce offered.
