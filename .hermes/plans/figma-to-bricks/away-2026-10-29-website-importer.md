@@ -364,3 +364,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Follow-ups: header logo squeezed at 991; lint more clipped text at 478/390 on the home; content-box CSS widths; two J1 limits.
 - Lessons saved: live-site-reading (anchor vs tier edge), testing-pitfalls (EXIT= copied from sub-logs; pgrep chromium matches earlyoom).
 - Dispatched web-tiers-reviewer-1.md. Importer agents: address builder, 3 wave-1 checkers, embeds reviewer, tiers reviewer.
+
+## 2026-11-02 22:05 — web-embeds review 1: 3 real P2s; AC1–AC11 accepted; fixer dispatched
+- R1-1 YouTube player built by Elementor's script → empty box; R1-2 lazy-loaded frames → about:blank; R1-3 letsgro's script-revealed fixed boxes pasted at opacity 0 (AC12's dot-nav check would fail). ⭐ ruling for R1-3: script-revealed boxes pasted visible with a note; deliberately hidden ones stay. R1-4..6 P3 → follow-ups.
+- Fixer: web-embeds-fixer-1.md (branch web-embeds-fix-1 from db801e5) → then verifier + auditor (no re-review).
+- Lessons saved: live-site-reading (served vs live markup: script-made frames, lazy src, script-revealed boxes); memory (grep is a ugrep function: use `command grep`). Enforce proposal offered (capture fixture with player + lazy frame).
