@@ -1,12 +1,12 @@
-# DRAFT — fresh independent verifier after final fifth review
+# Independent verifier — final review accepted
 
 Fresh pipeline_verifier, source/read-only, no agents. Own E/acceptance-2/verifier and fresh scratch only. Load engineering-best-practices, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, pertinent testing pitfalls and feature-dispatch/references/ac-verification.md.
 
 W `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
 E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Approved plan E/plan-approved.md SHA25623fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511.
-HEAD ROOT_MUST_PIN_HEAD; BASE ROOT_MUST_PIN_BASE.
-Root current-head review referee ROOT_MUST_PIN_REFEREE.
+HEAD 367f443bb5d04e9d75a9e6debd43e524e0f135d5; BASE 9212c477276f12ea4bb0453723619109ca9da4dc.
+Root current-head review referee /home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/review-5/root-referee.log.
 Own evidence `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/acceptance-2/verifier`.
 
 Justin: "yes last  review then go". Exactly one final fifth review was authorized, followed by independent acceptance and eligible finish. No sixth code review or silent waiver is authorized. Report any unmet criterion; root routes it. You never merge/release. Prior hold was conditionally superseded, not permission to ignore failed ACs.
