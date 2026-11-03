@@ -66,3 +66,4 @@ Justin 17:2x: 'ok run more agents' (16 GB free). Started: car 3 strip-edge verif
 18:1x: car 4 top-align verifier CLEAN; ac-check READY FOR THE USER 7/8 on ea1a46e (base 779c830; AC8 live 3cn). Car 4 ready to merge after car 3.
 18:2x: car 6 panel-edge verifier+auditor started (head f425e79, base 5b312ae). djtrees-common: shared flock Chrome lock + never-end-turn-to-wait rules added.
 18:3x: car 5 faint-picture verifier CLEAN (6/7, AC7 live 3cv); waiting on its blind auditor. P3 hover-fade source → follow-ups.
+18:4x: car 3 strip-edge blind auditor CLEAN (6/7, AC7 live 3cu); waiting on car 3 verifier.
