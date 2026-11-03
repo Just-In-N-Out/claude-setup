@@ -1,4 +1,4 @@
-# DRAFT — fix findings from the second/final authorized review
+# Fix findings from the second/final authorized review
 
 Fresh pipeline_fixer, no agents. You own this story's source/tests/HANDOFF/permanent ledger in W, E/fixer-2 and fresh short disk scratch. You are not alone: preserve all other work and accommodate it. No main edits, rebase, BUILD bump, push, live/Figma/media writes, private CLAUDE changes, shared dependency/config changes or skill/memory edits.
 
@@ -7,11 +7,11 @@ E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognitio
 Starting HEAD `6a874e762fb3d6fce76d31af58482c6d885112d2`.
 Base `b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1`.
 Approved immutable plan E/plan-approved.md SHA25623fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511.
-Final review E/review-2/review.json; completed report ROOT_MUST_PIN_REPORT; root referee ROOT_MUST_PIN_REFEREE. Earlier reports E/review-1/resume/report.md, E/fixer-1/report.md, E/integration-prep/report.md are historical context with their exact limitations.
+Final review E/review-2/review.json; completed report E/review-2/report.md; root referee E/review-2/root-referee.log. Earlier reports E/review-1/resume/report.md, E/fixer-1/report.md, E/integration-prep/report.md are historical context with their exact limitations.
 
 Load engineering-best-practices, receiving-code-review, systematic-debugging, test-driven-development, git-commit-rules and project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` with relevant testing pitfalls; mutation-testing-discipline for mutations/guards. Independently verify each final P0–P2, fix valid findings test-first and reject only with concrete evidence. No main-session implementation prescription. Fix the structural rule across meaningful nearby variations, not an arbitrary threshold adjusted to the one witness; production never keys on source names, IDs, content, palettes or fonts.
 
-Preliminary IDs, final report/referee authoritative:
+Final finding IDs, completed report/referee authoritative:
 - R2-1: a highlighted current item in a three-entry footer with a smaller caption still loses all links; original four-entry/dominant-caption witnesses are fixed. AC3/AC5.
 - R2-2: short visible attribution names such as Amy/Jo are discarded before testimonial recognition, suppressing the inferred-selector/missing-record note. AC4/AC5.
 
