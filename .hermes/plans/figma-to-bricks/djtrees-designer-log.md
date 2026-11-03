@@ -102,3 +102,4 @@ Importer agreement: DJ merges cars 3–6 (build .3) as soon as car 3 + car 6 ver
 01:xx: car 8 blind auditor CLEAN; ac-check above. Load avg peaked ~88 with 12 agents (24 cores), memory 13 GB free, no earlyoom.
 01:xx: cars 7, 8, 9 ACCEPTED (ac-check READY on 68f04c0, 37522d1, 9ce8511). Waiting cars 10–12 pairs.
 01:xx: car 11 faq-art blind auditor CLEAN (6/7). Waiting: car 10 pair, car 11 verifier, car 12 pair.
+01:xx: car 12 phone-menu verifier CLEAN (9/10, AC10 live 3ck). Waiting: car 10 pair, car 11 verifier, car 12 auditor.

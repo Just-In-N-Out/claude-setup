@@ -129,3 +129,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-03 | web-compare | figma-to-bricks | test: compare-cli's FE-1 test makes its temp folder with a short mkdtemp under /tmp (or fails fast naming TMPDIR's length) | offered
 - 2026-11-03 | wave 1 | figma-to-bricks | test: capture-floating fixture with a phone-only fixed call bar and a header of a desktop fixed bar plus a phone-only fixed bar | offered
 - 2026-11-03 | djtrees train final | git-commit-rules / rebase brief | Script: the rebaser's closing gate fails if its own worktree has refs/heads/train-* checked out (git worktree list --porcelain) | offered
+- 2026-11-03 | djtrees-phone-menu | figma-to-bricks | Script: any head-vs-base corpus comparison (lintdiff) refuses a file whose fonts were not observed loaded on one side only and names the side to re-run | offered
