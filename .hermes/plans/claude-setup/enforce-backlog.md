@@ -136,3 +136,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-03 | website-importer merge | figma-to-bricks | script: next-paste-id.sh scans main and every refs/heads HANDOFF plus the plan logs, prints the next free id, exits 1 when two branches claim the same id | offered
 - 2026-11-03 | website-importer merge | figma-to-bricks | test: fail npm run check in the main folder when git ls-files .superpowers/ is non-empty on main | offered
 - 2026-11-03 | djtrees-phone-menu (train) | figma-to-bricks | Test: convert every zero-argument fixture through asCapture and assert no copy:* IR keys and an empty adapted.yielded for every non-site rule | offered
+- 2026-11-03 | djtrees-phone-menu | figma-to-bricks | Test: lint.ts narrow-column skips an element whose words all sit in display:none/visibility:hidden descendants (closed Nav panel at 390/768), with a unit fixture; in npm run check (= follow-up R1-2) | offered
