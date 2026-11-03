@@ -1,4 +1,4 @@
-# DRAFT — prepare current-main integration before the second/final review
+# Prepare current-main integration before the second/final review
 
 Role: fresh pipeline_finisher, branch preparation only. Do not spawn agents. You are not alone; preserve all other sessions' changes and accommodate them. Load engineering-best-practices, git-commit-rules and project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` with applicable testing pitfalls.
 
@@ -7,8 +7,8 @@ M `/home/justin/Documents/FigmaToBricksV2`, READ ONLY.
 E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Own evidence E/integration-prep/ and fresh private disk scratch.
 Approved plan E/plan-approved.md hash23fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511; no amendment authorized.
-Starting fixed head ROOT_MUST_PIN_HEAD.
-Fix report ROOT_MUST_PIN_FIX_REPORT.
+Starting fixed head 7180f288f10a1f3dec3a521ddf3d8c147695c418.
+Fix report E/fixer-1/report.md and E/fixer-1/fixer-report.json.
 Prior review E/review-1/review.json and E/review-1/resume/report.md, root referee E/review-1/root-referee.log.
 
 Purpose: local main has advanced with completed independent features, including changes to docs/HANDOFF.md and src/core/style/style.ts shared with this story. Justin allows only TWO review rounds. Prepare the branch integration before the final full review so any conflict resolution is included in that review. This is not acceptance or release: no AC has been independently accepted yet, and all verifier/auditor/ac-check gates remain after review2. No merge, BUILD bump, push, live writes or main-folder modifications.
@@ -21,7 +21,7 @@ Run npm run check and npm run corpus in this copy and affected recognition check
 
 The approved eight criteria remain: recognition-header-ownership; recognition-header-actions; recognition-footer-navigation; recognition-review-candidate; recognition-preservation-matrix; recognition-panel-contract; recognition-browser-matrix; recognition-installed-round-trip (live). Q1A preserves static supplied reviews with truthful missing-record note, never fabricated reviews/timings; Q2A omits only uniquely owned navigation; Q3A retains existing destination policy. Prior good pages and explicit actions stay preserved. AC8 remains live/owed unless genuinely executed; do not substitute DJ staging2.4.4 for approved Bricks2.3.9 proof.
 
-Runtime: pinned Node22.23.3 `/home/justin/.local/node-v22.23.3/bin/node` plus child PATH; owned Chrome wrapper with --use-gl=disabled, clear DISPLAY/WAYLAND. Short owned disk scratch/TMPDIR/profiles under /home/justin/.hermes, not RAM/tmp. One of three existing shared f2b-chrome locks with nonblocking flock FD selection, node-named marker and owned trap cleanup for a complete sequence. Never run two Chrome jobs or hold two slots yourself; base/head sequential. Read runtime section of briefs/djtrees-common.md if needed. No waiting for all foreign Chrome after acquiring a slot. Root owns setup sync; one role here, global agent ceiling8.
+Runtime: pinned Node22.23.3 `/home/justin/.local/node-v22.23.3/bin/node` plus child PATH; owned Chrome wrapper with --use-gl=disabled, clear DISPLAY/WAYLAND. Short owned disk scratch/TMPDIR/profiles under /home/justin/.hermes, not RAM/tmp. Justin's latest shared memory update (~2026-11-02 20:15, `memory/run-without-stopping.md` line27) supersedes the three-slot trial: **no shared Chrome slot limit**, but each agent runs only ONE of its own Chrome jobs at a time. Run base/head sequentially. Do not wait for old shared-slot locks or for foreign Chrome to disappear. Preserve owned cleanup, the 4GB mutation cap and earlyoom investigation. Global agent ceiling8 still applies; root runs one role for this story. Never disturb another session's locks/processes. Root owns setup sync.
 
 Keep checkpoint.json and report meaningful blockers/progress. Stop ready-for-review2, with verdict, exact original/final HEAD/main, conflict and check receipts, honest ac_status for AC1–AC8, and skill_lessons [{skill,lesson,evidence,enforce}] (normally empty). Never edit skills/memory. End MAIN SESSION: check and save these skill_lessons now.
 

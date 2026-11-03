@@ -31,3 +31,5 @@ reviews. Nothing merged into `main`; no wave-2 builder started. Full step log:
 **Why:** a resumed session must not restart the jobs or redo finished rounds. **How to apply:** read the log's last
 entries and this note, run `review-check.sh` on each evidence folder to confirm the state, then continue from the
 resume step named above. Related: [[brainstorm-goes-to-planner]], [[bdry-home-copy]], [[run-without-stopping]].
+
+**Live website, no Figma design (Justin, 2026-11-02):** "I want to be able to import a live website, not related to Figma, using my plugin" — he chose **"Address in the panel"** over "File drop is fine" and "Not in Figma at all": type the site's address in the plugin panel; a small helper he starts once on his PC reads it in Chrome (the capture) and hands the result to the panel; Convert and paste. New job `web-address` (planner dispatched 2026-11-02). Figma only hosts the panel.

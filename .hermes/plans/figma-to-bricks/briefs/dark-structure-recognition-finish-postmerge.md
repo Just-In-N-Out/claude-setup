@@ -21,8 +21,7 @@ Return verdict, release report path, ac_status preserving live obligations, exac
 
 ## Current shared-PC Chrome protocol
 
-Justin's latest trial allows THREE Chrome slots across the whole machine. Hold exactly one of `/home/justin/.cache/f2b-chrome.lock`, `/home/justin/.cache/f2b-chrome-2.lock`, `/home/justin/.cache/f2b-chrome-3.lock` through each complete Chrome sequence, with nonblocking flock FD selection and the established node-named marker. Never hold two slots or launch two Chrome jobs yourself; base/head browser work runs sequentially. Read only the runtime/slot instructions in `briefs/djtrees-common.md` if needed. Do not require all foreign Chrome to disappear after acquiring a slot. Use owned cleanup/traps, never broad process kills. Honor filesystem permissions for lock access; escalate a legitimate blocked lock operation rather than bypass the protocol. Root keeps one role active for this story; the global agent ceiling is8 across sessions. This supersedes prior parallel-Chrome assumptions, not required gate coverage.
-
+Justin's latest shared memory update (~2026-11-02 20:15, `memory/run-without-stopping.md` line27) supersedes the three-slot trial: **no shared Chrome slot limit**, but each agent runs only ONE of its own Chrome jobs at a time. Run base/head sequentially. Do not wait for old shared-slot locks or for foreign Chrome to disappear. Preserve owned cleanup, the 4GB mutation cap and earlyoom investigation. Global agent ceiling8 still applies; root runs one role for this story. Never disturb another session's locks/processes.
 
 ## Windows Desktop: Runaway Memory (mandatory, latest AGENTS)
 
