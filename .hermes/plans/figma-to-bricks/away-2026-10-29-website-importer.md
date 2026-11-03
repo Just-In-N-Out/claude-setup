@@ -482,3 +482,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 06:25 — Justin: "after you merge wave 1 and wave 2 stop building ok" → after the five merges and the build push, start nothing new until he says. Saved to memory.
 
 ## 2026-11-03 06:40 — address-merge 12f9126 ACCEPTED: ac-check READY FOR THE USER (12/13; AC13 live). Auditor 19/19 mutants killed. Lesson saved (Chrome wrapper sets HOME). Waiting: wave 1's 3 checkers; tiers + embeds re-checks.
+
+## 2026-11-03 06:55 — tiers stack auditor clean (READY FOR THE USER 14/15 on 2fd7a95; 30/31 mutants; AC14 live head fewer J0 findings at every width, 0 wrong). found_else: AC14's paste still shows the home's white strip under the header, a ghost render behind the hero words, and the phone number breaking mid-number (other jobs/follow-ups). Lesson saved (absolute paths for file-named AC tests).
