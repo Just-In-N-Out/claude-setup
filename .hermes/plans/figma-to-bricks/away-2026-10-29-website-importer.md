@@ -425,3 +425,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Lessons saved: live-site-reading (measured guard misses inferred rows), ac-verification.md (pair-looping tests pass on base with 0 pairs). Two enforce proposals offered.
 
 ## 2026-11-03 00:50 — web-embeds fix 2 done (78c0b9b): only JavaScript counts as a widget's script; inline scripts count by host only when they load/call it; Yoast schema and data layers never pasted; R1-1 fallback applies. AC10 108/108, AC11 7/7, mutants killed. 3 P3 follow-ups (held-back script types, mixed loader+data inline script, J1 snippetFor). Final check after rebase onto merged main. Lesson saved (live-site-reading).
+
+## 2026-11-03 01:00 — web-tiers fix 2 done (9eb26ab): siteLayers gates every phone copy (slider, hero band, intro button, turns); Gallery 7 → 0 phone-only nodes; AC12 93/93; AC10/11/14 pass; follow-ups: hold-only path untested, other own-only measured guards (no hits on real captures). Final check after rebase onto merged main. Lesson skipped (bounded back-off already in testing-pitfalls).
