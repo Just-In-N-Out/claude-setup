@@ -474,3 +474,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 05:40 — panel stack verifier clean (READY FOR THE USER 16/17 on 293ad1f). found_else: a phone-only fixed header bar (fixedbars) is dropped by convert (base too; J2's area) → added a probe of it to the tiers stack-verifier brief. Lesson saved (capture lower job's fixtures fresh when stacking).
 
 ## 2026-11-03 05:55 — panel-merge 293ad1f ACCEPTED: ac-check READY FOR THE USER (16/17; AC16 live). Auditor 23/24 mutants killed (1 equivalent); AC5 receipt 944 lines identical. Merges right after wave 1. Lessons saved (UI shots via wrapper test; old host legitimately in video fileUrl / document links).
+
+## 2026-11-03 06:10 — address stack verifier clean (READY FOR THE USER 12/13 on 12f9126; chrome.ts 3-way merge exact; dist/code.js same as base). Waiting: address auditor, wave 1's 3 checkers. Lesson saved (scratch repo for git-diff ACs in base trees).
