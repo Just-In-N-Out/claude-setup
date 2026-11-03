@@ -7,8 +7,14 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-03)
 
-- **Current build `2026-11-03.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-03.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-03.2 web-embeds (website importer J5):** a captured page's own widgets (another company's script in a
+    box), maps and floating extras (a call button, a chat bubble) come across: widgets as Code elements with only the
+    script that made them, maps as live Google maps of the same address, floating extras fixed at the end of the
+    footer part. Paste check **3cw** (AC12, live; bdryswi.com's AC13 once its bot check lets the capture in).
+    Amendment 1 (AC2: only JavaScript counts, an inline script only when it loads or calls the widget's host) is the
+    main session's ruling, not yet confirmed.
   - **2026-11-03.1 djtrees-phone-menu:** a bar proven to be the site's menu folds into Bricks' Nav (Nestable) where it
     no longer fits: logo left and smaller, ☰ right, a panel from the right with the links and the bar's action; a
     frosted bar keeps its blur. Paste check **3ck** (DJ staging, real iPhone).
