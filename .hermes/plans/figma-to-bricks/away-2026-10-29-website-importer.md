@@ -462,3 +462,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Stack finisher (website-importer-stack-1.md): panel → address → tiers → embeds onto 0f9e870 as panel-merge/address-merge/tiers-merge/embeds-merge; real code conflicts expected (normalise.ts, scene.ts, style.ts, types.ts, ir.ts, understand.ts, designs.ts, snapshot/web.ts).
 - Merge plan: ff wave1-merge, then each stacked head in order once its quick re-check (verifier + auditor) accepts; ONE after-merge build commit at the end (Build 2026-11-02.5 or next) so the ff chain isn't broken; push; tell DJ "wave 1 merged" / "panel merged".
 - Lesson saved: testing-pitfalls (redirects refused; hash-object proof).
+
+## 2026-11-03 04:45 — web-capture auditor-3 clean on 0f9e870: READY FOR THE USER 14/15 (AC15 live). Probes confirm amendment 1 + fix 2 live (letsgro #mobile-dim backdrop; plugin home fixed header in root). P3s → follow-ups. Lesson saved (run-time test names need the by-name checker). Waiting: capture verifier-4, compare verifier-3 + auditor-3, stack finisher.
