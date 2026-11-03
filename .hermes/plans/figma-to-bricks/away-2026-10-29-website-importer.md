@@ -433,3 +433,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - plan-approved.md re-installed from the amended plan (old kept as plan-approved-v1-before-amendment-1.md).
 - Dispatched re-checks on 5b52fe7: web-capture-verifier-3, web-capture-auditor-2, web-compare-verifier-2, web-compare-auditor-2 (WT agent-a87b95c4…). Then ac-check both → merge (ask DJ to keep holding).
 - Lessons saved: mutation-testing-discipline (attach settle handlers), testing-pitfalls (CLI exit-code start failing; CDP navigate quirk; pgrep --). Enforce offered.
+
+## 2026-11-03 01:45 — web-embeds blind auditor (confidence run on 5e3fea8): clean, READY FOR THE USER 11/13. found_else P3s (W5 off-centre button already a follow-up; note wording; mobile-dim hand-over to J2; de-dup note). Lesson saved (suite timings, load-flaky files).
