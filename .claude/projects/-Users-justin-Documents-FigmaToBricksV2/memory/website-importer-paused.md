@@ -38,3 +38,8 @@ resume step named above. Related: [[brainstorm-goes-to-planner]], [[bdry-home-co
 sticky header bar) stays inside its part, marked fixed; other fixed boxes still go to the footer's floating extras.
 AC14 — "Mark it mine, merge now": AC14 is proven on letsgro.ai and the plugin-made Hostinger home; the bdryswi.com pages
 become a `(live)` AC owed to him (his allow-list). Plan amended in git and plan-approved re-installed.
+
+**Stop after waves 1 and 2 (Justin, 2026-11-03 morning):** "after you merge wave 1 and wave 2 stop building ok". After
+wave 1 + panel + address + tiers + embeds merge (and the build is pushed), start nothing new for the importer: no wave 3,
+no demo-fix planners (header spacer, video autoplay, compare pictures), no follow-up jobs, until he says so. Then tell
+him it's ready to try (address-box steps) and list the owed live checks and open questions.

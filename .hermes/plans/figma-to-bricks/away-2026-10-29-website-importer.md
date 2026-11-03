@@ -478,3 +478,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 06:10 — address stack verifier clean (READY FOR THE USER 12/13 on 12f9126; chrome.ts 3-way merge exact; dist/code.js same as base). Waiting: address auditor, wave 1's 3 checkers. Lesson saved (scratch repo for git-diff ACs in base trees).
 
 ## 2026-11-03 06:20 — tiers + embeds stack re-checks dispatched (verifier + blind auditor each); Justin awake, asked about wave 2: told him wave 2 is fully built and in final checks, waiting on wave 1's merge; wave 3 deliberately not started until he tries waves 1+2. Running: wave-1 capture verifier-4, compare verifier-3 + auditor-3; address auditor; tiers + embeds verifier/auditor.
+
+## 2026-11-03 06:25 — Justin: "after you merge wave 1 and wave 2 stop building ok" → after the five merges and the build push, start nothing new until he says. Saved to memory.
