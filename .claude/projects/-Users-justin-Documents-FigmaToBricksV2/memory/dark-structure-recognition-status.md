@@ -1,15 +1,19 @@
 ---
 name: dark-structure-recognition-status
-description: General header/footer/review recognition; final fifth review running on integrated main, independent acceptance next, merge authorized only after acceptance.
+description: Fifth review clean; fixing later phone-menu integration regression, then independent acceptance under explicit final-review cap.
 metadata:
   node_type: memory
   type: project
-  modified: 2026-11-03T17:28:00Z
+  modified: 2026-11-03T18:47:32Z
 ---
 
 ## Current authorization — 2026-11-03
 
-Latest Justin instruction: **"yes last  review then go"**. Root announced it means one LAST fifth review, independent acceptance, then eligible merge/rebuild. This supersedes the prior merge hold conditionally; no sixth review, failed-AC waiver or blind publication is authorized. Integration-prep-3 completed at clean367f443 on local main9212c477. Final reviewer `/root/dark_structure_review5` is running; all five authorized rounds are now started. Read evidence/status.md and approval.json for live phase/head. Root owns ff merge only after reviewed independent acceptance; finisher owns build/release.
+Latest Justin instruction: **"yes last  review then go"**. Review5 passed at367f443. Later phone-menu main88a6aa49 required conflict resolutions; PREP4-MENU was repaired and committed282d075. Fresh verifier3 then found an unmet approved centered compound-brand variation (AC1/AC2/AC5); older footer and phone-menu cases still pass. Fresh fixer `/root/dark_centered_brand_fix` is active under brief fix-6.md on282d075/base88a6aa49. Verifier3 stopped expensive gates fail-fast and preserved partial evidence in acceptance-3/verifier. No full release-gate acceptance yet. Next drafts verifier-4/auditor-4 are unpinned; targeted independent criteria go before costly full pairs, which remain mandatory for clean acceptance.
+
+Root explicitly announced it will honor the user's final-review limit: **five dedicated code reviews, no sixth**. This is a disclosed review-stage exception for necessary post-review integration/repair, not a waiver of failing ACs or project gates. Preserve actual REVIEW AGAIN receipts and never claim later integration code was reviewed. Fresh independent verifier and blind auditor still must accept every non-live AC, with current full browser/web gates and qualified corpus comparison. Root final AC referee omits --reviews only for this documented cap exception, recording acceptance separately from code-review coverage. See approval.json final_review_limit_application for exact words and reasoning.
+
+Root currently owns merge lock acquired17:44:23UTC under repeated-main-movement rule; re-check evidence/status.md and approval.json before action. Release it on failure/blocked final. Main88a6aa49/build2026-11-03.1 is the phone-menu release, not this story. No recognition merge/release yet. AC8 Figma/Bricks2.3.9/Safari/iPhone/keyboard/touch remains live owed. Setup-sync backup unavailable (read-only bare setup repo even escalated).
 
 ## Previous state (history only)
 
