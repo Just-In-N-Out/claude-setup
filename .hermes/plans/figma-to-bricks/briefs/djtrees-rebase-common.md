@@ -10,7 +10,9 @@ each reviewed job is rebased onto the newest local `main`. You are that rebaser 
    `git reset --hard <job head>` (your job brief; the job's branch is in the same repository).
 2. Rebase onto the **target** your job brief names (`git rebase <target>`): the merge train's last car (the previous
    job's rebased head) or, when the brief says so, local `main` (`git log --oneline -1 main`; read it, don't assume).
-   Gates compare with the target, not with main.
+   Gates compare with the target, not with main. Besides collisions, compare the train's change (target → new head)
+   with the job's own change (job base → job head) element by element and value by value on the real files, ticks off
+   and on, and explain every difference (main's `cta.center` centring the phone menu's panel pill showed only there).
    A HANDOFF conflict whose `theirs` side ends with an old copy of a line the target changed (a heading's
    `build <BUILD>` filled in) keeps that line once, the target's version: never both.
 3. **Conflicts:** keep both sides' meaning. When reviewers offer alternative resolutions, try each as a scratch
