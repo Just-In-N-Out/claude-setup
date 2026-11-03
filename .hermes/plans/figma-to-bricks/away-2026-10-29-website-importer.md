@@ -498,3 +498,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - After-merge finisher dispatched (website-importer-merge-finisher-1.md): BUILD 2026-11-02.5, build, check, paste-check ids, commit, push, CLAUDE.md Status + the helper standing rule + Justin's AC rulings. Lock held until its push.
 - Embeds (embeds-merge 3a39c11) waits for its blind auditor; after the build commit it needs a pure rebase onto main + quick re-check, then its own merge/build. Then STOP (Justin).
 - Lesson saved: testing-pitfalls (_cssGlobalClasses lists ids).
+
+## 2026-11-03 (≈06:55) — Build 2026-11-02.5 pushed (main = origin/main = 9212c477); lock released; DJ told
+- Finisher: BUILD 2026-11-02.5 (kept the 11-02 date like DJ's .4; Justin may prefer 2026-11-03.N), build + check green, paste checks 3cx (panel AC16) and 3cy (address AC13), ledgers moved to docs/plans, CLAUDE.md Status + helper rule + Justin's AC4/AC14-15 rulings written, sync pushed.
+- 3cw collision: embeds-merge and worktree-dark-structure-recognition both claim it; embeds renumbers at its rebase if the other merges first.
+- Next: embeds auditor → rebase embeds-merge onto main → quick re-check → merge + build → STOP.
+- Lessons saved: SKILL.md (paste-check ids across branches; .superpowers must be empty in the build commit). Two enforce proposals offered.
