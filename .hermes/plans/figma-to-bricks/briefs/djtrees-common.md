@@ -28,6 +28,9 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   (the stash list is shared). Don't bump `BUILD`, don't push, don't merge into `main` (the finisher and root do).
 - Commits: plain `git commit -m "…"`, no author override, no `Co-Authored-By`/AI lines (hooks refuse them).
 - Leave your worktree and branch in place at the end: the next role starts from your last commit.
+- **Never end your turn to wait.** Ending your turn (even with a Monitor or background command still running) ends you as
+  an agent: nothing wakes you, and root gets "waiting…" instead of your report (cars 3–6 rebaser, 2026-11-02). Wait in
+  blocking calls (`timeout 590 tail --pid=<pid> -f /dev/null`, repeated) until your work is done, then report.
 
 ## This machine (Linux/WSL desktop): checks
 
