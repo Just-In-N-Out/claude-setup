@@ -401,3 +401,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-02 23:45 — web-address ACCEPTED: ac-check --reviews READY FOR THE USER (12/13 on 7100612; AC13 live owed); reviews CLEAN
 - Blind auditor clean (10 mutants killed; dist/code.js identical; Windows curl reaches the helper). found_else: >1 MB POST resets instead of 413 (misuse only); cosmetic window/size lines; 8 plan test names wrap across lines.
 - Merge after panel: rebase --onto main c2f6a16, quick re-check. Lessons saved: mutation-testing-discipline (open handle: judge by not ok under a deadline), testing-pitfalls (HOME redirect details).
+
+## 2026-11-02 23:55 — Justin went to sleep ("Keep working ok"); web-tiers fixed (ecd7b89) → verifier + auditor
+- Tiers fixer 1: R1-1 fixed (rangeView sees children in the same range; min→fixed heights 104/21/5/1 → 0), plus a regression its fix caused caught by AC10 and fixed (`spannedLabel`, fixer's ruling). Fit: contact fits at 767/478/390/320; known exceptions 786 at 768 (R1-2) and home 359 at 320 (R1-3). AC14 live never worse than 8753722 on one fresh capture. Follow-ups written.
+- Dispatched web-tiers-verifier-2.md and web-tiers-auditor.md on ecd7b89 (base 89022ab).
+- Lessons saved: live-site-reading (re-run AC10 after view changes), testing-pitfalls (live J0 counts drift; compare heads on one fresh capture).
+- Overnight plan: merge wave 1 → panel → address → tiers → embeds as each is accepted (rebase + quick re-check each), after-merge finisher builds and pushes; morning report to Justin with the address-box steps.
