@@ -12,9 +12,9 @@ goes in `found_else` (it becomes a follow-up), not a finding. Be thorough on the
 
 ## Your copy
 You start in your own throwaway worktree. Run `git checkout --detach @HEAD@` and confirm `git rev-parse HEAD`, a clean
-`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `04ab9b189b45917853779a28d889915095d7e4b1`. This head is the finisher's
-combined line: web-capture's and web-compare's commits on top of `main` (branch `web-compare-final`, canonical copy
-`@WT@`). Your `ac.json` names head `@HEAD@` and base `04ab9b189b45917853779a28d889915095d7e4b1`. Never write in any other worktree.
+`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `@BASE@`. This head is the finisher's
+combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-final`, rebased onto main after the DJ Trees build .3, canonical copy
+`@WT@`). Your `ac.json` names head `@HEAD@` and base `@BASE@`. Never write in any other worktree.
 
 ## What to verify
 - **Approved plan (the oracle):** `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-capture/plan-approved.md`, AC1–AC14. Never change an AC's id, oracle or tag.
@@ -45,7 +45,7 @@ must show a check can fail.
    clause on a generic fixture of your own.
 3. **A fresh screenshot per AC** in your folder (a terminal image for a non-visual one).
 4. Write `<your evidence>/ac.json` (ac-check.sh's schema) and `report.json`; self-check with `ac-check.sh` on a copy of
-   your own files, `--repo` your own worktree, base `04ab9b189b45917853779a28d889915095d7e4b1` (no `--reviews`).
+   your own files, `--repo` your own worktree, base `@BASE@` (no `--reviews`).
 
 ## Machine
 - **This machine (WSL):** `CHROME_PATH=/home/justin/.hermes/plans/figma-to-bricks/evidence/web-capture/planner/scripts/chrome-cpu.sh`, Node `/home/justin/.local/node-v22.23.3/bin` first on PATH, `TMPDIR`
@@ -67,3 +67,9 @@ must show a check can fail.
 test, evidence, screenshot}], gates[], qualifications[], found_else[], skill_lessons[{skill, lesson, evidence,
 enforce}]}`. `enforce` is `none` or a one-line check proposal; empty skill_lessons is normal. End with the line
 `MAIN SESSION: check and save these skill_lessons now.`
+
+## Machine rules added 2026-11-02 (these win over older lines above)
+- Chrome: Justin lifted the shared slots ("open chrome test for everything"): run at most one Chrome job of your own at a time and close Chrome after each step. If the main session sends "back to N slots", hold one of `~/.cache/f2b-chrome.lock`, `-2`, `-3` (first N only) for your whole Chrome sequence. Run long suites file by file (testing-pitfalls), so a restart costs one file.
+- Runaway memory (global CLAUDE.md "Windows Desktop: Runaway Memory"): a command that dies with SIGTERM, exit 143/137 or "Killed" may be an earlyoom kill, not a result: check `journalctl -u earlyoom --since "-30 min" -o short-iso | grep sending`; if killed, say so, find what grew, rerun under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`. Mutation runs always use that cap.
+- Justin (2026-11-02): "focus on building and not too much of edge cases": accept or reject the ACs; edge cases beyond an AC's text go in `found_else`.
+- A command holding the bare word `source` is refused in your worktree; read such files with Read. Put any summary in your report, not a separate summary file.

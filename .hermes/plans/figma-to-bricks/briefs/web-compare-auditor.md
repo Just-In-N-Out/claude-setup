@@ -10,7 +10,7 @@ case its words cover); an edge case beyond its text goes in `found_else`.
 
 ## The only inputs
 - Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/plan-approved.md` (AC1–AC18). Use each exact test name the plan gives.
-- The head `@HEAD@` and base `04ab9b189b45917853779a28d889915095d7e4b1` (below), and your own folder `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/auditor/` (new).
+- The head `@HEAD@` and base `@BASE@` (below), and your own folder `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-compare/auditor/` (new).
 - The job: `npm run compare -- <left> <right>` compares two pages (a live page and its Bricks copy) word by word through the aligned word sequence at every width and reports what differs; it is the oracle every later importer job is judged by. It lives in `test/web/` and `tools/`; `src/` is untouched by it.
 - **AC11 on the combined head:** the head also holds web-capture's `src/web` and main's newer `src` changes, so judge AC11 by
   this job's own commits: `git diff --name-only web-capture-final...HEAD -- src` (or the merge-base with the commit
@@ -23,9 +23,9 @@ case its words cover); an edge case beyond its text goes in `found_else`.
 
 ## Your copy
 You start in your own throwaway worktree. Run `git checkout --detach @HEAD@` and confirm `git rev-parse HEAD`, a clean
-`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `04ab9b189b45917853779a28d889915095d7e4b1`. This head is the finisher's
-combined line: web-capture's and web-compare's commits on top of `main` (branch `web-compare-final`, canonical copy
-`@WT@`). Your `ac.json` names head `@HEAD@` and base `04ab9b189b45917853779a28d889915095d7e4b1`. Never write in any other worktree.
+`git status --porcelain --untracked-files=all` and `git merge-base HEAD main` = `@BASE@`. This head is the finisher's
+combined line: web-capture's and web-compare's commits on top of `main` (branch `wave1-final`, rebased onto main after the DJ Trees build .3, canonical copy
+`@WT@`). Your `ac.json` names head `@HEAD@` and base `@BASE@`. Never write in any other worktree.
 
 ## Work
 Load `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, its `references/rules-summary.md` and
@@ -51,6 +51,12 @@ scratch folder and running `ac-check.sh` on them (no `--reviews`).
   (running a test by path from another tree imports that tree's code).
 - **Live reads GET only** of `https://darksalmon-badger-335429.hostingersite.com/` (add `?f2b=<random>`) and
   `https://www.letsgro.ai/`. Never load bdryswi.com; never try to hide automation; never write to any WordPress site.
+
+## Machine rules added 2026-11-02 (these win over older lines above)
+- Chrome: Justin lifted the shared slots ("open chrome test for everything"): run at most one Chrome job of your own at a time and close Chrome after each step. If the main session sends "back to N slots", hold one of `~/.cache/f2b-chrome.lock`, `-2`, `-3` (first N only) for your whole Chrome sequence. Run long suites file by file (testing-pitfalls), so a restart costs one file.
+- Runaway memory (global CLAUDE.md "Windows Desktop: Runaway Memory"): a command that dies with SIGTERM, exit 143/137 or "Killed" may be an earlyoom kill, not a result: check `journalctl -u earlyoom --since "-30 min" -o short-iso | grep sending`; if killed, say so, find what grew, rerun under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`. Mutation runs always use that cap.
+- Justin (2026-11-02): "focus on building and not too much of edge cases": accept or reject the ACs; edge cases beyond an AC's text go in `found_else`.
+- A command holding the bare word `source` is refused in your worktree; read such files with Read. Put any summary in your report, not a separate summary file.
 
 ## Report
 `{verdict: clean|findings, head, base, findings[{id,severity,claim,evidence}], ac_status[{ac,accepted,test,screenshot,
