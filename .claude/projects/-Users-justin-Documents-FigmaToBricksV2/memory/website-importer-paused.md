@@ -19,6 +19,7 @@ metadata:
   capture past bdryswi.com's bot check ("Checking your browser…") or pause it while capturing. Never get past it by
   hiding automation. Asked where bdryswi.com is hosted and what shows the check (host, Cloudflare or a WP plugin).
 - **Restart choice (2026-11-03 ≈17:05):** "bdry first, then decide": no building yet; import bdryswi.com (WordPress.com + Elementor, [[bdry-home-copy]]), look at the paste with him, then pick what to build from what's wrong. Its bot check is likely WordPress.com's Defensive mode (unconfirmed).
+- **bdry capture, 2026-11-03 ≈17:15:** the address box worked end to end but bdryswi.com answered with a human check ("Confirm you are human / I am human", HTTP 403). Asked for another way than disabling, Justin chose **"I click 'I am human'"**: the helper opens a visible Chrome and he passes the check himself, with nothing hiding automation. Mini job `web-human-check` (planner dispatched).
 - **Owed by Justin (live):** paste checks 3cx (panel AC16), 3cy (address AC13) and 3cw (embeds AC12); the bdryswi.com
   ACs (capture AC15, tiers AC15, embeds AC13) once allow-listed.
 - **My rulings, not yet confirmed:**
