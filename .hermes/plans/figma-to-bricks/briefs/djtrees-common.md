@@ -37,13 +37,15 @@ newest `main` just before its merge. Several touch the same files (divided rows:
 - Node `/home/justin/.local/node-v22.23.3/bin/node` (its folder first in PATH for child processes). The worktree guard
   refuses `PATH=/x:$PATH npm run …` and a heredoc followed by node in one command: use `env PATH=<literal dirs> npm run …`
   or the node binary by absolute path, and write scripts with the Write tool; it also refuses git in a shell `for` loop, `$VAR` paths in node calls and `$((…))` on variables: put loops in a script run with bash and use literal paths.
-- **Three Chrome slots on the whole PC** (Justin, 2026-11-02 19:5x: "lets do three", a trial; it froze and was forced
-  off three times earlier that day under overlapping Chrome suites, so never more than three): run your WHOLE Chrome sequence
+- **Chrome is open to every agent** (Justin, 2026-11-02 20:1x: "open chrome test for everything", after a three-slot
+  trial; the PC froze three times earlier that day under overlapping Chrome suites): run your Chrome steps without
+  waiting for a slot, but never more than ONE Chrome job of your own at a time, and close Chrome when each step ends.
+  **If root says "back to N slots"**, the slot rule returns: run your WHOLE Chrome sequence
   (browser tests, snap, measure, probes; base and head) while holding ONE of three locks, `~/.cache/f2b-chrome.lock`,
   `~/.cache/f2b-chrome-2.lock` or `~/.cache/f2b-chrome-3.lock`. In a script file: loop every 1 s over all three with `flock -n <fd>` (open the file on that
   fd first) until one is yours; keep it until the sequence ends. While holding it keep a marker process named like a
   test, `(exec -a 'node --test test/browser/<role>.lock' /home/justin/.local/node-v22.23.3/bin/node -e
-  'setTimeout(()=>{},7200e3)') &` (killed at the end). Never hold two locks, never run two Chrome jobs yourself, and
+  'setTimeout(()=>{},7200e3)') &` (killed at the end). Start every child (marker included) with the lock's fd closed (`9>&-`; the marker also `>/dev/null 2>&1`) and release in an EXIT trap, or an orphaned Chrome keeps the slot (faint-picture auditor). Never hold two locks, never run two Chrome jobs yourself, and
   don't wait for "no other Chrome" any more: getting a slot is the wait. If root says "back to N slots", use only the first N
   lock files. (top-align verifier, 2026-11-02: a renamed `sleep` marker let another agent's Chrome start
   mid-measurement; 5 s polls kept losing the slot.)

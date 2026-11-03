@@ -70,3 +70,5 @@ Justin 17:2x: 'ok run more agents' (16 GB free). Started: car 3 strip-edge verif
 18:5x: train rebaser cars 3–6 DONE: no head changes (779c830 → ea1a46e → 5b312ae → f425e79, ff chain on 9a2a966). Car 6 Chrome ACs left to its verifier/auditor.
 19:55: Justin: 'lets do three' → Chrome slots raised from 1 to 3 (lock files f2b-chrome.lock, -2, -3); all 8 DJ agents + importer session told; memwatch background alert under 4 GB.
 20:0x: car 6 panel-edge blind auditor CLEAN (10/11, AC11 live 3cj). Waiting: car 6 verifier, car 3 verifier, car 5 auditor.
+20:1x: car 5 faint-picture blind auditor CLEAN; ac-check below.
+20:1x: car 5 ac-check READY FOR THE USER 6/7 on 5b312ae (AC7 live 3cv). Justin: 'open chrome test for everything' → Chrome limit lifted for all agents (one Chrome job per agent); 6 DJ agents + importer told; memwatch still on.
