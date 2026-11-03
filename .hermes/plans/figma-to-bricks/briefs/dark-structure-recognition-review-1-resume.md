@@ -25,3 +25,8 @@ Use a script with nonblocking flock FD loop over all three, retain that lock for
 Pinned Node22 and child PATH, owned --use-gl=disabled Chrome wrapper, DISPLAY/WAYLAND cleared, fresh short DISK TMPDIR under `/home/justin/.hermes` still apply. No shared dependency/config changes, denied env/profile reads, live/Figma/media writes or broad process kills. Reconcile only proven owned orphan processes from interrupted runs before reusing resources; don't trust stale PID numbers across restarts.
 
 Return complete review.json with exact findings/scenarios and referee self-check, report path, verdict, ac_status and skill_lessons [{skill,lesson,evidence,enforce}] (normally empty). No skill/memory edits. End: MAIN SESSION: check and save these skill_lessons now.
+
+
+## Windows Desktop: Runaway Memory (mandatory, latest AGENTS)
+
+Mutation runs always use `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`. A command ending SIGTERM, exit143/137, or Killed may be earlyoom rather than a test result. Check `journalctl -u earlyoom --since "-30 min" -o short-iso` for sending lines, identify the killed command and growth, and report it to the orchestrator. A killed check must be rerun under the same 4 GB cap, never bare. Do not weaken or bypass the cap; report a concrete unavailable cgroup/systemd prerequisite if one occurs. Preserve existing three Chrome slots and owned-process cleanup. Include relevant kill facts in checkpoints/handback. Root checks earlyoom since its last check on every report and before dispatching the next role; it maps killed paths to owners and notifies Justin, including unowned kills.
