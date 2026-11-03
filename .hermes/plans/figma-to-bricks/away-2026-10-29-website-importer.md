@@ -342,3 +342,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - rebase3: HANDOFF conflict only (EXACT), 150/162 patch-ids unchanged (12 HANDOFF context-only), main's 43-file change carried exactly, tree composition 0 wrong. check by name: every main name same result; 206 new pass. Replays 20/20 identical. Long suites left to the checkers.
 - Dispatched: web-capture verifier-2 + auditor, web-compare verifier + auditor (briefs filled: HEAD a2ae004, WT agent-a680c779…, BASE b09727f; AC11 range = after the "web-capture finish" commit), and web-panel rebase finisher (845e601 --onto a2ae004 89022ab → web-panel-final).
 - Lesson saved: patch-id --full-index (SKILL.md). Importer agents now 7 (tiers, embeds, 4 checkers, panel rebase). Memory 5/20 GB at dispatch; earlyoom 0 kills.
+
+## 2026-11-02 ~21:00 — panel rebased (c2f6a16 on a2ae004); Justin chose "Address in the panel"; web-address planner dispatched
+- Panel rebase: 19 commits, no conflicts, patch-ids 19/19 identical, 38/38 file diffs identical, tree composition clean; unit by name 0 changed (+22 panel tests), panel-capture 9/9, AC5 receipt 0 diff. Re-verify on c2f6a16 (verifier + auditor, quick) deferred until wave 1's checkers finish, so the CPU isn't overloaded (load 54).
+- Justin: "I want to be able to import a live website, not related to Figma, using my plugin" → "Address in the panel" (helper on the PC reads the site; panel gets the result; no file step). New job web-address: planner (web-address-planner.md) on c2f6a16. Memory website-importer-paused.md updated.
+- Lesson saved: `tail --pid` wait (testing-pitfalls).
