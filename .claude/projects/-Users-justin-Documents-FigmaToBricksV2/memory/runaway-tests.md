@@ -5,12 +5,13 @@ metadata:
   node_type: memory
   type: feedback
   originSessionId: 8e80bfe0-369d-4e32-84a6-8d63e5215658
-  modified: 2026-11-03T01:02:34.868Z
+  modified: 2026-11-03T01:22:16.941Z
 ---
 
 On 2026-11-02 the phone-menu builder's unit test (`node test/unit/phone-menu.test.ts`, a mutation run) grew to
 15–17 GB four times (17:07, 17:17, 17:17, 17:18) until earlyoom stopped it (`journalctl -u earlyoom`: "sending
-SIGTERM to process … VmRSS …"). Justin noticed and asked to check; that builder read the stops correctly, but "an agent
+SIGTERM to process … VmRSS …"). Cause (builder, same day): not a loop, but node's `assert.deepEqual` diff of two
+whole IR trees once a mutant made them differ; the tests now compare lengths. Justin noticed and asked to check; that builder read the stops correctly, but "an agent
 could misread a stopped test as a normal failure. The stop signal always shows in the output." He asked for this in the
 main memory "for future chats and everything", and for the orchestrator to check if it happens again and notify the
 agents.
