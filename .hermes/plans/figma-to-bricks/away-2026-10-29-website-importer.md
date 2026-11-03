@@ -322,3 +322,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - New global rule (Justin, via his home session and DJ session): check earlyoom kills each time an agent returns; tell the owning agent; treat 137/143/SIGTERM as possible runaway. Checked 20:40: no kills. Rule sent to wave-1 finisher, tiers, embeds; in the two new briefs.
 - Lesson saved: testing-pitfalls (bare word `source` refused in worktree agents).
 - Importer agents now 5: wave-1 finisher, tiers, embeds, panel verifier, panel auditor.
+
+## 2026-11-02 21:00 — wave 1 passes every gate on 1a64378 (41330bb); waiting on DJ's merge, then rebase + checkers
+- Finisher (rebase2): HANDOFF conflict only; 150/162 patch-ids unchanged (12 HANDOFF context-only); tree composition exact. check 2987/2948/0 fail; replays 20/20 identical; test:web 132/131/1 skip (AC14); test:browser same 10 font failures as main; corpus same. No fix needed. earlyoom: no kills of ours.
+- Main moved to 9a2a966 (Build 2026-11-02.2); DJ plans a 35-commit merge (2026-11-02.3). Asked DJ: merge first, then hold merges while wave 1 rebases (~20 min) and its checkers run (~2–3 h).
+- Lessons saved: per-file browser suite runs (testing-pitfalls), re-rebase proofs (SKILL.md Merging step 1).

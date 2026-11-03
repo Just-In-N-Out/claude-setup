@@ -110,3 +110,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | web-panel | figma-to-bricks | script: a shared tools/chrome-slot.sh (flock + marker + backoff) that every brief names instead of an inline pgrep loop | offered
 - 2026-11-02 | djtrees-panel-edge | figma-to-bricks | Script: pixel-reading receipt probes (probe-html.ts and the like) fail when the target colour appears in none of the sampled rows | offered
 - 2026-11-02 | desktop-freeze | (CLAUDE.md Runaway Memory) | Claude Code PostToolUse Bash hook on Linux: if earlyoom logged a kill during the command, add context telling that agent its process was killed for a memory runaway (automatic, so it does not wait for the orchestrator) | offered
+- 2026-11-02 | djtrees-stack-lines (train) | figma-to-bricks | Script: the rebaser's commit helper runs npm run typecheck in a git-archive scratch tree of HEAD right after each merge commit | offered

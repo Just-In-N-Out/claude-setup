@@ -13,7 +13,8 @@ each reviewed job is rebased onto the newest local `main`. You are that rebaser 
    Gates compare with the target, not with main.
    A HANDOFF conflict whose `theirs` side ends with an old copy of a line the target changed (a heading's
    `build <BUILD>` filled in) keeps that line once, the target's version: never both.
-3. **Conflicts:** keep both sides' meaning. Typical ones: `docs/HANDOFF.md` (both sections stay, newest on top; the
+3. **Conflicts:** keep both sides' meaning. When reviewers offer alternative resolutions, try each as a scratch
+   mutant against BOTH jobs' tests and keep the one that breaks no approved AC test, with the log as evidence. Typical ones: `docs/HANDOFF.md` (both sections stay, newest on top; the
    End-of-run check list keeps every entry), `src/core/adapt/rules/index.ts` (the `RULES` array is one line: keep every
    rule from both sides in the order each side had them relative to its neighbours; a rule that overrides another
    stays after it), shared rule files (merge by meaning, reading both commits' intent; if two rules now write the same
