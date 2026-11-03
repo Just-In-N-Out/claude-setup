@@ -508,3 +508,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 (≈07:00) — DJ: phone menu rebasing onto 9212c477, merging as Build .6+; it changes test/browser/render.ts (linked Image prints <a id class=brxe-image…><img>). → When embeds rebases onto that main, run test:web (compare tool renders) and the embeds browser files, not only the quick gates.
 
 ## 2026-11-03 10:16 — embeds auditor died on an internet/DNS blip (EAI_AGAIN); network back (DNS ok, api reachable, Windows: Internet). Resumed it via SendMessage.
+
+## 2026-11-03 10:40 — embeds ACCEPTED on 3a39c11 (READY FOR THE USER 11/13) after the auditor resumed. Final rebase finisher dispatched (web-embeds-final-rebase.md → embeds-final on main 9212c477; ledger move; 3cw). Told DJ: first ready merges first. Lessons saved (hybrid tree; capture fetch-failed under load). Follow-ups appended.
