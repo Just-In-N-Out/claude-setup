@@ -37,11 +37,11 @@ newest `main` just before its merge. Several touch the same files (divided rows:
 - Node `/home/justin/.local/node-v22.23.3/bin/node` (its folder first in PATH for child processes). The worktree guard
   refuses `PATH=/x:$PATH npm run …` and a heredoc followed by node in one command: use `env PATH=<literal dirs> npm run …`
   or the node binary by absolute path, and write scripts with the Write tool; it also refuses git in a shell `for` loop, `$VAR` paths in node calls and `$((…))` on variables: put loops in a script run with bash and use literal paths.
-- **Bound every mutation run and probe:** `node --max-old-space-size=1024 --test --test-timeout=60000 …`. A mutant can
-  loop without end: phone-menu's unit test grew to 15–17 GB four times on 2026-11-02 until earlyoom killed it
-  (`journalctl -u earlyoom`). A process stopped by a signal (exit 137/143, the signal shown in the output, no
-  assertion line) is never a "killed mutant" nor a normal test failure: report it as a stopped run and say why it grew.
-  Only a failing assertion counts.
+- **Bound every mutation run and probe** as `mutation-testing-discipline` says (`systemd-run --user --scope -p
+  MemoryMax=4G -p MemorySwapMax=0`, plus `--test-timeout`): a mutant can allocate without end (phone-menu's unit test
+  reached 15–17 GB four times on 2026-11-02 until earlyoom stopped it; `journalctl -u earlyoom`). A run stopped by a
+  signal (exit 137/143, the signal shown in the output) is never a normal test failure or a behavioural kill: name it
+  a crash kill (`oom-kill`) and say why it grew.
 - **Chrome is open to every agent** (Justin, 2026-11-02 20:1x: "open chrome test for everything", after a three-slot
   trial; the PC froze three times earlier that day under overlapping Chrome suites): run your Chrome steps without
   waiting for a slot, but never more than ONE Chrome job of your own at a time, and close Chrome when each step ends.
