@@ -1,15 +1,17 @@
-# DRAFT — second and final authorized full review; pin every placeholder before dispatch
+# Second and final authorized full review
 
 Fresh pipeline_reviewer, report only, no agents. You are not alone; preserve all other work. Own only E/review-2/ and fresh private scratch; no source/test/docs/ref edits or commits.
 
 W `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition`.
 E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
-Head ROOT_MUST_PIN_HEAD.
-Base ROOT_MUST_PIN_BASE.
+Head 6a874e762fb3d6fce76d31af58482c6d885112d2.
+Base b09727fde8c2fcca2fe1b8d5a46891941a0b9dc1.
 Approved plan E/plan-approved.md, unchanged hash `23fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511`.
-Prior review E/review-1/review.json and its completed report ROOT_MUST_PIN_REVIEW_REPORT.
-Fixer response ROOT_MUST_PIN_FIX_REPORT_OR_NONE.
-Current candidate validation ROOT_MUST_PIN_CANDIDATE_REPORT.
+Prior review E/review-1/review.json and its completed report E/review-1/resume/report.md.
+Fixer response E/fixer-1/report.md and E/fixer-1/fixer-report.json.
+Current candidate validation E/integration-prep/report.md and E/integration-prep/report.json.
+
+Integration preparation rebased the completed fix before this final review because local main had advanced in two shared files. Independently inspect E/integration-prep/conflicts.json, union-proof.json and range-diff-final.txt: additive HANDOFF resolutions, style caller union, and the necessary final record commit are within your full review. Final reviewed code matches the rebased a7eb65f code; head6a874e7 adds records only. Provisional paste check is now3cw, to be rechecked under release lock. Main BUILD2026-11-02.3 was preserved. Do not infer accepted ACs from the finisher report.
 
 Load engineering-best-practices, requesting-code-review, code-review-practice, review-fix-cadence and project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` with relevant testing pitfalls. Follow actual referee schema in feature-dispatch/scripts/review-check.sh. Round2 is FULL: independently inspect the whole story from the pinned base through head, fixes included, and verify disposition of each previous finding. Repeated defects get repeats/new_fact fields accurately. Concrete real-use scenarios are required for P0–P2; do not invent severities, hide failures or turn speculative edge cases into blockers. Root owns referee decisions, not you.
 
