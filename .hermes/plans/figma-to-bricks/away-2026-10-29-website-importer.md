@@ -449,3 +449,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 03:00 — web-compare verifier-2 clean on 5b52fe7 (ALL ACCEPTED 18/18; AC17 1.012×). Moot for the merge head (wave1-fix-2 coming) but no new problems. Lessons saved (probe-page style order; TMPDIR budget +51/+69). Next briefs: TMPDIR ≤ 38 chars.
 
 ## 2026-11-03 03:30 — DJ build .4 pushed (main 6cfd3e6, BUILD 2026-11-02.4); DJ holds merges until "wave 1 merged" and "panel merged". DJ's 33 files touch no importer-shared file. Next: when wave1-fix-2 lands, rebase onto 6cfd3e6 (finisher), then 4 checkers, merge.
+
+## 2026-11-03 04:00 — wave-1 fix 2 done (38dc0ca on 5b52fe7); rebase onto 6cfd3e6 dispatched; final checker briefs ready
+- V3-F1 fixed (phone-only fixed boxes read in the range that shows them; header's phone-only bar in its root, hidden on wider screens); fixer's ruling (not yet confirmed): letsgro's phone-only #mobile-dim is the page's backdrop (window-relative test uses the reading range's window). FE-1 test: short temp folder (passes with 53-char TMPDIR). 12/13 mutants killed (M12 equivalent). Gates by name vs 5b52fe7: +1 test, 0 changed; replays 24/24; live AC14 ok. Follow-up: revealOwned MutationObserver crash once on the plugin home (retry passed).
+- Dispatched rebase finisher (website-importer-wave1-rebase-4.md → branch wave1-merge on 6cfd3e6; evidence rebase4/).
+- Prepared web-capture-verifier-4, web-capture-auditor-3, web-compare-verifier-3, web-compare-auditor-3 (placeholders @HEAD@/@HEAD7@/@WT@, base 6cfd3e6, TMPDIR ≤ 38 chars).
+- Lessons saved: live-site-reading (build hidden fixed boxes in their range; window-relative tests), memory (Mac socket limit 103).

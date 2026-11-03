@@ -37,4 +37,4 @@ unchanged; nothing to configure. Test from WSL with Windows' own `/mnt/c/Windows
 **TMPDIR length (2026-11-03, web-compare auditor 2):** keep TMPDIR at 38 characters or fewer for `test:web`:
 `launchChrome` adds 51 characters below it and compare-cli's FE-1 test 69 and Chrome's socket path must stay under 108, so the usual
 `~/.cache/<story>-<role>/tmp` (39–40) fails "Socket path too long"; `~/.cache/wca2/tmp` passes. The Mac's default
-`/var/folders/…/T/` may hit it too (follow-up: the test should mkdtemp under /tmp).
+`/var/folders/…/T/` may hit it too (the Mac's socket limit is 103, Linux 107; fixed in wave1-fix-2: the FE-1 test falls back to /tmp, and such files should be run once with a ~50-character TMPDIR).
