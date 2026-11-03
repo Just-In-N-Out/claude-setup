@@ -423,3 +423,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 00:40 — web-tiers blind auditor: AC8 NOT ACCEPTED (F1: Gallery phone slider of measured photos via inferred rows); fixer 2 dispatched
 - 13/14 runnable accepted; 22 mutants killed; AC12 receipt 201/201. F1 not a regression (base does it too) but breaks AC8's text on a real capture → web-tiers-fixer-2.md (branch web-tiers-fix-2 from ecd7b89). Then verifier + auditor again (final check after rebase anyway).
 - Lessons saved: live-site-reading (measured guard misses inferred rows), ac-verification.md (pair-looping tests pass on base with 0 pairs). Two enforce proposals offered.
+
+## 2026-11-03 00:50 — web-embeds fix 2 done (78c0b9b): only JavaScript counts as a widget's script; inline scripts count by host only when they load/call it; Yoast schema and data layers never pasted; R1-1 fallback applies. AC10 108/108, AC11 7/7, mutants killed. 3 P3 follow-ups (held-back script types, mixed loader+data inline script, J1 snippetFor). Final check after rebase onto merged main. Lesson saved (live-site-reading).
