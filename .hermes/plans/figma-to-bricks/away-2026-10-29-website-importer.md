@@ -354,3 +354,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - ⭐: panel asks http://127.0.0.1:47811 with CORS * (Figma desktop disables Local Network Access checks; browser Figma can't); `npm run capture:serve` per session, pairing code typed once, Host check, http(s) only, one capture at a time; WSL→Windows localhost works with no setup; one page per address (sitemap pick = follow-up). AC1–AC12 proposed, AC13 live (Justin on the Windows desktop). Plugin code untouched (dist/code.js identical).
 - plan-approved.md installed read-only. Builder (web-address-builder.md) on web-address-build; extra preference: helper finds Chrome itself if CHROME_PATH unset.
 - Lessons saved: panel-validation.md "Panel network" (Figma desktop LNA off; 127.0.0.1 not localhost; no init requests); memory corpus-paths-on-desktop (WSL localhost forwarding).
+
+## 2026-11-02 21:35 — web-embeds built (db801e5 on 89022ab); one review + verifier dispatched
+- All testable ACs pass (AC1–AC11); AC12, AC13 live (AC13 waits for bdryswi allow-list). Gates by name vs base: unit +10, web +7, browser 0 differences (same 10 failures). Task 11 / AC6 conditional part skipped (needs J2's site.tiers). Paste check id 3cj must be renumbered at finish (3ct used). Many rulings not yet confirmed (HANDOFF).
+- Dispatched web-embeds-reviewer-1.md. Lesson saved: judge slot locks only by flock -n (lslocks blind across sandboxes).
