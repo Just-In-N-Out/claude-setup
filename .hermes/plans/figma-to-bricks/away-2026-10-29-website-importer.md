@@ -447,3 +447,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Lessons saved: live-site-reading (read fixed boxes in every range), testing-pitfalls (probe-page pitfalls; Georgia = DejaVu Serif on WSL). Enforce offered.
 
 ## 2026-11-03 03:00 — web-compare verifier-2 clean on 5b52fe7 (ALL ACCEPTED 18/18; AC17 1.012×). Moot for the merge head (wave1-fix-2 coming) but no new problems. Lessons saved (probe-page style order; TMPDIR budget +51/+69). Next briefs: TMPDIR ≤ 38 chars.
+
+## 2026-11-03 03:30 — DJ build .4 pushed (main 6cfd3e6, BUILD 2026-11-02.4); DJ holds merges until "wave 1 merged" and "panel merged". DJ's 33 files touch no importer-shared file. Next: when wave1-fix-2 lands, rebase onto 6cfd3e6 (finisher), then 4 checkers, merge.
