@@ -76,7 +76,10 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   time throws there while untick'd gates stay green (side-art review, P1).
 - Fonts: the DJ Trees display fonts aren't installed here, so the renderer wraps headings far more: inject `@font-face`
   rules for the local copies in `/home/justin/.hermes/plans/figma-to-bricks/evidence/djtrees-side-art/builder/fonts/`
-  (Google's files) into the rendered page only; never write `~/.local/share/fonts`.
+  (Google's files) into the rendered page only; never write `~/.local/share/fonts`. Inline them as `data:` URLs:
+  that folder's `local.css` uses `url(file://…)`, which fails silently in a page set from a string (fallback fonts).
+  Assert every `FontFace.status` is "loaded" and none "error" before measuring, and say so in your receipt
+  (phone-menu reviewer, 2026-11-02).
 - Scratch: your own `~/.cache/<job>-<role>/` (create fresh with `mkdir`, not `-p`; `TMPDIR` there, short path for
   Chrome). The session `/tmp` is a small shared RAM disk: keep only small files there. Copy scripts worth keeping into
   `E/<role>/`. Remove only your own scratch, by its literal absolute path.
