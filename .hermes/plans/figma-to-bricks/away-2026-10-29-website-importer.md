@@ -334,3 +334,6 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Blind auditor clean: 16 ACs proven head+base, 23 mutants killed, AC5 receipt 1130 items identical. found_else P3: document links on the old host kept (F13), a two-weight variable font offered twice.
 - ac-check (no --reviews, Justin's one-review rule): READY FOR THE USER. Merge after wave 1: rebase web-panel-fix-1 onto merged main with `--onto main 89022ab`, then re-verify on the new head.
 - Lesson saved to ac-verification.md (base-plus supporting tree; new fixtures break whole-suite base tallies). earlyoom: 0 kills.
+
+## 2026-11-02 22:00 — DJ build .3 pushed (main b09727f); DJ holds merges until "wave 1 merged"
+- No importer-shared files in DJ's 43 changed files. Resumed wave-1 finisher: rebase --onto b09727f 1a64378, proofs, quick gates (typechecks, check, replays); evidence rebase3/. Asked DJ to keep the window for the panel merge right after.
