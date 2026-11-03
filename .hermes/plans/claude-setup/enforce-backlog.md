@@ -135,3 +135,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-03 | stack-1 | figma-to-bricks | script: the stack finisher converts every demo capture with each job's accepted head and its stacked head and lists elements whose settings or rendered height differ | offered
 - 2026-11-03 | website-importer merge | figma-to-bricks | script: next-paste-id.sh scans main and every refs/heads HANDOFF plus the plan logs, prints the next free id, exits 1 when two branches claim the same id | offered
 - 2026-11-03 | website-importer merge | figma-to-bricks | test: fail npm run check in the main folder when git ls-files .superpowers/ is non-empty on main | offered
+- 2026-11-03 | djtrees-phone-menu (train) | figma-to-bricks | Test: convert every zero-argument fixture through asCapture and assert no copy:* IR keys and an empty adapted.yielded for every non-site rule | offered

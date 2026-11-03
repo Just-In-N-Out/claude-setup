@@ -14,6 +14,9 @@ each reviewed job is rebased onto the newest local `main`. You are that rebaser 
    rebaser can't move a branch another worktree holds). Gates compare with the target, not with main. Besides collisions, compare the train's change (target → new head)
    with the job's own change (job base → job head) element by element and value by value on the real files, ticks off
    and on, and explain every difference (main's `cta.center` centring the phone menu's panel pill showed only there).
+   A rule that OWNS layers (`Rule.owns`, e.g. the importer's `site.tiers` on captured layers) silently drops other
+   rules' writes to them (`adapted.yielded`) with no conflict or collision: probe your fixtures turned into captures
+   (`asCapture`) for yields and phone-only copies (phone-menu rebaser, 2026-11-03).
    A HANDOFF conflict whose `theirs` side ends with an old copy of a line the target changed (a heading's
    `build <BUILD>` filled in) keeps that line once, the target's version: never both.
 3. **Conflicts:** keep both sides' meaning. When reviewers offer alternative resolutions, try each as a scratch
