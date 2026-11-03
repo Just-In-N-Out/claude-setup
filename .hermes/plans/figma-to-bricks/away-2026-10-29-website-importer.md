@@ -445,3 +445,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Released DJ's merge hold (window past 3 h): DJ merges cars 7–10 now; I'll rebase wave 1's fixed head onto their main before the final checks, then ask for the hold again.
 - Plan after the fix: rebase onto DJ's main → 4 checkers (capture + compare, verifier + auditor) → ac-check → merge; then stack panel → address → tiers → embeds on it (one stack finisher), quick re-checks in parallel, merge in order.
 - Lessons saved: live-site-reading (read fixed boxes in every range), testing-pitfalls (probe-page pitfalls; Georgia = DejaVu Serif on WSL). Enforce offered.
+
+## 2026-11-03 03:00 — web-compare verifier-2 clean on 5b52fe7 (ALL ACCEPTED 18/18; AC17 1.012×). Moot for the merge head (wave1-fix-2 coming) but no new problems. Lessons saved (probe-page style order; TMPDIR budget +51/+69). Next briefs: TMPDIR ≤ 38 chars.
