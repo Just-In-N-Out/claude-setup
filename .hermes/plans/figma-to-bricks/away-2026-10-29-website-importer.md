@@ -383,3 +383,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-02 22:50 — web-address review 1 CLEAN (MOVE ON); verifier READY FOR THE USER (12/13, AC13 live); blind auditor dispatched
 - Security of the helper holds (127.0.0.1 only, Host check vs DNS rebinding, 80-bit code compared in constant time before reading the body, http(s) only, no local file served, no WordPress/uploader/alttext code). 5 own mutants killed. 4 P3s written to evidence/web-address/follow-ups.md.
 - Next: auditor (web-address-auditor.md) → ac-check --reviews. Lessons saved: panel-validation (null-origin preflights; probe from a sandboxed srcdoc iframe), testing-pitfalls (panel-address shots overwritten by mutant runs).
+
+## web-compare blind auditor: clean, ALL ACCEPTED 18/18 on a2ae004 (AC17 cost 0.96×; AC16 live self-compare 0 findings; AC11 src diff empty after the capture-finish commit). found_else: AC12 id gaps unverifiable while blind. Waiting: capture verifier-2, compare verifier. Lesson saved to ac-verification.md; enforce offered.
