@@ -72,3 +72,4 @@ Justin 17:2x: 'ok run more agents' (16 GB free). Started: car 3 strip-edge verif
 20:0x: car 6 panel-edge blind auditor CLEAN (10/11, AC11 live 3cj). Waiting: car 6 verifier, car 3 verifier, car 5 auditor.
 20:1x: car 5 faint-picture blind auditor CLEAN; ac-check below.
 20:1x: car 5 ac-check READY FOR THE USER 6/7 on 5b312ae (AC7 live 3cv). Justin: 'open chrome test for everything' → Chrome limit lifted for all agents (one Chrome job per agent); 6 DJ agents + importer told; memwatch still on.
+20:2x: Justin asked to check phone-menu runaway: earlyoom killed phone-menu.test.ts at 17:17–17:18 (15–16 GB ×3) and a node -e at 17:07 (17.4 GB). Asked builder afb732edbd2ac1c70: which mutant/real-code path runs away, were kills miscounted as mutant kills, re-run bounded. djtrees-common: bound every mutation run.
