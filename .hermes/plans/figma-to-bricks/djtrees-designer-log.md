@@ -80,3 +80,4 @@ Importer agreement: DJ merges cars 3–6 (build .3) as soon as car 3 + car 6 ver
 20:3x: car 3 strip-edge verifier CLEAN; ac-check above. Waiting only on car 6 verifier for build .3.
 20:4x: car 7 stack-gaps verifier CLEAN on 9599c9e (8/9, AC9 live 3cr); zigzag found_else judged P3 (stays follow-up). Blind auditor deferred to the final head after wave 1.
 20:4x: car 9 step-sides verifier CLEAN on a8bef6c (8/9, AC9 live 3cp); merge-commit guards N1/N2 needed, acrossLines guard is a second guard (N3c killed). Note: stack-gaps' AC2/AC3 tests AS APPROVED fail on cars 8 and 9 (car 8's merge ruling: stack-lines' AC3 governs stacked flat-line rows) — car 8 verifier judges; may need Justin's ruling.
+20:5x: phone-menu builder DONE (head 2153d8d on 1aef12f; AC1–AC9 receipts; frosted-bar fix 5fcb9ce; memory kills explained: deepEqual diff of IR trees in mutant T4-M7, not real code, none counted as kills) → reviewer-1 started. earlyoom clear.
