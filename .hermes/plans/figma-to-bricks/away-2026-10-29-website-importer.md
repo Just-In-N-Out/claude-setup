@@ -315,3 +315,10 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Three lock files ~/.cache/f2b-chrome{,-2,-3}.lock; each agent holds one for its whole Chrome sequence (flock -n loop, marker process). Passed the snippet to all 4 importer agents. testing-pitfalls line updated. DJ Trees runs 8 agents; plans a 35-commit merge (Build 2026-11-02.3) within the hour.
 
 ## 2026-11-02 20:10 — Justin lifted the Chrome limit ("open chrome test for everything", via DJ Trees session); relayed to all 4 agents (one own Chrome job at a time, close after each step; DJ session watches memory and will call "back to N slots").
+
+## 2026-11-02 20:45 — web-panel fixed (845e601); verifier-2 + blind auditor dispatched; runaway-memory rule
+- Fixer 1: R1-1 (typed descriptions win over old-site alt for captures; Figma unchanged; real home capture 31/31, 3/3, 4/4) and R1-2 (font file names `<Family>-<weight>[-Italic]`) fixed test first with revert proofs; P3s R1-3..7 + one new P3 to follow-ups. Gates by name vs 8c1e84b: only the 2 new tests differ; AC5 receipt 0-line diff.
+- No second review (Justin's one-review rule): verifier-2 (web-panel-verifier-2.md) ∥ blind auditor (web-panel-auditor.md) → ac-check without --reviews.
+- New global rule (Justin, via his home session and DJ session): check earlyoom kills each time an agent returns; tell the owning agent; treat 137/143/SIGTERM as possible runaway. Checked 20:40: no kills. Rule sent to wave-1 finisher, tiers, embeds; in the two new briefs.
+- Lesson saved: testing-pitfalls (bare word `source` refused in worktree agents).
+- Importer agents now 5: wave-1 finisher, tiers, embeds, panel verifier, panel auditor.
