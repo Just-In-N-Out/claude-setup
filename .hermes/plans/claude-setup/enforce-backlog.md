@@ -131,3 +131,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-03 | djtrees train final | git-commit-rules / rebase brief | Script: the rebaser's closing gate fails if its own worktree has refs/heads/train-* checked out (git worktree list --porcelain) | offered
 - 2026-11-03 | djtrees-phone-menu | figma-to-bricks | Script: any head-vs-base corpus comparison (lintdiff) refuses a file whose fonts were not observed loaded on one side only and names the side to re-run | offered
 - 2026-11-03 | djtrees-phone-menu | figma-to-bricks | Test: a browser lint check (test/browser/lint.ts) flags an <a> wrapping an element whose computed max-width is a percentage/calc with % or whose margin-left/right is auto | offered
+- 2026-11-03 | stack-1 | figma-to-bricks | script: a stack-gate runner that runs every stacked job's AC files (with their env vars) on the final head and fails on any red | offered

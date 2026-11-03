@@ -464,3 +464,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Lesson saved: testing-pitfalls (redirects refused; hash-object proof).
 
 ## 2026-11-03 04:45 — web-capture auditor-3 clean on 0f9e870: READY FOR THE USER 14/15 (AC15 live). Probes confirm amendment 1 + fix 2 live (letsgro #mobile-dim backdrop; plugin home fixed header in root). P3s → follow-ups. Lesson saved (run-time test names need the by-name checker). Waiting: capture verifier-4, compare verifier-3 + auditor-3, stack finisher.
+
+## 2026-11-03 05:15 — stack-1 done: panel-merge 293ad1f, address-merge 12f9126, tiers-merge 2fd7a95, embeds-merge 3a39c11 (linear on wave1-merge 0f9e870)
+- Panel/address: no conflicts (address chrome.ts hunks combined). Tiers: conflicts in scene/normalise/rules index/style/understand/designs/wide, both sides kept; test-only stack fix (AC12 scan skips web snapshots). Embeds: conflicts in chrome/capture/assemble/normalise/style/ir/understand; stack fixes: paste check 3cj→3cw, AC6 test reads yielded writes, real bug fixed (capture-alts layers() walks floating extras). All jobs' AC files pass on the top head, env-gated ones included.
+- Open for Justin: should a capture's floating extras also be site.tiers-measured layers (neither job built it)?
+- Dispatched panel + address stack re-checks (verifier + blind auditor each; briefs web-<job>-stack-*.md). Tiers + embeds re-checks start when wave 1's checkers finish (load).
+- Lessons saved: SKILL.md (run every stacked job's AC files on the top head), live-site-reading (site.tiers owns capture layers; read yielded). Enforce offered.
