@@ -391,3 +391,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - V2-F1 (AC4): F2's part-own fixed content inside its root vs AC4's text → Justin: "Keep it in the Header" (amend AC4).
 - AC14: verifier marked not_run (bdryswi), ac-check says NOT ACCEPTED since AC14 has no (live) tag → Justin: "Mark it mine, merge now": AC14 = reachable homes; new AC15 (live) = bdryswi pages.
 - Lessons saved: testing-pitfalls (sibling TMPDIRs for parallel Chrome jobs; AC8 needs a build), live-site-reading (probe pages need meta viewport). Enforce offered.
+
+## 2026-11-02 23:30 — wave-1 fixer dispatched (V2-F2 + plan amendment); embeds fixed (5e3fea8) → verifier + auditor
+- website-importer-wave1-fixer-1.md: branch wave1-fix-1 from a2ae004; evidence web-capture/fixer-11/. After it: re-install plan-approved (keep v1), then capture verifier+auditor and compare re-check on the new head.
+- web-embeds fixer 1: R1-1 (`how: "made"` live frame markup), R1-2 (`withLiveSrc`), R1-3 (`later`: script-revealed own boxes pasted shown with a note; hidden-on-purpose kept) all fixed test first; AC10 108/108, AC11 7/7; live letsgro dot nav shows. 3 new limits → follow-ups.
+- Dispatched web-embeds-verifier-2.md and web-embeds-auditor.md on 5e3fea8 (base 89022ab). After wave 1 merges, embeds rebases and gets a quick re-check.
+- Lesson saved: testing-pitfalls (background until-grep false "done"; bound back-off loops). Skipped: the `later` detection recipe (in code + HANDOFF).

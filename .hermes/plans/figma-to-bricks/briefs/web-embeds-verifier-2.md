@@ -24,7 +24,7 @@ Load `engineering-best-practices`; read the project skill `~/.hermes/skills/soft
    live check on fresh GET-only captures (`scripts/live-embeds.sh`). Not the whole test:web or test:browser suites.
 2. Every AC's named test on head and on base 89022ab (copy head's test files and the test-only modules they import
    into a base tree), plus the R1-1/R1-2/R1-3 tests. A screenshot or terminal image per AC.
-3. Write `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-embeds/verifier-2/ac.json` (ac-verification.md format: head, base, `ac_status` per AC; AC16 `not_run`, owed),
+3. Write `/home/justin/.hermes/plans/figma-to-bricks/evidence/web-embeds/verifier-2/ac.json` (ac-verification.md format: head, base, `ac_status` per AC; AC12 and AC13 `not_run`, owed),
    then self-check with `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh` (no `--reviews`) on a
    copy of your report.
 
