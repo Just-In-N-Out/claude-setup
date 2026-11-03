@@ -65,6 +65,7 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   in the candidate list before estimating a reuse saving (web-capture fixer 4).
 
 ## What counts as shown
+- Fixed boxes the design width hides (a phone-only "Call now" bar, a header's phone-only fixed bar) must be read from the ranges that show them: collecting floating boxes only from the design width's reading drops them silently. Probe floating and fixed clauses with a fixed box shown only at 767 and below and one shown only above (web-capture verifier 3, V3-F1).
 - Hidden is more than `display: none`: `visibility: hidden` (closed dropdowns, megamenus, popups) and screen-reader
   boxes hidden with the old `clip: rect(…)` (Bricks' `.skip-link` is 20×10 with padding, not 1×1) are not visible
   layers (web-capture review 1). But the capture reads after its freeze scrolls back to the top, so reveal-on-scroll

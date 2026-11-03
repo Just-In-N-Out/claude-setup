@@ -439,3 +439,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 02:00 — web-capture auditor-2 clean on 5b52fe7 (READY FOR THE USER 14/15, AC15 live). P3s → follow-ups. Lesson saved (checker Bail out! on import failure). Waiting: capture verifier-3, compare verifier-2 + auditor-2.
 
 ## 2026-11-03 02:20 — web-compare auditor-2: ALL ACCEPTED 18/18 on 5b52fe7; F1 (noise floor race) and the FE-1 TMPDIR length → follow-ups (fix after merge). Memory: TMPDIR ≤38 chars. Waiting: capture verifier-3, compare verifier-2.
+
+## 2026-11-03 02:45 — capture verifier-3: AC4 NOT ACCEPTED (V3-F1: fixed boxes hidden at 1440 but shown elsewhere are dropped: phone-only call bars, a header's phone-only fixed bar); wave-1 fixer 2 dispatched
+- 13/14 accepted otherwise; gates clean (replays 34/34; browser 0 differences). Fix brief website-importer-wave1-fixer-2.md (branch wave1-fix-2 from 5b52fe7; evidence fixer-12/), plus the FE-1 test's short temp folder (TMPDIR length).
+- Released DJ's merge hold (window past 3 h): DJ merges cars 7–10 now; I'll rebase wave 1's fixed head onto their main before the final checks, then ask for the hold again.
+- Plan after the fix: rebase onto DJ's main → 4 checkers (capture + compare, verifier + auditor) → ac-check → merge; then stack panel → address → tiers → embeds on it (one stack finisher), quick re-checks in parallel, merge in order.
+- Lessons saved: live-site-reading (read fixed boxes in every range), testing-pitfalls (probe-page pitfalls; Georgia = DejaVu Serif on WSL). Enforce offered.
