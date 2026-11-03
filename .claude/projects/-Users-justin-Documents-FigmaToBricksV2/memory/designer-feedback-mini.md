@@ -31,3 +31,9 @@ with it": take every ⭐ answer and run each job to merge without asking; report
 
 **Why:** small fixes; he wants speed without dropping the plan/review/verify roles. **How to apply:** standing
 auto-go still applies; ACs are still proven before merge. Related: [[review-round-cap]], [[run-without-stopping]].
+
+**Outcome (2026-11-03):** all 12 notes merged (builds 2026-11-02.1–.4 and 2026-11-03.1; Build .5 is the importer's),
+plus one extra job found while planning (faded pictures). What made it work: a merge train (each job rebased onto the
+previous, one BUILD commit per batch), and the blind auditor in every job, which caught a defect the reviewer and
+verifier both missed (it turned out to be the test renderer's linked-Image markup). Paste checks 3ct, 3cl, 3cq, 3cu, 3cn,
+3cv, 3cj, 3cr, 3co, 3cp, 3cm, 3cs, 3ck are owed by Justin.
