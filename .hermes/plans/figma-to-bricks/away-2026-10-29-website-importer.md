@@ -412,3 +412,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - found_else 1: R1-1 still fails when an inline script names the player's host (Yoast JSON-LD sameAs youtube, data layers): video lost and the old site's schema pasted. Common on business sites → fixed now (web-embeds-fixer-2.md, branch web-embeds-fix-2 from 5e3fea8), not deferred. The embeds auditor on 5e3fea8 keeps running as a confidence run; the final check is the quick re-check after embeds rebases onto merged main.
 - Other found_else: player fills its widget (likely fine); hidden boxes take clicks (already a follow-up); R1-3 ruling ("Back to top" shown at every scroll) unconfirmed → report to Justin.
 - Lesson saved: testing-pitfalls (below-the-fold cross-origin frame paints blank in clip shots).
+
+## 2026-11-03 00:15 — web-compare verifier clean (ALL ACCEPTED 18/18 on a2ae004); FE-1 sent to the wave-1 fixer
+- FE-1 (compare exits 0 with no report when Chrome dies → a crash reads as identical) is a real oracle bug: added to wave1-fix-1 (exit 2, CLI test). FE-2 by design; FE-3 (mouse move may fire exit-intent pop-ups) → note for wave 2+.
+- Wave 1 status: capture auditor ALL ACCEPTED, compare auditor ALL ACCEPTED, compare verifier ALL ACCEPTED (all on a2ae004); capture verifier rejected AC3 (fixing) and AC4 (plan amended by Justin). After the fixer: quick re-check (verifier + auditor for both plans) on the new head, then merge.
+- Lessons: none new (done-marker and sibling TMPDIRs already in testing-pitfalls).
