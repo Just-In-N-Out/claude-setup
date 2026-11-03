@@ -126,3 +126,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-03 | web-tiers | figma-to-bricks | test: site-phone-copies converts a capture whose box is layout NONE with inferred photo rows and asserts no copy:/slider: key copies a measured layer | offered
 - 2026-11-03 | web-tiers | feature-dispatch | review-checklist line: every pair-looping AC browser test in test/web asserts a minimum pair count inside that test | offered
 - 2026-11-03 | wave 1 | figma-to-bricks | test: every tools/*.ts command that drives Chrome gets a test that kills its Chrome mid-run and expects a non-zero exit (tools/capture.ts has none) | offered
+- 2026-11-03 | web-compare | figma-to-bricks | test: compare-cli's FE-1 test makes its temp folder with a short mkdtemp under /tmp (or fails fast naming TMPDIR's length) | offered
