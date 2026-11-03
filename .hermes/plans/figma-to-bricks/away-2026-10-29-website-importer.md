@@ -476,3 +476,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 05:55 — panel-merge 293ad1f ACCEPTED: ac-check READY FOR THE USER (16/17; AC16 live). Auditor 23/24 mutants killed (1 equivalent); AC5 receipt 944 lines identical. Merges right after wave 1. Lessons saved (UI shots via wrapper test; old host legitimately in video fileUrl / document links).
 
 ## 2026-11-03 06:10 — address stack verifier clean (READY FOR THE USER 12/13 on 12f9126; chrome.ts 3-way merge exact; dist/code.js same as base). Waiting: address auditor, wave 1's 3 checkers. Lesson saved (scratch repo for git-diff ACs in base trees).
+
+## 2026-11-03 06:20 — tiers + embeds stack re-checks dispatched (verifier + blind auditor each); Justin awake, asked about wave 2: told him wave 2 is fully built and in final checks, waiting on wave 1's merge; wave 3 deliberately not started until he tries waves 1+2. Running: wave-1 capture verifier-4, compare verifier-3 + auditor-3; address auditor; tiers + embeds verifier/auditor.
