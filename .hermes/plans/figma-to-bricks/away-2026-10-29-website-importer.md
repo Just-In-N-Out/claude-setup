@@ -385,3 +385,9 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Next: auditor (web-address-auditor.md) → ac-check --reviews. Lessons saved: panel-validation (null-origin preflights; probe from a sandboxed srcdoc iframe), testing-pitfalls (panel-address shots overwritten by mutant runs).
 
 ## web-compare blind auditor: clean, ALL ACCEPTED 18/18 on a2ae004 (AC17 cost 0.96×; AC16 live self-compare 0 findings; AC11 src diff empty after the capture-finish commit). found_else: AC12 id gaps unverifiable while blind. Waiting: capture verifier-2, compare verifier. Lesson saved to ac-verification.md; enforce offered.
+
+## 2026-11-02 23:15 — web-capture verifier-2: AC3 and AC4 rejected; Justin ruled AC4 and AC14
+- V2-F2 (AC3, real bug): a box's own stretchy width (%, vw, calc, var) is lost when its parent maps to layoutMode NONE or it is placed absolutely (node.ts:214-221 returns before sizingOf; 217/582 layers on the live home in NONE frames). → fixer.
+- V2-F1 (AC4): F2's part-own fixed content inside its root vs AC4's text → Justin: "Keep it in the Header" (amend AC4).
+- AC14: verifier marked not_run (bdryswi), ac-check says NOT ACCEPTED since AC14 has no (live) tag → Justin: "Mark it mine, merge now": AC14 = reachable homes; new AC15 (live) = bdryswi pages.
+- Lessons saved: testing-pitfalls (sibling TMPDIRs for parallel Chrome jobs; AC8 needs a build), live-site-reading (probe pages need meta viewport). Enforce offered.

@@ -14,6 +14,7 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   re-run into new folders (web-compare amendment-1 builder).
 
 ## Writing readers
+- Probe pages need `<meta name=viewport content="width=device-width">`; without it the phone ranges lay the page out at 980px (web-capture verifier 2).
 - Don't tokenise words per text node: the plugin's own markup splits `(800) 457-3160.`, `50+`, `100%` into pieces;
   glue pieces with no space between them whose drawings touch (in any ground-truth script too). A whitespace-only text
   node between flex or grid items is never drawn (Elementor's counter: `98` `%` on their own source lines), so test it

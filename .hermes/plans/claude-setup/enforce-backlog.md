@@ -121,3 +121,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | web-address | mutation-testing-discipline | script: the mutation runner reports "NO TAP (timeout)" instead of SURVIVED when a run printed no ok/not-ok lines, and lists processes left running after each mutant | offered
 - 2026-11-02 | web-tiers | figma-to-bricks | test: in adapt-site-tiers, a captured column whose y position differs between ranges keeps _heightMin (never _height) at every tier | offered
 - 2026-11-02 | web-compare | feature-dispatch | script: ac-check.sh prints the missing module path of an import-failure base log on that AC's line, so a missing test helper shows as such | offered
+- 2026-11-02 | web-capture | figma-to-bricks | test: web-architecture.test.ts prints a TAP skip line when dist/ is absent instead of passing silently | offered

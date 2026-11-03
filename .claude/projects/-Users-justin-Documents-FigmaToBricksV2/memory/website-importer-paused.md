@@ -33,3 +33,8 @@ entries and this note, run `review-check.sh` on each evidence folder to confirm 
 resume step named above. Related: [[brainstorm-goes-to-planner]], [[bdry-home-copy]], [[run-without-stopping]].
 
 **Live website, no Figma design (Justin, 2026-11-02):** "I want to be able to import a live website, not related to Figma, using my plugin" — he chose **"Address in the panel"** over "File drop is fine" and "Not in Figma at all": type the site's address in the plugin panel; a small helper he starts once on his PC reads it in Chrome (the capture) and hands the result to the panel; Convert and paste. New job `web-address` (planner dispatched 2026-11-02). Figma only hosts the panel.
+
+**Justin's AC rulings, 2026-11-02 (wave 1, capture):** AC4 — "Keep it in the Header": a part's own fixed content (a
+sticky header bar) stays inside its part, marked fixed; other fixed boxes still go to the footer's floating extras.
+AC14 — "Mark it mine, merge now": AC14 is proven on letsgro.ai and the plugin-made Hostinger home; the bdryswi.com pages
+become a `(live)` AC owed to him (his allow-list). Plan amended in git and plan-approved re-installed.
