@@ -60,7 +60,7 @@ newest `main` just before its merge. Several touch the same files (divided rows:
   bare `chrome-f2b` stalled `snap` on the DJ Trees file silently for 18 minutes (strip-edge planner). `chmod +x` the wrapper (Write
   makes it 0644: Chrome then never starts). Record executable and flags; same profile for base and head (memory `corpus-paths-on-desktop.md`). `snap` at ≥ 992 (1440 especially) still
   stalls on the DJ Trees file with either profile: prove wide widths with an in-process replay plus a layout-box
-  comparison or a page probe waiting for `document.fonts.ready` + a short delay, never by waiting on snap. A browser test counts only when its output says `skipped 0`; a test run by name counts only with its own `ok N - <name>` line and `# pass` ≥ 1 (`--test-name-pattern` exits 0 when it matches nothing).
+  comparison or a page probe waiting for `document.fonts.ready` + a short delay, never by waiting on snap. A browser test counts only when its output says `skipped 0`; a test run by name counts only with its own `ok N - <name>` line and `# pass` ≥ 1 (`--test-name-pattern` exits 0 when it matches nothing; and include a browser file only for names it contains, or it can sit with Chrome open for minutes).
 - `npm run check` must pass. **`npm run corpus` measures nothing here** (Mac paths): never edit `corpus/corpus.json` in
   the worktree; for corpus-backed tests use scratch `git archive` trees of head and base with only `corpus.json`
   re-pointed to `corpus/files/` and `node_modules` linked to the MAIN folder's copy

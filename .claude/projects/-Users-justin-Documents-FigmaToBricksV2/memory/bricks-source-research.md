@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 8e80bfe0-369d-4e32-84a6-8d63e5215658
-  modified: 2026-11-02T19:26:16.620Z
+  modified: 2026-11-03T09:58:15.540Z
 ---
 
 **Finding a Bricks element's shape without Justin's sample** (djtrees-phone-menu researcher, 2026-11-02, after Justin
@@ -15,7 +15,9 @@ and element CSS byte for byte with his live site's public theme assets (`/wp-con
 the control keys with academy.bricksbuilder.io's resolved schema; a Wayback `id_` snapshot from before a release shows
 what live sites printed then. The Nav (Nestable) candidate built this way:
 `~/.hermes/plans/figma-to-bricks/evidence/djtrees-phone-menu/research/` (63 checks pass). Justin's own copy (and the
-live round trip) still beats a researched candidate.
+live round trip) still beats a researched candidate. Bricks' per-element CSS (`a.brxe-image`, `:where(.brxe-image).tag`,
+…) is in each page's `wp-content/uploads/bricks/css/post-<id>.min.css` inside `@layer bricks` (same on 2.3.9 and
+2.4.4), not in `frontend-light-layer.min.css` (phone-menu fixer 2, 2026-11-03).
 
 **Bricks versions by site (2026-11-02):** darksalmon (his main site, the `reference/bricks/` baseline) 2.3.9; DJ Trees
 staging 2.4.4; B-Dry staging 2.4.2; khaki-finch 2.4.1. 2.4.x wraps settings selectors in `:where()` and has a newer
