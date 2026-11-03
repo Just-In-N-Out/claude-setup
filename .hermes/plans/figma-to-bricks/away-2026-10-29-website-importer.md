@@ -329,3 +329,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Lessons saved: per-file browser suite runs (testing-pitfalls), re-rebase proofs (SKILL.md Merging step 1).
 
 ## 2026-11-02 21:20 — web-panel verifier-2 clean on 845e601: READY FOR THE USER (16/17, AC16 live owed). Waiting for the blind auditor. found_else: record-shot test writes outside its folder; AC9 plan text names the old file pattern; no unit round-trip for pictured boxes (real captures cover it). earlyoom: 0 kills.
+
+## 2026-11-02 21:40 — web-panel ACCEPTED: ac-check READY FOR THE USER (16/17 on 845e601; AC16 live owed)
+- Blind auditor clean: 16 ACs proven head+base, 23 mutants killed, AC5 receipt 1130 items identical. found_else P3: document links on the old host kept (F13), a two-weight variable font offered twice.
+- ac-check (no --reviews, Justin's one-review rule): READY FOR THE USER. Merge after wave 1: rebase web-panel-fix-1 onto merged main with `--onto main 89022ab`, then re-verify on the new head.
+- Lesson saved to ac-verification.md (base-plus supporting tree; new fixtures break whole-suite base tallies). earlyoom: 0 kills.

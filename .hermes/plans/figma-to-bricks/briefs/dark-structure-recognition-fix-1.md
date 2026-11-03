@@ -1,4 +1,4 @@
-# DRAFT — first review fix pass; await finalized review and root referee
+# Fix pass after completed first review of two
 
 Role: fresh pipeline_fixer. Do not spawn agents. You are not alone in the codebase; preserve other sessions' changes, never revert them, and accommodate them. Own this story's source/tests/tracked ledger/HANDOFF only in W, and your own E/fixer-1 evidence and fresh short disk scratch. Never edit main, shared dependencies/config, private CLAUDE, skills or memory. No BUILD bump, push, site/Figma/media writes, or rebase.
 
@@ -8,13 +8,13 @@ Starting HEAD `c6405a52a5416d46a255ad82e3471adb79c6fd31`.
 Base `14240810effc26254e2fc6771fdeb6e67910c429`.
 E `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Approved immutable plan E/plan-approved.md SHA256 `23fe2fb95ab2311819000091925656fea9753555fe4c10ce9fa663f34078b511`.
-Final first review E/review-1/review.json; completed report ROOT_MUST_PIN_REVIEW_REPORT.
-Root referee receipt ROOT_MUST_PIN_REFEREE.
+Final first review E/review-1/review.json; completed report E/review-1/resume/report.md.
+Root referee receipt E/review-1/root-referee.log.
 Builder's prior qualified validation E/builder-finalize/report.md and builder-report.json; the reviewer owns the independent conclusions. Read the actual finalized review and referenced probe evidence.
 
 Load engineering-best-practices, receiving-code-review, systematic-debugging, test-driven-development, git-commit-rules, and project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` with relevant testing pitfalls. Add mutation-testing-discipline for mutations/guards. No main-session implementation prescription: independently verify every referee P0–P2 finding, fix valid findings test-first, reject invalid ones only with concrete evidence. Preserve original failed checks and record actual causal RED/GREEN, not setup/import errors as behavioral failures. Generalize by structural conditions, never by this user's layer names, IDs, fonts, colours or page constants.
 
-Current preliminary finding IDs (final review/referee is authoritative):
+Final finding IDs (completed review/referee is authoritative):
 - R1-1: a current-page bold highlight rejects an otherwise legal footer column, removing independently eligible peer links; AC3/AC5.
 - R1-2: a plain leading announcement strip prevents uniquely owned embedded navigation omission/linking; AC1/AC2.
 - R1-3: backgrounds shared across repeated review choices obscure the unique active-border signal and suppress the static candidate/missing-record note; AC4.
