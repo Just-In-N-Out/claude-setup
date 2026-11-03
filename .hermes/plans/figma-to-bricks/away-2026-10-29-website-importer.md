@@ -379,3 +379,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - R1-1: range view keeps children at design-width coords → overflowsY writes fixed _height (contact 612px at 390). R1-2 (768 header menu, J3) and R1-3 (phone slider copy at 320, J8) P3 → follow-ups. Head clearly better than base on home (fits 479–1280) and gallery.
 - Fixer: web-tiers-fixer-1.md (web-tiers-fix-1 from 8753722) → verifier + auditor (no re-review).
 - Lessons saved: live-site-reading (judge on every capture's scrollWidth; shallow-copied view breaks parent/child geometry). Enforce proposal offered.
+
+## 2026-11-02 22:50 — web-address review 1 CLEAN (MOVE ON); verifier READY FOR THE USER (12/13, AC13 live); blind auditor dispatched
+- Security of the helper holds (127.0.0.1 only, Host check vs DNS rebinding, 80-bit code compared in constant time before reading the body, http(s) only, no local file served, no WordPress/uploader/alttext code). 5 own mutants killed. 4 P3s written to evidence/web-address/follow-ups.md.
+- Next: auditor (web-address-auditor.md) → ac-check --reviews. Lessons saved: panel-validation (null-origin preflights; probe from a sandboxed srcdoc iframe), testing-pitfalls (panel-address shots overwritten by mutant runs).
