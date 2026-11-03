@@ -302,3 +302,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - All ACs pass except AC16 (live, owed to Justin). Gates base→head by name: unit +20 new all pass; browser +9 new, same 10 font failures; web 132/131/1 skip (AC14 cleared separately with F2B_WEB_CAPTURES). Rulings R1, R10, R11 not yet confirmed.
 - Lessons saved to testing-pitfalls: F2B_WEB_CAPTURES clears AC14's skip; Monitor's inline poll is refused in a worktree session (use bash <script>). Skipped: the designOf/leaveOut mutant fixture tip (narrow to one guard).
 - Dispatched web-panel reviewer (brief web-panel-reviewer-1.md): one review, real bugs only, plus the verifier's AC work. Importer agents now: wave-1 finisher + panel reviewer (2).
+
+## 2026-11-02 19:30 — web-panel review 1: 2 real bugs, AC7 false; fixer dispatched
+- R1-1 P2: a typed description for a photo with an old-site alt is lost on re-convert and written back to WordPress (AC7 false). R1-2 P2: font file names break italic woff2 and two-word families. R1-3..7 P3 → follow-ups.
+- referee REVIEW AGAIN; ac-check (no --reviews) NOT ACCEPTED (AC7). Following the one-review rule: fixer (web-panel-fixer-1.md) → fresh verifier + blind auditor → ac-check without --reviews (no re-review), as Justin set for the mini chain.
+- Chrome: switched importer agents to the shared `flock ~/.cache/f2b-chrome.lock` + marker (the pgrep wait starved 50+ min). Lessons saved: testing-pitfalls (shared flock, --test-skip-pattern), live-site-reading (imported value edits must survive re-convert). 2 enforce proposals offered.
