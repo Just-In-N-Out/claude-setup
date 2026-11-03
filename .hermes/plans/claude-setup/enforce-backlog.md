@@ -119,3 +119,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-02 | web-embeds | figma-to-bricks | test: a capture fixture with a script-made player frame and a lazy-loaded frame in test/web/capture-embeds.test.ts | offered
 - 2026-11-02 | djtrees-phone-menu (train) | feature-dispatch | Script: the train rebaser's gate script runs the value-by-value comparison of train delta vs job delta (delta-same.mjs) and lists every element whose change differs | offered
 - 2026-11-02 | web-address | mutation-testing-discipline | script: the mutation runner reports "NO TAP (timeout)" instead of SURVIVED when a run printed no ok/not-ok lines, and lists processes left running after each mutant | offered
+- 2026-11-02 | web-tiers | figma-to-bricks | test: in adapt-site-tiers, a captured column whose y position differs between ranges keeps _heightMin (never _height) at every tier | offered

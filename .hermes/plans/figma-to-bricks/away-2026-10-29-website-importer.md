@@ -374,3 +374,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - AC1–AC12 pass; AC13 live (Justin in Figma desktop). Live receipt: helper found Chrome by itself, captured darksalmon home over HTTP in 2:52 (37/37 pictures, 8.5 MB). dist/code.js identical; replays identical; 19 mutants caught. Two pieces written before their tests (compensated: RED on an archive without the box; mutations). Real bug found by the browser test: Chrome accepts a space in a host; fixed 1f57e81. Rulings R10–R15 not yet confirmed. Proposed CLAUDE.md standing rule for the finisher (helper at 127.0.0.1:47811 with pairing code).
 - Lessons saved: panel-validation (space in host), mutation-testing-discipline (capped run with no TAP = unknown; bound exit waits). Enforce proposal offered.
 - Dispatched web-address-reviewer-1.md (with security-best-practices).
+
+## 2026-11-02 22:35 — web-tiers review 1: 1 real P2 (phones scroll sideways on contact); AC1–AC14 hold; fixer dispatched
+- R1-1: range view keeps children at design-width coords → overflowsY writes fixed _height (contact 612px at 390). R1-2 (768 header menu, J3) and R1-3 (phone slider copy at 320, J8) P3 → follow-ups. Head clearly better than base on home (fits 479–1280) and gallery.
+- Fixer: web-tiers-fixer-1.md (web-tiers-fix-1 from 8753722) → verifier + auditor (no re-review).
+- Lessons saved: live-site-reading (judge on every capture's scrollWidth; shallow-copied view breaks parent/child geometry). Enforce proposal offered.
