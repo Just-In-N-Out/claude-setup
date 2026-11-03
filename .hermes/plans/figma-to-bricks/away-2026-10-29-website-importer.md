@@ -407,3 +407,8 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - Dispatched web-tiers-verifier-2.md and web-tiers-auditor.md on ecd7b89 (base 89022ab).
 - Lessons saved: live-site-reading (re-run AC10 after view changes), testing-pitfalls (live J0 counts drift; compare heads on one fresh capture).
 - Overnight plan: merge wave 1 → panel → address → tiers → embeds as each is accepted (rebase + quick re-check each), after-merge finisher builds and pushes; morning report to Justin with the address-box steps.
+
+## 2026-11-03 00:05 — web-embeds verifier-2 clean (READY FOR THE USER 11/13 on 5e3fea8); one realistic leftover → fixer 2
+- found_else 1: R1-1 still fails when an inline script names the player's host (Yoast JSON-LD sameAs youtube, data layers): video lost and the old site's schema pasted. Common on business sites → fixed now (web-embeds-fixer-2.md, branch web-embeds-fix-2 from 5e3fea8), not deferred. The embeds auditor on 5e3fea8 keeps running as a confidence run; the final check is the quick re-check after embeds rebases onto merged main.
+- Other found_else: player fills its widget (likely fine); hidden boxes take clicks (already a follow-up); R1-3 ruling ("Back to top" shown at every scroll) unconfirmed → report to Justin.
+- Lesson saved: testing-pitfalls (below-the-fold cross-origin frame paints blank in clip shots).
