@@ -113,3 +113,4 @@ Importer agreement: DJ merges cars 3–6 (build .3) as soon as car 3 + car 6 ver
 10:xx: phone-menu rebased onto importer main: head 956da5b (train-phone-menu-2; train-merge 7e6cccb captured bar gets no menu, 956da5b importer golden re-recorded). Verifier + blind auditor started. Finisher brief ready (djtrees-postmerge-phone-menu.md). First ready merges first with importer's embeds.
 10:xx: phone-menu blind auditor on main CLEAN (9/10, both picture modes, ticks off/on). Waiting verifier.
 11:xx: phone-menu verifier on main CLEAN; ac-check READY 9/10 on 956da5b (AC10 live 3ck). Lock djtrees-phone-menu; main ff 9212c47 → 956da5b. Finisher started (Build .6).
+12:4x: Build 2026-11-03.1 = 88a6aa4 pushed (phone menu; origin/main equal); lock released. ALL 12 DJ designer notes merged (builds 2026-11-02.1–.4, 2026-11-03.1). rules-summary line 25 folded.

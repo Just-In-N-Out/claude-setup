@@ -7,8 +7,11 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-03)
 
-- **Current build `2026-11-02.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-03.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-03.1 djtrees-phone-menu:** a bar proven to be the site's menu folds into Bricks' Nav (Nestable) where it
+    no longer fits: logo left and smaller, ☰ right, a panel from the right with the links and the bar's action; a
+    frosted bar keeps its blur. Paste check **3ck** (DJ staging, real iPhone).
   - **2026-11-02.5 web-address (website importer):** type a site's address in the panel and press Capture; the
     importer helper (`npm run capture:serve`, once per work session) captures it and the capture box opens. Paste
     check **3cy** (AC13, live).
@@ -133,8 +136,9 @@ header spacer) the user runs Bricks → Settings → Custom code → **Regenerat
   needs their WPForms export file.
 - **Rulings to confirm:** the list rules (HANDOFF "Searchable lists"), the form rulings, and every "not yet
   confirmed" ruling in each feature's HANDOFF section.
-- **Bricks samples:** Nav (Nestable) for the phone menu (the right copy contains `nav-nested`), Tabs, Dropdown,
-  Offcanvas + Toggle, a working Interaction, a `popover` Div. Never write those emitters from memory.
+- **Bricks samples:** Nav (Nestable) for the phone menu (the right copy contains `nav-nested`; a researched sample,
+  `reference/bricks/nav-nested.json` from Bricks' code and live sites, stands in until his own copy replaces it),
+  Tabs, Dropdown, Offcanvas + Toggle, a working Interaction, a `popover` Div. Never write those emitters from memory.
 - **M4b** (Figma Motion as CSS keyframes) is built against Figma's typings only: it needs the user's Motion test file.
 - **"Home Page Final"** holds a whole Services page inside its own frame: waiting on Justin's Layers screenshot.
 
@@ -241,6 +245,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   Counting grown words only in `least()` can make laptops wrap rows tablets keep (label-floor, GRO's hero).
 - **Space drawn next to a part the site already has stays** (`designs.ts` `keepBeside`): leaving the header or footer
   out never takes the gap beside it.
+- **Bricks prints a linked Image as its link** (`<a id class="brxe-image … tag"><img>`, `a.brxe-image{display:inline-block}`);
+  `test/browser/render.ts` follows it since 2026-11-03 — browser receipts that measure a linkable picture run both
+  picture modes.
 - **Git, with a private GitHub copy** (user, 2026-10-19; this replaces the earlier "no git"):
   `github.com/Just-In-N-Out/FigmaToBricksV2`, branch `main`. The main folder stays on `main`, and it's the copy Figma
   loads (`manifest.json` → `dist/`).
@@ -684,6 +691,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     header CTA in the menu panel stays there too (shown only while the menu is open).
   - **Menu:** a panel sliding in from the right over the dimmed page, links one per line (20px+, 48px lines), the
     header's button under them; the toggle stays on top and turns into the × that closes it.
+  - **The phone menu is Bricks' Nav (Nestable)** (DJ Trees designer note 2, 2026-11-02/03; the planner's ⭐ answers
+    under Justin's "whatever the planner agent recommends", not yet confirmed): a bar the plugin proves is the site's
+    navigation folds where its row no longer keeps one line; a bar that fits everywhere gets no ☰; a captured site's
+    bar keeps the site's own layout; a frosted bar's blur moves to its ::before; built on a researched Nav sample
+    (`reference/bricks/nav-nested.json`) until Justin's own copy replaces it.
   - **Photo/text zigzag rows:** photo first in every row once stacked.
   - **Photo-card slider:** one slide per view, nothing of the next card showing (the user tried a peek and dropped
     it, 2026-10-01); at most 16px between cards; stacked rows of alike cards swipe as one slider.
