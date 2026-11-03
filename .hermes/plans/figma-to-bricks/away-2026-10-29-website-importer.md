@@ -517,3 +517,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 
 ## 2026-11-03 (embeds final auditor) — AC2 NOT ACCEPTED (A3-1): fix 2 narrowed AC2's host rule (inline scripts count only when they load/call the host; only JS counts) without a plan amendment — my own fixer-2 brief set that rule. All other ACs accepted; gates 0 regressions. Under Justin's away grant: planner writes amendment 1 (web-embeds-plan-amendment-1.md) into evidence (no commit, head stays c9ce258); then re-install plan-approved (keep v1), resume the auditor to re-judge AC2, ac-check, merge; the git plan file gets the amendment in the build commit. Report to Justin as not yet confirmed.
 - Lesson saved: ac-verification.md (read AC test diffs vs plan; amend the plan when a fixer changes an AC's rule). Enforce offered.
+
+## 2026-11-03 12:45 — amendment planner done; main moved to 88a6aa49 (DJ phone menu, Build 2026-11-03.1, pushed; DJ lock released, no more DJ merges)
+- Planner's amendment 1 is in evidence/web-embeds/planner/. Sent back once to follow ac-verification.md's format (Amendments list, marked lines, old receipts, old text location) and fold the non-AC drift ("made", "slot", snippetOf src/frame). Lesson skipped: the skill already says this; my brief diverged.
+- Embeds rebase 2 dispatched (web-embeds-final-rebase-2.md → embeds-final-2 on 88a6aa49; whole test:web; commits the amended plan when sent). Then: reinstall plan-approved (keep v1) → fresh verifier → auditor → ac-check → lock → ff → build 2026-11-03.2+ → push → STOP.
