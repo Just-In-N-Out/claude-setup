@@ -313,3 +313,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 
 ## 2026-11-02 20:00 — Chrome slots 1 → 3 (Justin's trial, via the DJ Trees session)
 - Three lock files ~/.cache/f2b-chrome{,-2,-3}.lock; each agent holds one for its whole Chrome sequence (flock -n loop, marker process). Passed the snippet to all 4 importer agents. testing-pitfalls line updated. DJ Trees runs 8 agents; plans a 35-commit merge (Build 2026-11-02.3) within the hour.
+
+## 2026-11-02 20:10 — Justin lifted the Chrome limit ("open chrome test for everything", via DJ Trees session); relayed to all 4 agents (one own Chrome job at a time, close after each step; DJ session watches memory and will call "back to N slots").
