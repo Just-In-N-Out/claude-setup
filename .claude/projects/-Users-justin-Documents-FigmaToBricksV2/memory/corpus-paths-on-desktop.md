@@ -39,3 +39,4 @@ unchanged; nothing to configure. Test from WSL with Windows' own `/mnt/c/Windows
 `~/.cache/<story>-<role>/tmp` (39–40) fails "Socket path too long"; `~/.cache/wca2/tmp` passes. The Mac's default
 `/var/folders/…/T/` may hit it too (the Mac's socket limit is 103, Linux 107; fixed in wave1-fix-2: the FE-1 test falls back to /tmp, and such files should be run once with a ~50-character TMPDIR).
 Compare base/head test logs by name with `grep -a`: Chrome output makes plain grep print "binary file matches" and return nothing, so a "same failures by name" diff passes falsely (icon-buttons builder, 2026-11-04).
+Extract `git archive` trees into a fresh, role-and-round-named folder: the scratchpad is shared and an old `head/` keeps stale files (5 false failures, element-link review 3, 2026-11-04).

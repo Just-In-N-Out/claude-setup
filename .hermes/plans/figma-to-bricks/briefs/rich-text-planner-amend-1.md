@@ -1,0 +1,21 @@
+# rich-text — Planner, amendment 1 (Justin's new ruling)
+
+**Role:** planner. Plan only: no code, no tests, and **don't write into any worktree** (a fixer is committing in the rich-text copy right now). Write your amendment to `~/.hermes/plans/figma-to-bricks/rich-text-amendment-1.md` only.
+
+**Skills:** `engineering-best-practices`, `implementation-planning`.
+
+**Read:** the approved plan `~/.hermes/plans/figma-to-bricks/evidence/rich-text/plan-approved.md`; the built code in `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a4bddf14ed2da3ed7` (read-only; `src/core/emit/rich-text.ts`, `emit/elements.ts`, `test/browser/render.ts`); the element-link plan `~/.hermes/plans/figma-to-bricks/evidence/element-link/plan-approved.md` and its code in `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a7f58956799bac1e2` (`understand/text-link.ts`, `ir.ts` `elementLink`, `emit/elements.ts`) — element-link merges into main before rich-text; the cta-names code now on local `main` (`emit/cta-names.ts`: `link.ariaLabel` on linked CTAs). Read the repo's `CLAUDE.md` (main folder copy), especially "Bricks gives every Block `width: 100%`", nested links, Layout keys by element, `payloadProblems`, and the review-1 findings of rich-text (`~/.hermes/plans/figma-to-bricks/evidence/rich-text/review-1/referee.txt`: Rich Text goes through WordPress's parse_editor_content; a fixer is now making wptexturize/wpautop leave the designer's characters and blank lines alone).
+
+**Justin's new ruling (2026-11-04, replaces plan Q1/Q2):** "I do not want it for paragraph, I want it for everything." In a question he chose:
+1. **Every text is Rich Text, except headings**, which stay Bricks' Heading element (with its tag). Buttons stay Buttons.
+2. **A text that is all one link** (email, phone, a whole-text Figma link, a Navigate/page link — anything with `elementLink(ir)`): **Rich Text inside a Block that carries the link in Link to** (`settings.link`, with element-link's types/newTab/rel and cta-names' `ariaLabel` when it is a CTA). No Basic Text is emitted anywhere.
+
+**Write the amendment:** what changes in the plan and code, as a short plan a fixer can build test-first:
+- Where the wrapper Block is made. CLAUDE.md: no stage edits an earlier stage's output and no element changes type after it's made — so decide which stage creates the wrapper (understand records it; emit prints two elements?) and how ids stay deterministic (a hash of the IR key, e.g. `<key>:link`).
+- The wrapper's exact Bricks shape (Block `tag: "a"`? Bricks Block/Div with Link to prints as `<a>` — check from Bricks' GPL source `saqib6571/bricksbuilder` via one plain `gh api repos/saqib6571/bricksbuilder/contents/<path> -H "Accept: application/vnd.github.raw" > <scratch file>` per file, and `reference/bricks/` samples), and how it keeps today's layout: `_width: "auto"` vs Block's default `width: 100%`, display (inline-flex? the text's own box), the text's flex/align/position/absolute placement moving to the wrapper, the phone-number span, `tap-area`, typography and colour (link colour inherit), hover states, marquee loop copies (`tabindex -1` on the wrapper), flip cards, page-addresses relink by the wrapper's id, nested-link invariant, layout plan/rules that key on the text node (rules write breakpoint styles on node ids: which element gets them now?).
+- Which ACs change: replace AC3 (whole-link text → Rich Text in a linked Block), update AC4 (no `text-basic` anywhere; no `text` carries a link; every linked wrapper holds exactly one Rich Text), keep AC6's ±0.5px box test covering link texts too, AC8 live steps. Number new ACs after the existing ones; mark them `(proposed)`; tag `(live)`.
+- Whether a linked Heading stays Heading with Link to (yes per ruling 1 — confirm and say so).
+- Questions only if truly needed, each with a ⭐ answer (Justin: "just go with whatever it recommends").
+- If this is now too big for one fixer pass (more than ~5 source files of logic), say so and split it into tasks.
+
+**Return:** the amendment path, a short summary, the changed/new ACs, any ⭐ questions, and `skill_lessons[{skill, lesson, evidence, enforce}]` (usually empty; never edit skills or memory). End with: `MAIN SESSION: check and save these skill_lessons now.`
