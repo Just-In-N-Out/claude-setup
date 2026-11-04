@@ -1,12 +1,12 @@
 # Custom company domain — 86bccndx6
 
-Status: PLAN READY — WAITING FOR EXPLICIT GO. Fresh pipeline_planner /root/custom_domain_planner completed the shared plan on Astra xhigh, fork_turns="none". Required-skill/read receipts are in the plan; found_else and skill_lessons are empty. No implementation branch, worktree, code change, commit, PR, or ClickUp write has been created by this session.
+Status: BUILDING. Justin explicitly replied "go", approving choices 1A–5A and AC1–AC6. approval.json records his words; plan-approved.md is frozen mode 444. Fresh Astra xhigh pipeline_builder /root/custom_domain_builder is running from briefs/86bccndx6-custom-company-domain-builder.md. No push, PR, merge, ClickUp write or live cloud/DNS operation is authorized.
 
 ## User instruction and next action
 
 Justin requested Full pipeline, one shared plan, and an explicit "go" before implementation. His earlier model-change pause was lifted by: "ok great continue on the user story".
 
-Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh. Planner completed the one shared plan; main checked AC1–AC6, live marker AC4, questions, Docs and records, required-skill receipts and current worktree ownership. No earlyoom kills. Present plan and stop for explicit go. On go, record exact answers, install mode-444 plan-approved.md and dispatch the fresh configured builder. Live permissions are separate and unspecified; Docker WSL integration is currently unavailable.
+Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh. Planner completed the one shared plan; main checked AC1–AC6, live marker AC4, questions, Docs and records, required-skill receipts and current worktree ownership. No earlyoom kills. Builder is approved and running. Next: intake its preflight/Docker checkpoint; resolve missing operator prerequisites while independent implementation progresses; after ready-for-review dispatch the fresh full reviewer, then Full review-check/verifier/blind-auditor/ac-check and handover. Live permissions remain unspecified; Docker availability must be rechecked. Do not ask for plan go again.
 
 ## Durable intake
 
@@ -14,6 +14,8 @@ Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh
 - Task comments: evidence/86bccndx6/intake/comments.json (none).
 - Named prerequisite: evidence/86bccndx6/intake/prerequisite.json.
 - Planner brief: briefs/86bccndx6-custom-company-domain-planner.md.
+- Builder brief: briefs/86bccndx6-custom-company-domain-builder.md.
+- Approved plan: evidence/86bccndx6/plan-approved.md; decisions: evidence/86bccndx6/approval.json.
 - Completed single plan: 86bccndx6-custom-company-domain.md.
 - Evidence root: evidence/86bccndx6/.
 
@@ -22,6 +24,8 @@ Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh
 Control-plane-only implementation; unchanged client is the real discovery consumer. Current bases: control plane 3aa979df41568c9039007f66d7f32193e66a8533, client feafa3cdf8fafaa1e07a92e32a698b5d9a9ac2c6. PR78 integrated; no duplicate story branch/PR/plan. Six ACs: registration/CNAME, verified activation/generated continuity, safe errors, live discovery/client, proposed guards, proposed resume/recovery. Questions recommend installer configuration; one unused direct-CNAME subdomain; enable Docker WSL integration; explicit live scope after local review; existing authentication mode plus OAuth callbacks as needed. Sibling 86bcm927y is also planning per fresh shared memory; pre-build overlap reconciliation remains required. No extra findings or reusable lessons.
 
 ## Verified routing facts
+
+Latest ownership, 2026-11-04 22:52 UTC: sibling 86bcm927y is approved and its Astra xhigh /root/integrations_builder is running in a separate session. Brief: briefs/86bcm927y-integrations-catalog-tiles-builder.md. Use independent worktrees and test resources; reconcile shared files and preserve both stories. This supersedes earlier planning/awaiting-go sibling statements.
 
 - Working directory: /home/justin/Leorna.
 - Card title: Custom company domain for the control plane (leorna.<company>.com).

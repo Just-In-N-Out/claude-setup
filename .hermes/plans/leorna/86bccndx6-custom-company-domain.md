@@ -1,6 +1,10 @@
 # 86bccndx6 — Custom company domain for the control plane
 
-## Questions for Justin
+## Approval recorded
+
+Justin replied **"go"** after the full plan and five recommended choices were presented. Implementation is approved under choices **1A, 2A, 3A, 4A and 5A**: installer-owned configuration; one unused direct-CNAME subdomain; enable Docker Desktop's Ubuntu WSL integration for required gates; arrange the precise live grant after local review; retain existing authentication with custom OAuth callback registration where applicable. AC1–AC6, including proposed AC5/AC6 and live AC4, are approved. Docker availability must be rechecked; accepting 3A is not evidence that it is enabled. No concrete live target or cloud/DNS permission has yet been supplied. This go authorizes local implementation, testing, commits and the Full review/verification pipeline, not pushes, PRs, posts, CI workflow changes or any merge of the story into main.
+
+## Approved choices (alternatives retained for context)
 
 1. **Configuration surface:** **A (recommended)** — configure the domain in the existing local installer; the admin console displays the active domain, generated fallback and instructions to reopen the installer. **B** — also configure domains directly inside the hosted admin console; this needs a revised credential/authorization design before building. This plan implements A; “admin console / installer” on the card is interpreted as either surface.
 2. **Supported first release:** **A (recommended)** — one unused owned subdomain, using a direct DNS CNAME; show DNS instructions first, then create the Scaleway binding and activate after the record resolves and TLS is ready. **B** — require apex domains, proxy/CDN configurations or replacing an existing production domain now; revise the plan first. A follows Scaleway's documented DNS-before-binding sequence while preserving the card's end result.
@@ -8,11 +12,11 @@
 4. **Live acceptance:** **A (recommended)** — after local review, supply privately an unused test FQDN, an approved Justin-owned Scaleway project/region/container and a feature-candidate deployment route. Explicitly authorize only that container's custom-domain create/read, nonsecret URL environment update and redeploy. Justin signs in, provisions the test installation if needed, adds its single CNAME and handles every deletion. **B** — defer live work; retain AC4 as owed to Justin. A code-plan **go** alone does not authorize these unspecified cloud/DNS operations. No real addresses, account IDs or secrets belong in chat or committed artifacts.
 5. **Live login mode:** **A (recommended)** — use the approved test installation's existing authentication mode; for Google OAuth, Justin first registers the custom HTTPS callback and keeps the generated callback registered for rollback. **B** — require a new authentication setup; scope and operator ownership must be agreed first. Do not enable a new login bypass to complete this story.
 
-The choices above are not implementation approval. The main session must show this plan, list the proposed and live criteria, and wait for explicit **go**. Record answers in the evidence folder and amend/reapprove the plan if they change its scope.
+The explicit go above supplies implementation approval for all A choices. A future scope change still requires a plan amendment and approval; unspecified live operations remain unauthorized. The main session records the approval and installs the immutable approved-plan copy before dispatching the builder.
 
 ## Playback and acceptance criteria
 
-Let an admin configure an owned custom domain using the existing installer, receive its Scaleway CNAME instructions, and switch the control plane's public URL and client discovery only after DNS and TLS checks succeed. Keep the generated hostname usable, show actionable failures, and prove discovery with the real client on an approved live test subdomain. Plan only at this stage.
+Let an admin configure an owned custom domain using the existing installer, receive its Scaleway CNAME instructions, and switch the control plane's public URL and client discovery only after DNS and TLS checks succeed. Keep the generated hostname usable, show actionable failures, and prove discovery with the real client on an approved live test subdomain. Local implementation is approved; scoped live acceptance follows local review and an explicit live grant.
 
 - AC1: Given a domain I own, when I add it in the admin console / installer, then a Scaleway Serverless Container custom domain is created and the required DNS CNAME is shown to me — test: `TestCustomDomainRegistrationShowsCNAME`.
 - AC2: Given the CNAME is in place and TLS is issued, then LEORNA_PUBLIC_BASE_URL and client discovery switch to the custom domain (old host keeps working or redirects safely) — test: `TestCustomDomainActivationPreservesGeneratedAccess`.

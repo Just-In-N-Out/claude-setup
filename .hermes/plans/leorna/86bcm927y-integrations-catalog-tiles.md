@@ -1,6 +1,6 @@
 # 86bcm927y — Integrations catalog tiles
 
-## Questions for plan approval
+## Approved decisions
 
 1. How many saved configurations should a company have for one service?
    - **A — One per service (recommended).** A GitHub, ClickUp or Google Workspace tile has one saved setup; saving again edits it. No extra name field.
@@ -9,7 +9,7 @@
    - **A — Prepare the local test environment (recommended).** Justin starts Docker Desktop and enables its Ubuntu WSL integration; the builder verifies access, creates its own disposable test services and provisions missing CI tools in an owned tool directory through the normal permission path.
    - B — Keep implementation on hold. Approve the design now, then resume when Docker access is available.
 
-This plan uses A/A. A separate **go** is required. Answering these questions alone does not authorize implementation. Full was already selected. No user-only live AC is proposed: all four criteria and the recorded browser demo can be checked using an isolated local server and synthetic data. Docker availability is an execution prerequisite, not proof that a criterion passed.
+**Approved 2026-11-04T22:51:48.476493Z:** Justin replied **go**, approving this plan and choices **1A / 2A**: one configuration per service/company, and prepare the local test environment before building. The Full pipeline through implementation, review, verification and local handover is authorized. Docker readiness still requires verification; no product or acceptance check is waived. No user-only live AC is proposed: all four criteria and the recorded browser demo can be checked using an isolated local server and synthetic data. Docker availability is an execution prerequisite, not proof that a criterion passed.
 
 ## Playback and scope
 
@@ -452,6 +452,6 @@ Also read the supplied/global rules and actual global files, repo `AGENTS.md`, `
 
 Plan saved 2026-11-04 after tool-observed UTC timestamp. Embedded Bash blocks passed `bash -n`; both Go blocks passed `gofmt` parsing (the interface fragment was wrapped in a package declaration only). These are syntax checks, not compilation or runtime proof. The saved artifact contains AC1–AC4 exactly once as criterion definitions. Source checkout remains untouched on local main, behind 94 commits, with only its pre-existing untracked `.claude/`. Implementation forecast is **one bounded feature build plus full independent review/verification**, with runtime depending on restored Docker and existing baseline gate health; no completion-time promise is inferred from planning duration. Exact planner timing was not instrumented from its first action, so no invented elapsed receipt is supplied.
 
-Approval means architecture/scope and recommended choices only, followed by the authorized Full pipeline when prerequisites are met. Source qualification, local browser demonstration, actual provider connection, hosted CI and production promotion remain distinct facts. The latter provider/promotion activities are outside this story. Main must present questions and plan, wait for explicit go, record answers, freeze the approved plan and brief the builder with the exact base/resources/overlap result.
+Approval means architecture/scope and recommended choices only, followed by the authorized Full pipeline when prerequisites are met. Source qualification, local browser demonstration, actual provider connection, hosted CI and production promotion remain distinct facts. The latter provider/promotion activities are outside this story. Justin has approved the plan with go. The orchestrator records the decisions, freezes the approved copy and briefs the builder with the exact base/resources/overlap check. Further scope changes remain subject to the established approval rules.
 
 Skill lessons: `skill_lessons: []`.
