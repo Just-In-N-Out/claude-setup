@@ -1,15 +1,15 @@
 ---
 name: dark-structure-recognition-status
-description: Verifier11 rejected same footer grammar cause; awaiting Justin before another repair; cleanc28c1e8 saved, not merged.
+description: Justin approved fresh footer redesign planning; c28c1e8 saved/unmerged, main advanced39d96c98.
 metadata:
   node_type: memory
   type: project
   modified: 2026-11-04T04:49:59.518939+00:00
 ---
 
-Current candidate: clean `c28c1e88927eb5fe49fee8cdcb904b0a2489c008` on `worktree-dark-structure-recognition`, main/base `70be9c09bee3eb2384399fe19972a0e35cddff2a`. Main BUILD2026-11-03.2 is importer embeds; recognition is NOT MERGED.
+Current candidate: clean `c28c1e88927eb5fe49fee8cdcb904b0a2489c008` on `worktree-dark-structure-recognition`, historical base `70be9c09bee3eb2384399fe19972a0e35cddff2a`. Current main39d96c98a3a171de4733115dca8e4386a808d1ca/build2026-11-04.1 includes web-human-check; recognition is NOT MERGED.
 
-Verifier11 rejected P2 V11-1: ordinary HOURS “Appointments are usually required” becomes invented page, confirmed mixed/pure-hours and browser. Same finite qualifier grammar cause as V10, explicitly no new structural discovery. AC3/AC5 failed; other non-live qualification and full gates pending, AC8 live owed. Own scratch/controllers closed, no kills, empty lessons processed. No auditor11 dispatched. Root stops automatic repairs under repeated same-cause rule and asks Justin: recommend a fresh planner redesign of footer inference with explicit tradeoffs BEFORE any further coding; alternative keep branch saved. Do not silently resume fixes/merge without this decision. Original five-review cap and all non-live ACs remain binding. Original AC8 installed Figma/Bricks2.3.9/Safari/iPhone/keyboard/touch remains live owed.
+Verifier11 rejected P2 V11-1: ordinary HOURS “Appointments are usually required” becomes invented page, confirmed mixed/pure-hours and browser. Same finite qualifier grammar cause as V10, explicitly no new structural discovery. AC3/AC5 failed; other non-live qualification and full gates pending, AC8 live owed. Own scratch/controllers closed, no kills, empty lessons processed. No auditor11 dispatched. Root stops automatic repairs under repeated same-cause rule and asks Justin: recommend a fresh planner redesign of footer inference with explicit tradeoffs BEFORE any further coding; alternative keep branch saved. Justin subsequently answered go: fresh redesign planning is now authorized, with concrete tradeoffs shown before more coding. Original five-review cap and all non-live ACs remain binding. Original AC8 installed Figma/Bricks2.3.9/Safari/iPhone/keyboard/touch remains live owed.
 
 E = `~/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`. Authoritative evolving records: `E/status.md`, `E/approval.json`, current role reports/checkpoints. Full prior memory preserved at `E/memory-history-before-verifier10.md`; read history only as needed.
 

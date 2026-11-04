@@ -549,3 +549,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-04 01:25 local — lock was free (dark-structure released it; main unchanged 70be9c09). Took it and ff-merged main → 9bb30d43 (web-human-check). After-merge finisher dispatched (web-human-check-merge-finisher.md: BUILD 2026-11-04.1, ledger move, paste id, push, CLAUDE.md Status + 'never hide automation' rule).
 
 ## 2026-11-04 01:35 local — Build 2026-11-04.1 pushed (main = origin/main = 39d96c98; web-human-check; paste check 3cz = AC8 bdryswi.com live). Lock released (dark-structure had already released its own). Lessons saved (SKILL.md paste-id pattern 3[c-z], SSH push on WSL); next-paste-id.sh offered. Next: Justin captures bdryswi.com.
+
+## 2026-11-04 ~01:45 local — LIVE: Justin pressed I am human on bdryswi.com in the visible window; helper printed 'Check passed: capturing bdryswi.com in that window'. WordPress.com's check accepted a human click in the honest automated Chrome. Capture in progress (AC8 first half proven live).
+
+## 2026-11-04 ~01:55 local — LIVE bdry capture FAILED after the second check pass: 'Inspected target navigated or closed (-32000)'; first pass ok, switch points 1366…360 found, second check (likely phone agent) passed, then the site's navigation killed a page read. No earlyoom kill. Justin: Mini. New job web-human-reload; planner dispatched (web-human-reload-planner.md). Asked Justin for the helper's stack trace (to forward).
