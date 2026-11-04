@@ -17,7 +17,9 @@ what live sites printed then. The Nav (Nestable) candidate built this way:
 `~/.hermes/plans/figma-to-bricks/evidence/djtrees-phone-menu/research/` (63 checks pass). Justin's own copy (and the
 live round trip) still beats a researched candidate. Bricks' per-element CSS (`a.brxe-image`, `:where(.brxe-image).tag`,
 …) is in each page's `wp-content/uploads/bricks/css/post-<id>.min.css` inside `@layer bricks` (same on 2.3.9 and
-2.4.4), not in `frontend-light-layer.min.css` (phone-menu fixer 2, 2026-11-03).
+2.4.4), not in `frontend-light-layer.min.css` (phone-menu fixer 2, 2026-11-03). That file does hold the generic
+rules, e.g. `:where(p){margin-block:0 1.2em}` zeroed on `p:last-of-type`, which the repo renderer's `p{margin:0}`
+lacked; Rich Text (`text`) has no Link to or tag control, Basic Text does (rich-text planner, 2026-11-04).
 
 **Bricks versions by site (2026-11-02):** darksalmon (his main site, the `reference/bricks/` baseline) 2.3.9; DJ Trees
 staging 2.4.4; B-Dry staging 2.4.2; khaki-finch 2.4.1. 2.4.x wraps settings selectors in `:where()` and has a newer
