@@ -1,0 +1,1 @@
+- **Words elements hold a `<p>` since rich-text** (Rich Text, `div.brxe-text > p`): browser tests measure the inner `p` (`el.querySelector(':scope > p') || el`); `Range.selectNodeContents(el).getClientRects()` also returns the `p`'s own box (one line too many) and `el.firstChild` is the `p`, not the text node (rich-text builder, 2026-11-04).
