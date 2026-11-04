@@ -4,8 +4,8 @@ Fresh pipeline_auditor, source/read-only, no agents. Load engineering-best-pract
 
 Effective approved plan /home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/footer-redesign-plan-approved.md.
 Worktree /home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition.
-HEAD ROOT_MUST_PIN_HEAD.
-BASE ROOT_MUST_PIN_BASE.
+HEAD 62c2ebe3c6cbec4efa5b120e371e5a4bb5fb5afe.
+BASE 31321bb48bebdc217d24e9fb65bf734b4fd65e2a.
 Own evidence /home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/footer-redesign-acceptance/auditor.
 
 Prove the eight effective criteria independently from the approved plan and pinned source. Only this effective approved plan, W, identities, your own evidence and raw source inputs named by the plan are permitted. Do not read any sibling/historical builder/reviewer/fixer/verifier/auditor outcome, receipt or screenshot, even where the plan mentions its path. No outcomes are supplied. The plan is the approved optionA policy; its old→new discussion is part of that contract. Do not apply superseded expectations or relax the effective criteria. Source tests are available; a principal green method is not proof of an unexercised clause. Independently check meaningful positive/negative cases and original preserved behavior within the contract; no universal-language requirement or speculative unrelated feature expansion.
