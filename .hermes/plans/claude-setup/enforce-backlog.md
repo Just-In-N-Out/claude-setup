@@ -143,3 +143,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-03 | dark-structure-recognition | figma-to-bricks | script: acceptance runners require every explicit test-file path before node --test and reconcile intended file identities with complete raw TAP receipts at verifier handback | offered
 - 2026-11-04 | web-human-check merge | figma-to-bricks | script next-paste-id.sh run by the merge finisher: scans main's docs, every local branch's docs and the plan logs/briefs for 3[a-z]{2} ids (dropping CSS units px/em/ms) and prints the next free id | offered
 - 2026-11-04 | web-code-proof | figma-to-bricks | test helper in test/web/lib that fails when a site-side picture set is empty while its element has a box (no vacuous 'pictures shown' passes) | offered
+- 2026-11-04 | web-code-proof | figma-to-bricks | unit test: every paste-writing tool (tools/site.ts, replay) on a non-ASCII fixture writes no byte above 0x7F; in npm test | offered
