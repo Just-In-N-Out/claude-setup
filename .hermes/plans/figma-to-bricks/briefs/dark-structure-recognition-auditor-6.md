@@ -1,4 +1,4 @@
-# DRAFT — fresh blind AC auditor; pin identities after repair and dispatch after clean verifier
+# Fresh blind AC auditor — pinned current candidate
 
 Fresh pipeline_auditor, source/read-only, no agents. Load engineering-best-practices, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` and feature-dispatch/references/ac-verification.md.
 
@@ -8,7 +8,7 @@ HEAD 22991422eca32a2b2fc17c80ce896c28163a9139.
 BASE 70be9c09bee3eb2384399fe19972a0e35cddff2a.
 Own evidence `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition/acceptance-6/auditor`.
 
-Prove every approved AC yourself on the pinned head/base. Use only the approved plan, source/worktree, pinned identities and your own evidence; raw source inputs named by the plan are allowed. Do not read any sibling or historical builder/reviewer/fixer/verifier/auditor reports, receipts or screenshots. No outcome is supplied. Source tests are available, but a passing principal method is not proof of a clause it never exercises; check actual contract coverage with meaningful controls and independent cases. Keep correct preserved behavior and negative cases in scope. Do not relax the contract, invent content/native proof, add live tags or infer reachability from DOM presence alone.
+Prove every approved AC yourself on the pinned head/base. Apply the approved contract as written, including its baseline-disclosure language; do not add implicit acceptance prerequisites or weaken any stated requirement. Use only the approved plan, source/worktree, pinned identities and your own evidence; raw source inputs named by the plan are allowed. Do not read any sibling or historical builder/reviewer/fixer/verifier/auditor reports, receipts or screenshots. No outcome is supplied. Source tests are available, but a passing principal method is not proof of a clause it never exercises; check actual contract coverage with meaningful controls and independent cases. Keep correct preserved behavior and negative cases in scope. Do not relax the contract, invent content/native proof, add live tags or infer reachability from DOM presence alone.
 
 Prove the plan's exact AC source/viewport/mode scope independently, and run the project's mandatory in-copy npm run check and npm run corpus with honest qualifications. The project-wide complete browser/test:web release sweeps belong to the separate release-gate verification step; do not duplicate those entire suites in this AC-audit role absent a concrete AC concern or failure. Run all AC-specific browser and interaction checks yourself. This changes no release requirement, and you must never claim a gate you did not run. Keep configured/qualified outcomes and exact case populations separate. Return honest acceptance; root owns final review/AC referee and release routing. You never merge, edit main, bump BUILD or push.
 

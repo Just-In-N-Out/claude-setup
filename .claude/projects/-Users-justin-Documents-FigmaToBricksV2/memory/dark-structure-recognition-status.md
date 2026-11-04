@@ -1,11 +1,26 @@
 ---
 name: dark-structure-recognition-status
-description: Recognition fixes rebased onto released importer; verifier6 running on2299142/base70be9c09, blind audit and merge pending.
+description: A6-1 repaired at596d5fe; verifier7 active on base70be9c09, blind audit and merge pending.
 metadata:
   node_type: memory
   type: project
   modified: 2026-11-03T22:24:08.683202+00:00
 ---
+
+## Current candidate — 2026-11-04T01:26:09.235785+00:00
+
+Clean596d5feed4346a6c404addfac43dffe2ee57934c repairs A6-1 false review association; main70be9c09 unchanged. Original witness and120generic views RED/GREEN; local checks/affected browser/prior witnesses pass;80frozen conversions unchanged. Fresh /root/dark_structure_verifier7 active, brief verifier-7, own acceptance-7/verifier. Required new-head full gates and individual AC base checks fresh; unchanged complete base broad-gate receipts may be explicitly historical comparisons after validation, no invented fresh proof. Fresh blind auditor7 pinned and pending clean verifier. No sixth review; actual rejection preserved under disclosed five-review coverage exception. Root lock held; no merge/build/push.
+
+
+## Current candidate — 2026-11-04T01:13:15.588661+00:00
+
+Blind auditor6 rejected P2 A6-1: a highlighted ordinary services directory beside a separate quote is wrongly inferred as review choices and produces a false missing-record warning. Original negative fails2299142/passes70be9c09; root-ac-check-6 NOT ACCEPTED. Fresh /root/dark_review_association_fix follows fix-8 brief, narrow test-first general correction. Then fresh independent verifier and blind audit remain. Five dedicated reviews still final; no sixth. Root lock held, no merge/build/push. Verifier6 complete gates are historical proof for2299142; approved baseline-disclosure interpretation remains documented, not an all-green requirement.
+
+
+## Current candidate — 2026-11-04T01:06:24.782491+00:00
+
+Verifier6 completed all required paired runs and accepts AC1–AC7 on clean22991422/base70be9c09. Fresh blind /root/dark_structure_auditor6 is active. Initial AC6 interpretation corrected to approved baseline-disclosure contract, preserving raw failures and missing-input/font limits in acceptance-6/verifier/ac6-reconciliation.json; no source, plan, assertion or gate waiver. Complete browser/web comparisons have unchanged common outcomes; five new browser cases pass. Next: blind audit → combined AC referee → authorized ff merge/rebuild/push if accepted. Root holds release lock; no recognition merge yet. AC8 native installed/device proof remains live owed. Latest escalated setup-sync still read-only; local records saved.
+
 
 ## Current candidate — 2026-11-03T22:24:08.683202+00:00
 

@@ -12,7 +12,7 @@ Root-confirmed merged accepted head: ROOT_MUST_PIN_HEAD.
 Root-confirmed merge-lock owner: ROOT_MUST_PIN_OWNER.
 Acceptance result: ROOT_MUST_PIN_RESULT.
 
-Check main still equals the root-pinned accepted merged head and that the release lock is owned by this story before modifying anything. If another session moved main or started a release, report it without overwriting or requalifying on your own. Paste check 3cw was free on main at preparation but is also claimed by unmerged web-embeds work; inspect actual current main and allocate an unambiguous release ID under the lock, preserving other features.
+Check main still equals the root-pinned accepted merged head and that the release lock is owned by this story before modifying anything. If another session moved main or started a release, report it without overwriting or requalifying on your own. Paste check3cw is now claimed by main web-embeds;3cx and3cy belong to the importer panel/address checks. Inspect actual current main, every local branch HANDOFF and plan/brief reservations, then allocate an unambiguous release ID under the lock. Preserve the immutable approved plan and record any release-ID mapping without changing ACs.
 
 Use the same pinned Node /home/justin/.local/node-v22.23.3/bin/node and child PATH for the build, and record the actual runtime.
 
@@ -24,7 +24,7 @@ Do not change product behavior or weaken proofs at release. Distinguish the appr
 
 Record final HEAD, branch, origin/main and live remote SHA, author, changed release paths, clean status, BUILD, generated dist paths and hashes, manifest targets, build result, paste-check ID and exact owed checks. Leave worktree and feature branch intact. Root handles final Git verification and setup sync. No skills/memory edits or denied env reads.
 
-Return verdict, release report path, ac_status preserving live obligations, exact identities and `skill_lessons[{skill,lesson,evidence,enforce}]` (normally empty). End: MAIN SESSION: check and save these skill_lessons now.
+Return verdict, release report path, ac_status preserving live obligations, exact identities, a concise plain-language list of rulings and remaining/deferred checks, and `skill_lessons[{skill,lesson,evidence,enforce}]` (normally empty). End: MAIN SESSION: check and save these skill_lessons now.
 
 ## Current shared-PC Chrome protocol
 
