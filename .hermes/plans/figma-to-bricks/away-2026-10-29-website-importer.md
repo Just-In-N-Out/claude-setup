@@ -582,3 +582,4 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 
 ## 2026-11-04 06:50 local — Justin: paste 'looks really bad' (header chopped, reviews missing); 'I feel like the way we are importing is wrong'; 'lets pause everything and go back and see the method'. Stopped the web-reload-settled builder. Everything paused. Next: method review.
 - 06:55 Method review dispatched (importer-method-review.md, medium, read-only). Justin's direction: 1:1 from the site's actual code, not photos/measurements; forwarded to the reviewer.
+- 08:00 method review back: method wrong at its core; recommends D + one-section proof. report.md saved by me (agent's write refused). Lesson saved (live-site-reading: server-rendered plugin widgets). Asking Justin.

@@ -7,12 +7,12 @@ Role: fresh pipeline_finisher, postmerge release only. No agents. You are not al
 M: `/home/justin/Documents/FigmaToBricksV2`, must be main.
 E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Own evidence: E/finish-postmerge/.
-Approved plan E/plan-approved.md; AC1 header ownership, AC2 header actions, AC3 footer navigation, AC4 review candidate, AC5 preservation, AC6 panel contract, AC7 browser matrix; AC8 installed round trip remains live/owed.
+Effective approved plan E/footer-redesign-plan-approved.md (Justin approved option A, including AC3/AC5/Q3A amendments; original plan is historical); AC1 header ownership, AC2 header actions, AC3 footer navigation, AC4 review candidate, AC5 preservation, AC6 panel contract, AC7 browser matrix; AC8 installed round trip remains live/owed.
 Root-confirmed merged accepted head: ROOT_MUST_PIN_HEAD.
 Root-confirmed merge-lock owner: ROOT_MUST_PIN_OWNER.
 Acceptance result: ROOT_MUST_PIN_RESULT.
 
-Check main still equals the root-pinned accepted merged head and that the release lock is owned by this story before modifying anything. If another session moved main or started a release, report it without overwriting or requalifying on your own. Paste check3cw is now claimed by main web-embeds;3cx and3cy belong to the importer panel/address checks. Inspect actual current main, every local branch HANDOFF and plan/brief reservations, then allocate an unambiguous release ID under the lock. Preserve the immutable approved plan and record any release-ID mapping without changing ACs.
+Check main still equals the root-pinned accepted merged head and that the release lock is owned by this story before modifying anything. If another session moved main or started a release, report it without overwriting or requalifying on your own. Paste checks3cw,3cx,3cy,3cz,3da,3db are already claimed by importer releases. Re-scan actual reservations; this list can become stale. Inspect actual current main, every local branch HANDOFF and plan/brief reservations, then allocate an unambiguous release ID under the lock. Preserve the immutable approved plan and record any release-ID mapping without changing ACs.
 
 Use the same pinned Node /home/justin/.local/node-v22.23.3/bin/node and child PATH for the build, and record the actual runtime.
 
@@ -37,3 +37,7 @@ Mutation-TEST runs always use `systemd-run --user --scope -p MemoryMax=4G -p Mem
 ## Release authentication preflight
 
 Root confirmed the personal GitHub greeting through the existing trusted user SSH config after default and escalated SSH both rejected a world-writable system drop-in. See E/release-preflight/authentication-note.json for actual observed results, applicable globals and exact per-command GIT_SSH_COMMAND transport. No config/identity/remote/helper/key was edited. Use that documented transport, verify current identity as needed, and never read key material or replace accounts. This preflight is no push receipt.
+
+## Approved footer policy for this release
+
+Justin answered A on2026-11-04 after the concrete link-loss tradeoff was shown. Effective immutable plan E/footer-redesign-plan-approved.md SHA25648eed6d112a5af1dd1d134213c54bcb3771fd1367ca0b600865e00bae2cbe9a0 replaces only original AC3/AC5/Q3A policy as documented. Structural footer/heading/omission recognition remains; column membership alone creates no page destination. Source/authored/captured hrefs and independent existing contact/social/arrow/go-word rules remain. One note explains plain labels. Report actual qualified impact, not unverified planning counts as final proof. Original old-positive-oracle policy conflicts are retained as history, never presented as passes. Include the new approved standing rule in main CLAUDE status/rules through the usual permitted write, with no private file staged. Preserve later main web-human-check/photo-crop/human-reload behavior and their records.

@@ -3,6 +3,10 @@
 Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/chrome.ts`). Never log in, never write.
 
 ## Access
+- A WordPress plugin widget can be rendered on the site's own server (Trustindex reviews on bdryswi.com): no other
+  host's script draws it, so a script-host embeds reader never sees it and its boxes get copied as page content. Find
+  plugin widgets by their markup and `/wp-content/plugins/<name>/` assets too; the working route is the plugin's
+  shortcode on the new site (method review 2026-11-04).
 - A site may start answering automated Chrome with a bot check ("Checking your browser…"), as bdryswi.com did on
   2026-10-29 after a day of agent probes. Hiding the automation flag is refused as bot-check circumvention: stop
   loading that site and hand the live check to Justin (allow-list the capture or pause the check). A bot page need not
