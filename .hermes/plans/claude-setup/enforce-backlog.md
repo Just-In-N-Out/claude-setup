@@ -145,3 +145,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-04 | web-code-proof | figma-to-bricks | test helper in test/web/lib that fails when a site-side picture set is empty while its element has a box (no vacuous 'pictures shown' passes) | offered
 - 2026-11-04 | web-code-proof | figma-to-bricks | unit test: every paste-writing tool (tools/site.ts, replay) on a non-ASCII fixture writes no byte above 0x7F; in npm test | offered
 - 2026-11-04 | icon-buttons | memory corpus-paths-on-desktop | script: a shared compare-by-name helper that uses grep -a and fails when either log has no '# tests' line | offered
+- 2026-11-04 | rich-text | memory bricks-source-research | test: a renderer-side parse_editor_content stand-in (strip outer <p>, wpautop's <br><br> split, wptexturize) used by browser receipts for Rich Text | offered

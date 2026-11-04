@@ -7,8 +7,11 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-04)
 
-- **Current build `2026-11-04.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-04.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-04.5 cta-names:** every call to action that is its own control has an accessible name: a linked one in
+    `link.ariaLabel`, an unlinked one as an `aria-label` custom attribute, none inside a link; vague words ("Learn
+    more") add their card's title. Paste check **3de** (AC6, live).
   - **2026-11-04.4 dark-structure-recognition:** structural header/footer ownership, authored footer destinations and
     a note for the static numbered-review candidate. Paste check **3dd** (AC8, live: Figma/Bricks 2.3.9/Safari/iPhone).
   - **2026-11-04.3 web-human-reload (website importer):** after an "I am human" check the capture reads the site's
@@ -542,6 +545,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - **Colours stay as drawn** (the user chose "Only the lift" over a darker shade or the sample's grey).
     - **Words on one line, Figma's width** (2026-10-21, W1A, E1A): a button's words stay on one line as Figma draws
       them, and above phones a button keeps Figma's width.
+    - **An accessible name on every CTA** (the designer, through Justin, 2026-11-04; ⭐ Q1A/Q2A not yet confirmed;
+      HANDOFF "CTA names"): its visible words (a trailing arrow dropped), "<words> about <card title>" when they name
+      nothing; in `link.ariaLabel` when linked, an `aria-label` custom attribute when not, none inside a link
+      (`understand/cta-names.ts`, `emit/cta-names.ts`).
   - **Product and team cards** (user, 2026-10-19: "when it comes to media but not every media, just media when
     displaying a product or a team, I want this animation", their Bricks sample `reference/bricks/staff-card.json`;
     build `2026-10-19.9`):
