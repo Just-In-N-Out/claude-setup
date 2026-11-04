@@ -564,3 +564,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-04 02:25 local — Justin's 3rd run log proves bug A: 'Switch points found: none' printed BEFORE the check was noticed, and after the pass no new search ('1 range'), title 'Checking your browser…', 1:49. Run 1 (15 points after the pass) died at the second (phone-agent) check: bug B. Resumed the web-human-reload planner with both (Mini, his earlier pick).
 
 ## 2026-11-04 02:30 local — Justin: 'run it but on opus 5.5 medium', then 'ima sleep so keep it running'. web-human-reload planner (A switch points from the check page + B reload after a later re-check) dispatched at Opus medium; whole Mini chain runs through to merge on medium under the auto-go. Issue 3 (cut photos) recorded for after.
+- 02:35 also started issue 3 as its own Mini job web-photo-crop (planner, Opus medium) under the away grant, kept off the human-check files.
+- 02:40 Justin: every subagent for this chat on Opus 5.5 medium (overrides xhigh for this chat).
