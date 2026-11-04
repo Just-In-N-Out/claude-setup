@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 661afd37-191a-487a-b222-38b83f19c5d5
-  modified: 2026-10-29T13:06:35.000Z
+  modified: 2026-11-04T21:47:25.564690Z
 ---
 
 Codex CLI 0.163 can be checked offline, with no sign-in and no quota (codex-parity planner probes, 2026-10-28):
@@ -17,6 +17,7 @@ Codex CLI 0.163 can be checked offline, with no sign-in and no quota (codex-pari
 - `codex execpolicy check --rules <file> -- <argv>` tests rules files.
 
 Gotchas:
+- **MCP auth status `unknown` is inconclusive (2026-11-04):** `codex mcp list --json` returned `unknown` in this sandbox, while Justin's `/mcp` showed ClickUp connected with 67 tools and subsequent `clickup_get_user` plus `clickup_filter_tasks` succeeded. Confirm availability again through the current tool catalog and an authenticated read before diagnosing a lost login or asking for another restart.
 - **Sandbox tests need fake homes outside `$TMPDIR` and `/tmp`,** with `TMPDIR` pointed elsewhere too. The `:workspace` profile can write temp folders, so a fake home there lets every write through and the test passes for the wrong reason. The first probe allowed every write; the rerun with `TMPDIR` moved denied writes to `~/.codex`. On the WSL desktop, Justin's own Codex app-server daemon writes the real `~/.codex/*.sqlite` every few seconds, so prove a real-tool test stayed isolated by the scratch `CODEX_HOME` receiving `installation_id`/`config.toml` and the real `config.toml` being older than the run, not by whole-folder timestamps (86bcm901j review 1). Stronger: `grep -a -c <run's temp dir>` over `~/.codex/*.sqlite*` and their WAL files finds 0 matches when the run never wrote there (86bcm901j verifier 2).
 - **Claude can't run `codex exec` against the real login.** Codex keeps it in the keychain, Claude Code's auto mode denies keychain lookups and the sandbox bypass, and `codex login status` from Claude's shell says "Not logged in". Real `codex exec` tests need a separate home with a file-stored login (`CODEX_HOME=~/.codex-probe`), which Justin signs in to once.
 - **Codex 0.165 refuses `approval_policy = "untrusted"`** (exit 1, "is no longer supported; remove this setting") but silently ignores unknown config keys, so a typo'd key passes a load check (901j planner). **`history.persistence = "none"` stops only `~/.codex/history.jsonl`:** session transcripts still go to `~/.codex/sessions/rollout-*.jsonl` (`codex exec --help`: `--ephemeral` "Run without persisting session files to disk"), so config docs must not promise prompts leave no trace (901j fixer 1).

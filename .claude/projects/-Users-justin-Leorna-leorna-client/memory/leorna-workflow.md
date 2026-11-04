@@ -5,8 +5,10 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 2fe303d7-90b7-4c97-a578-b1d2535f94fa
-  modified: 2026-10-30T15:45:03.000Z
+  modified: 2026-11-04T21:47:25.564690Z
 ---
+
+**Status 2026-11-04 (Codex live ClickUp lookup):** Official MCP authenticated as Justin Issa (`justin@leorna.com`, user ID `240157212`). Queried only this assignee, across available tasks with no PI filter and `include_closed: true`; one page, `has_more: false`: 29 assigned tasks, 23 complete and 6 `to do`. Open cards: `86bcm928t` Integration governance and usage; `86bcm928h` Per-user credentials for integrations on the engineer's laptop; `86bcm927y` Integrations catalog - tiles UI in the admin console; `86bcm9284` Predefined integration tiles: GitHub, Google Workspace, ClickUp; `86bccndx6` Custom company domain for the control plane; `86bctmuwy` Install Agent items into local Claude Code, Codex and Cursor tool directories. Dependencies/readiness were not assessed.
 
 **This folder serves both repos.** `~/.claude/projects/-Users-justin-Leorna-leorna-control-plane/memory` is a symlink to the client project's memory folder, so a session in either repo reads and writes the same files. It lives under `~/.claude` on Justin's Mac, outside both git repos, and is never committed or pushed. Control-plane testing details are in [[leorna-control-plane-workflow]]. Hermes Agent (Justin's WhatsApp assistant on this Mac) also reads and edits this folder through its `leorna` skill, with Justin's standing OK (2026-10-20). `~/Leorna` has no workspace AGENTS.md, although the client AGENTS.md says "See workspace AGENTS.md".
 
