@@ -16,7 +16,8 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   with only `--remote-debugging-port` (Chrome 156). On the Windows desktop a visible Chrome opens through WSLg straight
   from the shell: `/mnt/wslg/weston.log` `appId: Chromium-browser` proves the window reached Windows, while Wayland
   reports its position as -32730. `Network.loadNetworkResource` (a download with the tab's cookies) sends the browser's own
-  user agent, never the tab's override (a page's own `fetch()` does), so a stand-in tying a pass to the exact agent
+  user agent, never the tab's override (a page's own `fetch()` does), and no Referer (hotlink rules may refuse it), yet
+  loads other origins' pictures, fonts and JSON with no CORS block (web-human-check review 1); so a stand-in tying a pass to the exact agent
   string fails only under a headless test Chrome (web-human-check builder). The plugin-made Hostinger site can stop answering for about a minute after several
   back-to-back 16-width compares ("didn't finish loading within 60s"): keep those runs, confirm with one curl and
   re-run into new folders (web-compare amendment-1 builder).
