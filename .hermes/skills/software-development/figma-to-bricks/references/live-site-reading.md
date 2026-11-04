@@ -10,6 +10,12 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
 - Bricks 2.3.9's front-end CSS is in `@layer bricks` after its first 2.8 KB, so any unlayered rule beats it; it sets
   `html{font-size:62.5%}` (a site's `rem` must become px), and the site's Theme Style file is unlayered tag rules
   (`h1…h6 {uppercase}`) that leak into pasted content (web-code-proof planner).
+- `CSS.getMatchedStylesForNode` lists each rule's declarations twice: as written (each with a `range`), then as parsed
+  (`0`→`0px`, shorthands' longhands); keep only the ranged ones for the site's own text (attribute styles have none). A
+  saved Elementor page served without scripts keeps `.e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded) *
+  {background-image:none!important}`: mark `e-parent` sections `e-lazyloaded`, and make a "pictures shown" check assert
+  the site side shows them, or it passes vacuously. A box-and-word 2 px check can't see synthetic bold: declare one
+  `@font-face` per font file at its own weight or range, and look at the pictures (web-code-proof builder).
 - A WordPress plugin widget can be rendered on the site's own server (Trustindex reviews on bdryswi.com): no other
   host's script draws it, so a script-host embeds reader never sees it and its boxes get copied as page content. Find
   plugin widgets by their markup and `/wp-content/plugins/<name>/` assets too; the working route is the plugin's
