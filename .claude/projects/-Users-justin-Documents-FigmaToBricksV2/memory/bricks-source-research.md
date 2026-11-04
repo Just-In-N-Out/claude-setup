@@ -10,7 +10,8 @@ metadata:
 
 **Finding a Bricks element's shape without Justin's sample** (djtrees-phone-menu researcher, 2026-11-02, after Justin
 said "tell number 2 to do research and to find it"): public GPL copies of Bricks' PHP are on GitHub (`gh search code
-'Element_<Name>'`), up to 2.2 as of 2026-11. Prove they hold for his version by comparing the minified JS functions
+'Element_<Name>'`), up to 2.2 as of 2026-11 (`saqib6571/bricksbuilder` is 2.2; `sinanisler/bricks-temp-repo` is 1.9.6.1, too old).
+From a worktree agent, fetch one file per plain call (`gh api repos/<r>/contents/<p> -H "Accept: application/vnd.github.raw" > <scratch file>`); a loop or pipe is refused. Prove they hold for his version by comparing the minified JS functions
 and element CSS byte for byte with his live site's public theme assets (`/wp-content/themes/bricks/assets/...`), and
 the control keys with academy.bricksbuilder.io's resolved schema; a Wayback `id_` snapshot from before a release shows
 what live sites printed then. The Nav (Nestable) candidate built this way:
