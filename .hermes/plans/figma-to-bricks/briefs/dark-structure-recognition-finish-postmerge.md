@@ -1,6 +1,6 @@
 CURRENT CONDITIONAL AUTHORIZATION (2026-11-03): Justin said "yes last  review then go". Root announced final fifth review, independent acceptance, then eligible merge/rebuild. The old merge hold is superseded only after current-head independent acceptance, with the disclosed five-review-cap qualification below. Do not dispatch this draft before root has accepted receipts, acquired the release lock and completed the ff merge.
 
-# DRAFT — dispatch only after root confirms accepted ff merge and merge-lock ownership
+# Postmerge release — accepted ff merge confirmed
 
 Role: fresh pipeline_finisher, postmerge release only. No agents. You are not alone; preserve others' work. Load engineering-best-practices, git-commit-rules, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md`; github only if actually using its capabilities. Do not start another review/build scope.
 
@@ -8,9 +8,9 @@ M: `/home/justin/Documents/FigmaToBricksV2`, must be main.
 E: `/home/justin/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`.
 Own evidence: E/finish-postmerge/.
 Effective approved plan E/footer-redesign-plan-approved.md (Justin approved option A, including AC3/AC5/Q3A amendments; original plan is historical); AC1 header ownership, AC2 header actions, AC3 footer navigation, AC4 review candidate, AC5 preservation, AC6 panel contract, AC7 browser matrix; AC8 installed round trip remains live/owed.
-Root-confirmed merged accepted head: ROOT_MUST_PIN_HEAD.
-Root-confirmed merge-lock owner: ROOT_MUST_PIN_OWNER.
-Acceptance result: ROOT_MUST_PIN_RESULT.
+Root-confirmed merged accepted head: 62c2ebe3c6cbec4efa5b120e371e5a4bb5fb5afe.
+Root-confirmed merge-lock owner: dark-structure-recognition since 2026-11-04T11:30:26Z (pid 2).
+Acceptance result: READY FOR THE USER: 7 of 8 ACs proven on62c2ebe; AC8 live owed; root-footer-redesign-ac-check.log.
 
 Check main still equals the root-pinned accepted merged head and that the release lock is owned by this story before modifying anything. If another session moved main or started a release, report it without overwriting or requalifying on your own. Paste checks3cw,3cx,3cy,3cz,3da,3db are already claimed by importer releases. Re-scan actual reservations; this list can become stale. Inspect actual current main, every local branch HANDOFF and plan/brief reservations, then allocate an unambiguous release ID under the lock. Preserve the immutable approved plan and record any release-ID mapping without changing ACs.
 

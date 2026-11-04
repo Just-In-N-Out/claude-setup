@@ -7,8 +7,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-04)
 
-- **Current build `2026-11-04.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-04.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-04.4 dark-structure-recognition:** structural header/footer ownership, authored footer destinations and
+    a note for the static numbered-review candidate. Paste check **3dd** (AC8, live: Figma/Bricks 2.3.9/Safari/iPhone).
   - **2026-11-04.3 web-human-reload (website importer):** after an "I am human" check the capture reads the site's
     switch points and title from the passed page (never the check page), a pass counts once the page stays put for
     2 s, and a site's own reloads are waited out (3 tries, then one plain line). Paste check **3db** (AC8, live:
@@ -866,6 +868,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - an arrow is at most 64px; the title must be the card's biggest words and stand out;
     - only "Home"/"Homepage" go to `/`; other sites, page numbers and form placeholders never link;
     - a linked card, or a heading's own row, keeps its heading.
+- **Footer destinations** (Justin, 2026-11-04, option A): belonging to a footer column never supplies a destination;
+  unauthored labels stay plain with one note per included affected Figma design. Source element/text/ancestor links,
+  captured hrefs and existing independent contact/social/arrow/go-word rules keep their own policy; structural
+  membership, headings and omission remain. Genuine page labels need a link in Figma or Bricks.
 - **The site's own header and footer** (user, 2026-10-20: "if there is already a header and footer in bricks then the
   plugin will remove the header and footer"):
   - **Asking:** two ticks in the panel (chosen over asking on every Convert), remembered per WordPress site since
