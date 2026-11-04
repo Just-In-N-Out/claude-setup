@@ -7,8 +7,12 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-04)
 
-- **Current build `2026-11-04.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-04.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-04.2 web-photo-crop (website importer):** a captured picture the old site shows whole (its boxes keep one
+    shape at every width) pastes with its shape (`aspect-ratio`, no fixed height), so it is never cut; pictures the site
+    crops stay cropped; Figma designs convert byte for byte as before. Paste check **3da** (AC6, live: bdryswi.com's
+    three problem cards).
   - **2026-11-04.1 web-human-check (website importer):** when a site answers the capture with an "I am human" check,
     the helper opens a visible Chrome window; Justin presses the button there and the capture carries on in that
     window (every width, every page with `--all`), then closes it. Nothing hides that the browser is automated. Paste

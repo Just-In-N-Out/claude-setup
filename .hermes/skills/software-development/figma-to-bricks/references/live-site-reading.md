@@ -20,7 +20,10 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   reports its position as -32730. `Network.loadNetworkResource` (a download with the tab's cookies) sends the browser's own
   user agent, never the tab's override (a page's own `fetch()` does), and no Referer (hotlink rules may refuse it), yet
   loads other origins' pictures, fonts and JSON with no CORS block (web-human-check review 1); so a stand-in tying a pass to the exact agent
-  string fails only under a headless test Chrome (web-human-check builder). The plugin-made Hostinger site can stop answering for about a minute after several
+  string fails only under a headless test Chrome (web-human-check builder). A page's own reload answers `-32000` / "Execution context was destroyed" only when it cuts a long awaiting
+  `Runtime.evaluate` (the freeze's quiet, `awaitEntrances`, `fonts.ready`); one landing between short reads is silently
+  read on the new document. So a retry keys on that error with the tab still open (`Page.open()`), and must not mark a
+  passed check's own reloads RELOADED: that note fails the helper's job as "Not the page itself" (web-human-reload). The plugin-made Hostinger site can stop answering for about a minute after several
   back-to-back 16-width compares ("didn't finish loading within 60s"): keep those runs, confirm with one curl and
   re-run into new folders (web-compare amendment-1 builder).
 
