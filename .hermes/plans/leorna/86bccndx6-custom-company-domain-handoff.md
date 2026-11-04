@@ -1,12 +1,12 @@
 # Custom company domain — 86bccndx6
 
-Status: PAUSED before the first pipeline agent. No planner, implementation branch, worktree, code change, commit, PR, or ClickUp write has been created by this session.
+Status: PLAN READY — WAITING FOR EXPLICIT GO. Fresh pipeline_planner /root/custom_domain_planner completed the shared plan on Astra xhigh, fork_turns="none". Required-skill/read receipts are in the plan; found_else and skill_lessons are empty. No implementation branch, worktree, code change, commit, PR, or ClickUp write has been created by this session.
 
 ## User instruction and next action
 
-Justin requested Full pipeline, one shared plan, and an explicit "go" before implementation. His latest instruction is: "Wait before launching the next pipeline subagent. I’m changing the pipeline model to Astra at xhigh. Preserve current work and wait for me to confirm the model setting."
+Justin requested Full pipeline, one shared plan, and an explicit "go" before implementation. His earlier model-change pause was lifted by: "ok great continue on the user story".
 
-Wait for his confirmation. Do not change the pipeline model on his behalf, and do not dispatch any pipeline agent until confirmation arrives. After confirmation, verify the configured role model, perform required sync/earlyoom preflight, then dispatch a fresh configured pipeline_planner with fork_turns="none" and the saved brief. No implementation until a later explicit "go" on the completed plan.
+Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh. Planner completed the one shared plan; main checked AC1–AC6, live marker AC4, questions, Docs and records, required-skill receipts and current worktree ownership. No earlyoom kills. Present plan and stop for explicit go. On go, record exact answers, install mode-444 plan-approved.md and dispatch the fresh configured builder. Live permissions are separate and unspecified; Docker WSL integration is currently unavailable.
 
 ## Durable intake
 
@@ -14,8 +14,12 @@ Wait for his confirmation. Do not change the pipeline model on his behalf, and d
 - Task comments: evidence/86bccndx6/intake/comments.json (none).
 - Named prerequisite: evidence/86bccndx6/intake/prerequisite.json.
 - Planner brief: briefs/86bccndx6-custom-company-domain-planner.md.
-- Intended single plan: 86bccndx6-custom-company-domain.md (not created yet).
+- Completed single plan: 86bccndx6-custom-company-domain.md.
 - Evidence root: evidence/86bccndx6/.
+
+## Planner result
+
+Control-plane-only implementation; unchanged client is the real discovery consumer. Current bases: control plane 3aa979df41568c9039007f66d7f32193e66a8533, client feafa3cdf8fafaa1e07a92e32a698b5d9a9ac2c6. PR78 integrated; no duplicate story branch/PR/plan. Six ACs: registration/CNAME, verified activation/generated continuity, safe errors, live discovery/client, proposed guards, proposed resume/recovery. Questions recommend installer configuration; one unused direct-CNAME subdomain; enable Docker WSL integration; explicit live scope after local review; existing authentication mode plus OAuth callbacks as needed. Sibling 86bcm927y is also planning per fresh shared memory; pre-build overlap reconciliation remains required. No extra findings or reusable lessons.
 
 ## Verified routing facts
 
@@ -41,6 +45,8 @@ Wait for his confirmation. Do not change the pipeline model on his behalf, and d
 
 The required command /home/justin/.claude/setup/sync.sh pull was attempted with sandbox_permissions=require_escalated. It exited 1 because /home/justin/.claude-setup.git is mounted read-only and setup-sync.lock could not be created. This was reported to Justin. A subsequent read-only ls-remote succeeded and remote main equalled the local setup HEAD: 41216e18ffb2d82a70a8daca939d570b9585768d. This establishes commit equality at intake, not a successful pull. Do not bypass the mount or claim sync succeeded.
 
+After resumption, sync pull first encountered a concurrent lock; after the lock cleared, an escalated retry again failed on the read-only mount. Fresh read-only comparison showed local and remote main both b56e0260bc46a40b9ff2573e571609efedabb9bc. No mount/lock bypass was attempted. The setup commit equality is current; pull itself remains unsuccessful.
+
 ## Persistent boundaries
 
-Keep ClickUp read-only. Never merge into main. No project push, PR creation or evidence posting without explicit request. No .github/workflows changes without explicit permission. No live provisioning/DNS/TLS changes before the concrete approved live scope is established. No secret/token or real test-server URL in chat, PRs or ClickUp. Only Justin's approved servers. User will confirm the model; explicit plan go remains separately required.
+Keep ClickUp read-only. Never merge into main. No project push, PR creation or evidence posting without explicit request. No .github/workflows changes without explicit permission. No live provisioning/DNS/TLS changes before the concrete approved live scope is established. No secret/token or real test-server URL in chat, PRs or ClickUp. Only Justin's approved servers. Model change is confirmed; explicit plan go remains separately required.

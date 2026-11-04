@@ -1,6 +1,6 @@
 # PLANNER brief — 86bccndx6 custom company domain
 
-HOLD: Do not dispatch until Justin confirms his pipeline model change to Astra at xhigh. Main session must verify configured pipeline role settings after confirmation. Use fresh configured pipeline_planner, fork_turns="none", no explicit model/effort override.
+AUTHORIZED FOR PLANNING: Justin confirmed resumption with "ok great continue on the user story" after the Astra xhigh setting was verified. Use fresh configured pipeline_planner, fork_turns="none", no explicit model/effort override. This authorizes planning only; the completed plan still needs explicit "go" before implementation.
 
 ## Role and output
 
@@ -27,9 +27,9 @@ Plan how an admin configures an owned control-plane custom domain through the ad
 
 Read the saved full live card, comments and named prerequisite from /home/justin/.hermes/plans/leorna/evidence/86bccndx6/intake/. Reuse them unless new evidence requires refresh. ClickUp is read-only. Card has three ACs plus live Verify, DoD and textual dependency. The named dependency 86bccndwq is complete; verify code is integrated, including control-plane PR #78. Resolve additional dependency IDs only as needed; do not invent them.
 
-Read /home/justin/.hermes/plans/leorna/86bccndx6-custom-company-domain-handoff.md for preflight, duplication checks and paused state. No duplicate card branch/plan/PR was found at intake. Recheck ownership before planning against active refs. Do not confuse older domain-wizard/entry-point merged PRs with this implementation.
+Read /home/justin/.hermes/plans/leorna/86bccndx6-custom-company-domain-handoff.md for preflight and duplication checks. No duplicate card branch/plan/PR was found at intake. Recheck ownership before planning against active refs. Do not confuse older domain-wizard/entry-point merged PRs with this implementation.
 
-Setup sync pull was attempted escalated but failed because the setup repo is read-only. Read-only comparison showed local and remote setup HEAD equal at intake; record that limitation honestly. Main will retry preflight after the model confirmation.
+Setup sync pull was retried escalated after model confirmation. The first retry encountered a concurrent sync; after its lock cleared, pull failed because the setup repo is read-only. Read-only comparison verified current local and remote setup main equal at b56e0260bc46a40b9ff2573e571609efedabb9bc; model config and tool role declarations both now say gpt-6-astra at xhigh. Record this as a failed pull with commit equality, not successful sync. Do not bypass the mount. Earlyoom preflight reported no entries.
 
 ## Required plan content
 
@@ -95,4 +95,6 @@ Show me the plan and stop until “go”. After approval, complete implementatio
 
 Follow Leorna’s branch rules. Keep ClickUp read-only. Never merge into main. Push, open PRs or post evidence only when explicitly requested. Do not change CI workflows without explicit permission
 
-Latest steering: Wait before launching the next pipeline subagent. I’m changing the pipeline model to Astra at xhigh. Preserve current work and wait for me to confirm the model setting.
+Earlier pause (superseded): Wait before launching the next pipeline subagent. I’m changing the pipeline model to Astra at xhigh. Preserve current work and wait for me to confirm the model setting.
+
+Latest steering: ok great continue on the user story
