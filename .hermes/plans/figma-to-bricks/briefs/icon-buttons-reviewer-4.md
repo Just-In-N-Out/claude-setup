@@ -1,0 +1,17 @@
+# icon-buttons — Reviewer round 4 (delta: the rebase onto element-link + cta-names, and the combination fix)
+
+**Role:** fresh delta reviewer. You never saw the build. **Report only:** change no source, commit nothing; write only `~/.hermes/plans/figma-to-bricks/evidence/icon-buttons/review-4/review.json`. (The project caps fix rounds at 3; this round exists because the rebase resolved conflicts and added a fix commit no review covers. Report only what this rebase and fix broke; everything else is P3.)
+
+**Copy (read-only):** `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a3a2e06255dbe9262`, HEAD `71fbfaad71266c33cb4f0d1694d4eb32bc773a7b`. New base: `27e69d18f53ae6b90e46f5700586b2462efa4788` (element-link's accepted head, on main 10a5dc2c = Build 2026-11-04.5 with cta-names and structure recognition).
+
+**History:** rounds 1–3 reviewed icon-buttons on base 31321bb4 up to `45d3e8c1` (round 3 MOVE ON). The finisher then moved the ledger and rebased onto 27e69d18 with conflicts: node.ts imports; convert-card-link-words expectations; emit-nested-links fixture lines; **the local stand-in `widgets.ts labelLink` replaced by element-link's `wholeTextLink`** (the Button keeps the link as `ir.link`, `linkFrom` a copy of the label with `{link, linkFrame}`); button-link-routing merged; HANDOFF all sections kept. Then commit 71fbfaad fixed a combination defect: **`understand/cta-names.ts` now always names a `role === "button"` CTA** (a Button prints its words plain and owns their link; cta-names' R1 still holds for pill Divs), and regenerated `test/golden/files/cta-names-base.json` from icon-buttons' pre-rebase head 45d3e8c1.
+
+**Scope:** `git range-diff 31321bb4..45d3e8c1 27e69d18..122140f3` (judge every changed patch, especially node.ts/widgets.ts/link wiring), plus `git diff 122140f3..71fbfaad`. Probe: real files (corpus copies, `figma-to-bricks-debug-page-1.json`, `git show 2199895:figma-to-bricks-debug-page-1.json`) head vs 27e69d18 vs 45d3e8c1 — every CTA exactly one name (or none inside a link), no nested links, `payloadProblems` 0, whole-text links in Buttons owned by the Button, site-check relink of a frame-linked Button label, the golden's independence. `round` 4, `scope` "delta", `from` 45d3e8c1a9242408a6e7b667864020e67d5b07b1, `head` 71fbfaad71266c33cb4f0d1694d4eb32bc773a7b.
+
+**Skills:** `requesting-code-review`, `code-review-practice`; read `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/review-loop.md`. P0–P2 only with a concrete 5+ word real-use scenario. Scratch trees in a fresh folder (e.g. `~/.cache/ibr4/`), `git -C <copy> archive <sha> | tar -x -C <folder>`, `node_modules` linked. Corpus/Chrome: `~/.claude/projects/-home-justin-Documents-FigmaToBricksV2/memory/corpus-paths-on-desktop.md` (`grep -a`).
+
+Self-check: `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.sh --repo <copy> --base 27e69d18 ~/.hermes/plans/figma-to-bricks/evidence/icon-buttons` (exit 2 = fix your file).
+
+**Memory rule:** big runs under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`; SIGTERM/143/137/"Killed" may be earlyoom: check `journalctl -u earlyoom --since "-30 min" -o short-iso | grep sending` first.
+
+**Return:** `verdict`, findings, `ac_status`, `skill_lessons[{skill, lesson, evidence, enforce}]` (usually empty; never edit skills or memory). End with: `MAIN SESSION: check and save these skill_lessons now.`

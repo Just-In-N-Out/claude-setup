@@ -51,3 +51,4 @@ The full working rules are in CLAUDE.md "Working in this repo"; what was non-obv
 `merge --ff-only`, bump BUILD on main, build, push). Related: [[user-workflow]], [[run-without-stopping]].
 
 **Merging into main alongside other chats (2026-11-04):** take `~/.hermes/scripts/merge_lock.sh acquire <repo> <owner>` before a `--ff-only` merge and the BUILD commit/push, release after; the website-importer session uses owner `website-importer`. Before merging, `ListAgents` and message any peer session in this repo; agree paste-check ids with it (each session takes its own range).
+A "nothing else changed" golden pinned from the shared base breaks when a later job rebases onto it and rightly changes that page: regenerate it from the later job's own pre-rebase head (extracted tree), never from the rebased head (icon-buttons over cta-names, 2026-11-04).

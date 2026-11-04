@@ -7,8 +7,11 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-04)
 
-- **Current build `2026-11-04.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-04.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-04.6 element-link:** a text that is all one link (an email, a phone number, a whole Figma or page link,
+    headings too) carries it in Bricks' Link to (External URL), never as an `<a>` in its words; a link inside a
+    sentence stays inline. Paste check **3df** (AC10, live).
   - **2026-11-04.5 cta-names:** every call to action that is its own control has an accessible name: a linked one in
     `link.ariaLabel`, an unlinked one as an `aria-label` custom attribute, none inside a link; vague words ("Learn
     more") add their card's title. Paste check **3de** (AC6, live).
@@ -844,6 +847,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - Figma's own text links also keep the drawn colour;
     - the words are English only;
     - a plain "Call Derek" text without a number stays plain.
+- **A text that is all one link carries it in Link to** (the designer Niklas, through Justin, 2026-11-04; ⭐ answers
+  not yet confirmed): email `mailto:`, phone `tel:`, a whole Figma link or page link go in the element's Link to
+  (External URL), never as an `<a>` in its words; a link inside a sentence stays inline; headings too
+  (`understand/text-link.ts`, `elementLink(ir)`).
 - **Links to pages** (user, 2026-10-19: "whenever there's a hyperlink icon … or 'take me to this' … it will
   automatically implement the hyperlink … to that page", named after "the sentence before it"; build `2026-10-19.17`).
   The user chose, in questions:
