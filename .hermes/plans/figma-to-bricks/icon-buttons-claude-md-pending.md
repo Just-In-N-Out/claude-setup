@@ -10,3 +10,4 @@
 - **Decisions, "Links to pages"** — replace the F4 sentence ("a pill whose label carries one is a Div with a linked
   text, not a Button (review F4, not yet confirmed by the user)") with: `a pill whose words are wholly the designer's
   link is a Button carrying it (icon-buttons Q3 A, not yet confirmed).`
+- **An element's own custom CSS never writes `display`** (icon-buttons R1-1, 2026-11-04): Bricks prints `#brxe-<id>{…}` after the control CSS, so it beats every tier `_display: none` a rule writes (phone.swap, compose.hide, the menu fold). Bricks' `.bricks-button` already gives a Button `inline-flex`/centring/gap.
