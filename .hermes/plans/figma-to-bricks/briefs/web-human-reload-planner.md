@@ -69,3 +69,23 @@ Load `systematic-debugging` first, then `engineering-best-practices` and `implem
 Branch, commit SHA, plan path; the root cause in two lines with file:line; the fix in two lines; the ACs one line each
 (proposed, live marked); then `skill_lessons[{skill, lesson, evidence, enforce}]` (reusable only; empty is normal; never
 edit skills or memory), ending with: `MAIN SESSION: check and save these skill_lessons now.`
+
+## Second bug, same plan (live evidence, Justin's third run, 2026-11-04 ≈02:20)
+
+```
+Capturing https://bdryswi.com/
+Switch points found: none (0 boundaries checked)      <- printed BEFORE the check was noticed
+bdryswi.com asks you to prove you're human: …
+Check passed: capturing bdryswi.com in that window …
+Reading at 12 widths… ✓ (1 range, 320-up mouse)        <- no new switch-point search after the pass
+Pictures 68/68; Parts: header (elementor header 32), page (elementor wp-page 9), footer (elementor footer 35)
+File: …/bdryswi-com-home.f2b-capture.json (23.1 MB)    (1:49 in all; the capture box title "bdryswi.com, Checking your browser…")
+```
+
+The first run (the one that died), after its first pass, searched again and printed `Switch points found: 1366, 1024, 1023,
+991, 921, 834, 768, 767, 600, 576, 479, 440, 412, 393, 360 (32 boundaries checked)`; a second check came later (likely the
+first phone-agent/touch range), was passed, then `-32000 Inspected target navigated or closed`. The plan covers both:
+**(A)** switch points, the page title and anything else read before the check was noticed come from the passed page,
+never the check page (find why this run kept "none" while the first searched again); add an AC: on the stand-in, a check
+site with real switch points gives the same switch points and title as the unchecked capture. **(B)** a site's own
+navigation/reload after a pass, at any range (the phone agent's re-check included), never ends the capture.
