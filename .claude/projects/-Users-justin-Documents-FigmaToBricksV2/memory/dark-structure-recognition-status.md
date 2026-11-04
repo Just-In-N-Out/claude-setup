@@ -1,11 +1,17 @@
 ---
 name: dark-structure-recognition-status
-description: Footer redesign ready; awaiting A/B policy choice,17/16/10 inferred links affected; c28c1e8 unmerged/main39d96c98.
+description: Option A approved/frozen; builder integrates31321bb4 then implements; root merge lock held, not merged.
 metadata:
   node_type: memory
   type: project
   modified: 2026-11-04T04:49:59.518939+00:00
 ---
+
+Current authoritative checkpoint: Justin chose **A**, approving footer inference redesign AC3/AC5/Q3A amendments. Effective read-only plan E/footer-redesign-plan-approved.md SHA25648eed6d112a5af1dd1d134213c54bcb3771fd1367ca0b600865e00bae2cbe9a0; future builder/verifier/auditor/ac-check use this artifact, never the superseded original contract. Original plan/history remain preserved. Footer recognition stays; column-only guessed destinations cease; supplied and independent existing actions remain; one note explains plain labels.17Dark/16Editorial/10Organic former inferred links per picture mode were disclosed and accepted, actual final behavior/appearance still needs proof.
+
+Fresh builder /root/dark_footer_redesign_builder is being dispatched with B/dark-structure-recognition-footer-redesign-builder.md. Starting c28c1e8, approved tracked plan still untracked until builder commits; current main/integration target31321bb48bebdc217d24e9fb65bf734b4fd65e2a/build2026-11-04.3. Root reacquired merge lock as dark-structure-recognition before authorized builder rebase, holds through acceptance/release. New main includes web-human-check/photo-crop/human-reload; old70/39 receipts are historical. Builder local proof then fresh current-base/head verifier, blind auditor, effective-plan referee, authorized ff merge/rebuild/main push. No sixth dedicated review; post-review changes explicitly unreviewed but independently accepted before release. AC8 sole live obligation remains.
+
+E=~/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition; B=~/.hermes/plans/figma-to-bricks/briefs; W=/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/dark-structure-recognition. Authoritative approvals/status in E/approval.json and E/status.md. Latest A resolves pending question; do not ask again or keep paused for it. Full prior details below are historical where contradicted by this checkpoint.
 
 Current candidate: clean `c28c1e88927eb5fe49fee8cdcb904b0a2489c008` on `worktree-dark-structure-recognition`, historical base `70be9c09bee3eb2384399fe19972a0e35cddff2a`. Current main39d96c98a3a171de4733115dca8e4386a808d1ca/build2026-11-04.1 includes web-human-check; recognition is NOT MERGED.
 
