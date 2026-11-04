@@ -19,6 +19,12 @@ Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh
 - Completed single plan: 86bccndx6-custom-company-domain.md.
 - Evidence root: evidence/86bccndx6/.
 
+## Builder checkpoint
+
+Verified from builder/preflight.md and git metadata: worktree `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`, branch `feat/86bccndx6-custom-company-domain`, base `3aa979df41568c9039007f66d7f32193e66a8533`. Shared main fast-forwarded to that upstream base only; no story merge. First commit `97588ba` adds hostname validation/readiness probes; later implementation remains in progress and is not yet reviewed/accepted. Builder scratch `/home/justin/.hermes/cache/scratch/86bccndx6-builder-SbV1af`. Preflight records required skill reads and Docker unavailable; no DB/image gate passed. Main asked Justin asynchronously to enable Docker Desktop Ubuntu WSL integration; answer pending. Local work continues. No live target/grant.
+
+Future role briefs are saved for reviewer-1, verifier and auditor, but are dispatch-held templates with head/base placeholders. Fill exact candidate and required gate status before dispatch. Never launch auditor with earlier reports/context.
+
 ## Planner result
 
 Control-plane-only implementation; unchanged client is the real discovery consumer. Current bases: control plane 3aa979df41568c9039007f66d7f32193e66a8533, client feafa3cdf8fafaa1e07a92e32a698b5d9a9ac2c6. PR78 integrated; no duplicate story branch/PR/plan. Six ACs: registration/CNAME, verified activation/generated continuity, safe errors, live discovery/client, proposed guards, proposed resume/recovery. Questions recommend installer configuration; one unused direct-CNAME subdomain; enable Docker WSL integration; explicit live scope after local review; existing authentication mode plus OAuth callbacks as needed. Sibling 86bcm927y is also planning per fresh shared memory; pre-build overlap reconciliation remains required. No extra findings or reusable lessons.
