@@ -5,10 +5,14 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-03)
+## Status (2026-11-04)
 
-- **Current build `2026-11-03.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-04.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-04.1 web-human-check (website importer):** when a site answers the capture with an "I am human" check,
+    the helper opens a visible Chrome window; Justin presses the button there and the capture carries on in that
+    window (every width, every page with `--all`), then closes it. Nothing hides that the browser is automated. Paste
+    check **3cz** (AC8, live: bdryswi.com).
   - **2026-11-03.2 web-embeds (website importer J5):** a captured page's own widgets (another company's script in a
     box), maps and floating extras (a call button, a chat bubble) come across: widgets as Code elements with only the
     script that made them, maps as live Google maps of the same address, floating extras fixed at the end of the
@@ -331,6 +335,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **The website importer's helper:** the panel reaches the importer helper only at `http://127.0.0.1:47811` with its
   pairing code; Figma desktop runs with Chrome's LocalNetworkAccessChecks off (Figma in a browser can't reach it). The
   helper binds 127.0.0.1 only and never writes to a site.
+- **The importer never hides that its Chrome is automated** (no `AutomationControlled` flag, no `navigator.webdriver`
+  patch, no new user agent, no stealth script, nothing that clicks or types into a site's check): a person passes a
+  person check in the visible window (web-human-check).
 - **The plugin's conversion** (`src/plugin/convert.ts`) must stay byte-identical to `npm run replay` for the same
   snapshot (`test/unit/plugin-convert.test.ts`).
 - **Checks:** `npm run check` runs typecheck, build and the unit and rule tests. Tests use `node --test` on `.ts` files

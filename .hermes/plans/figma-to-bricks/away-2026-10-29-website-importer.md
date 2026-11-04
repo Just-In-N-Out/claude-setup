@@ -545,3 +545,7 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-03 21:15 local — web-human-check review 1 + verifier clean on 9bb30d4 (review-check MOVE ON; READY FOR THE USER 7/8, AC8 live); 6 P3s → follow-ups.md; real WSLg window capture of the stand-in in 8.8 s, 0 diffs vs headless. Lesson saved (loadNetworkResource: no Referer, no CORS block). Blind auditor dispatched (web-human-check-auditor.md).
 
 ## 2026-11-03 21:40 local — web-human-check ACCEPTED: auditor clean; ac-check --reviews READY FOR THE USER 7/8 on 9bb30d4 (AC8 live). main still 70be9c09 (ff OK) but the merge lock is again held by dark-structure-recognition (the owner line I restored; that job is still in its loop: acceptance-7, fixer-8). Asking Justin. Lessons saved (ac-verification hybrid shim; live-site-reading cmdline flag diff).
+
+## 2026-11-04 01:25 local — lock was free (dark-structure released it; main unchanged 70be9c09). Took it and ff-merged main → 9bb30d43 (web-human-check). After-merge finisher dispatched (web-human-check-merge-finisher.md: BUILD 2026-11-04.1, ledger move, paste id, push, CLAUDE.md Status + 'never hide automation' rule).
+
+## 2026-11-04 01:35 local — Build 2026-11-04.1 pushed (main = origin/main = 39d96c98; web-human-check; paste check 3cz = AC8 bdryswi.com live). Lock released (dark-structure had already released its own). Lessons saved (SKILL.md paste-id pattern 3[c-z], SSH push on WSL); next-paste-id.sh offered. Next: Justin captures bdryswi.com.
