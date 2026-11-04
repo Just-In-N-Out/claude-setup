@@ -3,6 +3,13 @@
 Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/chrome.ts`). Never log in, never write.
 
 ## Access
+- bdryswi.com's served home of 2026-10-29 and its two `_jb_static` CSS bundles are saved offline
+  (`~/.hermes/plans/figma-to-bricks/evidence/web-code-proof/planner/inputs/bdry-2026-10-29/`): served from files with
+  scripts dropped and Google's Roboto added, they redraw the site (x and width equal to the 11-04 capture at 45 widths).
+  Use them instead of the bot-checked site; they're true only for their date (its text line height changed by 11-04).
+- Bricks 2.3.9's front-end CSS is in `@layer bricks` after its first 2.8 KB, so any unlayered rule beats it; it sets
+  `html{font-size:62.5%}` (a site's `rem` must become px), and the site's Theme Style file is unlayered tag rules
+  (`h1…h6 {uppercase}`) that leak into pasted content (web-code-proof planner).
 - A WordPress plugin widget can be rendered on the site's own server (Trustindex reviews on bdryswi.com): no other
   host's script draws it, so a script-host embeds reader never sees it and its boxes get copied as page content. Find
   plugin widgets by their markup and `/wp-content/plugins/<name>/` assets too; the working route is the plugin's

@@ -584,3 +584,4 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 - 06:55 Method review dispatched (importer-method-review.md, medium, read-only). Justin's direction: 1:1 from the site's actual code, not photos/measurements; forwarded to the reviewer.
 - 08:00 method review back: method wrong at its core; recommends D + one-section proof. report.md saved by me (agent's write refused). Lesson saved (live-site-reading: server-rendered plugin widgets). Asking Justin.
 - 08:10 Justin: go with D (HTML+CSS), Opus 5.5 high for this job. Planner web-code-proof dispatched (high).
+- 08:40 web-code-proof planned (953e50ed; design of the whole switch + proof T0–T14, AC1–AC10, AC9 live; ⭐ Q1–Q8). Plan-approved installed; builder dispatched (Opus high). Lessons saved (live-site-reading: offline bdry 10-29 page; Bricks @layer + 62.5% rem + Theme Style leak).
