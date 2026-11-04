@@ -23,3 +23,4 @@
 - [Runaway tests](runaway-tests.md) — earlyoom stops a test at 15–17 GB: a stopped run is a crash, never a normal failure; orchestrator watches (>6 GB or earlyoom) and tells the agent (2026-11-02)
 - [Dark structure recognition](dark-structure-recognition-status.md) — released build2026-11-04.4; independently accepted, merged, rebuilt and pushed; installed paste check3dd remains owed.
 - [Footer-column destinations](footer-column-destinations.md): Justin chose A; column membership alone never creates a page link, while supplied and independent actions remain.
+- [Keep agents busy](keep-agents-busy.md) — don't park jobs for a merge; rebase onto an accepted head early (2026-11-04)
