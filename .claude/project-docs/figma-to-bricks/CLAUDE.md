@@ -7,8 +7,12 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-04)
 
-- **Current build `2026-11-04.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-04.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-04.7 web-code-proof (website importer, new method):** the importer's new route copies a site's own HTML
+    and CSS (its elements, classes and per-width rules) into Bricks: `npm run capture` records the code, `npm run site`
+    writes one section's paste, `npm run site:check` measures it against the capture (2 px at every width). Proved 0 px
+    on the saved bdryswi.com section at 53 widths; the panel still uses the old route. Paste check **3dc** (AC9, live).
   - **2026-11-04.6 element-link:** a text that is all one link (an email, a phone number, a whole Figma or page link,
     headings too) carries it in Bricks' Link to (External URL), never as an `<a>` in its words; a link inside a
     sentence stays inline. Paste check **3df** (AC10, live).
@@ -915,6 +919,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **bdryswi.com's pages are a live check owed to him** (AC14/AC15, "Mark it mine, merge now"): its bot check stops
     every automated Chrome, so every sitemap page is captured and checked only once he allow-lists the capture; AC14
     covers the other corpus sites' homes.
+- **The website importer copies the site's own code** (Justin, 2026-11-04: "I want a method that can help us get one
+  to one, not relying on photos or images but actual code"; method review
+  `~/.hermes/plans/figma-to-bricks/evidence/method-review/report.md`): a site's elements, classes and CSS rules go into
+  Bricks as they are; the measured-box route through the Figma converter is retired for websites once the whole page
+  passes.
 - **Lists a visitor searches and filters** (user, 2026-10-19): "In the page" (the plugin pastes every row and a small
   script; no WordPress post type) and "Spreadsheet in the panel" (a CSV per list, kept in the Figma file).
   - **On tablets and phones** (user, 2026-10-19, screenshots at 990/766/477: "whenever there's a panel, it looks clean
