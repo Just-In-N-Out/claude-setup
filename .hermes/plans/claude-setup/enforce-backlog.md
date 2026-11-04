@@ -146,3 +146,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-04 | web-code-proof | figma-to-bricks | unit test: every paste-writing tool (tools/site.ts, replay) on a non-ASCII fixture writes no byte above 0x7F; in npm test | offered
 - 2026-11-04 | icon-buttons | memory corpus-paths-on-desktop | script: a shared compare-by-name helper that uses grep -a and fails when either log has no '# tests' line | offered
 - 2026-11-04 | rich-text | memory bricks-source-research | test: a renderer-side parse_editor_content stand-in (strip outer <p>, wpautop's <br><br> split, wptexturize) used by browser receipts for Rich Text | offered
+- 2026-11-04 | rich-text | code-review-practice | test: a browser test converting every real file (corpus + Services from git 2199895) with base and head, failing on any text box moving >0.5px at 390/768/1440, for reviews of emit changes | offered
