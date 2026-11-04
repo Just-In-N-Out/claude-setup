@@ -38,3 +38,4 @@ unchanged; nothing to configure. Test from WSL with Windows' own `/mnt/c/Windows
 `launchChrome` adds 51 characters below it and compare-cli's FE-1 test 69 and Chrome's socket path must stay under 108, so the usual
 `~/.cache/<story>-<role>/tmp` (39–40) fails "Socket path too long"; `~/.cache/wca2/tmp` passes. The Mac's default
 `/var/folders/…/T/` may hit it too (the Mac's socket limit is 103, Linux 107; fixed in wave1-fix-2: the FE-1 test falls back to /tmp, and such files should be run once with a ~50-character TMPDIR).
+Compare base/head test logs by name with `grep -a`: Chrome output makes plain grep print "binary file matches" and return nothing, so a "same failures by name" diff passes falsely (icon-buttons builder, 2026-11-04).
