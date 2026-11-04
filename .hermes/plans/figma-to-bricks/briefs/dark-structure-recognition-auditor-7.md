@@ -1,4 +1,4 @@
-# DRAFT — fresh blind AC auditor; dispatch only after current verifier clean
+# Fresh blind AC auditor — pinned current candidate
 
 Fresh pipeline_auditor, source/read-only, no agents. Load engineering-best-practices, project `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` and feature-dispatch/references/ac-verification.md.
 
