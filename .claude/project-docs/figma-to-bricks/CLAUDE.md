@@ -7,8 +7,12 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-04)
 
-- **Current build `2026-11-04.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-04.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-04.3 web-human-reload (website importer):** after an "I am human" check the capture reads the site's
+    switch points and title from the passed page (never the check page), a pass counts once the page stays put for
+    2 s, and a site's own reloads are waited out (3 tries, then one plain line). Paste check **3db** (AC8, live:
+    bdryswi.com's full capture with real switch points).
   - **2026-11-04.2 web-photo-crop (website importer):** a captured picture the old site shows whole (its boxes keep one
     shape at every width) pastes with its shape (`aspect-ratio`, no fixed height), so it is never cut; pictures the site
     crops stay cropped; Figma designs convert byte for byte as before. Paste check **3da** (AC6, live: bdryswi.com's
