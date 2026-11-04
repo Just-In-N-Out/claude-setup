@@ -13,7 +13,9 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   pairs), 0 links, HTTP 403. A check a person can pass reads as an error status or a self-reload, no link to another
   page of the site, and a shown control (button, input, iframe); one with nothing to press stays a plain refusal
   (web-human-check planner). A CDP-driven Chrome reports `navigator.webdriver` true even in a visible window launched
-  with only `--remote-debugging-port` (Chrome 156). On the Windows desktop a visible Chrome opens through WSLg straight
+  with only `--remote-debugging-port` (Chrome 156). To diff a running Chrome's flags, split `/proc/<pid>/cmdline` on spaces (Chrome rewrites it as one
+  string) and set apart the switches headless adds itself (`--noerrdialogs --ozone-platform=headless
+  --ozone-override-screen-size=800,600`; web-human-check auditor). On the Windows desktop a visible Chrome opens through WSLg straight
   from the shell: `/mnt/wslg/weston.log` `appId: Chromium-browser` proves the window reached Windows, while Wayland
   reports its position as -32730. `Network.loadNetworkResource` (a download with the tab's cookies) sends the browser's own
   user agent, never the tab's override (a page's own `fetch()` does), and no Referer (hotlink rules may refuse it), yet
