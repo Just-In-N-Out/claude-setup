@@ -553,3 +553,5 @@ proposal orders them. Justin chose "Go, exact everywhere" before sleeping.
 ## 2026-11-04 ~01:45 local — LIVE: Justin pressed I am human on bdryswi.com in the visible window; helper printed 'Check passed: capturing bdryswi.com in that window'. WordPress.com's check accepted a human click in the honest automated Chrome. Capture in progress (AC8 first half proven live).
 
 ## 2026-11-04 ~01:55 local — LIVE bdry capture FAILED after the second check pass: 'Inspected target navigated or closed (-32000)'; first pass ok, switch points 1366…360 found, second check (likely phone agent) passed, then the site's navigation killed a page read. No earlyoom kill. Justin: Mini. New job web-human-reload; planner dispatched (web-human-reload-planner.md). Asked Justin for the helper's stack trace (to forward).
+
+## 2026-11-04 01:50 local — Justin: 'wait it worked' then 'stop'. A retry saved ~/Downloads/bdryswi-com-home.f2b-capture.json (24 MB, 01:47); capture:check ok: header/page/footer, 55 pictures, 52 layer pictures, 665 elements, BUT 'switch points none' although the helper printed 15. Stopped the web-human-reload planner at his word; nothing running.

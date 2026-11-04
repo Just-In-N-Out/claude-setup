@@ -1,6 +1,6 @@
 ---
 name: dark-structure-recognition-status
-description: Justin approved fresh footer redesign planning; c28c1e8 saved/unmerged, main advanced39d96c98.
+description: Footer redesign ready; awaiting A/B policy choice,17/16/10 inferred links affected; c28c1e8 unmerged/main39d96c98.
 metadata:
   node_type: memory
   type: project
@@ -10,6 +10,8 @@ metadata:
 Current candidate: clean `c28c1e88927eb5fe49fee8cdcb904b0a2489c008` on `worktree-dark-structure-recognition`, historical base `70be9c09bee3eb2384399fe19972a0e35cddff2a`. Current main39d96c98a3a171de4733115dca8e4386a808d1ca/build2026-11-04.1 includes web-human-check; recognition is NOT MERGED.
 
 Verifier11 rejected P2 V11-1: ordinary HOURS “Appointments are usually required” becomes invented page, confirmed mixed/pure-hours and browser. Same finite qualifier grammar cause as V10, explicitly no new structural discovery. AC3/AC5 failed; other non-live qualification and full gates pending, AC8 live owed. Own scratch/controllers closed, no kills, empty lessons processed. No auditor11 dispatched. Root stops automatic repairs under repeated same-cause rule and asks Justin: recommend a fresh planner redesign of footer inference with explicit tradeoffs BEFORE any further coding; alternative keep branch saved. Justin subsequently answered go: fresh redesign planning is now authorized, with concrete tradeoffs shown before more coding. Original five-review cap and all non-live ACs remain binding. Original AC8 installed Figma/Bricks2.3.9/Safari/iPhone/keyboard/touch remains live owed.
+
+Fresh redesign planner completed. Plan `W/docs/plans/2026-11-04-dark-footer-inference-redesign.md`, still untracked and NOT approved/effective. Recommendation A: footer-column membership never supplies destinations; retain recognition/authored links/independent existing actions, add note. Removes17Dark/16Editorial/10Organic links per picture mode, including real page names. Needs explicit AC3/AC5/Q3A amendment; original mixed Contact/Hours/Directions oracle fails proposal deliberately. Alternative B keeps automatic-link requirement and needs destination-confirmation planning. Current pending choice is A/B, not whether to start planning. No builder dispatched; latest go already consumed as planning authorization. Candidate/source unchanged, only plan/evidence written. Empty lessons processed. No lock held.
 
 E = `~/.hermes/plans/figma-to-bricks/evidence/dark-structure-recognition`. Authoritative evolving records: `E/status.md`, `E/approval.json`, current role reports/checkpoints. Full prior memory preserved at `E/memory-history-before-verifier10.md`; read history only as needed.
 
