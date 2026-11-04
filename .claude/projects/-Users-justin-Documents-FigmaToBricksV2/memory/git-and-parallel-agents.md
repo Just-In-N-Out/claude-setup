@@ -49,3 +49,5 @@ The full working rules are in CLAUDE.md "Working in this repo"; what was non-obv
 **Why:** the user wants features built in parallel without agents overwriting each other's work.
 **How to apply:** feature work happens in `claude -w` copies, merged one at a time into `main` (rebase, re-check,
 `merge --ff-only`, bump BUILD on main, build, push). Related: [[user-workflow]], [[run-without-stopping]].
+
+**Merging into main alongside other chats (2026-11-04):** take `~/.hermes/scripts/merge_lock.sh acquire <repo> <owner>` before a `--ff-only` merge and the BUILD commit/push, release after; the website-importer session uses owner `website-importer`. Before merging, `ListAgents` and message any peer session in this repo; agree paste-check ids with it (each session takes its own range).
