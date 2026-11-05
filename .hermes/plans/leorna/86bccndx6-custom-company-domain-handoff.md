@@ -8,6 +8,10 @@ Justin requested Full pipeline, one shared plan, and an explicit "go" before imp
 
 Configured roles are Astra xhigh. Original plan go remains approved; review-2 brake is resolved by Justin’s explicit option 1 continuation. Main persisted his reply verbatim, reran referee and received REVIEW AGAIN: fix R2-1 then review fix commits. Fresh fixer 2 uses briefs/86bccndx6-custom-company-domain-fixer-2.md. After handback check earlyoom and lessons, dispatch fresh reviewer 3 on the exact fixed head, delta from reviewed head 24c13fd plus touched areas unless referee requests full. Continue review/fix until MOVE ON, then fresh verifier → blind auditor → ac-check --reviews → local handover. No live target/grant, publication or story merge authorized.
 
+## Reconnect checkpoint — fixer 2
+
+After Justin reported an internet interruption and said continue, initial list_agents showed only root. Main checked source/evidence/process liveness, then followup_task resumed the existing custom_domain_fixer_2; no replacement was spawned. It is running on the same worktree. fix-2/checkpoint.json reports R2-1 reproduced, fix/focused race checks passing, mutations/gates running. Docker WSL integration is now unavailable (/var/run/docker.sock absent), including escalated fixture attempt, superseding earlier Docker-working statements. Main asked Justin asynchronously to open Docker Desktop and enable Ubuntu integration. Continue independent work; DB/image gates remain unqualified until Docker returns. No earlyoom kills.
+
 ## Durable intake
 
 - Full live card: evidence/86bccndx6/intake/card.json.
