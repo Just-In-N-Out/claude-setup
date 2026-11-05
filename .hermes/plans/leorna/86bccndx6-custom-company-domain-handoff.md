@@ -1,12 +1,12 @@
 # Custom company domain — 86bccndx6
 
-Status: REVIEWING, round 1 FULL. Builder completed at 6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a on feat/86bccndx6-custom-company-domain, base 3aa979df41568c9039007f66d7f32193e66a8533, clean; seven commits, 54 files +3179/-63. Fresh Astra xhigh pipeline_reviewer /root/custom_domain_reviewer_1 is running from briefs/86bccndx6-custom-company-domain-reviewer-1.md. No publication, story merge or live cloud mutation authorized.
+Status: FIXING review round 1. Fresh Astra xhigh pipeline_fixer /root/custom_domain_fixer_1 is running from briefs/86bccndx6-custom-company-domain-fixer-1.md on reviewed head 6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a. review-check.sh returned REVIEW AGAIN for one P1, R1-1. No publication, story merge or live cloud operation authorized.
 
 ## User instruction and next action
 
 Justin requested Full pipeline, one shared plan, and an explicit "go" before implementation. His earlier model-change pause was lifted by: "ok great continue on the user story".
 
-Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh. Planner completed the one shared plan; main checked AC1–AC6, live marker AC4, questions, Docs and records, required-skill receipts and current worktree ownership. No earlyoom kills. Builder handback is complete and reviewer 1 is running. Next: intake review-1/review.json, run review-check.sh against this worktree/base/evidence and obey its last line. REVIEW AGAIN means fresh fixer then fresh full reviewer 2; MOVE ON means fresh verifier then blind auditor and ac-check --reviews; ASK JUSTIN means record his decision. Do not judge findings or gates yourself. Live permissions remain unspecified; Docker works and local builder gates passed. AC4 live resources remain unprovided. Do not ask for plan go again.
+Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh. Planner completed the one shared plan; main checked AC1–AC6, live marker AC4, questions, Docs and records, required-skill receipts and current worktree ownership. No earlyoom kills. Builder and reviewer 1 handbacks are complete. Fixer 1 is running for R1-1; next dispatch fresh FULL reviewer 2 on its committed head with all earlier records, then obey review-check. REVIEW AGAIN means fresh fixer then fresh full reviewer 2; MOVE ON means fresh verifier then blind auditor and ac-check --reviews; ASK JUSTIN means record his decision. Do not judge findings or gates yourself. Live permissions remain unspecified; Docker works and local builder gates passed. AC4 live resources remain unprovided. Do not ask for plan go again.
 
 ## Durable intake
 
@@ -18,6 +18,10 @@ Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh
 - Approved plan: evidence/86bccndx6/plan-approved.md; decisions: evidence/86bccndx6/approval.json.
 - Completed single plan: 86bccndx6-custom-company-domain.md.
 - Evidence root: evidence/86bccndx6/.
+
+## Review 1 and required next step
+
+Full reviewer independently checked base 3aa979df41568c9039007f66d7f32193e66a8533 through head 6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a. One P1: R1-1 at internal/installer/domain/probe.go:127, production TLS readiness rejects the actual router's ordinary root 303 redirect, blocking activation and resume. Production probe/router reproduction fails with valid TLS; acceptance fixture stubs had hidden it. AC2/AC6 not accepted; AC4 live/not_run. Required local gates independently passed, source remained clean, no earlyoom kills. Review records in evidence/86bccndx6/review-1/. Main ran review-check: REVIEW AGAIN, one P0–P2; Full round 2 must review the whole story after the fix. Fixer gets the exact finding/report/probe and must preserve DNS/TLS/discovery/security contracts. Reviewer skill_lessons and found_else empty, so nothing to save. After fixer handback, check earlyoom/lessons, dispatch a fresh FULL reviewer 2 with all earlier review records and dispositions, then run review-check. Do not move to verifier before MOVE ON.
 
 ## Completed builder handback
 

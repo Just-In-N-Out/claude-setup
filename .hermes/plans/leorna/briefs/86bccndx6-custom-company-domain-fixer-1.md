@@ -1,15 +1,22 @@
 # FIXER 1 — 86bccndx6 custom company domain
 
-DISPATCH HOLD: template only. Main must insert the actual referee outcome/findings, reviewed head and evidence paths before dispatch. Do not start fixes from this placeholder.
+AUTHORIZED FIX PASS: review-check.sh returned REVIEW AGAIN for R1-1 (P1). Verify the finding, fix it test-first within the approved scope, run required gates and return ready-for-next-review. A fresh FULL round 2 follows; no verifier/finish yet.
 
 Fresh configured pipeline_fixer, Astra xhigh, fork_turns none. Verify each supplied finding first, fix valid findings test-first, report evidence-based rejection of invalid findings, then stop ready-for-next-review. No nested agents. You are not alone; preserve sibling work and do not revert their edits. Main routes review and verification.
 
 Worktree `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`; branch `feat/86bccndx6-custom-company-domain`.
 Approved plan `/home/justin/.hermes/plans/leorna/evidence/86bccndx6/plan-approved.md`.
 Evidence root `/home/justin/.hermes/plans/leorna/evidence/86bccndx6`; your writes go in `fix-1/` plus authorized product files in the worktree and owned scratch.
-Current head: PENDING_FIX_HEAD.
-Base: PENDING_FIX_BASE.
-Referee lines and report paths: PENDING_FINDINGS.
+Current head: `6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a`.
+Base: `3aa979df41568c9039007f66d7f32193e66a8533`.
+Referee lines and report paths: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6/review-1/review.json` and `report.json`; reproduction `root-probe-final.log` and its probe/overlay files in that same review folder. Builder handback/reproduction recipes are in builder/report.md. Preserve reviewer evidence and reproduce in your own fix-1 folder.
+
+Exact referee finding and outcome:
+
+R1-1  P1  internal/installer/domain/probe.go:127  TLS readiness rejects the real control-plane root redirect, preventing normal custom-domain activation and active-domain resume. Probe.TLS requests / and rejects every 3xx, while Handler.Routes unconditionally returns 303 Location: /admin at /. The real probe plus real router fails with valid trusted TLS; a 200-response TLS control passes. Canonical AC tests miss this because domainAcceptance.TLS returns a stubbed error instead of calling the production probe. Check/Activate/Status and redeployExisting all depend on this check. Validate TLS without classifying the application's ordinary root redirect as a proxy/DNS failure; retain redirect rejection on discovery and add real-probe/router integration coverage. Reproduction: review-1/root-probe-final.log (one intended failure and two passing controls).
+REVIEW AGAIN: 1 P0-P2 finding(s) in review-1 at 6125c7e: fix them, then review again (Full: round 2 reviews the whole story from 3aa979d; Mini: review the fix commits)
+
+Do not merely change the fixture's return to hide this failure. The fresh reviewer requires actual production probe/router coverage. Preserve all approved DNS/TLS validation, selected-target/network/tenant safeguards and strict discovery behavior. If the correction exposes a literal technical-plan conflict, identify its exact text and report it for the single planner to amend; don't silently redefine an AC or ask main to choose the implementation. Local review found no other blocker; live AC4 remains unrun without a grant. Docker now works; create your own fixtures and separate resettable DBs for parallel processes. The prior full review independently ran required local gates, but rerun those required for your resulting head..
 
 Actually open global CLAUDE.md and applicable project rules, then these SKILL.md files under `/home/justin/.agents/skills/`: leorna, engineering-best-practices, receiving-code-review, test-driven-development, systematic-debugging, mutation-testing-discipline, git-commit-rules, plus security-best-practices, multi-tenant-auth-management, api-contract-drift-guard, backend-data-migrations and other applicable plan specialists. Read `/home/justin/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/review-loop.md` and ac-verification.md. Follow actual current shared memory/ownership without treating older server grants as this story's authority. Return read receipts; never edit skills or memory yourself.
 

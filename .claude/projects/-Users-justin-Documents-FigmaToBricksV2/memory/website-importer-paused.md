@@ -38,3 +38,14 @@ metadata:
 
 **Earlier:** he chose "Address in the panel" for importing a live site without a Figma design. Related:
 [[review-round-cap]], [[deliverable-first]], [[bdry-home-copy]], [[run-without-stopping]].
+
+**Roadmap agreed 2026-11-04 evening (code method; each step ends with his staging paste):**
+1. web-code-page: whole homepage (header/page/footer) 1:1; slider first slide, menu button inert, form static.
+2. Reliable captures: retry a width that met a check (the 1024 gap); `npm run capture` finds Chrome itself.
+3. Moving parts, one job each: menu → Offcanvas; slider → Bricks Slider; hover = copied CSS :hover rules (capture must
+   read them); CSS animations copied; scroll fade-ins: CSS copied + trigger as Bricks Interaction (needs his Interaction
+   sample); Trustindex → shortcode (plugin on the new site); form → Bricks Form or WPForms.
+4. Panel route: Capture button uses the code method, pictures/fonts to WordPress.
+5. Other 12 pages, shared classes, Elementor wrapper folding; retire the old route.
+He asked for everything: header, footer, actions, animations. CSS-drawn → copied 1:1; JS-run → rebuilt as Bricks features;
+server-side (plugins, data) → the same plugin on the new site.
