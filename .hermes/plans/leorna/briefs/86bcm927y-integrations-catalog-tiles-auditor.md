@@ -48,5 +48,7 @@ Mutations ALWAYS systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0. 
 
 ## Handback
 
+For this run, retain your owned scratch at handback and list its path; do not launch filesystem removal calls. Stop/remove your own temporary services if feasible, preserving evidence. A pending scratch deletion is not an acceptance requirement and must not block your report. This is an environment handling instruction, not evidence from another role.
+
 Return verdict, actual head/base, ac_status for every approved criterion with own head/base/test/screenshot proof, gates/skips, ac.json path, findings, defect_loop_skills, found_else and skill_lessons. No earlier role results may support your verdict. Never edit skills/shared memory. skill_lessons[{skill,lesson,evidence,enforce}], enforce none or proposed check kind/what/where; empty normal, only new reusable proven guidance. End exactly:
 MAIN SESSION: check and save these skill_lessons now.
