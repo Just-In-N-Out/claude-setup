@@ -7,8 +7,14 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-04)
 
-- **Current build `2026-11-04.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-04.8`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-04.8 icon-buttons:** a pill of words and drawn icons is Bricks' own Button drawing its icons in CSS; a
+    button-shaped box inside a link is a Button with no link; a label wholly linked makes a linked Button. Paste check
+    **3dg** (AC8, live: hydraulics' hero).
+  - **2026-11-04.8 rich-text:** every text but a heading is Rich Text; a text that is all one link is Rich Text inside
+    a Block carrying the link in Link to; no Basic Text is emitted. Paste check **3dh** (AC8, live: the structure panel
+    shows no Basic Text).
   - **2026-11-04.7 web-code-proof (website importer, new method):** the importer's new route copies a site's own HTML
     and CSS (its elements, classes and per-width rules) into Bricks: `npm run capture` records the code, `npm run site`
     writes one section's paste, `npm run site:check` measures it against the capture (2 px at every width). Proved 0 px
@@ -447,6 +453,18 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   A page column of only two parts reads as one section: give a fixture page three. `vector(name, opts)` ignores `fills`
   (spread it and set `fills` after); a hover becomes a hover copy (`overlay`) only for a change CSS can't draw, such
   as an icon's colour.
+- **An element's own custom CSS never writes `display`** (icon-buttons, 2026-11-04): Bricks prints `#brxe-<id>{…}`
+  after the control CSS, so it beats every tier `_display: none` a rule writes (phone.swap, compose.hide, the menu
+  fold). Bricks' `.bricks-button` already gives a Button `inline-flex`, centring and gap.
+- **Words elements hold a `<p>` since rich-text** (`div.brxe-text > p`): browser tests measure the inner `p`
+  (`el.querySelector(':scope > p') || el`); `Range.selectNodeContents(el).getClientRects()` also returns the `p`'s own
+  box (one line too many) and `el.firstChild` is the `p`, not the text node.
+- **Rich Text HTML always goes through `emit/rich-text.ts` `asTyped`:** Bricks prints Rich Text through
+  `parse_editor_content` (wptexturize + wpautop), so `asTyped` writes the designer's quotes, dashes, dots and `x` as
+  numeric entities and breaks `<br><br>` with `<wbr>`; `test/browser/editor-content.ts` models it in the renderer. A
+  saved edit in Bricks' rich editor may turn the entities back into plain characters.
+- **`test/browser/render.ts` lacks Bricks' `.brxe-block{align-items:flex-start}`:** a browser receipt that depends on a
+  Block being a block box injects that rule itself, or a dropped-`_display` mutant survives.
 - **Shell quirk:** typing the escape text for U+2028/U+2029 in a shell command turns it into the raw character, which
   breaks regex literals. Write such escapes with `String.fromCharCode(92)` or edit the file with the Edit tool.
 
@@ -698,7 +716,17 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   (HANDOFF "Cut-outs stay whole when swapped").
 - **Native Buttons by shape alone** (2026-10-06): a painted box around one short centred label becomes a Bricks Button,
   linked or not and whatever its name. Form fields (words starting at the left) and table cells (a rule on one side)
-  aren't buttons. Tags and pills of the same shape may become Buttons; the user accepted that.
+  aren't buttons. Tags and pills of the same shape may become Buttons; the user accepted that. A pill of words and one
+  or two drawn SVG icons (one each side at most, beside the words, in its middle) is a Button too, its icons its
+  ::before/::after from their Figma SVG (icon-buttons Q1 A, not yet confirmed; emit/button-icons.ts); inside a link it
+  is a Button with no link (Q2 A). A pill under 44px whose own hover changes its icon or more than CSS draws stays a
+  Div.
+  - **A Button stretched wider than its content centres its words and icon** (Justin, 2026-11-04, chose "Centred": the
+    phone-menu panel's "Schedule Now").
+- **Every text is Rich Text except headings** (Justin, 2026-11-04, on the designer's "rich text for paragraphs": "I do
+  not want it for paragraph i want it for everything"; chose in a question): Bricks Heading stays, with its tag; a text
+  that is all one link is Rich Text inside a Block that carries the link in Link to (both designer notes hold); no
+  Basic Text is emitted.
 - **Pictures inside the paste (2026-10-07, v1's embed mode back):** the panel's "Pictures go: inside the copied JSON
   (for testing) / to WordPress" starts on "inside the JSON".
   - Inline, every picture (photos as chosen, shrunk to 2x the size they show at; icons as PNG or SVG) travels as data.
@@ -872,8 +900,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     documents (PDF) stay. Words linked to another frame in Figma link to that frame's page (user, 2026-10-21, F1A
     F2A F3A, build `2026-10-21.5`): a part of a frame goes to its top frame's page, a frame gone from the file leaves
     the words plain and named, and the site check sends them to the site's page as it does Navigate links. Such words
-    count as the designer's link, like typed-address ones: their card gets no whole-card link and a pill whose label
-    carries one is a Div with a linked text, not a Button (review F4, not yet confirmed by the user).
+    count as the designer's link, like typed-address ones: their card gets no whole-card link and a pill whose words
+    are wholly the designer's link is a Button carrying it (icon-buttons Q3 A, not yet confirmed).
   - **Arrows only, read from the drawing:** → ↗ ↘ › count; + × ✓ ↓ and up/down chevrons never. An icon whose drawing
     can't be read counts only as the only icon at the right end.
   - **A button with an arrow links to the page its words name, except actions** (Submit, Get directions, Call, Book,
