@@ -19,10 +19,15 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   {background-image:none!important}`: mark `e-parent` sections `e-lazyloaded`, and make a "pictures shown" check assert
   the site side shows them, or it passes vacuously. A box-and-word 2 px check can't see synthetic bold: declare one
   `@font-face` per font file at its own weight or range, and look at the pictures (web-code-proof builder).
-- A WordPress plugin widget can be rendered on the site's own server (Trustindex reviews on bdryswi.com): no other
-  host's script draws it, so a script-host embeds reader never sees it and its boxes get copied as page content. Find
-  plugin widgets by their markup and `/wp-content/plugins/<name>/` assets too; the working route is the plugin's
-  shortcode on the new site (method review 2026-11-04).
+- bdryswi.com's Trustindex reviews are drawn by another host's loader (`<script src="https://cdn.trustindex.io/loader.js?…">`
+  inside an Elementor HTML widget): a capture's reviews are script-made (`~` paths, 421 elements) and a stand-in with
+  scripts dropped has none. Find such widgets by their loader script and script-made subtrees under a widget container
+  (web-code-page planner, correcting the method review's "server-rendered" claim).
+- A v1 `web.code` holds the capture's own state as if it were site CSS: the freeze sheets `style#f2b-still` /
+  `#f2b-unsnap` on every element, and values scripts wrote into `style` (Elementor's sticky `position: fixed; width:
+  <anchor px>` with a hidden spacer copy, Swiper's slide widths and row `translate3d`), right only at each range's anchor.
+  Tell them apart by the served `style` attribute (a MutationObserver's first `oldValue`, installed before the page's
+  scripts) and the capture's own sheet ids, never by property names (web-code-page planner).
 - A site may start answering automated Chrome with a bot check ("Checking your browser…"), as bdryswi.com did on
   2026-10-29 after a day of agent probes. Hiding the automation flag is refused as bot-check circumvention: stop
   loading that site and hand the live check to Justin (allow-list the capture or pause the check). A bot page need not
