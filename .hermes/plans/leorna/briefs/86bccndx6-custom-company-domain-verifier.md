@@ -1,16 +1,31 @@
 # VERIFIER — 86bccndx6 custom company domain
 
-DISPATCH HOLD: template prepared while building. Main must fill actual head/base and confirm review-check MOVE ON on that candidate before dispatch.
+DISPATCH AUTHORIZED: main ran review-check after fresh reviewer 3 returned clean; exit0, MOVE ON: review-3 at 19cbf79 is clean. Source candidate is reviewed. Required Docker gates are still pending and must not be waived.
 
 You are a fresh read-only configured pipeline_verifier, Astra xhigh, fork_turns none. Independently rerun the approved gates and prove every AC on candidate and base. Do not edit product source, change assertions, commit, publish or spawn agents. You are not alone; leave sibling work and resources intact.
 
 Approved plan: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6/plan-approved.md`.
 Worktree: `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`.
-Head: PENDING_REVIEWED_HEAD.
-Base: PENDING_REVIEW_BASE.
+Head: 19cbf79baca1815b647266c5156a9cc5d156eb38.
+Base: 3aa979df41568c9039007f66d7f32193e66a8533.
 Integration ref: origin/main.
 Evidence root: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6`.
 Write only your own `<evidence>/verifier/` and owned scratch. Your report is `<evidence>/verifier/ac.json`.
+
+
+## Current routing context — no inherited proof
+
+Review records are <evidence>/review-1/review.json, review-2/review.json (plus report.json and recovery_probe_test.go/recovery-overlay.json/recovery-probe.log), and review-3/review.json. R1-1 root-redirect TLS defect was fixed at 24c13fd; R2-1 generated-alias recovery was fixed at 19cbf79. Review-3 independently confirms both and no new findings. Justin's option1 continuation is in review-2/justin.json; no finding was waived. Reproduce important prior probes using their exact file lists/controls, then independently assess all approved AC clauses on head/base. Do not count previous agents' receipts as your evidence.
+
+Docker WSL integration disappeared after an internet reconnect. /var/run/docker.sock was absent in both fixer2 and reviewer3, with normal/escalated fixture attempts failing. Main has asked Justin to restore Docker Desktop Ubuntu integration; no answer yet. Recheck availability and complete all independent work possible. Non-Docker make-check passed, but required DB coverage did NOT: reviewer3 saw 149 missing-DSN skips. Image build/scanner/Trivy are also unverified. A passing no-DSN test command cannot qualify the full required gate. If Docker remains unavailable after independent checks, return an incomplete/environment-blocked verdict with precise outstanding commands; do not label clean, invent a product defect, or convert a nonlive requirement into live. This fresh verification role can be resumed on the same untouched head when the operator restores Docker. Keep genuine source findings separate from environment limitations.
+
+No live target/grant exists for AC4. Do not contact historical private servers. Pinned client stays feafa3cdf8fafaa1e07a92e32a698b5d9a9ac2c6; use it only as supporting actual consumer proof. Required primary canonical ACs:
+- AC1 TestCustomDomainRegistrationShowsCNAME
+- AC2 TestCustomDomainActivationPreservesGeneratedAccess
+- AC3 TestCustomDomainFailureKeepsGeneratedAccess
+- AC4 (live) TestCustomDomainLiveClientDiscovery
+- AC5 TestCustomDomainGuardsAndRetry
+- AC6 TestCustomDomainResumeAndRecovery
 
 Actually open global CLAUDE.md, applicable repo AGENTS.md/CLAUDE.md, then Leorna SKILL.md and its shared context, engineering-best-practices SKILL.md, adversarial-verification-loop SKILL.md, security-best-practices SKILL.md, multi-tenant-auth-management SKILL.md, api-contract-drift-guard SKILL.md, backend-data-migrations SKILL.md, mutation-testing-discipline SKILL.md and applicable references. All skill roots are `/home/justin/.agents/skills/<name>/SKILL.md`. Read `/home/justin/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` in full and review-loop.md. You execute the independent role; main handles every nested-agent step. Return actual read receipts.
 
