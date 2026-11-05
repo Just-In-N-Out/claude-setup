@@ -1,6 +1,6 @@
 # REVIEWER 1 — 86bccndx6 custom company domain
 
-DISPATCH HOLD: prepared during the build. Main must fill reviewed HEAD and confirm builder handback before dispatch. This file does not authorize an agent launch by itself.
+AUTHORIZED: builder returned ready-for-review; review the exact candidate below. Required local gates passed according to its handback, with live AC4 explicitly not_run. Independently verify rather than relying on that claim.
 
 ## Role, candidate and scope
 
@@ -8,11 +8,13 @@ Fresh configured pipeline_reviewer, Astra xhigh, fork_turns none. Round 1 FULL r
 
 Repo/worktree: `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`.
 Branch: `feat/86bccndx6-custom-company-domain`.
-Planned base: `3aa979df41568c9039007f66d7f32193e66a8533` (main must confirm actual review base at dispatch).
-Reviewed HEAD: PENDING_BUILDER_HANDBACK.
+Base: `3aa979df41568c9039007f66d7f32193e66a8533` (merge-base with origin/main confirmed at dispatch).
+Reviewed HEAD: `6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a` (clean, seven commits).
 Approved plan: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6/plan-approved.md`.
 Evidence: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6`.
 Your report/probes/receipts only: `<evidence>/review-1/` and your owned scratch.
+
+Builder handback is `<evidence>/builder/report.md`; candidate artifacts and reproduction recipes are in that folder. Read them as context, not independent proof. Owned builder containers are stopped; create/use your own containers/DBs or explicitly reconcile ownership before any reuse, and never share one resettable DB across parallel gate processes. Docker Desktop now works. The pinned client SHA is `feafa3cdf8fafaa1e07a92e32a698b5d9a9ac2c6`. Builder reports full make check, PostgreSQL test-level skip verification, image/deployment/scanner, client and 13 capped mutation checks passed. It explicitly does not claim initial named-test RED for composed AC3/AC6; focused RED/GREEN and supporting real base behavior receipts exist. Evaluate actual assertion coverage yourself. Live AC4 has no authorized target/grant. No new plan approval is needed for review.
 
 Justin approved all recommended plan choices and AC1–AC6. Scope is installer-owned configuration for one unused direct-CNAME subdomain, hosted-admin display, DNS/TLS-gated activation, generated-host continuity, strict boundaries and non-destructive recovery. Control-plane-only production changes; unchanged pinned client is a real consumer check. No live target/grant exists unless main supplies a later exact user grant. AC4 is live and remains owed if unavailable. No new auth bypass, cross-repo Go imports or weakened client origin/redirect rules.
 

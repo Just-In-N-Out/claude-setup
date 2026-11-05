@@ -1,12 +1,12 @@
 # Custom company domain — 86bccndx6
 
-Status: BUILDING. Justin explicitly replied "go", approving choices 1A–5A and AC1–AC6. approval.json records his words; plan-approved.md is frozen mode 444. Fresh Astra xhigh pipeline_builder /root/custom_domain_builder is running from briefs/86bccndx6-custom-company-domain-builder.md. No push, PR, merge, ClickUp write or live cloud/DNS operation is authorized.
+Status: REVIEWING, round 1 FULL. Builder completed at 6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a on feat/86bccndx6-custom-company-domain, base 3aa979df41568c9039007f66d7f32193e66a8533, clean; seven commits, 54 files +3179/-63. Fresh Astra xhigh pipeline_reviewer /root/custom_domain_reviewer_1 is running from briefs/86bccndx6-custom-company-domain-reviewer-1.md. No publication, story merge or live cloud mutation authorized.
 
 ## User instruction and next action
 
 Justin requested Full pipeline, one shared plan, and an explicit "go" before implementation. His earlier model-change pause was lifted by: "ok great continue on the user story".
 
-Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh. Planner completed the one shared plan; main checked AC1–AC6, live marker AC4, questions, Docs and records, required-skill receipts and current worktree ownership. No earlyoom kills. Builder is approved and running. Next: intake its preflight/Docker checkpoint; resolve missing operator prerequisites while independent implementation progresses; after ready-for-review dispatch the fresh full reviewer, then Full review-check/verifier/blind-auditor/ac-check and handover. Live permissions remain unspecified; Docker availability must be rechecked. Do not ask for plan go again.
+Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh. Planner completed the one shared plan; main checked AC1–AC6, live marker AC4, questions, Docs and records, required-skill receipts and current worktree ownership. No earlyoom kills. Builder handback is complete and reviewer 1 is running. Next: intake review-1/review.json, run review-check.sh against this worktree/base/evidence and obey its last line. REVIEW AGAIN means fresh fixer then fresh full reviewer 2; MOVE ON means fresh verifier then blind auditor and ac-check --reviews; ASK JUSTIN means record his decision. Do not judge findings or gates yourself. Live permissions remain unspecified; Docker works and local builder gates passed. AC4 live resources remain unprovided. Do not ask for plan go again.
 
 ## Durable intake
 
@@ -19,11 +19,15 @@ Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh
 - Completed single plan: 86bccndx6-custom-company-domain.md.
 - Evidence root: evidence/86bccndx6/.
 
+## Completed builder handback
+
+Final builder head `6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a`; full handback `evidence/86bccndx6/builder/report.md`, result.json and candidate-artifacts.json. Builder reports full make check, DB JSON (804 pass events, zero failures/missing-DSN skips), module-add, Helm, image build/Trivy/packaged scanner, Windows launcher crossbuild, delivery checks and unchanged-client full check/lint/audit/39 UI tests passed. All 13 capped guard mutations killed; restored race matrix passed; no earlyoom kills. AC1/2/3/5/6 builder_passed with current-head logs/screenshots; AC4 not_run without live grant. Independent acceptance is pending. Builder explicitly did not claim initial named-test RED for composed AC3/AC6; focused slices and additional genuine base probes are retained. Own containers stopped; disk scratch/reproduction helpers retained. Client source unchanged. One proven, new security lesson saved by main in security-best-practices Go SSRF reference: explicitly reject deprecated IPv6 site-local fec0::/10; no enforce proposal. No other findings/lessons.
+
 ## Builder checkpoint
 
-Verified from builder/preflight.md and git metadata: worktree `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`, branch `feat/86bccndx6-custom-company-domain`, base `3aa979df41568c9039007f66d7f32193e66a8533`. Shared main fast-forwarded to that upstream base only; no story merge. First commit `97588ba` adds hostname validation/readiness probes; later implementation remains in progress and is not yet reviewed/accepted. Builder scratch `/home/justin/.hermes/cache/scratch/86bccndx6-builder-SbV1af`. Preflight records required skill reads and Docker unavailable; no DB/image gate passed. Main asked Justin asynchronously to enable Docker Desktop Ubuntu WSL integration; answer pending. Local work continues. No live target/grant.
+Verified from builder/preflight.md and git metadata: worktree `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`, branch `feat/86bccndx6-custom-company-domain`, base `3aa979df41568c9039007f66d7f32193e66a8533`. Shared main fast-forwarded to that upstream base only; no story merge. First commit `97588ba` adds hostname validation/readiness probes; later implementation remains in progress and is not yet reviewed/accepted. Builder scratch `/home/justin/.hermes/cache/scratch/86bccndx6-builder-SbV1af`. Preflight records required skill reads and Docker unavailable; no DB/image gate passed. Main asked Justin asynchronously to enable Docker Desktop Ubuntu WSL integration. Builder checkpoint later confirms docker info succeeds with Docker Desktop 29.0.1; that setup request is resolved. Independent implementation and full DB/image gates continue. No live target/grant. Latest builder checkpoint at head a56d171 reports focused RED/GREEN/race and first-slice regressions passed (without DSN, not DB proof), with canonical/browser/client/mutation/full gates continuing. Main has not independently judged tests.
 
-Future role briefs are saved for reviewer-1, verifier and auditor, but are dispatch-held templates with head/base placeholders. Fill exact candidate and required gate status before dispatch. Never launch auditor with earlier reports/context.
+Reviewer-1 brief is populated and running; verifier, auditor and finisher briefs remain dispatch-held templates with head/base placeholders. Fill exact candidate and required gate status before dispatch. Never launch auditor with earlier reports/context.
 
 ## Planner result
 

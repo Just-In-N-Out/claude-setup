@@ -1,0 +1,9 @@
+# icon-buttons — Reviewer round 5 (delta: rebase onto Build .7, HANDOFF conflict only)
+
+**Role:** fresh delta reviewer. **Report only**; write only `~/.hermes/plans/figma-to-bricks/evidence/icon-buttons/review-5/review.json`.
+
+**Copy (read-only):** `/home/justin/Documents/FigmaToBricksV2/.claude/worktrees/agent-a3a2e06255dbe9262`, HEAD `244c522c465dd6db49036cd70f242495fce16c38`, base local main `93640217` (Build 2026-11-04.7, web-code-proof). Previous reviewed head `71fbfaad71266c33cb4f0d1694d4eb32bc773a7b` (review-4 clean, base 27e69d18). The finisher rebased with one conflict, in `docs/HANDOFF.md` only (commit 2ebd6918 → 2b082ba4): kept web-code-proof's section and element-link's new heading, icon-buttons' section on top; dropped a stale "(id at merge)" element-link line; kept main's 3df entry.
+
+**Scope:** `git range-diff 27e69d18..71fbfaad 93640217..244c522c465dd6db49036cd70f242495fce16c38` — confirm only that commit's HANDOFF context changed and no code changed; check the HANDOFF resolution lost nothing from either side (every section and every end-of-run entry of main and of icon-buttons present). Then a quick check that web-code-proof's new code (`src/core/site/`, `src/web/read/code*.ts`, `test/browser/render.ts` opt-ins) doesn't interact with icon Buttons. `round` 5, `scope` "delta", `from` 71fbfaad71266c33cb4f0d1694d4eb32bc773a7b, `head` 244c522c465dd6db49036cd70f242495fce16c38. Skills: `requesting-code-review`, `code-review-practice`; review-loop.md. Self-check: `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.sh --repo <copy> --base 93640217 ~/.hermes/plans/figma-to-bricks/evidence/icon-buttons`.
+
+**Return:** `verdict`, findings, `ac_status`, `skill_lessons[{skill, lesson, evidence, enforce}]` (usually empty). End with: `MAIN SESSION: check and save these skill_lessons now.`
