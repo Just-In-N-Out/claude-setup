@@ -83,6 +83,21 @@ index d6a2493..03ee11e 100644
  - Scanner target containment: prove the exact Git repository root before history traversal. A nonrepository directory can discover an ancestor repository through `git -C`; use initialized, wholly owned synthetic repos for error controls and an explicit discovery ceiling for raw nonrepo probes. Preserve any escaped execution as an excluded scope incident, and do not infer no sensitive exposure merely from zero findings. Distinguish reachable graph size from patch-bearing scanner commit counts and verify expected canary commit identities.
  
  ## Output Format
+diff --git a/skills/engineering-best-practices/references/frontend-quality.md b/skills/engineering-best-practices/references/frontend-quality.md
+index 8d8968a..f0855d3 100644
+--- a/skills/engineering-best-practices/references/frontend-quality.md
++++ b/skills/engineering-best-practices/references/frontend-quality.md
+@@ -52,6 +52,10 @@ preview/deploy, production data, cloud identity or shared user browser session.
+   Check focus/disabled/loading/error/success states, breakpoint boundaries and
+   overflow, not just a pristine landing page. Record browser console/runtime
+   errors and unexpected request failures; disposition intentional errors.
++  For nonce-CSP error pages, capture actual navigation with response headers;
++  `SetDocumentContent` can retain the prior CSP and block the new stylesheet
++  nonce. A test-only native form can exercise a refused POST when CSP blocks
++  in-page fetch.
+ - Accessibility: run lint plus axe on meaningful interactive states after they
+   appear. Inspect incomplete axe results rather than treating them as passes.
+   Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
 index c509c64..248d886 100644
 --- a/skills/implementation-planning/SKILL.md
