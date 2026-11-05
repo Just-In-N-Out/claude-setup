@@ -1,6 +1,6 @@
 # VERIFIER CONTINUATION — 86bccndx6
 
-HOLD until Docker Desktop/Ubuntu WSL integration is restored and Docker is usable here. This continues the existing fresh read-only pipeline_verifier custom_domain_verifier on the same untouched head; it is not a new build or review. If that agent cannot resume, dispatch a fresh configured pipeline_verifier with fork_turns none, this brief and the original verifier brief. Never duplicate a live process.
+AUTHORIZED TO RESUME: Justin confirmed Docker started with Ubuntu WSL integration and asked to start work. Main verified docker info succeeds with ServerVersion 29.0.1; feature head/base are unchanged and clean; no earlyoom kills. This continues the existing fresh read-only pipeline_verifier custom_domain_verifier on the same untouched head; it is not a new build or review. If that agent cannot resume, dispatch a fresh configured pipeline_verifier with fork_turns none, this brief and the original verifier brief. Never duplicate a live process.
 
 Read and follow /home/justin/.hermes/plans/leorna/briefs/86bccndx6-custom-company-domain-verifier.md, including its actual skill/rule reads, source-read-only, own-resources, no publication/live/CI/merge, WSL memory-cap and skill_lessons rules. A resumed agent retains its earlier independent proof; a replacement must establish sufficient independent proof itself. Read your existing verifier/ac.json and resumption fields. Do not overwrite prior receipts or begin from scratch unnecessarily.
 

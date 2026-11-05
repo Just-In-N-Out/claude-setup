@@ -1,21 +1,27 @@
 # FINISHER — 86bccndx6 custom company domain
 
-DISPATCH HOLD: template only. Main must fill accepted head/base, gate outcome and live debt before dispatch. No finish before required review and AC gates.
+DISPATCH AUTHORIZED: main’s reviewed-head ac-check exited0 with READY FOR THE USER. Five nonlive ACs are proven; AC4 live remains owed. Do the local Leorna handover only, accurately naming live acceptance pending.
 
 Fresh configured pipeline_finisher, Astra xhigh, fork_turns none. Do exactly the local Leorna handover steps here; do not spawn agents. You are not alone in the codebase. Preserve other agents' files/resources.
 
 Worktree `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`; branch `feat/86bccndx6-custom-company-domain`.
 Approved plan `/home/justin/.hermes/plans/leorna/evidence/86bccndx6/plan-approved.md`.
 Evidence root `/home/justin/.hermes/plans/leorna/evidence/86bccndx6`.
-Accepted head: PENDING_ACCEPTED_HEAD.
-Base: PENDING_BASE.
-ac-check outcome/live debt: PENDING_AC_GATE.
+Accepted head: 19cbf79baca1815b647266c5156a9cc5d156eb38.
+Base: 3aa979df41568c9039007f66d7f32193e66a8533.
+ac-check outcome/live debt: READY FOR THE USER: 5 of 6 ACs proven on 19cbf79; live ACs owed to the user: AC4. Exact main gate receipt: <evidence>/ac-check-main.txt..
 
-Actually open global CLAUDE.md, applicable repo rules, Leorna SKILL.md and its handover/evidence/shared-memory notes, engineering-best-practices SKILL.md, receiving-code-review SKILL.md, git-commit-rules SKILL.md and test-driven-development SKILL.md. Skill paths `/home/justin/.agents/skills/<name>/SKILL.md`. Open applicable specialists from approved plan and GitHub skill/references for any GitHub reads. No nested agents. Return read receipts.
+Actually open global CLAUDE.md, applicable repo rules, Leorna SKILL.md and its handover/evidence/shared-memory notes, engineering-best-practices SKILL.md, receiving-code-review SKILL.md, git-commit-rules SKILL.md and test-driven-development SKILL.md. Skill paths `/home/justin/.agents/skills/<name>/SKILL.md`. Actually open security-best-practices, multi-tenant-auth-management, api-contract-drift-guard and backend-data-migrations SKILL.md, plus applicable references from the approved plan and GitHub skill/references for any GitHub reads. No nested agents. Return read receipts.
+
+Required context for the authorized handover: full review1 found R1-1 P1, actual root303 made the TLS readiness probe reject valid activation/resume; fixed in24c13fd with real-router RED/GREEN and strict discovery redirect/trust guards retained. Full review2 found R2-1 P2, missing generated alias made recovery fail before any write while the custom origin still worked; Justin explicitly chose continued repair, fixed in19cbf79 with guarded selected-custom-origin fallback and missing-alias/tenant controls. Review3 delta is clean, main review-check MOVE ON. Fresh verifier independently closed both production probes and completed all required gates after Docker was restored. Use received durable reports as evidence; do not describe the resolved defects as remaining limits or turn review history into the PR narrative.
+
+Verifier report: <evidence>/verifier/ac.json; full Docker continuation receipts in verifier/resume/, image/binary bindings at verifier/resume/image-binding.json. Nonlive gates now pass, superseding preserved no-DB/failed Docker attempts. Database audit:359/359 declared parents,805 pass events,3 allowed opt-in skips,no missing-DSN skips/failures. Candidate local image ID sha256:27d18e7efecceffde7d6509b07ce71b713f698592642fcfda589307cb517e48e. Source image/artifacts are unpublished and undeployed. Local AC4 target-note question is pending; absent an exact grant, no real installation may be touched. Fresh blind auditor returned clean; auditor/ac.json independently accepts AC1/2/3/5/6 and marks AC4 live/not_run. Its 14 targeted mutation assertions, browser form journey, pure-base checks plus hybrid resume assertion failures and own gates passed. Main ran ac-check with current merge-base and --reviews; ac-check-main.txt records all five accepted, AC4 NOT VERIFIED, REVIEWS CLEAN and READY FOR THE USER. No auditor lesson/finding requires another pass. Do not rerun completed tests merely to draft handover on this unchanged head.
 
 Confirm actual worktree HEAD/clean status and supplied gate records match. Handover is local only; no story merge into main, push, PR creation, ClickUp comments/status/attachments, evidence upload, CI changes, cloud/DNS mutation/deletion or real-tool-home changes. Do not fetch/bring main in or alter the qualified candidate during handover without a named instruction; if freshness/overlap needs a change, report the exact need for main to route it. Never claim main CI or delivery shipped based on feature-branch tests.
 
 Produce `<evidence>/handover.md` and local paste-ready PR description, independent review prompt, team-message draft and ClickUp evidence draft with file paths. Main may save prose if the environment refuses an agent report file; return exact text rather than bypassing a denial. Include problem/result, final branch/base/head/diff stat, actual tests and limitations, per-AC evidence, rollback/recovery and any live operator debt. Review images for readability and secrets before designating shareable derivatives; do not send them externally. No real server addresses, tokens, private tenant/account IDs in chat/PR/comment drafts.
+
+For pending live AC4, also save a nonsecret operator checklist/template derived from the reviewed live-test manifest schema and the approved plan. Include current-head source/launcher/client/image bindings from the qualified artifacts, list exact missing target fields and required grants, and mark anything still unknown. The user should copy/fill real target details in a mode-600 private file outside repositories and setup-synced evidence; never prepopulate historical servers or print those details. This prepares a concrete later live-grant request; it authorizes no live operation or publication.
 
 For PR description use Justin's plain style, not unnecessary template checklists. Lead with the problem and resulting behavior; explain implementation details only when useful for reviewing the change. Test Plan lists only actual verified checks on this head; distinguish non-run native/live/DB/image checks and unrelated baseline limitations. Empty PR numbers remain empty. Describe AI review as automated, never separate human approval.
 
@@ -26,3 +32,9 @@ Mark ready only when all required local reviews/gates and AC proof are complete.
 WSL SIGTERM/137/143/Killed requires earlyoom check before interpretation. All mutations, if explicitly required later, use MemoryMax=4G/MemorySwapMax=0; otherwise no mutation work in this finish role. Keep any scratch/binaries/Chrome in an owned disk folder under `/home/justin/.hermes/cache/scratch`, never shared /tmp resources or sibling DBs/worktrees.
 
 Return final status, confirmed head/base/branch, handover/draft/evidence paths, actual remaining actions, found_else and skill_lessons[{skill,lesson,evidence,enforce}]. Lessons only new/reusable/proven; enforce none or a one-line hook/test/lint/script proposal with location. Do not edit skills/memory; main saves lessons. End `MAIN SESSION: check and save these skill_lessons now.`
+
+## Handover completion continuation
+
+Main received your handback, confirmed clean unchanged19cbf79 and no earlyoom kills. Complete the missing local overall-gates attachment screenshot from existing actual qualified current-head receipts and/or the actual main acceptance-gate receipt; label it as a saved-receipt capture, preserve source-log links and truthful AC4 NOT VERIFIED status. Do not invent output or recreate a missing visual/live result. No product tests need rerunning. Inspect the new image for readability/secrets and update the local attachment inventory, handover and completion record. AC4 live image remains genuinely unavailable.
+
+For the found_else delivery wording, record the exact file/line references and its effect on approved ACs in <evidence>/follow-ups.md and the handover. Do not silently edit source or append a commit after acceptance. The already-qualified head stays fixed; if you conclude it actually prevents an approved AC or required handover requirement, report that explicitly for main to route, rather than hiding the issue. Return a concise updated handback and skill_lessons. Nothing may be posted/pushed/deployed.

@@ -1,13 +1,13 @@
 # BLIND AC AUDITOR — 86bccndx6 custom company domain
 
-DISPATCH HOLD: template only. Main must set head/base and dispatch only at the required pipeline stage. Never receive builder/reviewer/verifier summaries or receipts.
+DISPATCH AUTHORIZED. Establish all acceptance evidence independently from only the approved plan and source pins below. Never receive or inspect another role’s summaries or receipts.
 
 Role: fresh configured pipeline_auditor, Astra xhigh, fork_turns none. Source read-only. Independently prove every AC in the approved plan. Do not spawn agents or inspect other roles' evidence. You are not alone; preserve sibling work and use owned scratch.
 
 Approved plan: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6/plan-approved.md`.
 Worktree: `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`.
-Head: PENDING_AUDIT_HEAD.
-Base: PENDING_AUDIT_BASE.
+Head: 19cbf79baca1815b647266c5156a9cc5d156eb38.
+Base: 3aa979df41568c9039007f66d7f32193e66a8533.
 Your folder: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6/auditor/`.
 Output: your folder's `ac.json`.
 
