@@ -1,12 +1,12 @@
 # Custom company domain — 86bccndx6
 
-Status: AWAITING JUSTIN — review-check exit 3 after full review 2 at 24c13fd1f3908836aa2cd020eee295770913fb53. R1-1 is fixed; new R2-1 P2 blocks generated-host recovery when its alias environment variable was omitted. Exact brake: ASK JUSTIN: review-2: 1 P0-P2, no fewer than review-1's 1. Dispatch no further agent until his reply.
+Status: FIXING REVIEW 2 authorized. Justin replied "1" to continue fixing R2-1, then review and verify. Verbatim decision saved at evidence/86bccndx6/review-2/justin.json; review-check now returns REVIEW AGAIN. Fresh Astra xhigh fixer 2 dispatches from the saved fixer-2 brief at head 24c13fd1f3908836aa2cd020eee295770913fb53.
 
 ## User instruction and next action
 
 Justin requested Full pipeline, one shared plan, and an explicit "go" before implementation. His earlier model-change pause was lifted by: "ok great continue on the user story".
 
-Configured roles are Astra xhigh. Original explicit go and choices 1A–5A remain approved; this pause is the Full pipeline’s review brake, not a new plan-approval request. Reviewer 2 completed a full review of base 3aa979d through 24c13fd. One new P2 R2-1, prior P1 fixed. Main ran review-check and confirmed ASK JUSTIN; no earlyoom kills, no new skill lessons or found_else. Prepared held fixer-2 brief exists. On Justin’s answer, write review-2/justin.json with words exactly as he replied and continue true (if continuing), or his explicit accepted finding IDs as applicable; never invent a waiver. Rerun review-check and follow it. If REVIEW AGAIN, fresh fixer 2, then fresh review 3 from previous reviewed head 24c13fd for fix commits/touched areas unless the referee requests full. Only MOVE ON permits fresh verifier, then blind auditor and ac-check --reviews. AC4 remains live/not_run with no target/grant. Publication and story merges remain prohibited.
+Configured roles are Astra xhigh. Original plan go remains approved; review-2 brake is resolved by Justin’s explicit option 1 continuation. Main persisted his reply verbatim, reran referee and received REVIEW AGAIN: fix R2-1 then review fix commits. Fresh fixer 2 uses briefs/86bccndx6-custom-company-domain-fixer-2.md. After handback check earlyoom and lessons, dispatch fresh reviewer 3 on the exact fixed head, delta from reviewed head 24c13fd plus touched areas unless referee requests full. Continue review/fix until MOVE ON, then fresh verifier → blind auditor → ac-check --reviews → local handover. No live target/grant, publication or story merge authorized.
 
 ## Durable intake
 
