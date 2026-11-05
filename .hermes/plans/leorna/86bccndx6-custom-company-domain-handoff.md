@@ -1,12 +1,12 @@
 # Custom company domain — 86bccndx6
 
-Status: FIXING REVIEW 2 authorized. Justin replied "1" to continue fixing R2-1, then review and verify. Verbatim decision saved at evidence/86bccndx6/review-2/justin.json; review-check now returns REVIEW AGAIN. Fresh Astra xhigh fixer 2 dispatches from the saved fixer-2 brief at head 24c13fd1f3908836aa2cd020eee295770913fb53.
+Status: REVIEW ROUND 3 authorized at clean head 19cbf79baca1815b647266c5156a9cc5d156eb38. Fixer 2 completed R2-1; fresh Astra xhigh reviewer 3 covers delta from 24c13fd and touched areas. Docker-dependent DB/image gates remain pending after the reconnect, with Justin’s restore-Docker question outstanding. AC4 live remains unrun.
 
 ## User instruction and next action
 
 Justin requested Full pipeline, one shared plan, and an explicit "go" before implementation. His earlier model-change pause was lifted by: "ok great continue on the user story".
 
-Configured roles are Astra xhigh. Original plan go remains approved; review-2 brake is resolved by Justin’s explicit option 1 continuation. Main persisted his reply verbatim, reran referee and received REVIEW AGAIN: fix R2-1 then review fix commits. Fresh fixer 2 uses briefs/86bccndx6-custom-company-domain-fixer-2.md. After handback check earlyoom and lessons, dispatch fresh reviewer 3 on the exact fixed head, delta from reviewed head 24c13fd plus touched areas unless referee requests full. Continue review/fix until MOVE ON, then fresh verifier → blind auditor → ac-check --reviews → local handover. No live target/grant, publication or story merge authorized.
+Configured roles are Astra xhigh. Justin’s option 1 continuation was persisted and review-check returned REVIEW AGAIN. Fixer 2 is complete at 19cbf79; no earlyoom kills or new skill lessons. Review-3 brief now has exact candidate/from/base and the missing-Docker limitation. On reviewer handback run earlyoom and lessons, then review-check. Only MOVE ON permits fresh verifier; full DB/image gates are still required and cannot be counted from no-DSN make-check success. Main’s async Docker Desktop Ubuntu integration request remains pending. Original plan go persists, no live/cloud/publication/merge grant.
 
 ## Reconnect checkpoint — fixer 2
 
@@ -80,3 +80,7 @@ Fixer report: evidence/86bccndx6/fix-1/report.json. Commit 24c13fd1f3908836aa2cd
 ## Review 2 handback — current decision
 
 Full reviewer confirms R1-1 fixed, finds R2-1 P2 at internal/installer/scaleway/domain.go:382: generated recovery checks generated discovery before repairing a missing LEORNA_GENERATED_BASE_URL alias; custom origin still works but recovery makes zero writes. Reproduction and passing broken-custom-DNS control are in review-2/recovery-probe.log. Reviewer recommendation: retain installation/tenant guards, establish trusted baseline using still-working selected custom origin, restore generated pair and verify; fixer must independently assess. AC6 not accepted despite canonical fixture pass; AC1/2/3/5 locally accepted by reviewer, AC4 live/not_run. All required gates passed or were completed through documented serial continuation after a shared lint lock; 804 DB pass events, client39UI, five capped mutations, no earlyoom kills. Main has not judged those logs or acceptance. review-2/report.json and live-handoff.json provide exact receipts and artifact/schema paths. Current artifact bindings become stale after any source fix. No live operation, publication, merge or new branch work authorized. Fresh independent verifier/auditor have not run.
+
+## Fix 2 handback
+
+Report: evidence/86bccndx6/fix-2/report.json. Clean commit 19cbf79baca1815b647266c5156a9cc5d156eb38 fixes R2-1; active selected custom binding/DNS/TLS/discovery now supplies verified recovery baseline when generated alias is missing. Canonical missing_generated_alias regression RED/GREEN; fallback/tenant controls, 13 capped mutations, restored suite, local ACs and fresh screenshots pass. Non-Docker make/client/Helm/module-add/launcher/delivery checks pass. Required DB gate is unqualified (323 pass events plus 144 missing-DSN skips); image gates unrun because Docker WSL socket absent. AC4 remains live/not_run. No new lessons/found_else, no earlyoom kills. Ready for independent delta review, not final acceptance.

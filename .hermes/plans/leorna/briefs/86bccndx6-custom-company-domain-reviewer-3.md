@@ -1,6 +1,6 @@
 # REVIEWER 3 — 86bccndx6 custom company domain
 
-DISPATCH HOLD: populate fixed HEAD from fixer 2 handback and check earlyoom/lessons first. This is a fresh DELTA review from the previous reviewed head, plus the code/behavior touched by those fixes. Main must obey any later review-check request for a full review.
+DISPATCH AUTHORIZED: fixer 2 returned ready-for-next-review at the clean candidate below. Main checked head/base and earlyoom; no kills, no new lessons. This is a fresh DELTA review from the previous reviewed head plus the code/behavior touched by its fixes.
 
 Fresh configured pipeline_reviewer, Astra xhigh, fork_turns none. Read-only product review; report findings, never fix source or spawn other agents. You are not alone; preserve sibling work/resources.
 
@@ -8,7 +8,7 @@ Worktree: /home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-c
 Branch: feat/86bccndx6-custom-company-domain
 Story base: 3aa979df41568c9039007f66d7f32193e66a8533
 Review from: 24c13fd1f3908836aa2cd020eee295770913fb53
-Candidate HEAD: PENDING_FIXER2_HEAD
+Candidate HEAD: 19cbf79baca1815b647266c5156a9cc5d156eb38
 Approved plan: /home/justin/.hermes/plans/leorna/evidence/86bccndx6/plan-approved.md
 Evidence root: /home/justin/.hermes/plans/leorna/evidence/86bccndx6
 Your own outputs: <evidence>/review-3/ and owned disk scratch.
@@ -23,6 +23,9 @@ Review-2 returned ASK JUSTIN because one P0–P2 remained in each round. Justin 
 Read all earlier review JSON records and reports, fix-1/report.json and fix-2/report.json/dispositions. They provide context, not independent proof. Reproduce R2-1 and the valid controls independently, assess its disposition, and review every new fix commit and the areas it touches. Check that installation/project/tenant verification, DNS/TLS readiness, redirect/public-address rules, retry/recovery and the approved AC clauses remain intact. Include test assertion and documentation changes in review. Preserve R1-1's real probe/router coverage. Do not broaden into a new whole-story review absent a concrete dependency or referee requirement; report unrelated discoveries in found_else rather than editing anything.
 
 If a finding persists, identify repeats R2-1 or R1-1 as appropriate; new_fact must be a concrete genuinely new fact of at least five words. Never relabel a repeat to bypass the brake. A rejected fixer finding needs evidence-based assessment. Main does not judge severity or correctness.
+
+
+Fixer 2 handback: <evidence>/fix-2/report.json. R2-1 reported fixed with canonical missing_generated_alias RED/GREEN, fallback-guard and tenant-mismatch controls, 13 capped killed mutations, restored controls and refreshed AC1/2/3/5/6 screenshots. Treat these as context, not proof. Non-Docker gates passed. IMPORTANT environment limitation after the reconnect: Docker WSL integration is unavailable, /var/run/docker.sock absent, including escalated fixture attempts. The fixer's make check exited 0 without DB coverage; its JSON has 144 missing-DSN skips (not acceptable DB evidence). Image build/scanner/Trivy are also pending. Main asked Justin to restore Docker Desktop Ubuntu integration; no response yet. Recheck availability, perform all independent review/checks possible, and report these gates honestly if still unavailable. A missing environment is not itself a product finding or permission to waive required gates. Review the repair while independent work remains possible; do not claim final acceptance. AC4 is separately live/not_run with no target/grant.
 
 ## Mandatory actual reads
 
