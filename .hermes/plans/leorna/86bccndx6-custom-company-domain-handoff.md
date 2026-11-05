@@ -1,12 +1,12 @@
 # Custom company domain — 86bccndx6
 
-Status: FIXING review round 1. Fresh Astra xhigh pipeline_fixer /root/custom_domain_fixer_1 is running from briefs/86bccndx6-custom-company-domain-fixer-1.md on reviewed head 6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a. review-check.sh returned REVIEW AGAIN for one P1, R1-1. No publication, story merge or live cloud operation authorized.
+Status: FULL REVIEW ROUND 2 dispatch authorized at clean head 24c13fd1f3908836aa2cd020eee295770913fb53. Fixer 1 reports R1-1 fixed, full local gates passed and AC4 live/not_run. Fresh Astra xhigh reviewer uses briefs/86bccndx6-custom-company-domain-reviewer-2.md. No publication, story merge or live cloud operation authorized.
 
 ## User instruction and next action
 
 Justin requested Full pipeline, one shared plan, and an explicit "go" before implementation. His earlier model-change pause was lifted by: "ok great continue on the user story".
 
-Configured file and pipeline tool declarations both specify gpt-6-astra at xhigh. Planner completed the one shared plan; main checked AC1–AC6, live marker AC4, questions, Docs and records, required-skill receipts and current worktree ownership. No earlyoom kills. Builder and reviewer 1 handbacks are complete. Fixer 1 is running for R1-1; next dispatch fresh FULL reviewer 2 on its committed head with all earlier records, then obey review-check. REVIEW AGAIN means fresh fixer then fresh full reviewer 2; MOVE ON means fresh verifier then blind auditor and ac-check --reviews; ASK JUSTIN means record his decision. Do not judge findings or gates yourself. Live permissions remain unspecified; Docker works and local builder gates passed. AC4 live resources remain unprovided. Do not ask for plan go again.
+Configured file and role tools specify gpt-6-astra at xhigh. One shared plan approved by explicit go, choices 1A–5A and AC1–AC6. Builder, full reviewer 1 and fixer 1 have returned. Fixer reports actual router/probe regression RED/GREEN, three capped mutations and full local checks passed at 24c13fd. Main checked clean git metadata and no earlyoom kills; saved the proven module-add serialization lesson in Leorna. Next: fresh FULL reviewer 2 across base 3aa979d to 24c13fd, then main runs review-check. Obey REVIEW AGAIN / MOVE ON / ASK JUSTIN; do not judge findings. MOVE ON permits fresh verifier then blind auditor then ac-check --reviews. Live AC4 target/grants are still absent. Docker works. Do not ask for plan go again.
 
 ## Durable intake
 
@@ -31,7 +31,7 @@ Final builder head `6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a`; full handback `ev
 
 Verified from builder/preflight.md and git metadata: worktree `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`, branch `feat/86bccndx6-custom-company-domain`, base `3aa979df41568c9039007f66d7f32193e66a8533`. Shared main fast-forwarded to that upstream base only; no story merge. First commit `97588ba` adds hostname validation/readiness probes; later implementation remains in progress and is not yet reviewed/accepted. Builder scratch `/home/justin/.hermes/cache/scratch/86bccndx6-builder-SbV1af`. Preflight records required skill reads and Docker unavailable; no DB/image gate passed. Main asked Justin asynchronously to enable Docker Desktop Ubuntu WSL integration. Builder checkpoint later confirms docker info succeeds with Docker Desktop 29.0.1; that setup request is resolved. Independent implementation and full DB/image gates continue. No live target/grant. Latest builder checkpoint at head a56d171 reports focused RED/GREEN/race and first-slice regressions passed (without DSN, not DB proof), with canonical/browser/client/mutation/full gates continuing. Main has not independently judged tests.
 
-Reviewer-1 brief is populated and running; verifier, auditor and finisher briefs remain dispatch-held templates with head/base placeholders. Fill exact candidate and required gate status before dispatch. Never launch auditor with earlier reports/context.
+Reviewer-2 brief is populated for the new head; verifier, auditor and finisher briefs remain dispatch-held templates with head/base placeholders. Fill exact candidate and required gate status before dispatch. Never launch auditor with earlier reports/context.
 
 ## Planner result
 
@@ -67,4 +67,8 @@ After resumption, sync pull first encountered a concurrent lock; after the lock 
 
 ## Persistent boundaries
 
-Keep ClickUp read-only. Never merge into main. No project push, PR creation or evidence posting without explicit request. No .github/workflows changes without explicit permission. No live provisioning/DNS/TLS changes before the concrete approved live scope is established. No secret/token or real test-server URL in chat, PRs or ClickUp. Only Justin's approved servers. Model change is confirmed; explicit plan go remains separately required.
+Keep ClickUp read-only. Never merge into main. No project push, PR creation or evidence posting without explicit request. No .github/workflows changes without explicit permission. No live provisioning/DNS/TLS changes before the concrete approved live scope is established. No secret/token or real test-server URL in chat, PRs or ClickUp. Only Justin's approved servers. Model change and explicit plan go are confirmed; no additional build approval is required.
+
+## Fix 1 completion
+
+Fixer report: evidence/86bccndx6/fix-1/report.json. Commit 24c13fd1f3908836aa2cd020eee295770913fb53 changes TLS readiness to /.well-known/leorna and adds real probe/router tests while retaining strict redirect/trust/discovery guards. No plan amendment reported. Five touched files; worktree clean. Full required local gates passed, 804 DB pass events, 39 client UI tests, three capped mutations, current-head AC screenshots. AC4 remains not_run. Module-add temporarily changes go.work: its gate must run serially with make/image checks or isolated; learned after concurrent receipts needed clean reruns. Skill lesson saved, enforce none; found_else empty. Reviewer 2 must independently verify the entire story and fix.

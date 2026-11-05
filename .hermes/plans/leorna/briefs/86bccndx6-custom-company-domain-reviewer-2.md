@@ -1,6 +1,6 @@
 # REVIEWER 2 — 86bccndx6 custom company domain
 
-DISPATCH HOLD: wait for fixer handback and actual head. Round 2 is a fresh FULL review of the whole story, not only the fix. Main must replace PENDING_FIXER_HEAD before dispatch.
+DISPATCH AUTHORIZED: fixer 1 completed; Round 2 is a fresh FULL review of the whole story. Head and merge-base were verified by main before dispatch.
 
 ## Role, candidate and scope
 
@@ -9,7 +9,7 @@ Fresh configured pipeline_reviewer, Astra xhigh, fork_turns none. Round 2 FULL r
 Repo/worktree: `/home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bccndx6-custom-company-domain`.
 Branch: `feat/86bccndx6-custom-company-domain`.
 Base: `3aa979df41568c9039007f66d7f32193e66a8533` (merge-base with origin/main confirmed at dispatch).
-Reviewed HEAD: PENDING_FIXER_HEAD.
+Reviewed HEAD: 24c13fd1f3908836aa2cd020eee295770913fb53.
 Approved plan: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6/plan-approved.md`.
 Evidence: `/home/justin/.hermes/plans/leorna/evidence/86bccndx6`.
 Your report/probes/receipts only: `<evidence>/review-2/` and your owned scratch.
@@ -20,7 +20,7 @@ Justin approved all recommended plan choices and AC1–AC6. Scope is installer-o
 
 ## Previous review and fix
 
-Read `<evidence>/review-1/review.json`, report.json and the fixer's handback/dispositions in `<evidence>/fix-1/` once main supplies the actual paths. Previous reviewed head was 6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a. R1-1 was P1: the real TLS probe rejected the actual control-plane root's normal 303 redirect, blocking activation/resume; canonical fixtures stubbed the probe. Independently rerun its actual reproduction and controls using the report's exact file list, then review the whole base-to-new-head story. Verify strict discovery redirects and DNS/TLS/project/network/tenant guards remain correct. Review assertion and plan-interpretation changes, not just the repair's passing summary.
+Read `<evidence>/review-1/review.json`, report.json and the fixer's handback/disposition at `<evidence>/fix-1/report.json`. Fixer reports R1-1 fixed by commit 24c13fd, with actual router/probe RED/GREEN coverage, three capped mutation controls, and full serialized local gates passed. Treat this as context, not independent proof. Previous reviewed head was 6125c7e4da64bafbe2f8d1ec413abb8a553f8f5a. R1-1 was P1: the real TLS probe rejected the actual control-plane root's normal 303 redirect, blocking activation/resume; canonical fixtures stubbed the probe. Independently rerun its actual reproduction and controls using the report's exact file list, then review the whole base-to-new-head story. Verify strict discovery redirects and DNS/TLS/project/network/tenant guards remain correct. Review assertion and plan-interpretation changes, not just the repair's passing summary.
 
 If the same defect persists, mark repeats R1-1; new_fact must be a concrete genuinely new fact with at least five words. Do not relabel old findings to evade the loop brake. Assess rejected fixer dispositions with evidence. New full-story defects remain in scope for this second Full review.
 
@@ -48,7 +48,7 @@ Return required-skill read receipts. Read live source/current scoped artifacts, 
 
 Review the entire candidate diff against base, approved scope and every AC clause. Inspect test assertion changes and meaningful negative/positive controls; falsify important guards under the memory cap. Run required security/quality checks and sufficient independent tests to support findings. A missing environment is not a passing check; reproduce suspected baseline/tool issues on an isolated base if needed. Preserve exact current-head provenance and identify skipped/unavailable checks.
 
-Use the full Leorna gate discipline: actual selected CI-compatible tools; Postgres JSON test-level skip accounting; own `_test` database; no sibling DB resets; own scratch/Chrome profiles; unchanged-client actual resolver where applicable. Do not run an unbounded full mutation suite. WSL mutation commands always use `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`. SIGTERM, 137/143 or Killed: inspect earlyoom before calling it a test failure/mutant kill; report any runaway and rerun under cap. Keep large TMPDIR/Go/Chrome/binaries in owned disk scratch under `/home/justin/.hermes/cache/scratch`, not RAM-backed /tmp.
+Run scripts/test-module-add.sh serially with make/image gates: it temporarily mutates go.work and adds a broken module. Use the full Leorna gate discipline: actual selected CI-compatible tools; Postgres JSON test-level skip accounting; own `_test` database; no sibling DB resets; own scratch/Chrome profiles; unchanged-client actual resolver where applicable. Do not run an unbounded full mutation suite. WSL mutation commands always use `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`. SIGTERM, 137/143 or Killed: inspect earlyoom before calling it a test failure/mutant kill; report any runaway and rerun under cap. Keep large TMPDIR/Go/Chrome/binaries in owned disk scratch under `/home/justin/.hermes/cache/scratch`, not RAM-backed /tmp.
 
 ## Severity and machine-readable record
 

@@ -3,6 +3,9 @@
 Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/chrome.ts`). Never log in, never write.
 
 ## Access
+- To find which range of a saved live capture read a check page without loading the site: a check shows another body
+  font in `web.code.context[<range>]`, reads in milliseconds in `web.timings["code <range>"]`, and gets the "N boxes of
+  the design width's page weren't found" note (bdryswi 1024: Helvetica Neue, 31 ms, 887 missing; web-capture-steady).
 - bdryswi.com's served home of 2026-10-29 and its two `_jb_static` CSS bundles are saved offline
   (`~/.hermes/plans/figma-to-bricks/evidence/web-code-proof/planner/inputs/bdry-2026-10-29/`): served from files with
   scripts dropped and Google's Roboto added, they redraw the site (x and width equal to the 11-04 capture at 45 widths).
