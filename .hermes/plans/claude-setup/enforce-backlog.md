@@ -152,3 +152,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-06 | elementor-route | feature-dispatch | Claude Code PreToolUse hook on Agent: warn when a brief for a read-only role (researcher, reviewer, verifier, auditor) asks the agent to write a .md report file instead of returning it | offered
 - 2026-11-06 | elementor-map | figma-to-bricks | test: each native Bricks element the site route emits gets a browser test rendering it with Bricks' element CSS plus site-reset, checking its closed/hidden state | offered
 - 2026-11-06 | elementor-map | figma-to-bricks | test: for every class a state/open-look selector names, every element carrying it sits at one relative place in the items (pattern in test/unit/site-elementor-widgets.test.ts) | offered
+- 2026-11-06 | 86bccndx6 | leorna | script: native acceptance command wrapper checks child exit and expected JSON shape before writing a success receipt. | offered
