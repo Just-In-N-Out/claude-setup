@@ -19,6 +19,17 @@ Read actual /home/justin/.claude/CLAUDE.md, /home/justin/.codex/AGENTS.md and ap
 
 ## Finish work
 
+Parent paired acceptance gate has now actually returned exit0 on0027786:
+```
+AC1  ACCEPTED
+AC2  ACCEPTED
+AC3  ACCEPTED
+AC4  ACCEPTED
+REVIEWS  CLEAN: review-4 at 0027786 is clean
+ALL ACCEPTED: 4 of 4 ACs on 0027786
+```
+Receipt: evidence root/ac-check-attempt-2.txt. No live AC is owed. Blind auditor2 reported no unresolved product findings and no skill lessons; it retained /home/justin/.hermes/cache/scratch/927ya2-M5JXwX. Verifier2 retained evidence root/acceptance-2/verifier/scratch-GY6yGH. Do not remove these.
+
 Current acceptance attempt is acceptance-2/: read acceptance-2/verifier/ac.json and acceptance-2/auditor/ac.json plus their structured reports and parent ac-check-attempt-2.txt. Original top-level verifier/ and auditor/ are historical attempt1 on1f8562a, where namedAC4 lacked a required assertion. Fixer4 repaired that test in0027786 and review4 independently covers the delta. Preserve the historical failure and reconcile it against current accepted-head evidence; never treat the earlier clean verifier alone as current acceptance. Dispatch is still conditional on the actual parent paired gate accepting0027786.
 
 
