@@ -89,7 +89,7 @@ tell application "Terminal"
 end tell
 ```
 
-Retain the returned tab/window handle. Read `custom title` and `busy` from **that exact target**, then use fresh process discovery to verify one intended artifact process. Never use whichever Terminal window happens to be frontmost. If the call times out, reconcile its actual effect before retrying; do not start another copy merely because no handle returned.
+Retain the returned tab/window handle. Read `custom title` and `busy` from **that exact target**, then use fresh process discovery to verify one intended artifact process. Never use whichever Terminal window happens to be frontmost. If the call times out, reconcile its actual effect before retrying; do not start another copy merely because no handle returned. For desktop previews started through execution tools, retain a managed foreground supervisor/session through the walkthrough and verify the rendered window; save its session ID with the process/window handles. Brief child liveness alone does not establish persistent startup.
 
 Keep these claims separate:
 
