@@ -150,3 +150,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-04 | web-code-page | figma-to-bricks | test: no web.code node declares the capture's freeze values unless the fixture's CSS does, and a script-restyled element keeps its stylesheet's values | covered by web-code-page AC1 (in the job itself)
 - 2026-11-05 | 86bccndx6 | leorna | script: gate preflight checks Docker/Buildx configuration paths are inside role-owned scratch before Docker or Trivy execution. | offered
 - 2026-11-06 | elementor-route | feature-dispatch | Claude Code PreToolUse hook on Agent: warn when a brief for a read-only role (researcher, reviewer, verifier, auditor) asks the agent to write a .md report file instead of returning it | offered
+- 2026-11-06 | elementor-map | figma-to-bricks | test: each native Bricks element the site route emits gets a browser test rendering it with Bricks' element CSS plus site-reset, checking its closed/hidden state | offered
