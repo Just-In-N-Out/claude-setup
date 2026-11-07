@@ -91,8 +91,19 @@ uses `--connect-timeout 0.3`; search uses `-m 0.8`, save and reconcile `-m 10`. 
 **Spaces** (Q2). `slug(memdir)`: take the realpath of the memory folder's parent key (desktop keys are links to Mac keys, so
 `-home-justin-Leorna-leorna-control-plane` → `-Users-justin-Leorna-leorna-client`), strip a leading `-(Users|home)-<user>-`,
 lowercase, keep `[a-z0-9-]`, cut to 60 characters. The home folder key (`-home-justin`, `-Users-justin`) maps to `claude-shared`,
-any other key to `claude-<slug>`. For a search, the project space comes from the payload's `.cwd`: key = cwd with every
-non-alphanumeric character turned into `-`. When `~/.claude/projects/<key>/memory` doesn't exist, only `claude-shared` is queried.
+any other key to `claude-<slug>`. **For a search, the project space is the first of these that exists** (amended 2026-11-07
+(R1-2/R2-1), awaiting go; Claude Code keeps one memory folder per git repo, shared by its subfolders and linked worktrees, and a
+session's cwd moves into them):
+1. The cwd's own `~/.claude/projects/<key>/memory`, where key = the payload's `.cwd` with every non-alphanumeric character turned into `-`.
+2. Else the nearest parent folder's, but only within the cwd's git repository: the cwd's parent folders up to and including the
+   top of its work tree (`git -C <cwd> rev-parse --show-toplevel`), then, for a linked worktree, its main repo's top folder (the
+   parent of `git -C <cwd> rev-parse --path-format=absolute --git-common-dir` when that folder is named `.git`; a bare main repo,
+   such as `~/.claude-setup.git`, adds none). Never a folder above that, so `~/Leorna/cortexos` (its own repo, no memory folder)
+   never takes `~/Leorna`'s. A cwd outside any git repository, or one where git fails, skips this step, and git runs only when
+   step 1 finds nothing. A parent whose memory is the home folder's counts as none.
+3. Else the session's own project folder's: the memory folder beside `transcript_path` (in its `dirname`), unless that is the
+   home folder's.
+4. Else none: only `claude-shared` is queried. When the project space is `claude-shared` (step 1 on the home folder), it is queried once.
 
 **search** (`UserPromptSubmit`, timeout 3 s; the script caps itself at about 1 s):
 - Skip a prompt that starts with `/` or `!`, or has fewer than 3 words.
@@ -166,10 +177,18 @@ a delay or a status from a control file. A `curl` shim on `PATH` logs argv and t
   `UserPromptSubmit` additionalContext starts with the exact label line and lists the 0.62 note and then the 0.41 note, once
   each. The 0.12 note is absent. With 9 results above the floor it lists 5. A 1000-character snippet appears cut to 400, and
   the whole block is at most 2000 characters. Test: `ac1_search_formats_capped_labelled_context`.
-- **AC2 (proposed):** Given a cwd whose memory folder is a link to `-Users-justin-Leorna-leorna-client`, `search` sends exactly
-  two `POST /v1/query`, one to `claude-leorna-leorna-client` and one to `claude-shared`. Both have `tenant_id` `leorna`,
-  `filters.metadata.source` `claude-setup`, `X-API-Key: cx-test-key-0000` and `X-Betwixt-Channel: desktop`. A cwd with no
-  memory folder sends only the `claude-shared` request. Test: `ac2_search_request_scope_and_headers`.
+- **AC2 (proposed; amended 2026-11-07 (R1-2/R2-1), awaiting go):** Given a cwd whose memory folder is a link to
+  `-Users-justin-Leorna-leorna-client`, `search` sends exactly two `POST /v1/query`, one to `claude-leorna-leorna-client` and one
+  to `claude-shared`. Both have `tenant_id` `leorna`, `filters.metadata.source` `claude-setup`, `X-API-Key: cx-test-key-0000` and
+  `X-Betwixt-Channel: desktop`. The project space follows the Design's four-step space rule, with real git repositories and
+  worktrees as the fixtures: (1) a cwd with its own memory folder uses it, even when the session's folder is another project's;
+  (2) a subfolder of a repo, a linked worktree inside the repo and a linked worktree outside it all use the repo's (the main
+  repo's) memory folder, while a repo with no memory folder nested in a folder that has one (a non-repo folder, as
+  `~/Leorna/cortexos` in `~/Leorna`, or an outer repo), and a non-repo subfolder of such a folder, never use that folder;
+  (3) failing both, the session's own project folder (the one holding `transcript_path`) is used when it has a memory folder and
+  isn't the home folder's; (4) otherwise only the `claude-shared` request is sent, e.g. for `~/Leorna/cortexos` in a session
+  started in the home folder. A cwd whose space is `claude-shared` (the home folder's memory) sends that one request once.
+  Tests: `ac2_search_request_scope_and_headers`, `search_space_from_subfolder_worktree_or_session`.
 - **AC3 (proposed, Q1=a):** For a prompt that contains the words "please", "the", a token `sk-abc123def456ghi789jkl` and
   repeated words, every request's `query` equals the keyword jq's output: at most 16 words and 200 characters, no stopwords,
   no secret-shaped token, no duplicates. The prompt's full text appears in no request body. Test: `ac3_search_sends_keywords_not_prompt`.
