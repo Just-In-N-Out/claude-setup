@@ -154,3 +154,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-06 | elementor-map | figma-to-bricks | test: for every class a state/open-look selector names, every element carrying it sits at one relative place in the items (pattern in test/unit/site-elementor-widgets.test.ts) | offered
 - 2026-11-06 | 86bccndx6 | leorna | script: native acceptance command wrapper checks child exit and expected JSON shape before writing a success receipt. | offered
 - 2026-11-06 | elementor-map | figma-to-bricks | script: site:check notes every paste img that ends complete && naturalWidth === 0 at each width (and the per-section table prints it), so a broken picture can't pass for a layout delta | offered
+- 2026-11-06 | web-code-page | figma-to-bricks | test: a fixture svg painted only by page CSS, comparing every svg part's computed fill/stroke on the site page and the drawn paste (capture-code-page or a site-page check) | offered
+- 2026-11-06 | web-code-page | figma-to-bricks | test: in test/web/lib/site-check.ts, assert each drawn #brxe-<id>'s parent element is the one the payload names | offered
