@@ -148,7 +148,7 @@ Codex CLI, signed in with ChatGPT, uses this same setup on both machines: the sa
 
 | Message | Fix |
 |---|---|
-| `CONFLICT` | Both machines changed one file, or a file from GitHub already exists here untracked. Merge by hand, keeping both meanings, or move the untracked file aside. Then `sync.sh` again. |
+| `CONFLICT` | Both machines changed one file, or a file from GitHub already exists here untracked. Merge by hand, keeping both meanings, or move the untracked file aside. Then `sync.sh` again. When the conflict is your own unpushed edit (`sync.sh` aborts the rebase, so nothing is half-merged): copy your edit aside, drop the local commit with `reset --soft HEAD~1`, restore that file, run `sync.sh pull`, re-apply the edit on top of GitHub's version, then `sync.sh` (2026-11-07). `sync.sh pull` commits local changes too, deletions included, before rebasing: check `git --git-dir=$HOME/.claude-setup.git show --stat HEAD` before the next `sync.sh` pushes them. |
 | `gitleaks found what looks like a secret` | Remove the secret from the file. For a *proven* false positive, add a narrow allowlist to `~/.claude/setup/gitleaks.toml`. Nothing was committed. |
 | `another sync is running` | Wait a minute. A lock older than 10 minutes is cleared automatically. |
 | `push to GitHub failed` | `gh auth status` must list **Just-In-N-Out**, and `gh auth token --user Just-In-N-Out` must print a token. If it doesn't, ask Justin to sign that account in again (`desktop.md`, step 5). Don't switch accounts yourself. |
