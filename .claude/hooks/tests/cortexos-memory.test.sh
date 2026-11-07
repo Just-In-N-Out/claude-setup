@@ -852,8 +852,10 @@ EOF
 ac15_live_round_trip_and_calibration() {
   # Live (Justin runs it: auto mode refuses agent writes to CortexOS). Writes only seed notes in space claude-setup-test
   # through the real script, then deletes everything it made.
-  local envf="$REAL_HOME/Leorna/cortexos/.env" url=http://127.0.0.1:8080 key i name t0 ms_one ok_p=0 hit_u=0 left
+  local i n name t0 ms_one ok_p=0 hit_u=0 left made
   local -a NOTES PARA UNREL PSCORE USCORE
+  # not local: the EXIT-trap cleanup runs after this function has returned
+  envf="$REAL_HOME/Leorna/cortexos/.env"; url=http://127.0.0.1:8080
   [ -r "$envf" ] || fail "live: no key file $envf" || return 1
   key=$(sed -n 's/^CORTEXOS_API_KEY=//p' "$envf" | tail -n 1 | tr -d '\r"'"'")
   [ -n "$key" ] || fail "live: no CORTEXOS_API_KEY line in $envf" || return 1
@@ -892,7 +894,9 @@ ac15_live_round_trip_and_calibration() {
         "merge|how do I land completed changes into the trunk?")
   UNREL=("what is a good recipe for banana bread" "who won the football match last night" "translate good morning into spanish"
          "recommend a science fiction novel to read on holiday" "how tall is mount everest in meters")
-  words() { tr 'A-Z' 'a-z' <<<"$1" | grep -oE '[a-z0-9][a-z0-9_.-]*[a-z0-9]' | awk 'length >= 3' | sort -u; }
+  # the plan's stopword list: a paraphrase shares no word of 3+ letters with its note, stopwords aside
+  STOPS=" the and for are but not you your can could would should will with this that these those what which when where why how who have has had was were been from into about just please also then than there here they them their our out let lets make need want like some any all get got its does did done very more only now use using yes okay thanks "
+  words() { tr 'A-Z' 'a-z' <<<"$1" | grep -oE '[a-z0-9][a-z0-9_.-]*[a-z0-9]' | awk -v s="$STOPS" 'length >= 3 && index(s, " " $0 " ") == 0' | sort -u; }
   for i in "${!PARA[@]}"; do   # a paraphrase shares no 3-letter word with its note
     name=${PARA[$i]%%|*}
     for n in "${NOTES[@]}"; do [ "${n%%|*}" = "$name" ] && break; done
@@ -944,10 +948,11 @@ ac15_live_round_trip_and_calibration() {
   t0=$(date +%s%N); live search "$(prompt_payload "${PARA[0]#*|}")"; ms_one=$((($(date +%s%N) - t0) / 1000000))
   echo "# (4) one real search: $ms_one ms"
   # (5) delete everything
+  made=$(jq -r '.[] | .ids[]' "$STATE/objects.json" 2>/dev/null)
   trap - EXIT; cleanup
   left=$(api GET "/v1/objects?tenant_id=leorna&space_id=claude-setup-test&limit=200" | sed '$d' | jq '.items | length')
-  echo "# (5) after cleanup: claude-setup-test lists $left objects; state: $(cat "$STATE/objects.json")"
-  for i in $(jq -r '.[] | .ids[]' "$STATE/objects.json" 2>/dev/null); do
+  echo "# (5) after cleanup: claude-setup-test lists $left objects; state: $(cat "$STATE/objects.json"); $(grep -c . <<<"$made") ids checked for 404"
+  for i in $made; do
     [ "$(api GET "/v1/objects/$i?tenant_id=leorna&space_id=claude-setup-test" | tail -1)" = 404 ] || fail "live: $i still exists" || return 1
   done
   [ "$ok_p" -ge 4 ] || fail "live: only $ok_p of 5 paraphrases found their note at the shipped floor" || return 1
