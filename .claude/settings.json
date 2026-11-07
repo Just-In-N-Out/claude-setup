@@ -15,6 +15,17 @@
             "statusMessage": "Pulling setup files from GitHub"
           }
         ]
+      },
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cortexos-memory.sh reconcile",
+            "async": true,
+            "timeout": 600
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -26,6 +37,17 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "^(Write|Edit)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cortexos-memory.sh save",
+            "async": true,
+            "timeout": 30
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -35,6 +57,15 @@
             "type": "command",
             "command": "~/.claude/hooks/skill-review-nudge.sh",
             "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cortexos-memory.sh search",
+            "timeout": 3
           }
         ]
       }

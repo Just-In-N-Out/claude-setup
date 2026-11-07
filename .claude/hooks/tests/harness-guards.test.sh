@@ -2,8 +2,8 @@
 # Acceptance tests for story harness-guards (~/.hermes/plans/claude-setup/harness-guards.md).
 #   bash harness-guards.test.sh                    every offline test (ac1-ac18, ac20)
 #   bash harness-guards.test.sh <test> [<test>…]   just those, numbered TAP: "ok 1 - <test>"
-# ac19 runs the other suites (and this file's offline run), and the live tests (ac21, ac22) check a
-# real machine after the finish: they run only when named.
+# ac19 runs the other suites (and this file's offline run), ac20b is the harness-guards story's equal-to-base pin
+# of settings.json, and the live tests (ac21, ac22) check a real machine after the finish: they run only when named.
 # Everything under test comes from this file's own checkout (the harness-guards worktree, or $HOME
 # once merged), never from the live ~/.claude, ~/.hermes or the real global git config.
 # - Hook tests feed JSON to the checkout's scripts with HOME = a fake home.
@@ -1200,7 +1200,7 @@ ac19_existing_suites_pass() {
 }
 
 ac20_settings_register_guards() {
-  local base cur strip cmd mode f n=0
+  local cur cmd mode f n=0
   need "$GG" && need "$OG" || return 1
   cur="$SRC/.claude/settings.json"
   jq -e . "$cur" >/dev/null || fail "settings.json is not valid JSON" || return 1
@@ -1215,12 +1215,6 @@ ac20_settings_register_guards() {
          | ($g | length) == 1 and ($g[0].hooks | length) == 1
            and $g[0].hooks[0].command == "~/.claude/hooks/subagent-handback-gate.sh"' "$cur" >/dev/null \
     || fail "the SubagentHandback group is not alone with its one gate" || return 1
-  base=$(srcgit merge-base HEAD main 2>/dev/null || srcgit merge-base HEAD origin/main) || fail "no base commit" || return 1
-  strip='del(.hooks.PreToolUse[] | select(any(.hooks[]; .command == "~/.claude/hooks/git-guard.sh"
-           or .command == "~/.claude/hooks/orchestrator-guard.sh")))'
-  [ "$(jq -S "$strip" "$cur")" = "$(srcgit show "$base:.claude/settings.json" | jq -S "$strip")" ] \
-    || fail "settings.json changed more than the two guard groups (base $base)" || return 1
-  echo "# settings.json: two guard groups added, everything else equal to base $base"
   while read -r mode _ _ f; do
     n=$((n + 1)); [ "$mode" = 100755 ] || fail "$f is mode $mode in git" || return 1
   done < <(srcgit ls-files -s -- .claude/hooks/git-guard.sh .claude/hooks/orchestrator-guard.sh)
@@ -1235,6 +1229,19 @@ ac20_settings_register_guards() {
         tool_input: {file_path: $p, old_string: "a", new_string: "b"}}' | HOME="$H" "${cmd/#\~/$SRC}"); rc=$?
   check ask 'only orchestrates' "registered $cmd: main-session repo edit" || return 1
   done_ok
+}
+
+ac20b_settings_equal_to_base() {
+  # Story-time pin (harness-guards): settings.json equals its base except for the two guard groups. Any later story
+  # that adds settings.json groups fails it, so it runs only when named (split out of ac20 in cortexos-memory-hook).
+  local base cur strip
+  cur="$SRC/.claude/settings.json"
+  base=$(srcgit merge-base HEAD main 2>/dev/null || srcgit merge-base HEAD origin/main) || fail "no base commit" || return 1
+  strip='del(.hooks.PreToolUse[] | select(any(.hooks[]; .command == "~/.claude/hooks/git-guard.sh"
+           or .command == "~/.claude/hooks/orchestrator-guard.sh")))'
+  [ "$(jq -S "$strip" "$cur")" = "$(srcgit show "$base:.claude/settings.json" | jq -S "$strip")" ] \
+    || fail "settings.json changed more than the two guard groups (base $base)" || return 1
+  echo "# settings.json: two guard groups added, everything else equal to base $base"
 }
 
 ac21_desktop_live_smoke() {
