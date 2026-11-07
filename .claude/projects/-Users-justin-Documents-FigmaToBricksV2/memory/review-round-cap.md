@@ -28,3 +28,5 @@ other projects keep the global no-cap loop. Also written into the project CLAUDE
 [[website-importer-paused]].
 
 **Tightened 2026-11-02 (website importer):** "again focus on building and not too much of edge cases that will lead us nowhere" (after "we have worked a lot on it and … got nowhere"). Now: **one** fresh review per job, briefed to report only bugs a real site or normal use would hit (P0/P1, and P2 that breaks a real page); edge cases go straight to `follow-ups.md` as P3. A second review only to check the fix of a major bug from the first. ACs still accepted by verifier + auditor + `ac-check.sh` before merge. Same shape as [[designer-feedback-mini]].
+
+**Past the cap for a real P2 (2026-11-07, elementor-map):** when the last allowed review finds a P2 that breaks normal use (two importer pastes' classes clashing on one site), ask him; he chose "Fix it, one short review" over "Merge as is, note the limit". So: a real P2 at the cap gets one extra review of only its fix, asked first, not skipped.
