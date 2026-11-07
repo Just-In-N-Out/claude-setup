@@ -177,7 +177,7 @@ a delay or a status from a control file. A `curl` shim on `PATH` logs argv and t
   `UserPromptSubmit` additionalContext starts with the exact label line and lists the 0.62 note and then the 0.41 note, once
   each. The 0.12 note is absent. With 9 results above the floor it lists 5. A 1000-character snippet appears cut to 400, and
   the whole block is at most 2000 characters. Test: `ac1_search_formats_capped_labelled_context`.
-- **AC2 (proposed; amended 2026-11-07 (R1-2/R2-1), awaiting go):** Given a cwd whose memory folder is a link to
+- **AC2 (proposed; amended 2026-11-07 (R1-2/R2-1), approved by Justin ("go", 2026-11-07)):** Given a cwd whose memory folder is a link to
   `-Users-justin-Leorna-leorna-client`, `search` sends exactly two `POST /v1/query`, one to `claude-leorna-leorna-client` and one
   to `claude-shared`. Both have `tenant_id` `leorna`, `filters.metadata.source` `claude-setup`, `X-API-Key: cx-test-key-0000` and
   `X-Betwixt-Channel: desktop`. The project space follows the Design's four-step space rule, with real git repositories and
@@ -305,3 +305,4 @@ to Justin unless AC15 ran. The finish follows "Worktrees from `claude -w`", appl
 - Q4: AC15 is (live): Justin runs `! bash <worktree>/.claude/hooks/tests/cortexos-memory.test.sh --live` himself; the builder ships the 0.30 floor. No allow rule is added.
 - Q5: Mac-pulled lessons via commit diffs are a follow-up.
 - All proposed ACs AC1–AC16 approved, AC15 and AC16 (live).
+- 2026-11-07: "go" on the amended AC2 and Design space rule (R1-2/R2-1); AC3 unchanged.
