@@ -96,14 +96,14 @@ search() {
 
   # The project space. Claude Code keeps one memory folder per repo, shared by its subfolders and worktrees, and the
   # session's cwd moves into them: take the cwd's own memory folder (key = cwd with every non-alphanumeric character
-  # turned into -), else the nearest parent folder's that is a project's (the home folder's is claude-shared), else
-  # the session's own project folder's (the folder that holds transcript_path), else none: only claude-shared.
+  # turned into -), else the nearest parent folder's; when that is none or the home folder's (claude-shared), the
+  # session's own project folder's (the folder that holds transcript_path); else none: only claude-shared.
   if memspace "${cwd//[^A-Za-z0-9]/-}"; then space=$mspace
   else
     p=$cwd
     while [[ $p == */?* ]]; do
       p=${p%/*}
-      memspace "${p//[^A-Za-z0-9]/-}" && [ "$mspace" != claude-shared ] && { space=$mspace; break; }
+      memspace "${p//[^A-Za-z0-9]/-}" && { space=$mspace; break; }
     done
     if [ "$space" = claude-shared ] && [[ $tpath == */*/* ]]; then
       p=${tpath%/*}; p=${p##*/}
