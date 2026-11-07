@@ -1,3 +1,4 @@
 - [Finding lost sessions](finding-lost-sessions.md) — where a "deleted" or "cloud" session usually is and how to reopen it
 - [Desktop freezes under agent load](desktop-freezes-under-agent-load.md) — 2026-11-02 PC freezes with many agents + Chrome; WSL 26/32 GB; how to diagnose
 - [Commands for Justin to run](commands-for-justin-to-run.md) — name the window (Claude `!` / Ubuntu / PowerShell); sudo as one && line
+- [No card for non-story work](no-card-for-non-story-work.md) — don't ask for a ClickUp card for setup bugs; use nocard-<slug>

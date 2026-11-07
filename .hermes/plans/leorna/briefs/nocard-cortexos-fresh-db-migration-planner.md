@@ -27,7 +27,7 @@ No existing GitHub issue covers it. Also observed (secondary, cosmetic): artifac
 the chrislusf/seaweedfs:3.80 image, so it reports unhealthy while working.
 
 ## What to deliver
-Plan file: `~/.hermes/plans/leorna/nocard-cortexos-fresh-db-migration.md` (no ClickUp card yet; Justin is creating one).
+Plan file: `~/.hermes/plans/leorna/nocard-cortexos-fresh-db-migration.md` (no ClickUp card: Justin says this is not a user story).
 - Questions at the top; playback; root cause with file:line evidence and a reproduction (how a fresh DB hits it; whether existing
   deployments with a populated `_sqlx_migrations` are affected; which commit introduced it — use git log/blame).
 - Numbered ACs AC1, AC2… marked **proposed**, one named test each; tag `(live)` any only Justin can check. Include an AC that a fresh
