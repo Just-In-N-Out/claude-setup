@@ -70,6 +70,23 @@ memspace() { # memspace <project key>: sets mspace to the space of ~/.claude/pro
   [ -n "$1" ] && [ -d "$m" ] && real=$(cd -P "$m" 2>/dev/null && pwd -P) || return 1
   mspace=$(space_of_slug "$(slug_of_key "$(basename "$(dirname "$real")")")")
 }
+repo_of() { # repo_of <cwd>: sets pc (the cwd's real path), top (the top of its git work tree) and main (for a linked
+  # worktree, its main repo's top folder: the parent of git's common dir when that is named .git; else ""). Fails outside
+  # a work tree, when git fails, or when git takes over 0.2 s: a watchdog kills it (uutils' timeout costs 100 ms a call).
+  local gp wp c
+  [[ $1 == /* ]] && command -v git >/dev/null 2>&1 && pc=$(cd -P -- "$1" 2>/dev/null && pwd -P) || return 1
+  git -C "$pc" rev-parse --path-format=absolute --show-toplevel --git-common-dir >"$tmp/git" 2>/dev/null </dev/null &
+  gp=$!
+  { sleep 0.2; kill "$gp"; } >/dev/null 2>&1 </dev/null &
+  wp=$!
+  wait "$gp" 2>/dev/null; c=$?
+  kill "$wp" 2>/dev/null
+  [ "$c" = 0 ] && { IFS= read -r top && IFS= read -r c; } <"$tmp/git" || return 1
+  [[ $top == /?* && $c == /?* && ( $pc == "$top" || $pc == "$top"/* ) ]] || return 1
+  main=
+  [[ $c == */.git && ${c%/.git} != "$top" ]] && main=${c%/.git}
+  return 0
+}
 
 search() {
   local skip cwd tpath q p mspace space=claude-shared min i n=0 allok=1 pc top main
@@ -111,17 +128,24 @@ search() {
   [ -n "$q" ] || return 0
   down_recent && return 0
 
-  # The project space. Claude Code keeps one memory folder per repo, shared by its subfolders and worktrees, and the
-  # session's cwd moves into them: take the cwd's own memory folder (key = cwd with every non-alphanumeric character
-  # turned into -), else the nearest parent folder's; when that is none or the home folder's (claude-shared), the
-  # session's own project folder's (the folder that holds transcript_path); else none: only claude-shared.
+  # The project space (the plan's four steps). Claude Code keeps one memory folder per git repo, shared by its subfolders
+  # and linked worktrees, and the session's cwd moves into them. 1. The cwd's own memory folder (key = cwd with every
+  # non-alphanumeric character turned into -). 2. Else, only within the cwd's git repository (git runs only here, bounded),
+  # the nearest of its parent folders up to the top of its work tree, then a linked worktree's main repo top folder; never
+  # a folder above that, so a repo with no memory folder (~/Leorna/cortexos) never takes its parent's (~/Leorna). A
+  # parent whose memory is the home folder's counts as none. 3. Else the session's own project folder (the one holding
+  # transcript_path), unless it is the home folder's. 4. Else none: only claude-shared.
   if memspace "${cwd//[^A-Za-z0-9]/-}"; then space=$mspace
   else
-    p=$cwd
-    while [[ $p == */?* ]]; do
-      p=${p%/*}
-      memspace "${p//[^A-Za-z0-9]/-}" && { space=$mspace; break; }
-    done
+    if repo_of "$cwd"; then
+      p=$pc
+      while [ "$p" != "$top" ]; do
+        p=${p%/*}
+        memspace "${p//[^A-Za-z0-9]/-}" && [ "$mspace" != claude-shared ] && { space=$mspace; break; }
+      done
+      [ "$space" = claude-shared ] && [ -n "$main" ] && memspace "${main//[^A-Za-z0-9]/-}" \
+        && [ "$mspace" != claude-shared ] && space=$mspace
+    fi
     if [ "$space" = claude-shared ] && [[ $tpath == */*/* ]]; then
       p=${tpath%/*}; p=${p##*/}
       memspace "${p//[^A-Za-z0-9]/-}" && space=$mspace

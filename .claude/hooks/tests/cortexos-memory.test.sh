@@ -241,6 +241,68 @@ note() { # note <file> <description> <body>: a memory note with frontmatter
     "$(basename "$1" .md)" "$2" "$3" >"$1"
 }
 
+pathkey() { printf '%s' "${1//[^A-Za-z0-9]/-}"; }          # pathkey <path>: its ~/.claude/projects key
+space_fixture() { # real git repositories and worktrees under W=$S/w, their memory folders keyed by their real paths
+  W="$S/w"
+  gq() { "$REAL_GIT" -c init.defaultBranch=main "$@" >/dev/null 2>&1 || fail "fixture: git $*"; }
+  memdir -home-justin
+  # proj/app: a repo with memory (claude-proj-app), a subfolder, a linked worktree inside it and one outside it, and a
+  # repo with no memory folder nested inside it
+  gq init "$W/proj/app" && mkdir -p "$W/proj/app/frontend/src" || return 1
+  gq -C "$W/proj/app" worktree add --orphan -b hb "$W/proj/app/.claude/worktrees/header-bar" || return 1
+  gq -C "$W/proj/app" worktree add --orphan -b out "$W/elsewhere-wt/header-bar" || return 1
+  gq init "$W/proj/app/vendor/lib" && mkdir -p "$W/proj/app/.claude/worktrees/header-bar/src" "$W/proj/app/vendor/lib/src" || return 1
+  linkdir "$(pathkey "$W/proj/app")" -home-justin-proj-app
+  # Leorna: a non-repo folder with memory (claude-leorna) that holds a repo whose memory is a link to the Mac key (with a
+  # worktree), a repo with no memory folder (as ~/Leorna/cortexos) and a plain subfolder
+  gq init "$W/Leorna/leorna-control-plane" || return 1
+  gq -C "$W/Leorna/leorna-control-plane" worktree add --orphan -b cd "$W/Leorna/leorna-control-plane/.claude/worktrees/86bcm901y" || return 1
+  linkdir "$(pathkey "$W/Leorna/leorna-control-plane")" -Users-justin-Leorna-leorna-client
+  gq init "$W/Leorna/cortexos" && mkdir -p "$W/Leorna/cortexos/src" "$W/Leorna/notes/sub" || return 1
+  linkdir "$(pathkey "$W/Leorna")" -home-justin-Leorna
+  # setup: a bare main repo (repo.git, not .git) in a folder with memory and its worktree elsewhere; the bare repo's
+  # folder and the one holding it both have memory (claude-setup), and neither may be used
+  gq init --bare "$W/setup/repo.git" || return 1
+  gq -C "$W/setup/repo.git" worktree add --orphan -b feat "$W/setup-wt/feature" || return 1
+  linkdir "$(pathkey "$W/setup")" -home-justin-setup; linkdir "$(pathkey "$W/setup/repo.git")" -home-justin-setup
+}
+space_case() { # space_case <cwd> <transcript_path> <want, sorted JSON> [VAR=value…]: one search; a miss is added to $bad
+  local got
+  reset_logs; CWD=$1; TP=$2
+  hook search "$(prompt_payload 'fix the header bar alignment on the phone menu')" GIT_CEILING_DIRECTORIES="$S" "${@:4}"
+  got=$(jq -sc '[.[].body.space_id] | sort' "$S/requests.jsonl")
+  echo "# cwd ${1#"$S"/}, transcript ${2#"$H"/}: $got"
+  [ "$got" = "$3" ] || bad+="[${1#"$S"/} | ${2#"$H"/}] $got, want $3; "
+}
+space_rule_cases() { # the Design's four-step space rule over space_fixture's folders (AC2)
+  local P="$H/.claude/projects"
+  # 1. the cwd's own memory folder, even when the session's folder is another project's
+  space_case "$W/proj/app" "$P/-home-justin-Leorna/s1.jsonl" '["claude-proj-app","claude-shared"]'
+  # 2. a parent within the cwd's git repository: a subfolder, linked worktrees inside and outside the (main) repo
+  space_case "$W/proj/app/frontend/src" /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  space_case "$W/proj/app/.claude/worktrees/header-bar" /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  space_case "$W/proj/app/.claude/worktrees/header-bar/src" /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  space_case "$W/elsewhere-wt/header-bar" /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  space_case "$W/Leorna/leorna-control-plane/.claude/worktrees/86bcm901y" /x/t.jsonl '["claude-leorna-leorna-client","claude-shared"]'
+  #    and never a folder outside it: a repo with no memory folder in a non-repo folder that has one (~/Leorna/cortexos in
+  #    ~/Leorna, in a session started in the home folder) or in an outer repo that has one, a non-repo subfolder of such
+  #    a folder, and the worktree of a bare main repo
+  space_case "$W/Leorna/cortexos" "$P/-home-justin/s1.jsonl" '["claude-shared"]'
+  space_case "$W/Leorna/cortexos/src" /x/t.jsonl '["claude-shared"]'
+  space_case "$W/proj/app/vendor/lib/src" /x/t.jsonl '["claude-shared"]'
+  space_case "$W/Leorna/notes/sub" /x/t.jsonl '["claude-shared"]'
+  space_case "$W/setup-wt/feature" /x/t.jsonl '["claude-shared"]'
+  # 3. else the session's own project folder (the one holding transcript_path), unless it is the home folder's
+  space_case "$W/Leorna/cortexos" "$P/-home-justin-proj-app/s1.jsonl" '["claude-proj-app","claude-shared"]'
+  space_case "$W/Leorna/notes/sub" "$P/-home-justin-proj-app/s1.jsonl" '["claude-proj-app","claude-shared"]'
+  space_case "$S/no/project/here" "$P/-home-justin-proj-app/s1.jsonl" '["claude-proj-app","claude-shared"]'
+  # 4. else only claude-shared, queried once
+  space_case "$S/no/project/here" "$P/-home-justin/s1.jsonl" '["claude-shared"]'
+  space_case "$S/no/project/here" /x/t.jsonl '["claude-shared"]'
+  space_case "$S/no/project/here" "$P/-home-justin-nothing/s1.jsonl" '["claude-shared"]'
+  TP=
+}
+
 # ---- payloads ----
 prompt_payload() { # prompt_payload <prompt> [agent_id]   (cwd = $CWD, transcript_path = ${TP:-/x/t.jsonl}; the prompt
   printf '%s' "$1" >"$S/prompt.txt"                     # goes through a file: argv caps one argument at 128 KB)
@@ -343,7 +405,7 @@ ac1_search_formats_capped_labelled_context() {
 }
 
 ac2_search_request_scope_and_headers() {
-  local q
+  local q bad=""
   need "$SCRIPT" || return 1
   newroot || return 1
   linkdir -home-justin-Leorna-leorna-control-plane -Users-justin-Leorna-leorna-client
@@ -378,6 +440,12 @@ ac2_search_request_scope_and_headers() {
   hook search "$(prompt_payload 'add an invoices endpoint to the control plane')"
   [ "$(count ".headers[\"x-api-key\"] == \"$KEY\"")" = 1 ] || fail "a quoted CRLF key line was not cleaned: $(cat "$S/requests.jsonl")" || return 1
   echo "# key line with quotes and CRLF: sent as the bare key"
+
+  # the Design's space rule, steps 1-4, on real git repositories and worktrees (AC2 as amended for R1-2/R2-1)
+  ctl 'del(.space_delay)'
+  space_fixture || return 1
+  space_rule_cases
+  [ -z "$bad" ] || fail "space rule: $bad" || return 1
   done_ok
 }
 
@@ -502,31 +570,41 @@ search_long_prompt_is_fast() {
 }
 
 search_space_from_subfolder_worktree_or_session() {
-  # Review round 1, R1-2: Claude Code keeps one memory folder per repo, shared by its subfolders and worktrees, and a
-  # session's cwd moves into them. The project space comes from the cwd's memory folder, else from the nearest parent
-  # folder with a project memory folder, else from the session's own project folder (the transcript's), else none.
-  local bad="" P='fix the header bar alignment on the phone menu'
+  # Review rounds 1-2, R1-2/R2-1: the project space follows the session into the subfolders and worktrees of the cwd's
+  # own git repository, and never past it. Beyond AC2's cases: git runs only when the cwd's own key has no memory folder,
+  # a slow git is cut off within its time bound (the step is skipped), and a cwd git can't use (inside .git, gone) skips it.
+  local bad="" n
   need "$SCRIPT" || return 1
   newroot || return 1
-  memdir -home-justin; memdir -home-justin-proj-app; memdir -home-justin-proj
-  linkdir -home-justin-Leorna-leorna-control-plane -Users-justin-Leorna-leorna-client
-  spaces() { # spaces <cwd> <transcript_path> <want, sorted JSON>
-    reset_logs; CWD=$1; TP=$2
-    hook search "$(prompt_payload "$P")"
-    got=$(jq -sc '[.[].body.space_id] | sort' "$S/requests.jsonl")
-    echo "# cwd $1, transcript ${2#"$H"/}: $got"
-    [ "$got" = "$3" ] || bad+="[$1 | $2] $got, want $3; "
-  }
-  spaces /home/justin/proj/app/.claude/worktrees/header-bar /x/t.jsonl '["claude-proj-app","claude-shared"]'
-  spaces /home/justin/proj/app/frontend/src /x/t.jsonl '["claude-proj-app","claude-shared"]'
-  spaces /home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bcm901y /x/t.jsonl '["claude-leorna-leorna-client","claude-shared"]'
-  spaces /home/justin/elsewhere-wt/header-bar "$H/.claude/projects/-home-justin-proj-app/s1.jsonl" '["claude-proj-app","claude-shared"]'
-  spaces /home/justin/proj /x/t.jsonl '["claude-proj","claude-shared"]'                                   # its own folder first
-  spaces /home/justin/proj "$H/.claude/projects/-home-justin-proj-app/s1.jsonl" '["claude-proj","claude-shared"]'
-  spaces /home/justin/no/project/here "$H/.claude/projects/-home-justin/s1.jsonl" '["claude-shared"]'     # home: shared, once
-  spaces /home/justin/no/project/here /x/t.jsonl '["claude-shared"]'
-  spaces /home/justin/no/project/here "$H/.claude/projects/-home-justin-nothing/s1.jsonl" '["claude-shared"]'
-  TP=
+  space_fixture || return 1
+  space_rule_cases
+  cat >"$S/bin/git" <<EOF
+#!/usr/bin/env bash
+# the git shim, first on the hook's PATH: log each call, sleep \$GIT_SHIM_SLEEP seconds first when set
+printf '%s\n' "\$*" >>"$S/git-argv.log"
+[ -n "\${GIT_SHIM_SLEEP:-}" ] && sleep "\$GIT_SHIM_SLEEP"
+exec "$REAL_GIT" "\$@"
+EOF
+  chmod +x "$S/bin/git"; : >"$S/git-argv.log"
+  space_case "$W/proj/app" /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  n=$(grep -c . "$S/git-argv.log"); echo "# git calls when the cwd's own key has memory: $n"
+  [ "$n" = 0 ] || bad+="[own folder] git ran $n times; "
+  space_case "$W/proj/app/frontend/src" /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  n=$(grep -c . "$S/git-argv.log"); echo "# git calls for a subfolder: $n"
+  [ "$n" = 1 ] || bad+="[subfolder] git ran $n times; "
+  space_case "$W/proj/app/frontend/src" /x/t.jsonl '["claude-shared"]' GIT_SHIM_SLEEP=3
+  echo "# a git that takes 3 s: the search took $ms ms"
+  [ "$ms" -lt 800 ] || bad+="[slow git] took $ms ms; "
+  space_case "$W/proj/app/.git/objects" /x/t.jsonl '["claude-shared"]'
+  ln -s "$W/proj/app" "$S/app-link"                     # a cwd through a link: the walk follows its real path to the top
+  space_case "$S/app-link/frontend/src" /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  linkdir "$(pathkey "$W/proj/app/frontend")" -home-justin   # a parent whose memory is the home folder's counts as none
+  space_case "$W/proj/app/frontend/src" /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  # GIT_DIR and GIT_WORK_TREE set in the environment: git names a work tree that does not hold the cwd, so the step is skipped
+  space_case "$W/proj/app/frontend/src" /x/t.jsonl '["claude-shared"]' GIT_DIR="$W/Leorna/cortexos/.git" GIT_WORK_TREE="$W/Leorna/cortexos"
+  rm -rf "$W/elsewhere-wt/header-bar"
+  space_case "$W/elsewhere-wt/header-bar" /x/t.jsonl '["claude-shared"]'
+  space_case "$W/elsewhere-wt/header-bar" "$H/.claude/projects/-home-justin-proj-app/s1.jsonl" '["claude-proj-app","claude-shared"]'
   [ -z "$bad" ] || fail "$bad" || return 1
   done_ok
 }
