@@ -609,7 +609,7 @@ Run its tests with make test.'
 }
 
 ac10_save_replaces_changed_note_only() {
-  local f k old new posts dels n0 b p1 p2
+  local f k old new posts dels n0 b pids round
   need "$SCRIPT" || return 1
   newroot || return 1
   memdir -home-justin-app; CWD=/home/justin/app
@@ -658,14 +658,18 @@ ac10_save_replaces_changed_note_only() {
   [ "$(state_ids "$k" | sort)" = "$old" ] || fail "partial failure: state changed" || return 1
   echo "# second of several POSTs answered 500: only the new part already made is deleted; old ids and state kept"
 
-  reset_logs; : >"$S/objects.jsonl"; printf '{}' >"$S/control.json"; ctl '.post_delay = 0.5'
-  note "$f" 'fifth version' 'fifth body'
-  ( hook save "$(tool_payload Edit "$f")" ) & p1=$!
-  ( hook save "$(tool_payload Edit "$f")" ) & p2=$!
-  wait "$p1" "$p2"                                                 # not a bare wait: the stub is a job too
-  [ "$(created | grep -c .)" = 1 ] || fail "two parallel saves made $(created | grep -c .) objects" || return 1
-  [ "$(state_ids "$k")" = "$(created)" ] || fail "parallel saves: state [$(state_ids "$k")] vs created [$(created)]" || return 1
-  echo "# two parallel saves of one change: one POST, the lock kept them apart"
+  printf '{}' >"$S/control.json"; ctl '.post_delay = 0.3'; b=$(tool_payload Edit "$f")
+  for round in 1 2 3 4 5; do            # each round: one change, eight saves released at once through a FIFO barrier
+    reset_logs; : >"$S/objects.jsonl"; rm -f "$S/go"; mkfifo "$S/go"
+    note "$f" "parallel version $round" "parallel body $round"
+    pids=()
+    for n in 1 2 3 4 5 6 7 8; do ( read -r _ <"$S/go"; hook save "$b" ) & pids+=($!); done
+    sleep 0.3; : >"$S/go"
+    wait "${pids[@]}"                                             # not a bare wait: the stub is a job too
+    [ "$(created | grep -c .)" = 1 ] || fail "round $round: eight parallel saves made $(created | grep -c .) objects" || return 1
+    [ "$(state_ids "$k")" = "$(created)" ] || fail "round $round: state [$(state_ids "$k")] vs created [$(created)]" || return 1
+  done
+  echo "# 5 rounds of eight saves of one change released at once: one POST each round, the lock kept them apart"
   done_ok
 }
 
@@ -761,12 +765,12 @@ ac12_reconcile_backfills_once() {
   echo "# third run with no changes: zero requests"
 
   note "$P/-Users-justin-proj/memory/d.md" 'note d' 'delta body, changed'
-  mkdir -p "$STATE/lock"; echo $$ >"$STATE/lock/pid"; reset_logs
+  mkdir -p "$STATE"; echo $$ >"$STATE/lock"; reset_logs
   hook reconcile "$(start_payload)"
   [ "$(nreq)/$(nargv)" = 0/0 ] || fail "reconcile ran while a live process held the lock" || return 1
   echo "# lock held by a live process: reconcile skips"
   ( exit 0 ) & dead=$!; wait "$dead"
-  echo "$dead" >"$STATE/lock/pid"; reset_logs
+  echo "$dead" >"$STATE/lock"; reset_logs
   hook reconcile "$(start_payload)"
   [ "$(count '.method == "POST"')" = 1 ] && [ "$(count '.method == "DELETE"')" = 1 ] || fail "stale lock: $(cat "$S/requests.jsonl")" || return 1
   [ ! -e "$STATE/lock" ] || fail "the lock was left behind" || return 1

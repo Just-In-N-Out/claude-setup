@@ -133,18 +133,21 @@ SEP=$'\x1f'
 
 sha256() { if command -v sha256sum >/dev/null 2>&1; then sha256sum | cut -d' ' -f1; else shasum -a 256 | cut -d' ' -f1; fi; }
 homerel() { case $1 in "$RH"/*) printf '%s' "${1#"$RH"/}" ;; *) printf '%s' "$1" ;; esac; }
-lock_take() { # lock_take <seconds to wait>: mkdir lock (portable, no flock); a lock whose holder is gone is taken over
+lock_take() { # lock_take <seconds to wait>: state/lock holds the holder's pid, created with O_EXCL by bash's noclobber
+  # (portable, no flock; not mkdir: uutils' mkdir lets two racing callers both succeed); a dead holder's lock is taken over
   local tries=$(($1 * 10)) pid
   mkdir -p "$STATE" 2>/dev/null || return 1
   while :; do
-    if mkdir "$STATE/lock" 2>/dev/null; then echo $$ >"$STATE/lock/pid"; LOCKED=1; return 0; fi
-    pid=$(cat "$STATE/lock/pid" 2>/dev/null)
-    if { [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; } \
-      || { [ -z "$pid" ] && [ -n "$(find "$STATE/lock" -maxdepth 0 -mmin +1 2>/dev/null)" ]; }; then
-      rm -rf "$STATE/lock"; continue
+    if (set -C; printf '%s\n' "$$" >"$STATE/lock") 2>/dev/null; then LOCKED=1; return 0; fi
+    pid=$(cat "$STATE/lock" 2>/dev/null)
+    if { [[ $pid =~ ^[0-9]+$ ]] && ! kill -0 "$pid" 2>/dev/null; } \
+      || { ! [[ $pid =~ ^[0-9]+$ ]] && [ -n "$(find "$STATE/lock" -maxdepth 0 -mmin +1 2>/dev/null)" ]; }; then
+      [ "$(cat "$STATE/lock" 2>/dev/null)" = "$pid" ] && rm -rf "$STATE/lock" && [ ! -e "$STATE/lock" ] && continue
+    else
+      sleep 0.1
     fi
     [ "$tries" -gt 0 ] || return 1
-    tries=$((tries - 1)); sleep 0.1
+    tries=$((tries - 1))
   done
 }
 state_get() { jq -c --arg k "$1" '.[$k] // empty' "$STATE/objects.json" 2>/dev/null; }
