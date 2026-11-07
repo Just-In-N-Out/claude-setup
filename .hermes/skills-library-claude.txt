@@ -20,3 +20,40 @@ api-contract-drift-guard
 backend-data-migrations
 # named in ~/.claude/CLAUDE.md's pipeline (step 5)
 review-fix-cadence
+# added 2026-11-06 (Justin picked these groups as the important library skills)
+# debug, CI & GitHub
+fix-code-safely
+ci-failure-triage
+gh-fix-ci
+gh-address-comments
+github-pr-workflow
+github-code-review
+github-issue-to-pr
+perf-regression-hunter
+python-debugger
+node-inspect-debugger
+# frontend & browser testing
+frontend-ui-repair
+frontend-testing-workflow
+webapp-testing
+playwright
+frontend-accessibility-audit
+frontend-visual-regression-gate
+ux-frontend-workbench
+# backend, security & API
+build-validate-apis
+backend-service-architecture
+backend-observability-otel
+build-multi-tenant-microservices
+security-threat-model
+software-security-testing
+privacy-compliance-guard
+authorized-write-safety
+# architecture & release
+reverse-engineer-architecture
+repository-code-audit
+multi-repo-issue-first-execution
+release-readiness-cutover
+incident-rollback-runbook
+mcp-builder
+create-agent-skills
