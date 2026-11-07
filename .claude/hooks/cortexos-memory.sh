@@ -72,26 +72,43 @@ memspace() { # memspace <project key>: sets mspace to the space of ~/.claude/pro
 }
 
 search() {
-  local fields skip cwd tpath q p mspace space=claude-shared min i n=0 allok=1
-  # Linear in the prompt: jq's global regex matches (scan, splits) slow down with the square of the string length,
-  # so the 3-word check is one regex test, the keywords come from the first 4000 characters only, cut back to the end
-  # of the last whole token (a cut sk-/ghp_ token would be too short for the secret filter), and the de-duplication
-  # stops at 16 words. A prompt of up to 4000 characters gets the same query as the plan's keyword jq.
-  fields=$(jq -r '
-    def stop: ["the","and","for","are","but","not","you","your","can","could","would","should","will","with","this","that","these","those","what","which","when","where","why","how","who","have","has","had","was","were","been","from","into","about","just","please","also","then","than","there","here","they","them","their","our","out","let","lets","make","need","want","like","some","any","all","get","got","its","does","did","done","very","more","only","now","use","using","yes","okay","thanks"];
+  local skip cwd tpath q p mspace space=claude-shared min i n=0 allok=1 pc top main
+  # Linear in the prompt (jq's global regex matches, scan and splits, slow down with the square of the string length, and
+  # so does its ascii_downcase): the 3-word check is one regex test, and the keywords come from awk reading the prompt's
+  # tokens in order, stopping at the 16th distinct keyword. Its query equals the plan's keyword jq's for any prompt:
+  # a token is a run of [A-Za-z0-9_.-] (awk's RS splits on everything else, non-ASCII bytes included) lower-cased, with
+  # its leading and trailing _ . - cut off (scan's [a-z0-9][a-z0-9_.-]*[a-z0-9] matches exactly that); a token over 40
+  # characters is dropped before any trim, which only ever touches its first 41 characters.
+  # One jq parse into a file: line 1 is "skip<US>cwd<US>transcript_path" (control characters removed), then the prompt when
+  # not skipped. awk reads a file, not a pipe: on a pipe, gawk's regex RS rescans a long separator run (a non-ASCII paste)
+  # on every read, so 1, 2 and 4 MB took 26, 85 and 315 ms; from a file it is linear (8 ms per MB).
+  jq -r '
     ((.prompt // "") | tostring) as $p
     | (if ($p | test("^\\s*[/!]")) or ($p | test("\\S\\s+\\S+\\s+\\S") | not) then "1" else "0" end) as $skip
-    | ($p[0:4000] | if ($p[4000:4001] | test("^[A-Za-z0-9_.-]$")) then sub("[A-Za-z0-9_.-]+\\z"; "") else . end
-       | ascii_downcase
-       | [scan("[a-z0-9][a-z0-9_.-]*[a-z0-9]")]
-       | map(select(length >= 3 and length <= 40))
-       | map(select(IN(stop[]) | not))
-       | map(select((test("^(sk|ghp|gho|ghs|xox[a-z]|akia|eyj)") and length >= 16) or (length >= 20 and test("[0-9]") and test("[a-z]")) | not))
-       | reduce .[] as $w ([]; if length >= 16 or index([$w]) then . else . + [$w] end)
-       | join(" ") | .[0:200]) as $q
-    | [$skip, ((.cwd // "", .transcript_path // "") | tostring | gsub("[\\x00-\\x1f]"; "")), $q] | join("\u001f")' <<<"$payload" 2>/dev/null) || return 0
-  IFS=$'\x1f' read -r skip cwd tpath q <<<"$fields"
-  [ "$skip" = 0 ] && [ -n "$q" ] || return 0
+    | ([$skip, ((.cwd // "", .transcript_path // "") | tostring | gsub("[\\x00-\\x1f]"; ""))] | join("\u001f")),
+      (if $skip == "0" then $p else empty end)' <<<"$payload" >"$tmp/prompt" 2>/dev/null || return 0
+  { IFS=$'\x1f' read -r skip cwd tpath || return 0
+    [ "$skip" = 0 ] || return 0
+    q=$(awk '
+    BEGIN {
+      RS = "[^A-Za-z0-9_.-]+"
+      n = split("the and for are but not you your can could would should will with this that these those what which when where why how who have has had was were been from into about just please also then than there here they them their our out let lets make need want like some any all get got its does did done very more only now use using yes okay thanks", s, " ")
+      for (i = 1; i <= n; i++) stop[s[i]] = 1
+    }
+    length($0) < 3 { next }
+    { w = tolower($0) }
+    (w in seen) || (w in stop) { next }
+    {
+      if (!(f = match(w, /[a-z0-9]/)) || substr(w, f + 40) ~ /[a-z0-9]/) next
+      w = substr(w, f, 40); sub(/[_.-]+$/, "", w); l = length(w)
+      if (l < 3 || (w in stop) || (w in seen)) next
+      if ((l >= 16 && w ~ /^(sk|ghp|gho|ghs|xox[a-z]|akia|eyj)/) || (l >= 20 && w ~ /[0-9]/ && w ~ /[a-z]/)) next
+      seen[w] = 1; q = q (k++ ? " " : "") w
+      if (k == 16) exit
+    }
+    END { printf "%s", substr(q, 1, 200) }')
+  } <"$tmp/prompt"
+  [ -n "$q" ] || return 0
   down_recent && return 0
 
   # The project space. Claude Code keeps one memory folder per repo, shared by its subfolders and worktrees, and the

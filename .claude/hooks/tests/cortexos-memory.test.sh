@@ -26,6 +26,17 @@ LABEL="CortexOS memory: background notes matched to this message from Justin's s
 # AC3's prompt and the keyword query it must become (pinned by hand from the plan's rules, not computed by the script)
 AC3_PROMPT='Please fix the earlyoom kill check in the hook, the hook check key is sk-abc123def456ghi789jkl please fix it'
 AC3_QUERY='fix earlyoom kill check hook key'
+# The plan's keyword jq (Design, "Keyword query"), copied verbatim: the oracle every search query must equal (AC3). Its
+# scan is quadratic in the prompt, so it only runs here on test prompts of a few KB.
+PLAN_KW_JQ='def stop: ["the","and","for","are","but","not","you","your","can","could","would","should","will","with","this","that","these","those","what","which","when","where","why","how","who","have","has","had","was","were","been","from","into","about","just","please","also","then","than","there","here","they","them","their","our","out","let","lets","make","need","want","like","some","any","all","get","got","its","does","did","done","very","more","only","now","use","using","yes","okay","thanks"];
+(.prompt // "") | ascii_downcase
+| [scan("[a-z0-9][a-z0-9_.-]*[a-z0-9]")]
+| map(select(length >= 3 and length <= 40))
+| map(select(IN(stop[]) | not))
+| map(select((test("^(sk|ghp|gho|ghs|xox[a-z]|akia|eyj)") and length >= 16) or (length >= 20 and test("[0-9]") and test("[a-z]")) | not))
+| reduce .[] as $w ([]; if index([$w]) then . else . + [$w] end)
+| .[0:16] | join(" ") | .[0:200]'
+REAL_GIT=$(command -v git)
 # overrides inherited from the caller would point the script at real files or the real CortexOS: drop them
 unset CORTEXOS_MEMORY CORTEXOS_MEMORY_URL CORTEXOS_MEMORY_ENV_FILE CORTEXOS_MEMORY_MIN_SCORE CORTEXOS_MEMORY_STATE_DIR
 
@@ -34,7 +45,7 @@ ac3_search_sends_keywords_not_prompt ac4_search_fails_open_fast ac5_no_request_w
 ac6_down_marker_skips_then_retries ac7_skips_commands_short_prompts_and_subagents ac8_key_and_prompt_never_in_argv
 ac9_save_memory_note_parts ac10_save_replaces_changed_note_only ac11_save_skill_lesson_only
 ac12_reconcile_backfills_once ac13_settings_register_cortexos_hooks
-search_long_prompt_is_fast_keywords_from_its_start search_space_from_subfolder_worktree_or_session"
+search_long_prompt_is_fast search_space_from_subfolder_worktree_or_session"
 
 fail() { echo "FAIL: $*"; return 1; }
 need() { [ -e "$1" ] || fail "missing $1 (not built yet)"; }
@@ -394,13 +405,58 @@ ac3_search_sends_keywords_not_prompt() {
     'alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima mike november oscar papa' "16-word cap" || return 1
   words="abcdefghijklmnopqrst bcdefghijklmnopqrstu cdefghijklmnopqrstuv defghijklmnopqrstuvw efghijklmnopqrstuvwx fghijklmnopqrstuvwxy ghijklmnopqrstuvwxyz hijklmnopqrstuvwxyza ijklmnopqrstuvwxyzab jklmnopqrstuvwxyzabc klmnopqrstuvwxyzabcd"
   kw "$words" "${words:0:200}" "200-character cap" || return 1
+
+  # Review round 2, R2-2/R2-3: the query is the plan jq's at any prompt length. The words are read in order up to the
+  # 16th distinct keyword, with no fixed window: keywords past character 4000 count, and a token across character 4000
+  # is one whole token for the secret filter. Each expected query is pinned by hand and checked against the plan's jq.
+  kwp() { # kwp <prompt> <expected query> <label>: kw, after checking that the plan's jq gives the expected query
+    [ "$(prompt_payload "$1" | jq -r "$PLAN_KW_JQ")" = "$2" ] \
+      || fail "fixture $3: the plan's jq gives [$(prompt_payload "$1" | jq -r "$PLAN_KW_JQ")], not [$2]" || return 1
+    kw "$@"
+  }
+  long=$(for i in $(seq 1 700); do printf 'ok %02d ' $((i % 100)); done)
+  p=$(printf 'Please see the output below, the run is stuck\n%s\n%s' "$long" "$AC3_PROMPT")
+  kwp "$p" 'see output below run stuck fix earlyoom kill check hook key' \
+    "AC3's sentence after ${#long} characters of 2-letter tokens" || return 1
+  long=$(for i in $(seq 1 420); do printf 'مرحبا بكم '; done)
+  kwp "$long"$'\n'"$AC3_PROMPT" "$AC3_QUERY" "AC3's sentence after a ${#long}-character Arabic paste" || return 1
+  p="$(yes ab | head -n 1290 | tr '\n' ' ')please check the deploy logs for the gateway build"
+  kwp "$p" 'check deploy logs gateway build' "a ${#p}-character prompt whose keywords are at its end" || return 1
+  p=$(for i in $(seq 1 40); do printf '%s ' "$AC3_PROMPT"; done)
+  kwp "${p}alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima" \
+    "$AC3_QUERY alpha bravo charlie delta echo foxtrot golf hotel india juliet" \
+    "AC3's sentence 40 times (${#p} characters), then new words: the first 16 distinct" || return 1
+  p="fix the gateway $(yes aa | head -n 1326 | tr '\n' ' ')ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 check deploy logs"
+  [ "${p:3994:4}" = ghp_ ] || fail "fixture: the ghp_ token does not straddle character 4000" || return 1
+  kwp "$p" 'fix gateway check deploy logs' "a ghp_ token across character 4000, then words" || return 1
+  ! grep -qiF 'ghp_' "$S/requests.jsonl" || fail "part of the ghp_ token reached a request" || return 1
+  p="fix the gateway $(yes aa | head -n 1326 | tr '\n' ' ')sk-ant-api03-abcdefghij0123456 check logs"
+  [ "${p:3994:7}" = sk-ant- ] || fail "fixture: the sk-ant- token's '-' is not character 4000" || return 1
+  kwp "$p" 'fix gateway check logs' "an sk-ant- token whose '-' is character 4000, then words" || return 1
+  ! grep -qF 'sk-ant' "$S/requests.jsonl" || fail "part of the sk-ant- token reached a request" || return 1
+
+  # every filter rule against the plan's jq: stopwords in any case, the secret prefixes at 15 and 16 characters, long
+  # digit-mixed tokens at 19 and 20, the 40-character cap, '_' '.' '-' trimmed off a token's ends, non-ASCII letters
+  stops=$(jq -nr "${PLAN_KW_JQ%%;*}; stop | join(\" \")")
+  kwp "Upper $(tr 'a-z' 'A-Z' <<<"$stops") lower $stops Title The Please Thanks keep" 'upper lower title keep' \
+    "every stopword, in lower and upper case" || return 1
+  kwp 'skaaaaaaaaaaaaa skbbbbbbbbbbbbbb ghpaaaaaaaaaaaa ghp_bbbbbbbbbbbb ghoaaaaaaaaaaaa gho-bbbbbbbbbbbb ghsaaaaaaaaaaaa ghs.bbbbbbbbbbbb xoxbaaaaaaaaaaa xoxp-bbbbbbbbbbb akiaaaaaaaaaaaa AKIABBBBBBBBBBBB eyjaaaaaaaaaaaa EYJbbbbbbbbbbbbb xox1bbbbbbbbbbbb' \
+    'skaaaaaaaaaaaaa ghpaaaaaaaaaaaa ghoaaaaaaaaaaaa ghsaaaaaaaaaaaa xoxbaaaaaaaaaaa akiaaaaaaaaaaaa eyjaaaaaaaaaaaa xox1bbbbbbbbbbbb' \
+    "secret prefixes: 15 characters kept, 16 dropped" || return 1
+  kwp "abc123456789defghij abc1234567890defghij abcdefghijklmnopqrst 12345678901234567890 $(printf 'a%.0s' $(seq 1 40)) $(printf 'b%.0s' $(seq 1 41)) Z9" \
+    "abc123456789defghij abcdefghijklmnopqrst 12345678901234567890 $(printf 'a%.0s' $(seq 1 40))" \
+    "digit-mixed at 19 kept, 20 dropped; 40 characters kept, 41 dropped" || return 1
+  kwp '-abc- -ab- __cd __init__ .env. a--b v1.2.3 e.g. x. ab.cd._ path/to/file.txt Ab-Cd_Ef.Gh café naïve İstanbul x--y--z' \
+    'abc init env a--b v1.2.3 e.g ab.cd path file.txt ab-cd_ef.gh caf stanbul x--y--z' \
+    "token ends trimmed, non-ASCII letters split tokens" || return 1
   done_ok
 }
 
-search_long_prompt_is_fast_keywords_from_its_start() {
+search_long_prompt_is_fast() {
   # Review round 1, R1-1: a pasted log made the keyword jq quadratic (8.5 s at 150 KB, past the 3 s hook timeout).
-  # The script's own work stays far under its 1 s cap at any size, and the keywords come from the first 4000 characters.
-  local lines p want bad=""
+  # The script's own work stays far under its 1 s cap at any size, with the plan jq's query (round 2, R2-2: no window;
+  # the exact-query cases past 4000 characters are in ac3_search_sends_keywords_not_prompt).
+  local lines p want bad="" shape
   need "$SCRIPT" || return 1
   newroot || return 1
   memdir -home-justin-app; CWD=/home/justin/app
@@ -425,15 +481,22 @@ search_long_prompt_is_fast_keywords_from_its_start() {
   echo "# ${#p}-character prompt of 2-letter words: exit $rc, $ms ms, stub requests $(nreq)"
   [ "$rc" = 0 ] && [ -z "$out" ] && [ "$(nreq)" = 0 ] || bad+="[2-letter words] exit $rc, output or a request; "
   [ "$ms" -lt 1000 ] || bad+="[2-letter words] took $ms ms; "
-  # the 4000-character window ends inside a token: the token is not cut into a keyword (a cut ghp_ token would pass the
-  # secret filter, which needs 16 characters), and the words after the window are not used
-  p="fix the gateway $(yes aa | head -n 1326 | tr '\n' ' ')ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 check deploy logs"
-  [ "${p:3994:4}" = ghp_ ] || fail "fixture: the token does not straddle character 4000" || return 1
-  reset_logs
-  hook search "$(prompt_payload "$p")"
-  echo "# window ends inside a ghp_ token: queries $(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")"
-  [ "$(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")" = '["fix gateway"]' ] || bad+="[window] query; "
-  ! grep -qiF 'ghp_' "$S/requests.jsonl" || bad+="[window] part of the ghp_ token reached a request; "
+  # 1 MB worst shapes for a linear keyword step: one huge token, a lone letter before 1 MB of '-' (a trim that backtracks
+  # is quadratic there), one keyword repeated, a non-ASCII paste; each ends in the question, which is the query
+  for shape in token dashes repeat arabic; do
+    case $shape in
+      token) p="$(head -c 1000000 /dev/zero | tr '\0' x) fix the gateway logs" ;;
+      dashes) p="a$(head -c 1000000 /dev/zero | tr '\0' -)a fix the gateway logs" ;;
+      repeat) p="$(yes aaa | head -n 250000 | tr '\n' ' ')fix the gateway logs" ;;
+      arabic) p="$(yes 'مرحبا' | head -n 170000 | tr '\n' ' ')fix the gateway logs" ;;
+    esac
+    want='fix gateway logs'; [ "$shape" = repeat ] && want='aaa fix gateway logs'
+    reset_logs
+    hook search "$(prompt_payload "$p")"
+    echo "# 1 MB shape '$shape' (${#p} characters): exit $rc, $ms ms, queries $(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")"
+    [ "$(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")" = "$(jq -nc --arg q "$want" '[$q]')" ] || bad+="[$shape] query; "
+    [ "$ms" -lt 1000 ] || bad+="[$shape] took $ms ms; "
+  done
   [ -z "$bad" ] || fail "$bad" || return 1
   done_ok
 }
