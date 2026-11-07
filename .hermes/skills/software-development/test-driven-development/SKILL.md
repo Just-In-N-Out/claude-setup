@@ -92,7 +92,9 @@ is acceptable; replacing the retry loop itself would avoid testing the contract.
 - One coherent behavior per test; multiple meaningful assertions are fine.
 - Name describes the observable behavior, not internal implementation.
 - Keep the system under test real; fake external cost/failure/clock boundaries
-  deliberately and state what live integration remains unproven.
+  deliberately and state what live integration remains unproven. When an AC is live-only
+  (the user runs it), dry-run its test end to end against the offline stub first, so
+  plumbing bugs surface before the user's live run (cortexos-memory-hook AC15: 3 found).
 
 ### Verify RED — Watch It Fail
 
