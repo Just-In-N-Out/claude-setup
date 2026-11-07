@@ -109,8 +109,10 @@ class Stub(BaseHTTPRequestHandler):
         with lock:
             st["seq"] += 1
             seq = st["seq"]
-            append(LOG, {"seq": seq, "t": time.time(), "method": self.command, "path": url.path, "query": query,
-                         "headers": {k.lower(): v for k, v in self.headers.items()}, "body": body})
+            entry = {"seq": seq, "t": time.time(), "method": self.command, "path": url.path, "query": query,
+                     "headers": {k.lower(): v for k, v in self.headers.items()}, "body": body}
+            append(LOG, entry)
+            append(LOG + ".all", entry)   # never reset by a test
         space = body.get("space_id") if isinstance(body, dict) else query.get("space_id")
         delay = float(ctl.get("delay") or 0) + float((ctl.get("space_delay") or {}).get(space or "", 0))
         if self.command == "POST" and url.path == "/v1/objects":
@@ -607,7 +609,7 @@ Run its tests with make test.'
 }
 
 ac10_save_replaces_changed_note_only() {
-  local f k old new posts dels n0 b
+  local f k old new posts dels n0 b p1 p2
   need "$SCRIPT" || return 1
   newroot || return 1
   memdir -home-justin-app; CWD=/home/justin/app
@@ -646,8 +648,8 @@ ac10_save_replaces_changed_note_only() {
   reset_logs; : >"$S/objects.jsonl"
   b=""; for n in 1 2 3 4; do b+="Section $n $(printf 'text%02d ' $(seq 1 120))"$'\n\n'; done
   note "$f" 'fourth version' "$b"
-  n0=$(jq -s 'map(select(.method == "POST" and .path == "/v1/objects")) | length' "$S/requests.jsonl")
-  ctl '.post_status = 500 | .post_fail_from = 3'                     # the stub has seen 2 POSTs: the next one succeeds
+  n0=$(jq -s 'map(select(.method == "POST" and .path == "/v1/objects")) | length' "$S/requests.jsonl.all")
+  ctl ".post_status = 500 | .post_fail_from = $((n0 + 2))"             # the next POST succeeds, the one after fails
   hook save "$(tool_payload Edit "$f")"
   new=$(created)
   [ "$(grep -c . <<<"$new")" = 1 ] || fail "partial failure: expected 1 new object, got [$new]" || return 1
@@ -658,7 +660,9 @@ ac10_save_replaces_changed_note_only() {
 
   reset_logs; : >"$S/objects.jsonl"; printf '{}' >"$S/control.json"; ctl '.post_delay = 0.5'
   note "$f" 'fifth version' 'fifth body'
-  ( hook save "$(tool_payload Edit "$f")" ) & ( hook save "$(tool_payload Edit "$f")" ) & wait
+  ( hook save "$(tool_payload Edit "$f")" ) & p1=$!
+  ( hook save "$(tool_payload Edit "$f")" ) & p2=$!
+  wait "$p1" "$p2"                                                 # not a bare wait: the stub is a job too
   [ "$(created | grep -c .)" = 1 ] || fail "two parallel saves made $(created | grep -c .) objects" || return 1
   [ "$(state_ids "$k")" = "$(created)" ] || fail "parallel saves: state [$(state_ids "$k")] vs created [$(created)]" || return 1
   echo "# two parallel saves of one change: one POST, the lock kept them apart"

@@ -35,7 +35,9 @@ sub=$(jq -r 'if has("agent_id") and .agent_id != null then "agent" else "main" e
 [ "$sub" = main ] || exit 0
 
 tmp=$(mktemp -d "${TMPDIR:-/tmp}/cortexos-memory.XXXXXX") || exit 0
-trap 'rm -rf "$tmp"' EXIT
+LOCKED=0
+trap 'rm -rf "$tmp"; [ "$LOCKED" = 1 ] && rm -rf "$STATE/lock"' EXIT
+trap 'exit 1' HUP INT TERM
 
 mark_down() { mkdir -p "$STATE" 2>/dev/null && touch "$STATE/down" 2>/dev/null; return 0; }
 down_recent() { # a down marker younger than 60 s
@@ -123,7 +125,176 @@ search() {
   return 0
 }
 
+# ---- save and reconcile: state/objects.json = {"<key>": {"sha": H, "space": S, "ids": [...]}} ----
+# A memory note's key is its home-relative realpath; a lesson's key is lesson:<sha256 of its text>.
+RH=$(cd -P "$HOME" 2>/dev/null && pwd -P) || RH=$HOME
+PROJ=$(cd -P "$HOME/.claude/projects" 2>/dev/null && pwd -P) || PROJ=
+SEP=$'\x1f'
+
+sha256() { if command -v sha256sum >/dev/null 2>&1; then sha256sum | cut -d' ' -f1; else shasum -a 256 | cut -d' ' -f1; fi; }
+homerel() { case $1 in "$RH"/*) printf '%s' "${1#"$RH"/}" ;; *) printf '%s' "$1" ;; esac; }
+lock_take() { # lock_take <seconds to wait>: mkdir lock (portable, no flock); a lock whose holder is gone is taken over
+  local tries=$(($1 * 10)) pid
+  mkdir -p "$STATE" 2>/dev/null || return 1
+  while :; do
+    if mkdir "$STATE/lock" 2>/dev/null; then echo $$ >"$STATE/lock/pid"; LOCKED=1; return 0; fi
+    pid=$(cat "$STATE/lock/pid" 2>/dev/null)
+    if { [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; } \
+      || { [ -z "$pid" ] && [ -n "$(find "$STATE/lock" -maxdepth 0 -mmin +1 2>/dev/null)" ]; }; then
+      rm -rf "$STATE/lock"; continue
+    fi
+    [ "$tries" -gt 0 ] || return 1
+    tries=$((tries - 1)); sleep 0.1
+  done
+}
+state_get() { jq -c --arg k "$1" '.[$k] // empty' "$STATE/objects.json" 2>/dev/null; }
+state_set() { # state_set <key> <entry JSON, or null to drop it>
+  local f="$STATE/objects.json"
+  { jq -c . "$f" 2>/dev/null || echo '{}'; } | jq -c --arg k "$1" --argjson v "$2" \
+    'if $v == null then del(.[$k]) else .[$k] = $v end' >"$f.tmp.$$" && mv "$f.tmp.$$" "$f"
+}
+uuid='^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+delete_id() { # delete_id <id> <space>: true when it is gone (deleted, or already 404)
+  local code
+  [[ $1 =~ $uuid ]] || return 0
+  code=$(api DELETE "/v1/objects/$1?tenant_id=leorna&space_id=$2" "$tmp/delete" 10 </dev/null)
+  case $code in 200 | 204 | 404) return 0 ;; *) mark_down; return 1 ;; esac
+}
+post_bodies() { # post_bodies <file of bodies, one JSON per line> <space>: new ids on stdout;
+  # on any failure, delete the parts this call already made and fail (the old copy and its state stay)
+  local body code id ids=()
+  while IFS= read -r body; do
+    code=$(printf '%s' "$body" | api POST /v1/objects "$tmp/post" 10 body)
+    id=$(jq -r '.id // empty' "$tmp/post" 2>/dev/null)
+    if [ "$code" != 200 ] || ! [[ $id =~ $uuid ]]; then
+      mark_down
+      for id in ${ids[@]+"${ids[@]}"}; do delete_id "$id" "$2"; done
+      return 1
+    fi
+    ids+=("$id")
+  done <"$1"
+  [ ${#ids[@]} = 0 ] || printf '%s\n' "${ids[@]}"
+}
+replace() { # replace <state key> <old entry> <sha> <space> <bodies file>: POST the new parts first, then delete the old ids
+  local new id oldspace
+  new=$(post_bodies "$5" "$4") || return 1
+  oldspace=$(jq -r '.space // empty' <<<"$2" 2>/dev/null)
+  for id in $(jq -r '.ids[]?' <<<"$2" 2>/dev/null); do delete_id "$id" "$oldspace"; done   # a failed delete leaves an orphan
+  # shellcheck disable=SC2086
+  state_set "$1" "$(jq -nc --arg h "$3" --arg s "$4" '{sha: $h, space: $s, ids: $ARGS.positional}' --args $new)"
+}
+
+note_target() { # note_target <path>: "<realpath>SEP<state key>SEP<slug>SEP<name>" when it is a memory note (not MEMORY.md)
+  local r rel k name
+  [ -n "$PROJ" ] || return 1
+  r=$(realpath "$1" 2>/dev/null) && [ -f "$r" ] || return 1
+  case $r in "$PROJ"/*/memory/*.md) ;; *) return 1 ;; esac
+  rel=${r#"$PROJ"/}; k=${rel%%/*}; name=${rel#"$k"/memory/}
+  [ "$rel" = "$k/memory/$name" ] || return 1
+  case $name in */* | MEMORY.md) return 1 ;; esac
+  printf '%s%s%s%s%s%s%s' "$r" "$SEP" "$(homerel "$r")" "$SEP" "$(slug_of_key "$k")" "$SEP" "$name"
+}
+save_note() { # save_note <realpath> <state key> <slug> <name>: (re)save one note when it changed; the lock is held
+  local r=$1 k=$2 slug=$3 name=$4 space prefix h old
+  space=$(space_of_slug "$slug"); prefix="[memory ${slug:-shared}/$name] "
+  h=$({ printf 'cortexos-memory v1\n%s\n%s\n' "$space" "$prefix"; cat "$r"; } | sha256) || return 1
+  old=$(state_get "$k")
+  [ -n "$old" ] && [ "$(jq -r '.sha // empty' <<<"$old")" = "$h" ] && return 0
+  # the text: frontmatter replaced by its description value, split at blank lines into parts of at most 1500
+  # characters (prefix included; a longer paragraph is cut hard), which keeps each part under bge-small's 512 tokens
+  jq -Rsc --arg prefix "$prefix" --arg space "$space" --arg path "$k" --arg sha "$h" '
+    def unq: if test("^\".*\"$") then .[1:-1] | gsub("\\\\\""; "\"") | gsub("\\\\\\\\"; "\\")
+             elif test("^'"'"'.*'"'"'$") then .[1:-1] | gsub("'"''"'"; "'"'"'") else . end;
+    def chunks($n): . as $s | [range(0; length; $n) | $s[.:. + $n]];
+    gsub("\r"; "") | split("\n") as $l
+    | (if ($l[0] // "") == "---" then ([range(1; $l | length) | select($l[.] == "---" or $l[.] == "...")] | first) else null end) as $end
+    | (if $end == null then {d: "", body: ($l | join("\n"))}
+       else {d: ([$l[1:$end][] | select(startswith("description:")) | sub("^description:\\s*"; "") | sub("\\s+$"; "") | unq] | first // ""),
+             body: ($l[$end + 1:] | join("\n"))} end) as $doc
+    | (1500 - ($prefix | length)) as $room
+    | [[$doc.d, $doc.body][] | splits("\n[ \t]*\n") | gsub("^\\s+|\\s+$"; "") | select(length > 0)]
+    | [.[] | if length > $room then chunks($room)[] else . end]
+    | reduce .[] as $p ([]; if length > 0 and ((.[length - 1] | length) + 2 + ($p | length)) <= $room
+                            then .[length - 1] += "\n\n" + $p else . + [$p] end)
+    | to_entries[]
+    | {tenant_id: "leorna", space_id: $space, object_type: "Fact", content: {text: ($prefix + .value)},
+       metadata: {source: "claude-setup", kind: "memory", path: $path, sha: $sha, part: (.key + 1)}}' "$r" >"$tmp/bodies" 2>/dev/null \
+    || return 1
+  replace "$k" "$old" "$h" "$space" "$tmp/bodies"
+}
+
+lesson_target() { # lesson_target <path>: "<state path>SEP<skill>" for SKILL.md or */references/*.md under a skills root
+  local r root rr d
+  r=$(realpath "$1" 2>/dev/null) && [ -f "$r" ] || return 1
+  for root in "$HOME/.hermes/skills" "$HOME/.hermes/skills-library"; do
+    rr=$(cd -P "$root" 2>/dev/null && pwd -P) || continue
+    case $r in "$rr"/*) ;; *) continue ;; esac
+    case $r in */SKILL.md | */references/*.md) ;; *) return 1 ;; esac
+    d=$(dirname "$r")
+    while [ "$d" != "$rr" ] && [ "$d" != / ] && [ ! -f "$d/SKILL.md" ]; do d=$(dirname "$d"); done
+    [ "$d" != "$rr" ] && [ "$d" != / ] || return 1
+    printf '%s%s%s' "$(homerel "$r")" "$SEP" "$(basename "$d")"
+    return 0
+  done
+  return 1
+}
+save_lesson() { # save_lesson <state path> <skill>: the Edit's new_string as one lesson in claude-shared; the lock is held
+  local h
+  jq -j --arg k "$2" '"[skill-lesson \($k)] " + ((.tool_input.new_string // "") | tostring) | .[0:1500]' <<<"$payload" \
+    >"$tmp/lesson" 2>/dev/null || return 1
+  [ -n "$(jq -r '(.tool_input.new_string // "") | tostring | gsub("\\s"; "")' <<<"$payload")" ] || return 0
+  h=$(sha256 <"$tmp/lesson") || return 1
+  [ -n "$(state_get "lesson:$h")" ] && return 0
+  jq -Rsc --arg path "$1" --arg skill "$2" --arg sha "$h" \
+    '{tenant_id: "leorna", space_id: "claude-shared", object_type: "Fact", content: {text: .},
+      metadata: {source: "claude-setup", kind: "skill-lesson", path: $path, skill: $skill, sha: $sha, part: 1}}' \
+    "$tmp/lesson" >"$tmp/bodies" || return 1
+  replace "lesson:$h" "" "$h" claude-shared "$tmp/bodies"
+}
+
+save() {
+  local fields tool fp cwd t r k slug name
+  fields=$(jq -r '[((.tool_name // "") | tostring), ((.tool_input.file_path // "") | tostring), ((.cwd // "") | tostring)]
+                  | map(gsub("[\\x00-\\x1f]"; "")) | join("\u001f")' <<<"$payload" 2>/dev/null) || return 0
+  IFS=$SEP read -r tool fp cwd <<<"$fields"
+  case $tool in Write | Edit) ;; *) return 0 ;; esac
+  [ -n "$fp" ] || return 0
+  case $fp in /*) ;; *) fp="$cwd/$fp" ;; esac
+  if t=$(note_target "$fp"); then
+    IFS=$SEP read -r r k slug name <<<"$t"
+    lock_take 25 || return 0
+    save_note "$r" "$k" "$slug" "$name"
+  elif [ "$tool" = Edit ] && t=$(lesson_target "$fp"); then
+    IFS=$SEP read -r k name <<<"$t"
+    lock_take 25 || return 0
+    save_lesson "$k" "$name"
+  fi
+  return 0
+}
+
+reconcile() { # every unique memory note once; drop the entries of notes that are gone
+  local f t r k slug name ok=1
+  declare -A seen=()
+  lock_take 0 || return 0                      # another run holds the lock: skip
+  for f in "$HOME"/.claude/projects/*/memory/*.md; do
+    t=$(note_target "$f") || continue
+    IFS=$SEP read -r r k slug name <<<"$t"
+    [ -n "${seen[$k]:-}" ] && continue
+    seen[$k]=1
+    save_note "$r" "$k" "$slug" "$name" || return 0          # CortexOS failed: stop, the next start retries
+  done
+  while IFS= read -r k; do
+    [ -n "$k" ] && [ -z "${seen[$k]:-}" ] || continue
+    t=$(state_get "$k"); ok=1
+    for r in $(jq -r '.ids[]?' <<<"$t"); do delete_id "$r" "$(jq -r '.space // empty' <<<"$t")" || ok=0; done
+    [ "$ok" = 1 ] && state_set "$k" null
+  done < <(jq -r 'keys[] | select(startswith("lesson:") | not)' "$STATE/objects.json" 2>/dev/null)
+  return 0
+}
+
 case $cmd in
   search) search ;;
+  save) save ;;
+  reconcile) reconcile ;;
 esac
 exit 0
