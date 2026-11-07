@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 5c5284b3-7db9-45f0-9917-75e10c4dea95
-  modified: 2026-10-20T23:40:00.000Z
+  modified: 2026-11-07T00:53:36.797Z
 ---
 
 Runbook for a personal control-plane test server, so the desktop client can sign in and sync. Done 2026-10-06 on Justin's Mac (Apple Silicon). Christian said to use the installer, that it costs "a few cents", and to delete everything once the work is tested and merged to main.
@@ -71,7 +71,7 @@ The rules for testing against the server (only this domain, URL private, tokens,
      - That deletes, in the picked project only, the Leorna containers and their namespace, Postgres, MongoDB, ClickHouse and the image registry.
   2. Then delete project Justin-test in the Scaleway console (Project → Settings → Delete Project). The button refuses while resources remain ("You must remove all Project resources before proceeding"), so step 1 comes first.
   3. Delete the IAM objects in Organization → IAM. No installer code deletes them, although the installed page lists a "Scoped access key".
-     - Each mint makes an IAM **application + policy + API key** (`internal/cloud/scaleway/iam_http.go`). Deploy and bootstrap keys: app `leorna-db-<projectID>-<suffix>`, policy `leorna-db-policy-<projectID>-<suffix>`. Directory key: `leorna-dir-<suffix>` / `leorna-dir-policy-<suffix>` (org-wide, not in a project). Delete the policy, then the application (its keys go with it).
+     - Each mint makes an IAM **application + policy + API key** (`internal/cloud/scaleway/iam_http.go`). Deploy and bootstrap keys: app `leorna-db-<projectID>-<suffix>`, policy `leorna-db-policy-<projectID>-<suffix>`. Directory key: `leorna-dir-<suffix>` / `leorna-dir-policy-<suffix>` (org-wide, not in a project). Delete the policy, then the application (its keys go with it). **The org's IAM API-key quota is 100 and was full on 2026-11-06** (`mint-deploy` 403 `quotas_exceeded`, IamApiKeys 100/100); `Destroy` never deletes keys (only the mint `rollback` does), so every run leaks keys. Justin's 6 Nov desktop runs made SCW1P0PWT1438KWBHXKT, SCW7NQ4Q6K3TKF2TKPJP, SCWA7RE6GM2JHA1SFSYC, SCWBRG1VD5K7YJVBKF9C (deploy), SCW4W17D98X2M0MXWCCQ, SCWMCW815F6Z3D2HHYCA (bootstrap) — free those first before a reinstall.
      - Justin-test install (2026-10-06 20:17Z): deploy `SCWRYNECM3GMPD5WFRF2`, bootstrap `SCW25JWCRFTD09J4XJ0N`, one directory key (ID not logged).
      - `SCW5S9B9D7P0RM4CNZZZ`: deploy key minted in Christian's project when he was picked by mistake (the run stopped at the "installed" page, so no bootstrap or directory key there). Tell Christian before deleting it.
      - Every extra launcher run mints a new set, even a run used only to reach the Delete button. The teardown run on 2026-10-06 at 23:30Z minted deploy key `SCW7Z1X0PADFBG4ZXQ8B`.
