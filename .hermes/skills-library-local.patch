@@ -183,7 +183,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..346abe4 100644
+index f2d882d..a2a7d38 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -238,7 +238,7 @@ index f2d882d..346abe4 100644
 +  (`tail --pid=<pid> -f /dev/null`) before restoring anything. In a bash test whose stub
 +  server is a background job, join parallel calls by their collected `$!` PIDs, never a bare
 +  `wait` (it waits for the server too and hangs), and never edit a bash test while it runs:
-+  bash reads scripts incrementally, so the run's tail is garbled; write a new file and `mv` it (cortexos-memory-hook). Count a mutant run that hits the harness timeout (exit 124) as killed, or an infinite-loop mutant reads as survived (cortexos-memory-hook fixer 2). `$!` after
++  bash reads scripts incrementally, so the run's tail is garbled; write a new file and `mv` it (cortexos-memory-hook). Count a mutant run that hits the harness timeout (exit 124) as killed, or an infinite-loop mutant reads as survived (cortexos-memory-hook fixer 2). `grep -F` with a multi-line pattern matches if any one line is present: a "prompt never in a request" probe false-alarmed on 92 of 400 prompts, and as a positive assertion it would pass on one line; match whole multi-line text on parsed data (`jq --arg p "$p" '[.. | strings | select(contains($p))]'`) (cortexos-memory-hook verifier 2). `$!` after
 +  `setsid … &` is setsid's own PID, which may exit at once, so take the real one from
 +  `pgrep -f` or a pid file the run writes itself; `cd "$D" && setsid srv >log 2>&1 &`
 +  even holds the Bash tool until its ~180 s backgrounding (the backgrounded list is a

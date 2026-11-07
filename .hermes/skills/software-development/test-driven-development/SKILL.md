@@ -94,7 +94,7 @@ is acceptable; replacing the retry loop itself would avoid testing the contract.
 - Keep the system under test real; fake external cost/failure/clock boundaries
   deliberately and state what live integration remains unproven. When an AC is live-only
   (the user runs it), dry-run its test end to end against the offline stub first, so
-  plumbing bugs surface before the user's live run (cortexos-memory-hook AC15: 3 found).
+  plumbing bugs surface before the user's live run (cortexos-memory-hook AC15: 3 found). A logging shim used by parallel callers must write each line with one `printf` (build it in a variable first): several printfs per line interleave and make `grep -c .` undercount calls (cortexos-memory-hook verifier 3: 122 vs 129).
 
 ### Verify RED — Watch It Fail
 
