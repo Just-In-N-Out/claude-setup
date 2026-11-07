@@ -278,3 +278,11 @@ The builder stops at `ready-for-review` with the worktree branch and HEAD, the A
 `<evidence>/spike.md` (or "not run"), and the mutation results for AC4, AC5 and AC8. It names AC15 and AC16 as live checks owed
 to Justin unless AC15 ran. The finish follows "Worktrees from `claude -w`", applied to the setup repo: rebase on local `main`,
 `merge --ff-only`, then `sync.sh`.
+
+## Justin's answers (2026-11-07: "go", every ⭐)
+- Q1: (a) search sends up to 16 keywords, stopwords and secret-shaped tokens dropped, at most 200 characters.
+- Q2: one space per project memory folder plus claude-shared, searched in parallel.
+- Q3: Codex is a follow-up story.
+- Q4: AC15 is (live): Justin runs `! bash <worktree>/.claude/hooks/tests/cortexos-memory.test.sh --live` himself; the builder ships the 0.30 floor. No allow rule is added.
+- Q5: Mac-pulled lessons via commit diffs are a follow-up.
+- All proposed ACs AC1–AC16 approved, AC15 and AC16 (live).
