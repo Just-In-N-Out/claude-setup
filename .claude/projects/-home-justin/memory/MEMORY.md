@@ -4,3 +4,4 @@
 - [No card for non-story work](no-card-for-non-story-work.md) — don't ask for a ClickUp card for setup bugs; use nocard-<slug>
 - [Desktop Docker gotchas](desktop-docker-gotchas.md) — uutils mkdir not atomic, root-owned bind mounts, /tmp is RAM, no host Rust, 5432 = leorna-pg
 - [CortexOS local setup](cortexos-local.md) — start command, untracked stop-gap override, search gate + query logging
+- [Hook payload cwd drift](hook-payload-cwd-drift.md) — hook cwd follows cd/worktrees; use dirname(transcript_path) for the project
