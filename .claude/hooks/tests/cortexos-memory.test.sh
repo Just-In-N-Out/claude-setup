@@ -921,7 +921,9 @@ ac15_live_round_trip_and_calibration() {
     live search "$(prompt_payload "${UNREL[$i]}")" CORTEXOS_MEMORY_MIN_SCORE=0
     USCORE[$i]=$(bestseed); echo "#   unrelated: best seed ${USCORE[$i]:-none} | ${UNREL[$i]}"
   done
-  printf '%s\n' "${PSCORE[@]}" "${USCORE[@]}" | grep . | sort -n | uniq | awk -v p="${PSCORE[*]}" -v u="${USCORE[*]}" '
+  for i in "${!PSCORE[@]}"; do PSCORE[$i]=${PSCORE[$i]:-0}; done          # not in the top 5: a miss at any floor
+  for i in "${!USCORE[@]}"; do USCORE[$i]=${USCORE[$i]:-0}; done          # no seed note: below any floor
+  printf '%s\n' "${PSCORE[@]}" "${USCORE[@]}" | sort -n | uniq | awk -v p="${PSCORE[*]}" -v u="${USCORE[*]}" '
     { c[NR] = $1 } END { np = split(p, P, " "); nu = split(u, U, " "); best = -1
       for (i = 1; i <= NR + 1; i++) { t = (i == 1) ? c[1] - 0.01 : (i > NR ? c[NR] + 0.01 : (c[i - 1] + c[i]) / 2); s = 0
         for (j = 1; j <= np; j++) if (P[j] >= t) s++
