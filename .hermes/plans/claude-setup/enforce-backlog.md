@@ -153,3 +153,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-06 | elementor-map | figma-to-bricks | test: each native Bricks element the site route emits gets a browser test rendering it with Bricks' element CSS plus site-reset, checking its closed/hidden state | offered
 - 2026-11-06 | elementor-map | figma-to-bricks | test: for every class a state/open-look selector names, every element carrying it sits at one relative place in the items (pattern in test/unit/site-elementor-widgets.test.ts) | offered
 - 2026-11-06 | 86bccndx6 | leorna | script: native acceptance command wrapper checks child exit and expected JSON shape before writing a success receipt. | offered
+- 2026-11-06 | elementor-map | figma-to-bricks | script: site:check notes every paste img that ends complete && naturalWidth === 0 at each width (and the per-section table prints it), so a broken picture can't pass for a layout delta | offered
