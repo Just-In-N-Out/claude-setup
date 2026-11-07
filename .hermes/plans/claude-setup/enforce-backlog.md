@@ -157,3 +157,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-06 | web-code-page | figma-to-bricks | test: a fixture svg painted only by page CSS, comparing every svg part's computed fill/stroke on the site page and the drawn paste (capture-code-page or a site-page check) | offered
 - 2026-11-06 | web-code-page | figma-to-bricks | test: in test/web/lib/site-check.ts, assert each drawn #brxe-<id>'s parent element is the one the payload names | offered
 - 2026-11-06 | elementor-map | figma-to-bricks | test: a test/web case where readSection must load a below-the-fold loading=lazy img before reading (or compareReadings reports a picture the paste shows but the site never loaded); runs in npm run test:web | offered
+- 2026-11-07 | web-code-page | figma-to-bricks | test: site-page-proof compares glyph ink of each heading and bold run, site vs paste, at 1440 (within 10%), in npm run test:web | offered
+- 2026-11-07 | web-code-page | feature-dispatch | script: brief template line "AC clauses changed: none | amendment <n>"; a pre-dispatch check refuses a builder/fixer brief naming an AC or "leave … to <job>" without it | offered
