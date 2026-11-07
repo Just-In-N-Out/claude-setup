@@ -68,17 +68,22 @@ space_of_slug() { if [ -z "$1" ]; then printf 'claude-shared'; else printf 'clau
 
 search() {
   local fields skip cwd q pkey memdir real space min i n=0 allok=1
+  # Linear in the prompt: jq's global regex matches (scan, splits) slow down with the square of the string length,
+  # so the 3-word check is one regex test, the keywords come from the first 4000 characters only, cut back to the end
+  # of the last whole token (a cut sk-/ghp_ token would be too short for the secret filter), and the de-duplication
+  # stops at 16 words. A prompt of up to 4000 characters gets the same query as the plan's keyword jq.
   fields=$(jq -r '
     def stop: ["the","and","for","are","but","not","you","your","can","could","would","should","will","with","this","that","these","those","what","which","when","where","why","how","who","have","has","had","was","were","been","from","into","about","just","please","also","then","than","there","here","they","them","their","our","out","let","lets","make","need","want","like","some","any","all","get","got","its","does","did","done","very","more","only","now","use","using","yes","okay","thanks"];
     ((.prompt // "") | tostring) as $p
-    | (if ($p | test("^\\s*[/!]")) or ([$p | splits("\\s+") | select(length > 0)] | length) < 3 then "1" else "0" end) as $skip
-    | ($p | ascii_downcase
+    | (if ($p | test("^\\s*[/!]")) or ($p | test("\\S\\s+\\S+\\s+\\S") | not) then "1" else "0" end) as $skip
+    | ($p[0:4000] | if ($p[4000:4001] | test("^[A-Za-z0-9_.-]$")) then sub("[A-Za-z0-9_.-]+\\z"; "") else . end
+       | ascii_downcase
        | [scan("[a-z0-9][a-z0-9_.-]*[a-z0-9]")]
        | map(select(length >= 3 and length <= 40))
        | map(select(IN(stop[]) | not))
        | map(select((test("^(sk|ghp|gho|ghs|xox[a-z]|akia|eyj)") and length >= 16) or (length >= 20 and test("[0-9]") and test("[a-z]")) | not))
-       | reduce .[] as $w ([]; if index([$w]) then . else . + [$w] end)
-       | .[0:16] | join(" ") | .[0:200]) as $q
+       | reduce .[] as $w ([]; if length >= 16 or index([$w]) then . else . + [$w] end)
+       | join(" ") | .[0:200]) as $q
     | [$skip, ((.cwd // "") | tostring | gsub("[\\x00-\\x1f]"; "")), $q] | join("\u001f")' <<<"$payload" 2>/dev/null) || return 0
   IFS=$'\x1f' read -r skip cwd q <<<"$fields"
   [ "$skip" = 0 ] && [ -n "$q" ] || return 0

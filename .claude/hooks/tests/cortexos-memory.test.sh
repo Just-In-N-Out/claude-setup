@@ -33,7 +33,8 @@ OFFLINE="ac1_search_formats_capped_labelled_context ac2_search_request_scope_and
 ac3_search_sends_keywords_not_prompt ac4_search_fails_open_fast ac5_no_request_without_key_or_off_loopback
 ac6_down_marker_skips_then_retries ac7_skips_commands_short_prompts_and_subagents ac8_key_and_prompt_never_in_argv
 ac9_save_memory_note_parts ac10_save_replaces_changed_note_only ac11_save_skill_lesson_only
-ac12_reconcile_backfills_once ac13_settings_register_cortexos_hooks"
+ac12_reconcile_backfills_once ac13_settings_register_cortexos_hooks
+search_long_prompt_is_fast_keywords_from_its_start"
 
 fail() { echo "FAIL: $*"; return 1; }
 need() { [ -e "$1" ] || fail "missing $1 (not built yet)"; }
@@ -230,8 +231,9 @@ note() { # note <file> <description> <body>: a memory note with frontmatter
 }
 
 # ---- payloads ----
-prompt_payload() { # prompt_payload <prompt> [agent_id]   (cwd = $CWD)
-  jq -nc --arg p "$1" --arg cwd "$CWD" --arg a "${2:-}" \
+prompt_payload() { # prompt_payload <prompt> [agent_id]   (cwd = $CWD; the prompt goes through a file: argv caps one at 128 KB)
+  printf '%s' "$1" >"$S/prompt.txt"
+  jq -nc --rawfile p "$S/prompt.txt" --arg cwd "$CWD" --arg a "${2:-}" \
     '{session_id: "s1", transcript_path: "/x/t.jsonl", cwd: $cwd, permission_mode: "auto",
       hook_event_name: "UserPromptSubmit", prompt: $p}
      + (if $a == "" then {} else {agent_id: $a, agent_type: "general-purpose"} end)'
@@ -392,6 +394,47 @@ ac3_search_sends_keywords_not_prompt() {
     'alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima mike november oscar papa' "16-word cap" || return 1
   words="abcdefghijklmnopqrst bcdefghijklmnopqrstu cdefghijklmnopqrstuv defghijklmnopqrstuvw efghijklmnopqrstuvwx fghijklmnopqrstuvwxy ghijklmnopqrstuvwxyz hijklmnopqrstuvwxyza ijklmnopqrstuvwxyzab jklmnopqrstuvwxyzabc klmnopqrstuvwxyzabcd"
   kw "$words" "${words:0:200}" "200-character cap" || return 1
+  done_ok
+}
+
+search_long_prompt_is_fast_keywords_from_its_start() {
+  # Review round 1, R1-1: a pasted log made the keyword jq quadratic (8.5 s at 150 KB, past the 3 s hook timeout).
+  # The script's own work stays far under its 1 s cap at any size, and the keywords come from the first 4000 characters.
+  local lines p want bad=""
+  need "$SCRIPT" || return 1
+  newroot || return 1
+  memdir -home-justin-app; CWD=/home/justin/app
+  ctl '.query = {"claude-app": [{snippet: "a strong note", score: 0.9}]}'
+  want='gateway build failing desktop today nov node 3000000 req 00000000 took path api items status 500'
+  for lines in 50 500 1500; do   # about 5, 50 and 150 KB: a journalctl-like paste after the question
+    p=$(printf 'why is the gateway build failing on the desktop today\n'
+        for ((i = 0; i < lines; i++)); do
+          printf 'Nov 07 09:%02d:%02d desktop node[%d]: req %08x took %d ms path /api/v1/items/%d status 500\n' \
+            $((i / 60 % 60)) $((i % 60)) $((3000000 + i)) $((i * 2654435761 % 4294967296)) $((i % 900 + 1)) $((i * 7919))
+        done)
+    reset_logs
+    hook search "$(prompt_payload "$p")"
+    echo "# ${#p}-character prompt ($lines log lines): exit $rc, $ms ms, queries $(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")"
+    [ "$rc" = 0 ] && grep -qF 'a strong note' <<<"$out" || bad+="[$lines lines] exit $rc, no context; "
+    [ "$(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")" = "$(jq -nc --arg q "$want" '[$q]')" ] || bad+="[$lines lines] query; "
+    [ "$ms" -lt 1000 ] || bad+="[$lines lines] took $ms ms; "
+  done
+  p=$(yes ab | head -n 100000 | tr '\n' ' ')                            # 300 KB of 2-letter words: no keyword at all
+  reset_logs
+  hook search "$(prompt_payload "$p")"
+  echo "# ${#p}-character prompt of 2-letter words: exit $rc, $ms ms, stub requests $(nreq)"
+  [ "$rc" = 0 ] && [ -z "$out" ] && [ "$(nreq)" = 0 ] || bad+="[2-letter words] exit $rc, output or a request; "
+  [ "$ms" -lt 1000 ] || bad+="[2-letter words] took $ms ms; "
+  # the 4000-character window ends inside a token: the token is not cut into a keyword (a cut ghp_ token would pass the
+  # secret filter, which needs 16 characters), and the words after the window are not used
+  p="fix the gateway $(yes aa | head -n 1326 | tr '\n' ' ')ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 check deploy logs"
+  [ "${p:3994:4}" = ghp_ ] || fail "fixture: the token does not straddle character 4000" || return 1
+  reset_logs
+  hook search "$(prompt_payload "$p")"
+  echo "# window ends inside a ghp_ token: queries $(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")"
+  [ "$(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")" = '["fix gateway"]' ] || bad+="[window] query; "
+  ! grep -qiF 'ghp_' "$S/requests.jsonl" || bad+="[window] part of the ghp_ token reached a request; "
+  [ -z "$bad" ] || fail "$bad" || return 1
   done_ok
 }
 
