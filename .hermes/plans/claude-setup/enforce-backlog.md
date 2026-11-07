@@ -159,3 +159,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-06 | elementor-map | figma-to-bricks | test: a test/web case where readSection must load a below-the-fold loading=lazy img before reading (or compareReadings reports a picture the paste shows but the site never loaded); runs in npm run test:web | offered
 - 2026-11-07 | web-code-page | figma-to-bricks | test: site-page-proof compares glyph ink of each heading and bold run, site vs paste, at 1440 (within 10%), in npm run test:web | offered
 - 2026-11-07 | web-code-page | feature-dispatch | script: brief template line "AC clauses changed: none | amendment <n>"; a pre-dispatch check refuses a builder/fixer brief naming an AC or "leave … to <job>" without it | offered
+- 2026-11-07 | web-code-page | figma-to-bricks | test helper: test/browser/chrome.ts Page.screenshot() throws when clip.width or clip.height < 1, with a unit test using a stub send | offered
