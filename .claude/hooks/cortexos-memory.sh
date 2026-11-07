@@ -65,9 +65,14 @@ slug_of_key() { # slug_of_key <project key>: lower-case slug, or "" for the home
   printf '%s' "$s"
 }
 space_of_slug() { if [ -z "$1" ]; then printf 'claude-shared'; else printf 'claude-%s' "$1"; fi; }
+memspace() { # memspace <project key>: sets mspace to the space of ~/.claude/projects/<key>/memory; fails if there is none
+  local m="$HOME/.claude/projects/$1/memory" real
+  [ -n "$1" ] && [ -d "$m" ] && real=$(cd -P "$m" 2>/dev/null && pwd -P) || return 1
+  mspace=$(space_of_slug "$(slug_of_key "$(basename "$(dirname "$real")")")")
+}
 
 search() {
-  local fields skip cwd q pkey memdir real space min i n=0 allok=1
+  local fields skip cwd tpath q p mspace space=claude-shared min i n=0 allok=1
   # Linear in the prompt: jq's global regex matches (scan, splits) slow down with the square of the string length,
   # so the 3-word check is one regex test, the keywords come from the first 4000 characters only, cut back to the end
   # of the last whole token (a cut sk-/ghp_ token would be too short for the secret filter), and the de-duplication
@@ -84,16 +89,26 @@ search() {
        | map(select((test("^(sk|ghp|gho|ghs|xox[a-z]|akia|eyj)") and length >= 16) or (length >= 20 and test("[0-9]") and test("[a-z]")) | not))
        | reduce .[] as $w ([]; if length >= 16 or index([$w]) then . else . + [$w] end)
        | join(" ") | .[0:200]) as $q
-    | [$skip, ((.cwd // "") | tostring | gsub("[\\x00-\\x1f]"; "")), $q] | join("\u001f")' <<<"$payload" 2>/dev/null) || return 0
-  IFS=$'\x1f' read -r skip cwd q <<<"$fields"
+    | [$skip, ((.cwd // "", .transcript_path // "") | tostring | gsub("[\\x00-\\x1f]"; "")), $q] | join("\u001f")' <<<"$payload" 2>/dev/null) || return 0
+  IFS=$'\x1f' read -r skip cwd tpath q <<<"$fields"
   [ "$skip" = 0 ] && [ -n "$q" ] || return 0
   down_recent && return 0
 
-  space=claude-shared
-  pkey=${cwd//[^A-Za-z0-9]/-}
-  memdir="$HOME/.claude/projects/$pkey/memory"
-  if [ -n "$cwd" ] && [ -d "$memdir" ] && real=$(cd -P "$memdir" 2>/dev/null && pwd -P); then
-    space=$(space_of_slug "$(slug_of_key "$(basename "$(dirname "$real")")")")
+  # The project space. Claude Code keeps one memory folder per repo, shared by its subfolders and worktrees, and the
+  # session's cwd moves into them: take the cwd's own memory folder (key = cwd with every non-alphanumeric character
+  # turned into -), else the nearest parent folder's that is a project's (the home folder's is claude-shared), else
+  # the session's own project folder's (the folder that holds transcript_path), else none: only claude-shared.
+  if memspace "${cwd//[^A-Za-z0-9]/-}"; then space=$mspace
+  else
+    p=$cwd
+    while [[ $p == */?* ]]; do
+      p=${p%/*}
+      memspace "${p//[^A-Za-z0-9]/-}" && [ "$mspace" != claude-shared ] && { space=$mspace; break; }
+    done
+    if [ "$space" = claude-shared ] && [[ $tpath == */*/* ]]; then
+      p=${tpath%/*}; p=${p##*/}
+      memspace "${p//[^A-Za-z0-9]/-}" && space=$mspace
+    fi
   fi
   query_one() { # query_one <space> <n>: POST /v1/query, response in $tmp/<n>, HTTP code in $tmp/<n>.code
     printf '%s' "$q" | jq -Rsc --arg s "$1" \

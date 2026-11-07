@@ -34,7 +34,7 @@ ac3_search_sends_keywords_not_prompt ac4_search_fails_open_fast ac5_no_request_w
 ac6_down_marker_skips_then_retries ac7_skips_commands_short_prompts_and_subagents ac8_key_and_prompt_never_in_argv
 ac9_save_memory_note_parts ac10_save_replaces_changed_note_only ac11_save_skill_lesson_only
 ac12_reconcile_backfills_once ac13_settings_register_cortexos_hooks
-search_long_prompt_is_fast_keywords_from_its_start"
+search_long_prompt_is_fast_keywords_from_its_start search_space_from_subfolder_worktree_or_session"
 
 fail() { echo "FAIL: $*"; return 1; }
 need() { [ -e "$1" ] || fail "missing $1 (not built yet)"; }
@@ -231,10 +231,10 @@ note() { # note <file> <description> <body>: a memory note with frontmatter
 }
 
 # ---- payloads ----
-prompt_payload() { # prompt_payload <prompt> [agent_id]   (cwd = $CWD; the prompt goes through a file: argv caps one at 128 KB)
-  printf '%s' "$1" >"$S/prompt.txt"
-  jq -nc --rawfile p "$S/prompt.txt" --arg cwd "$CWD" --arg a "${2:-}" \
-    '{session_id: "s1", transcript_path: "/x/t.jsonl", cwd: $cwd, permission_mode: "auto",
+prompt_payload() { # prompt_payload <prompt> [agent_id]   (cwd = $CWD, transcript_path = ${TP:-/x/t.jsonl}; the prompt
+  printf '%s' "$1" >"$S/prompt.txt"                     # goes through a file: argv caps one argument at 128 KB)
+  jq -nc --rawfile p "$S/prompt.txt" --arg cwd "$CWD" --arg tp "${TP:-/x/t.jsonl}" --arg a "${2:-}" \
+    '{session_id: "s1", transcript_path: $tp, cwd: $cwd, permission_mode: "auto",
       hook_event_name: "UserPromptSubmit", prompt: $p}
      + (if $a == "" then {} else {agent_id: $a, agent_type: "general-purpose"} end)'
 }
@@ -434,6 +434,36 @@ search_long_prompt_is_fast_keywords_from_its_start() {
   echo "# window ends inside a ghp_ token: queries $(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")"
   [ "$(jq -sc '[.[].body.query] | unique' "$S/requests.jsonl")" = '["fix gateway"]' ] || bad+="[window] query; "
   ! grep -qiF 'ghp_' "$S/requests.jsonl" || bad+="[window] part of the ghp_ token reached a request; "
+  [ -z "$bad" ] || fail "$bad" || return 1
+  done_ok
+}
+
+search_space_from_subfolder_worktree_or_session() {
+  # Review round 1, R1-2: Claude Code keeps one memory folder per repo, shared by its subfolders and worktrees, and a
+  # session's cwd moves into them. The project space comes from the cwd's memory folder, else from the nearest parent
+  # folder with a project memory folder, else from the session's own project folder (the transcript's), else none.
+  local bad="" P='fix the header bar alignment on the phone menu'
+  need "$SCRIPT" || return 1
+  newroot || return 1
+  memdir -home-justin; memdir -home-justin-proj-app; memdir -home-justin-proj
+  linkdir -home-justin-Leorna-leorna-control-plane -Users-justin-Leorna-leorna-client
+  spaces() { # spaces <cwd> <transcript_path> <want, sorted JSON>
+    reset_logs; CWD=$1; TP=$2
+    hook search "$(prompt_payload "$P")"
+    got=$(jq -sc '[.[].body.space_id] | sort' "$S/requests.jsonl")
+    echo "# cwd $1, transcript ${2#"$H"/}: $got"
+    [ "$got" = "$3" ] || bad+="[$1 | $2] $got, want $3; "
+  }
+  spaces /home/justin/proj/app/.claude/worktrees/header-bar /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  spaces /home/justin/proj/app/frontend/src /x/t.jsonl '["claude-proj-app","claude-shared"]'
+  spaces /home/justin/Leorna/leorna-control-plane/.claude/worktrees/86bcm901y /x/t.jsonl '["claude-leorna-leorna-client","claude-shared"]'
+  spaces /home/justin/elsewhere-wt/header-bar "$H/.claude/projects/-home-justin-proj-app/s1.jsonl" '["claude-proj-app","claude-shared"]'
+  spaces /home/justin/proj /x/t.jsonl '["claude-proj","claude-shared"]'                                   # its own folder first
+  spaces /home/justin/proj "$H/.claude/projects/-home-justin-proj-app/s1.jsonl" '["claude-proj","claude-shared"]'
+  spaces /home/justin/no/project/here "$H/.claude/projects/-home-justin/s1.jsonl" '["claude-shared"]'     # home: shared, once
+  spaces /home/justin/no/project/here /x/t.jsonl '["claude-shared"]'
+  spaces /home/justin/no/project/here "$H/.claude/projects/-home-justin-nothing/s1.jsonl" '["claude-shared"]'
+  TP=
   [ -z "$bad" ] || fail "$bad" || return 1
   done_ok
 }
