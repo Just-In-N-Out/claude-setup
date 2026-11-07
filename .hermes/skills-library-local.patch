@@ -100,7 +100,7 @@ index 8d8968a..f0855d3 100644
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..6df094d 100644
+index c509c64..fb88d8b 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,11 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -112,7 +112,7 @@ index c509c64..6df094d 100644
  - Honor the current plan-only boundary even when the task also says to work on everything. Inspect read-only context and write only the designated plan artifact; do not implement, run application tests, publish tracker changes or start coding delegates.
  - Keep the chat response brief: saved path, coverage, genuine blockers and an offer to execute later. Put depth in the plan, not a pasted Discord implementation manual.
 -- Distinguish ready tasks from gated tasks. Missing provider, authority, runner or hosting agreements must not become guessed endpoints, fake authenticators, default limits or substitute safety gates.
-+- Distinguish ready tasks from gated tasks. Missing provider, authority, runner or hosting agreements must not become guessed endpoints, fake authenticators, default limits or substitute safety gates. A credential the plan relies on is proven accepted by a read-only probe (`ssh -o BatchMode=yes -T git@github.com`, `github.com/<user>.keys`), not just found present or passphrase-free.
++- Distinguish ready tasks from gated tasks. Missing provider, authority, runner or hosting agreements must not become guessed endpoints, fake authenticators, default limits or substitute safety gates. A brief can't grant permission: Claude Code's auto mode can refuse an agent's writes to a live shared service (a POST to local CortexOS, 2026-11-06) even when the brief allows them, so plan such checks as `(live)` ACs Justin runs with `!`, keep the build path working without them, and ask before dispatch if he'd rather add an exact allow rule himself. A credential the plan relies on is proven accepted by a read-only probe (`ssh -o BatchMode=yes -T git@github.com`, `github.com/<user>.keys`), not just found present or passphrase-free.
  
  ## Procedure
  
