@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 5c5284b3-7db9-45f0-9917-75e10c4dea95
-  modified: 2026-11-07T00:53:36.797Z
+  modified: 2026-11-07T15:09:27.000Z
 ---
 
 Runbook for a personal control-plane test server, so the desktop client can sign in and sync. Done 2026-10-06 on Justin's Mac (Apple Silicon). Christian said to use the installer, that it costs "a few cents", and to delete everything once the work is tested and merged to main.
@@ -39,6 +39,7 @@ Runbook for a personal control-plane test server, so the desktop client can sign
 9. Before testing sync (Christian): in admin, create a team, add a project, and assign the team to the project.
 
 ## Servers
+- **Status 2026-11-07 (Claude Code): new install STARTED** to test fresh main (control plane `3e5d743`, client `66d0a75`, both pulled ff-only over HTTPS via gh; SSH key locked). Launcher runs from local main via `~/.hermes/cache/scratch/leorna-install-2026-11-07/launch.sh` with `LEORNA_PREBUILT_IMAGE=ghcr.io/leornaai/control-plane:<full main SHA>` (CI's "Publish control-plane image" pushes a per-SHA tag; checked 200 on ghcr) so the server is exactly the pulled main, not whatever `latest` is; no Docker needed. Deploy log: that scratch folder's `deployment.log`. The repo's old `deployment.log` ends with the 2026-10-16 teardown failing on 2 ClickHouse deployments (`insufficient permissions: write deployment`), so leftovers may remain in that Scaleway project. Domain: record here once the wizard shows it.
 - **Status 2026-10-20 (Hermes check):** neither of the two servers below resolves in DNS any more (Christian's still does), so both are probably torn down. Confirm with Justin, check Scaleway for leftover MongoDB/ClickHouse (the installer doesn't delete them, see Gotchas) and IAM keys, then move them under Older.
 - **Justin's NEWEST server (named by Justin 2026-10-16, "a real server that I have set up"):** `leorna90809ddd-control-plane.functions.fnc.fr-par.scw.cloud`, tenant "Dev Admin" `0339ae47-3012-445f-b815-e66885f11e2a`. Discovery OK, dev sign-in redirect OK, context endpoints present (2026-10-16 checks). Used for the 86bbu3xmt context-switching live test. Keep the URL private (dev mode).
 - **Justin's demo server (LIVE since 2026-10-15 ~20:15Z):** `leornafed4e439-control-plane.functions.fnc.fr-par.scw.cloud`, tenant "Dev Admin" `0ffbebfe-8d71-4c56-805d-04aafa5654de`, installed from main via the prebuilt image for Justin's admin-setup video. Admin data: team `Leorna-Demo`, project `Leorna` (expires 2026-11-14), team default = Leorna starter pack 1.1.1. Scaleway project name not recorded (Justin made a new empty one). Tear it down with the steps below once Justin no longer needs it, and remind him.
