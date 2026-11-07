@@ -109,8 +109,9 @@ docker run --rm --name $J-rust --network $J-net --memory 10g --memory-swap 10g -
   -v "$WT":/src -v $J-target:/src/target -v $J-cargo:/usr/local/cargo/registry \
   -e CARGO_BUILD_JOBS=4 -e CI_POSTGRES_USER=cortexos -e CI_POSTGRES_DB=cortexos -e CI_POSTGRES_PASSWORD=$PW \
   -e CI_POSTGRES_ENDPOINTS=$J-pg:5432 -e CI_DB_ARTIFACT_DIR=/src/artifacts/db -w /src \
+  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) \
   rust:1.94.1-trixie@sha256:652612f07bfbbdfa3af34761c1e435094c00dde4a98036132fca28c7bb2b165c \
-  bash -c 'set -o pipefail; mkdir -p /src/artifacts
+  bash -c 'set -o pipefail; mkdir -p /src/artifacts; trap "chown -R \$HOST_UID:\$HOST_GID /src/artifacts" EXIT
     apt-get update -qq && apt-get install -y -qq postgresql-client shellcheck >/dev/null
     rustup component add rustfmt clippy
     cargo fmt --all -- --check;                               echo "G1 fmt EXIT=$?"
@@ -124,7 +125,7 @@ docker run --rm --name $J-rust --network $J-net --memory 10g --memory-swap 10g -
 docker rm -f -v $J-pg; docker network rm $J-net
 ```
 
-`artifacts/` is written inside the worktree by db-gate. It is untracked: keep it out of commits (`git status --porcelain` must show only the intended files) and copy the receipts to the evidence folder. Use a fresh `$J-pg` for every G5 run.
+`artifacts/` is written inside the worktree by db-gate, as root, which is why the script ends with the `chown` trap (planner hit this: without it the host user gets `Permission denied` deleting it). It is untracked: keep it out of commits (`git status --porcelain` must show only the intended files) and copy the receipts to the evidence folder. Use a fresh `$J-pg` for every G5 run.
 
 ## Tasks (builder)
 
@@ -283,7 +284,8 @@ docker run --rm -v "$PWD/local/data:/data" alpine:3.20 rm -rf /data/postgres
 docker run --rm --memory 10g --memory-swap 10g --cpus 8 -e CARGO_BUILD_JOBS=4 \
   -v <src>:/src -v $J-reltarget:/src/target -v $J-cargo:/usr/local/cargo/registry -w /src \
   rust:1.94.1-trixie@sha256:652612f07bfbbdfa3af34761c1e435094c00dde4a98036132fca28c7bb2b165c \
-  bash -c 'cargo build -p cortexos-api --release --locked && install -m 0755 target/release/cortexos-api /src/.image/cortexos-api'
+  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) \
+  bash -c 'cargo build -p cortexos-api --release --locked && install -D -m 0755 target/release/cortexos-api /src/.image/cortexos-api && chown -R "$HOST_UID:$HOST_GID" /src/.image'
 ```
 
   Then package `<src>/.image/` with a Dockerfile identical to `infra/api/Dockerfile`'s runtime stage (`FROM docker.io/debian:trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a`, the same apt line, `COPY cortexos-api /usr/local/bin/`, `USER 10001:10001`, `CMD ["cortexos-api"]`).
@@ -381,6 +383,7 @@ render() { # <log> <png> <title>
 - **Seaweed healthcheck (Q2, recommend its own card):** `docker-compose.yml:118` runs `curl -fsS http://localhost:8888/`, but `chrislusf/seaweedfs:3.80` is Alpine without curl (health log: exit 127 `/bin/sh: curl: not found`). Busybox `wget` exists, but `localhost` resolves to `::1` first and SeaweedFS listens on IPv4 only ("Connection refused"); `wget -q -O /dev/null http://127.0.0.1:8888/` succeeds. Proposed check: `["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8888/ || exit 1"]`. Present since the first compose file (224857e, 2026-01-06; the image tag is from the same commit). Nothing depends on that health status (no `condition: service_healthy` on seaweed).
 - **Baseline session settings persist (P3):** baseline-v2's pg_dump header (`SET statement_timeout = 0; … SET row_security = off;`, lines 15-23) runs inside SQLx's transaction and so persists on the migration connection; in single-URL mode that connection then serves traffic. Local-only mode, superuser, low impact; `RESET search_path` here doesn't change it.
 - **`CORTEXOS_RELATIONS` is incomplete (P3):** it omits tables added by shared migrations (`memory_entity_aliases` is listed, but `memory_objects_cold`, `memory_snapshots_cold` and `memory_events_archive` are not). The classifier is unaffected today because the baseline tables are always present alongside.
+- **An intermittent DB test (P3, unrelated):** `tests::embedding_backfill::automatic_worker_recovers_after_process_restart` timed out once in 5 planner DB-gate runs, and two `embedding_backfill` tests after it failed on the jobs it left queued. Worth its own look if it recurs in CI.
 - **The stop-gap for anyone stuck before this lands:** append `?options=-csearch_path%3Dpublic` to `DATABASE_MIGRATION_URL`. The API then starts (run A-pin), but the old init's 8 orphan tables stay in schema `cortexos`, so once this fix lands that database is refused and must be recreated (README step).
 
 ## Appendix: code
@@ -955,7 +958,24 @@ if [[ "${FAILED}" -eq 0 ]]; then echo "RESULT ${MODE}: PASS"; else echo "RESULT 
 
 ## Plan validation (planner, throwaway exports of 262cf33; nothing in the repo)
 
-@@VALIDATION@@
+The plan's code was applied to throwaway `git archive 262cf33` exports in the session scratchpad (never the repo, a branch or a worktree) and run with the container gate recipe against fresh `pgvector/pgvector:pg16` databases, 2026-11-06 20:00-20:30 EST. Planner pre-checks do not replace the builder's own RED/GREEN runs and evidence on the story branch.
+
+| Run | Tree | fmt | clippy | build | DB gate | Tally | New tests |
+|---|---|---|---|---|---|---|---|
+| Base | 262cf33 unchanged | n/a | n/a | 0 | PASSED (executed) | 380 / 0 / 0 | n/a |
+| RED (Task 1 only) | base + DB test module + registration + AC5 unit test | 0 | n/a | 0 | FAILED (tests_failed), as intended | 329 passed / 4 failed / 0 ignored | the 4 below fail |
+| GREEN ×2 | base + Tasks 1-4 | 0 (second run, after the one rustfmt fix now in this plan) | 0 (`scripts/ci/retrieval-cargo.py clippy`) | 0 | PASSED (executed) | **386 / 0 / 0** | all 6 `ok` |
+
+RED messages (verbatim, base code):
+- `db_fresh_database_with_role_named_schema_migrates_into_public`: `left: Err("baseline-v2 migration failed: while executing migration 1000000: error returned from database: relation \"public._sqlx_migrations\" does not exist at line 429") right: Ok(Blank)`, the reported error, reproduced in CI's own lane.
+- `db_migrations_ignore_cortexos_names_off_the_search_path`: the same 42P01.
+- `db_migrations_refuse_cortexos_objects_in_role_named_schema`: the refusal assertion prints the same 42P01, with no "CortexOS objects outside schema public".
+- `postgres_init_scripts_create_only_extensions`: `left: ["CREATE EXTENSION IF NOT EXISTS pgcrypto;", "CREATE EXTENSION IF NOT EXISTS vector;", "DO $$", … create_graph …]`.
+
+Also observed:
+- **An unrelated intermittent failure:** in 1 of 5 DB-gate runs (a RED run), `tests::embedding_backfill::automatic_worker_recovers_after_process_restart` hit its 40 s child-process timeout ("automatic worker left queued jobs unembedded after restart/provider recovery"). The two `embedding_backfill` tests after it then failed on the jobs it left queued (`scheduler_capability_is_bounded_scoped_and_rollback_safe`, `worker_tick_obeys_500_job_bound_and_disabled_provider_preserves_queue`). The identical tree rerun passed all three, and base and both GREEN runs passed them. If it recurs, rerun once and record both logs. Don't treat it as a regression of this story; it sorts before the new module and shares none of its state.
+- **The acceptance script:** `bash -n` and `shellcheck` v0.10.0 clean. Against the base image (from a clean export): `fresh` → `FAIL fresh: startup migrations run 1: migrations: baseline-v2 migration failed: … relation "public._sqlx_migrations" does not exist at line 429`; `upgrade` base vs base → `PASS ci-layout (312 fingerprint lines)`, `PASS age-layout (673)`; `split` → `FAIL split: wrong refusal: … function "cortexos_authenticate_workspace_api_token" already exists`. `stale-init` needs a git checkout (`git show`), so it was not run in the export; its scenario is run A plus the guard.
+- **Not pre-checked by the planner:** any head API image (so the script's head column for AC1, AC3 and AC4), mutants M1-M4, AC6, G4 and G6 on the planned change, and the Task 5 docs.
 
 ## Completion contract
 

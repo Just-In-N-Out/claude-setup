@@ -19,14 +19,15 @@ index 7fc2b43..905e163 100644
  
  # Adversarial Verification Loop
 diff --git a/skills/backend-data-migrations/SKILL.md b/skills/backend-data-migrations/SKILL.md
-index d8e25dc..98606f4 100644
+index d8e25dc..da8c1c3 100644
 --- a/skills/backend-data-migrations/SKILL.md
 +++ b/skills/backend-data-migrations/SKILL.md
-@@ -27,7 +27,7 @@ For scoped durable execution stores, use [PostgreSQL validation lessons](referen
+@@ -27,7 +27,8 @@ For scoped durable execution stores, use [PostgreSQL validation lessons](referen
  ## Rules
  1. Never edit an already-applied migration.
  2. Ship backwards-compatible migrations first.
 -3. Validate reads/writes against both old and new schema during transition.
++2a. Unqualified DDL and a runner's ledger (SQLx `_sqlx_migrations`, `schema_migrations`) resolve through `search_path` (`"$user", public`): any schema named like the migration role, such as an Apache AGE graph named after it, silently captures them, even one created mid-migration. Pin `SET search_path TO public` on the migration session (reset it if that connection then serves traffic) and test with a role-named schema in a scratch DB. SQLx's "at line N" in a Postgres error is the server's C source line (`namespace.c:429`), not a migration-file line (CortexOS fresh-DB crash, 2026-11-06).
 +3. Validate reads/writes against both old and new schema during transition. Prove a new migration on existing rows with a real fill: store tests often clean up after themselves (Leorna's do), so fill a throwaway DB from the base code (Go: a `go test -overlay` probe with no cleanup), then apply the migration with the real runner, check the rows are unchanged and defaults hold, and run down and up again (when the runner can only roll back everything, as Leorna's `RollbackMigrations`: apply the real down file plus `DELETE FROM schema_migrations WHERE version=<n>` in one `psql --single-transaction`, then let the real apply re-run it through a no-reset overlay probe, with an md5 over the original columns before and after each step; 901y PR verifier). When the server applies migrations at startup (Leorna's `cmd/control-plane`), the real binaries are quicker: fill through the base binary, start head's to apply, run the down by psql as above, start head's again, with a per-table md5 between steps (when the migration adds columns or rows, project each table on its pre-migration columns from `information_schema` and compare sorted `COPY (SELECT <old columns> …)` output with `comm -23`, old rows lost or changed, which must be 0, and `comm -13`, rows added; 901r verifier 3) and a base-binary restart as the control (902a verifier 2, ~10 s), run after the down and before the re-up: the runner refuses to start when an applied migration is missing from its embedded set ("applied migration N is missing from embedded migrations"), so a deploy rollback needs the down first; say so in the PR's rollback notes (86bcm901z verifier). Match constraint text as Postgres prints it: keyword columns come back quoted, `CHECK (("position" >= 0))` (901y verifier); and pin the SQLSTATE of the FK's own action: `ON DELETE RESTRICT` raises 23001 `restrict_violation`, while 23503 is NO ACTION's, the default (86bcm901z builder).
  
  ## Mandatory Validation and Agent Defect Loop
@@ -99,7 +100,7 @@ index 8d8968a..f0855d3 100644
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..248d886 100644
+index c509c64..6df094d 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,11 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -120,7 +121,7 @@ index c509c64..248d886 100644
  Extract the goal, included work, exclusions, acceptance and allowed side effects from the current request. Resolve an obvious interpretation autonomously; ask one brief question only when genuinely different interpretations change the plan.
  
 -**Done:** one-sentence goal and a finite scope; historical work is not silently resumed or called incomplete.
-+Number the acceptance criteria and name each one's test. When the request or card states none, write proposed ones from it: observable Given/When/Then outcomes, marked **proposed** near the top of the plan so the user approves them with it. Never reword or replace stated criteria; a fact only the user or team can decide stays an open question, not a criterion. Word a base-vs-head criterion's allowed difference by its rule ("exactly the variants that split, and each of them does"), not by a test's cases ("only AC1's cases differ"): fix rounds add variants to supporting tests, and a case-based wording needs an amendment every round. When a criterion allows an optional field ("carries only X and an optional Y"), its test also sends one accepted request using Y and checks what is stored: a contract field-list check alone lets a runtime refusal or a dropped value pass (86bcm902w AC5 auditor).
++Number the acceptance criteria and name each one's test. When the request or card states none, write proposed ones from it: observable Given/When/Then outcomes, marked **proposed** near the top of the plan so the user approves them with it. Never reword or replace stated criteria; a fact only the user or team can decide stays an open question, not a criterion. Word a base-vs-head criterion's allowed difference by its rule ("exactly the variants that split, and each of them does"), not by a test's cases ("only AC1's cases differ"): fix rounds add variants to supporting tests, and a case-based wording needs an amendment every round. When a criterion allows an optional field ("carries only X and an optional Y"), its test also sends one accepted request using Y and checks what is stored: a contract field-list check alone lets a runtime refusal or a dropped value pass (86bcm902w AC5 auditor). Prove each planned RED by applying only the test hunk to a clean export of the base and running it: a test that calls a function the fix introduces doesn't compile on base, so it can't be the RED for a behaviour; keep such helper tests with their helpers (CortexOS fresh-DB planner, 2026-11-06).
 +
 +**Done:** one-sentence goal, a finite scope and numbered acceptance criteria (stated or proposed); historical work is not silently resumed or called incomplete.
  

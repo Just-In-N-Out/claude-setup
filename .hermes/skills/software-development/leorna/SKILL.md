@@ -13,7 +13,7 @@ metadata:
 
 # Leorna
 
-Justin's work project: two Go repos in `~/Leorna/` (`leorna-client`, the Wails desktop app + tool connectors; `leorna-control-plane`, the server). Hermes sessions start in `~`, so the repos' `AGENTS.md` never auto-load; this skill is the entry point.
+Justin's work project: two Go repos in `~/Leorna/` (`leorna-client`, the Wails desktop app + tool connectors; `leorna-control-plane`, the server). Also `~/Leorna/cortexos` (agent memory service, Rust/sqlx, no `AGENTS.md`: read its README, Makefile, `.github/workflows/ci.yml`, `scripts/ci/db-gate.py`; the desktop has no Rust, so gates run in a capped `rust:1.94.1-trixie` container against `pgvector/pgvector:pg16`) and `~/Leorna/telepathy` (Rust handoff library over CortexOS). Hermes sessions start in `~`, so the repos' `AGENTS.md` never auto-load; this skill is the entry point.
 
 Source of truth is the **shared Claude Code memory** (one folder serves both repos; Claude Code keeps it current). This skill holds only the load order, the hard rules, and Hermes-specific differences. Never copy story state into this skill: it goes stale.
 
