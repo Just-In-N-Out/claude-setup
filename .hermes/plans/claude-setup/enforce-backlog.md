@@ -185,3 +185,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-08 | 86bccndx6 | feature-dispatch ac-verification | script: ac-check.sh rejects a base_log whose only build error is 'no non-test Go files' (or 'setup failed') as a missing-package failure, in its base_log check | offered
 - 2026-11-08 | site-motion | feature-dispatch | script: by-name AC checker warns when a test() sits inside a for loop and the pattern is anchored to one variant | offered
 - 2026-11-08 | site-motion | figma-to-bricks | SessionStart hook after a reboot: list tracked files of exactly 8388608 bytes in every worktree | offered
+- 2026-11-08 | capture-speed | figma-to-bricks | test: assert capture-speed-same.test.ts's FIXTURES equals the fixtures test/web captures, in npm run check | offered
