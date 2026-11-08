@@ -294,3 +294,9 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - 2026-10-30 86bcm901z PR finisher | P3 status: PR #105 is BEHIND main 9135f4e (#104 merged 05:29 UTC during the push-approval wait); merges with no conflict; CI's refs/pull/105/merge (tree ddf88fc) and a local prediction on that tree are green.
 - 2026-10-30 86bcm901z reviewer 5 | P3, main's content (not this story): `internal/library/curation/curation.json:613` and `:619` still say the 1.0.0 agents stay "in content.lock.json and in the starter seed until 86bcm901r"; #102 (901r) has merged and `internal/library/README.md` says 901r leaves the seed as it is, so the "until" wording is stale.
 - 2026-10-30 86bcm901z post finisher | P3 docs: PR #105's live body still says the mutation checks, Chrome captures, release-B run and migration fill were "not re-run on caf5d96" and names only 4904333 under "Verification so far"; verifier-pr/ and auditor-pr/ re-ran all of them on caf5d96. Understates; refresh needs Justin's OK.
+
+## 2026-11-07 — 86bcm928h-per-user-credentials planner
+- info: memory's 927y status says "Open PR #108 conflicts in delivery records", but #108 is merged into control-plane main c8abbdd and 927y has no PR, so 927y needs main brought in before its PR (`git merge-base --is-ancestor 0027786 origin/main` false; `gh pr list --search 927y` empty).
+- info: memory (leorna-control-plane-workflow.md:21) said the desktop lacks go/make/gcc; make and gcc are on PATH and the pinned toolchain is off PATH under ~/.local (memory line updated).
+- P3: the Windows CI job lists packages by name, so ./desktop, ./distribution, ./usage and ./handoff tests never run on Windows (.github/workflows/ci.yml windows-client step; known no-ci-changes gap).
+- P3: Makefile:10 `fmt` lists top-level packages by name, so a new top-level package would silently skip the gofmt check.
