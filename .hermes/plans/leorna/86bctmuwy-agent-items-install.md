@@ -1,6 +1,6 @@
 # 86bctmuwy-agent-items-install: install Agent items into Claude Code, Codex and Cursor
 
-**Status: APPROVED by Justin ("go", 2026-11-07): plan + every ⭐ answer (1A 2A 3A 4A 5A 6A) + AC1–AC11 as written. Builder: Opus 5.5 high.** Hand-over only at the end: no push, PR or ClickUp post until Justin says.
+**Status: AC1–AC11 + answers approved; AC12 awaiting Justin's OK.** Approved by Justin ("go", 2026-11-07): plan + ⭐ answers 1A 2A 3A 4A 5A + AC1–AC11 as written; answer 6A was then replaced by "Add AC12 now" (Revision 1, end of file). AC12, AC13 and the Revision 1 amendments (questions 7–8) wait for Justin's OK; the builder does not start Revision 1 work before it. Builder: Opus 5.5 high. Hand-over only at the end: no push, PR or ClickUp post until Justin says.
 
 ClickUp: [Install Agent items into local Claude Code, Codex and Cursor tool directories](https://app.clickup.com/t/86bctmuwy) (to do, assignee Justin, tag pi-2, list E4 - Distribution, no dependencies). Repo: `~/Leorna/leorna-client` only. Pipeline: Full.
 
@@ -21,9 +21,15 @@ ClickUp: [Install Agent items into local Claude Code, Codex and Cursor tool dire
 5. An agent named like a built-in agent (`general-purpose`, `explorer`…):
    - a ⭐ Skip it for that tool, with a warning
    - b Install it anyway
-6. Proof Cursor loads the file (no Cursor CLI on this desktop):
-   - a ⭐ Official docs + exact-byte tests; real check is a follow-up
-   - b Add a `(live)` AC: Justin opens Cursor and sees the agent
+6. Proof Cursor loads the file. **Answered (Revision 1): Justin chose "Add AC12 now", replacing 6A.** The Cursor CLI is now installed (`cursor-agent` 2026.11.05-86047df).
+   - ~~a Official docs + exact-byte tests; real check is a follow-up~~ (replaced)
+   - ✅ Add AC12: a real-Cursor check run by an agent (see Revision 1)
+7. (Revision 1, new) Cursor CLI 2026.11.05 never reads `~/.cursor/agents` (only project folders):
+   - a ⭐ Keep `~/.cursor/agents` (docs: editor); AC13 (live) checks the editor
+   - b Also write Cursor agents into the project's `.cursor/agents`
+8. (Revision 1, new) Cursor's own parser keeps YAML quotes in the description:
+   - a ⭐ Write Cursor's description as one plain line
+   - b Keep JSON quotes (Cursor shows the quotes)
 
 Why the ⭐s: 1a is Justin's own planner note ("never overwrite or delete a file Leorna did not write"). 2a keeps a "read-only" agent from silently getting write tools. 3a keeps every Sync that works today working (today every agent is skipped harmlessly; a hard failure would be a regression). 4a follows the existing removal rule all kinds share (consistency note). 5a: the agent would either replace the tool's own agent or be hidden by it, and Leorna can't tell which, so "installed" could be false. 6a: Cursor's docs are clear and current, but no Cursor binary exists here to load the file.
 
@@ -53,7 +59,10 @@ Root cause (why agents are skipped): when the client was written, no tool's agen
 - AC10 (proposed): Given automatic updates are on, when a startup check finds a new bundle that adds an agent, then only tools a confirmed manual Sync enrolled get the agent file, and before any confirmed Sync no agent file is written anywhere — test: TestStartupSyncInstallsAgentsOnlyForConfirmedTools
 - AC11 (proposed): Given HOME, USERPROFILE, CODEX_HOME, CLAUDE_CONFIG_DIR and the XDG folders point at an empty decoy folder, when an agent Sync runs for all three tools, then nothing appears in the decoy and the only files written are the expected ones under the test's own roots — test: TestAgentSyncTouchesNoRealHome
 
-No AC is `(live)`. AC4 and AC5 are agent-run real-tool tests, gated by `LEORNA_TEST_CLAUDE_BIN` / `LEORNA_TEST_CODEX_BIN` like the repo's other real-tool tests: they skip in CI, and the builder, verifier and auditor must run them with the variables set (commands in "Gates").
+- AC12 (proposed): Given the exact bytes Sync renders for Cursor, written and then updated through the Cursor connector into a workspace `.cursor/agents/` folder, when the real Cursor CLI (2026.11.05-86047df, throwaway HOME and config dirs, local fake Cursor API, no sign-in) prepares a run there, then the request context it sends lists that agent exactly once with the same name, the updated description without added quotes, and the instructions, and leaves out the `.leorna.bak` copy — test: TestCursorLoadsSyncedAgentFormat
+- AC13 (proposed) (live): Given a Sync that installed an agent for Cursor in `~/.cursor/agents/`, when Justin opens the Cursor editor on the same machine, then the agent appears in Cursor's subagent list with its name and description — test: TestCursorEditorShowsSyncedAgentLive (only if question 7 = a; Justin's check, recorded by the verifier as `not_run` until he confirms)
+
+No AC was `(live)` in the approved plan; Revision 1 adds AC13 `(live)` (question 7 a). AC4 and AC5 are agent-run real-tool tests, gated by `LEORNA_TEST_CLAUDE_BIN` / `LEORNA_TEST_CODEX_BIN` like the repo's other real-tool tests: they skip in CI, and the builder, verifier and auditor must run them with the variables set (commands in "Gates").
 
 **Plan code checked (planner, 2026-11-07, throwaway `git archive` of `7a83443`, removed afterwards):** T1–T6's production code and `sync.go` change, pasted from this file's code blocks, are gofmt-clean, `go build ./...` and `go vet ./toolconnector/... ./application/` pass, T1's two tests pass, and the "Rendered bytes" and AC6 warning texts below match what that code renders. `go test ./toolconnector/... ./application/... ./usage/... ./desktop/...` (no `-race`) then fails exactly the two existing tests this plan changes, `TestTransformersSkipAgentsWithDeterministicVisibleWarnings` and `TestSyncEndToEndWithLoginMockTLSAndRealWriters`; everything else passes. No AC test was written or run.
 
@@ -797,6 +806,8 @@ Run each mutant under the memory cap: `systemd-run --user --scope -p MemoryMax=4
 | M12 | Claude/Codex renderers return no file | AC4 / AC5 (real binaries) |
 | M13 | `guardAgentFiles` call removed from `sync.go` | AC7 |
 | M14 | Cursor transformer writes into `.cursor/agents/` (wrong root) | AC3, AC11 |
+| M15 | (Revision 1) Cursor renderer writes the description JSON-quoted again | AC12, T4 test |
+| M16 | (Revision 1) Cursor renderer returns no file | AC12 (real Cursor CLI) |
 
 Also run AC6–AC9/AC11 on the base export with the new test file plus copied helper to record that they fail there (they need `newBundleSyncFixture`/`agentBundle`, which are test helpers, so they compile; the assertions fail because no agent files are written). Save `red-base-7a83443.txt`.
 
@@ -827,6 +838,8 @@ Run the Gates on the final head; save `gates-<sha7>.txt`; take the AC captures (
 | AC9 | TestSyncRemovesUnassignedAgentOnlyWhenUnchanged | application | removal, edited file kept, partial run |
 | AC10 | TestStartupSyncInstallsAgentsOnlyForConfirmedTools | application | approvals/enrollment |
 | AC11 | TestAgentSyncTouchesNoRealHome | application | isolation |
+| AC12 | TestCursorLoadsSyncedAgentFormat | toolconnector/cursor (real, env-gated `LEORNA_TEST_CURSOR_BIN`) | update + `.leorna.bak` ignored; no added quotes |
+| AC13 (live) | TestCursorEditorShowsSyncedAgentLive (Justin's editor check, no Go test) | — | only if question 7 = a |
 
 Supporting: TestParseAgentReadsBuilderFrontmatterAndPlainBodies, TestParseAgentRefusesBodiesToolsCannotRead, TestClaudeCodeRendersAgentsAsProjectSubagents, TestCodexRendersAgentsAsAgentRoleFiles, TestCursorRendersAgentsAsUserSubagents, TestTransformersSkipUnreadableAgentsWithOneSortedWarning, TestGuardAgentFilesDecidesFromCurrentBytesAndBaseline.
 
@@ -845,6 +858,7 @@ make lint audit;                    echo "lint audit EXIT=$?"
 # real tools (agent-run; skip in CI):
 LEORNA_TEST_CLAUDE_BIN=/home/justin/.local/share/claude/versions/2.1.319 go test -mod=vendor ./toolconnector/claudecode -run '^TestClaudeLoadsSyncedAgent$' -count=1 -v; echo "AC4 EXIT=$?"
 LEORNA_TEST_CODEX_BIN=$(command -v codex) go test -mod=vendor ./toolconnector/codex -run '^TestCodexListsSyncedAgentRole$' -count=1 -v; echo "AC5 EXIT=$?"
+LEORNA_TEST_CURSOR_BIN=/home/justin/.local/share/cursor-agent/versions/2026.11.05-86047df/cursor-agent go test -mod=vendor ./toolconnector/cursor -run '^TestCursorLoadsSyncedAgentFormat$' -count=1 -v; echo "AC12 EXIT=$?"   # Revision 1
 ```
 
 `codex` is `/home/justin/.nvm/versions/node/v22.23.4/bin/codex` (0.165.0); its Node launcher needs the caller's `PATH`, which `codexEnv` passes. A command that dies with SIGTERM/143/137/"Killed" may be an earlyoom kill: check `journalctl -u earlyoom --since "-30 min" -o short-iso | grep sending` before reading it, and rerun under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`. `GOOS=windows go vet` is not a gate here (Cursor SQLite adapter needs cgo); CI's Windows job runs `./toolconnector/...`.
@@ -868,7 +882,9 @@ Capture as each check runs, never reconstructed later. One PNG per AC plus its l
 | AC10 | test PASS (Cursor only) | T8 | `ac10-startup-enrolled-only.png` |
 | AC11 | test PASS, plus a before/after fingerprint of the real folders (`for d in ~/.claude/agents ~/.codex/agents ~/.cursor/agents; do [ -e "$d" ] && find "$d" -printf '%P %s %T@\n' \| sort \|\| echo "$d absent"; done \| sha256sum`, read-only) taken around the full gate run; note Justin's own tools can change them | T12 | `ac11-isolation.png` |
 | gates | the three gates + real-tool runs with `EXIT=` lines | T12 | `gates-<sha7>.png` + `gates-<sha7>.txt` |
-| mutants | table of M1–M14 results | T10 | `mutations-<sha7>.png` + `.txt` |
+| AC12 | real Cursor CLI run: version line, the decoded request-context entry for `leorna-agent-check` (path, name, V2 description, instructions), the `.leorna.bak` count 0 | T9b | `ac12-cursor-real-load.png` |
+| AC13 (live) | Justin's screenshot of the Cursor editor's subagent list showing the synced agent (owed to Justin; only if question 7 = a) | after review | `ac13-cursor-editor-agent.png` |
+| mutants | table of M1–M16 results | T10 | `mutations-<sha7>.png` + `.txt` |
 
 If the AC6 harness can't be made to work within 20 minutes, use the terminal capture plus a `sqlite3`-free Go snippet in the test log showing `run_logs.files_json` warnings, and say so in the inventory; never stage a fake UI image.
 
@@ -920,3 +936,298 @@ If the AC6 harness can't be made to work within 20 minutes, use the terminal cap
 2. Low: the shared main checkout `~/Leorna/leorna-client` is 28 commits behind GitHub main (`f105e27` vs `7a83443`); T0 fast-forwards it.
 3. Low/medium (product, after merge): the control plane will keep telling admins agents aren't installed (`render/render.go:105-115`, `metric/content_usage.go:33-39`) until F1.
 4. Low: the Codex config reference page lists no `agents/` folder or `CODEX_HOME` rule for it; only the subagents page and source do (recorded in the research table).
+
+## Revision 1 (2026-11-07 ~21:05 EST, after "go"): AC12 real-Cursor check
+
+**Status:** AC1–AC11 and answers 1A–5A stay approved and unchanged. This section adds AC12 (agent-run), AC13 `(live)` and two amendments (questions 7–8), all **awaiting Justin's OK**. Until he answers, the builder builds the approved plan only (T0–T12), and T4 keeps its approved bytes.
+
+### What the probe proved (planner, throwaway `HOME`/`XDG_CONFIG_HOME`/`CURSOR_CONFIG_DIR` under `~/.cache/86bctmuwy-planner-r1`, removed afterwards; the real `~/.cursor` still doesn't exist)
+
+Binary: `~/.local/bin/cursor-agent` → `~/.local/share/cursor-agent/versions/2026.11.05-86047df/cursor-agent` (a Node bundle; the JS is readable).
+
+1. **No sign-in is needed, but no listing command exists.** `cursor-agent status` → `Not logged in`. `-p` needs an API key and the Cursor API. With `--api-key leorna-offline-fixture -e http://127.0.0.1:<port>`, the CLI talks to a local fake instead:
+   - `POST /auth/exchange_user_api_key` must return JSON `{"accessToken": <JWT-shaped string>}`. The CLI only checks it's a non-empty string (`index.js`, `loginWithApiKey`).
+   - Then unary Connect calls arrive with `application/proto` bodies: `aiserver.v1.DashboardService/*`, `ServerConfigService/GetServerConfig`, `AiService/GetUsableModels`, `AiService/GetDefaultModelForCli` and `AiService/AvailableModels`. An empty 200 body answers each one. The two model calls need one `ModelDetails{1 model_id, 3 display_model_id, 4 display_name}`, or the CLI stops with "No model found".
+   - With `--model gpt-5`, stream-json prints `{"type":"system","subtype":"init",…,"model":"GPT-5"}`. It then opens `agent.v1.AgentService/RunSSE` (`application/connect+proto`) and sends the prompt through `aiserver.v1.BidiService/BidiAppend`, hex-encoded in field 1 or gzipped.
+   - The scratch `cli-config.json` needs `"network":{"useHttp1ForAgent":true}` so a plain-HTTP fake works.
+2. **The CLI sends its agent list only when the server asks.** The fake streams one `AgentServerMessage{2: ExecServerMessage{1 id=1, 15 exec_id="e1", 10 request_context_args={}}}`. The bytes are `12 08 08 01 7a 02 65 31 52 00`, framed `00 <u32 len>`. The CLI answers in `BidiAppend` with its `RequestContext`, whose field `22 custom_subagents` holds each agent's path, name, description, model, prompt and source. The field numbers come from the bundle's descriptors: `AgentServerMessage|1 interaction_update…|2 exec_server_message`, `ExecServerMessage|1 id 13|15 exec_id 9|…|10 request_context_args`, `RequestContext|…|22 custom_subagents`.
+3. **Folders it reads (CLI 2026.11.05):** only the workspace's `.cursor/agents/`, `.claude/agents/` (source `claude`, on by default) and `.grok/agents/`, plus plugins.
+   - In the decoded request context, `probe-project-agent` (in `<project>/.cursor/agents/`) appeared, and `probe-claude-agent` (in `<project>/.claude/agents/`) appeared.
+   - `probe-home-agent` (in `$HOME/.cursor/agents/`) appeared **0 times**, and so did `probe-cfg-agent` (in `$CURSOR_CONFIG_DIR/agents/`).
+   - The source matches: `computeAgentsDirs()` joins only `workspacePath` with `.cursor/agents`, `.claude/agents` and `.grok/agents`, and every `new VzO(...)` in `6136.index.js`, `8493.index.js` and `8952.index.js` is built from workspace paths. **So the Cursor CLI does not read `~/.cursor/agents`, which is where AC3 installs** (Cursor's docs say user agents work in "editor, CLI and Cloud Agents"; this CLI build doesn't).
+4. **`*.md.leorna.bak` is ignored.** The file filter is `.md`/`.mdc`/`.markdown` (`function xo`), and `probe-proj-backup.md.leorna.bak` in `<project>/.cursor/agents/` appeared 0 times.
+5. **Cursor's frontmatter parser is line-based and keeps quotes** (`function Io`: per line, key = text before the first `:`, lowercased; value = the rest, trimmed; no unquoting; `tools` is split on commas).
+   - A JSON-quoted `description: "PROBE-PROJECT-DESC reviews code"` reached the request with its quotes.
+   - A plain `description: PROBE-PLAIN-DESC reviews code` arrived clean.
+   - The Claude file's `tools: "Read, Grep"` became the two tools `"Read` and `Grep"`.
+   - So the approved Cursor bytes (JSON-quoted description) would show quotes and backslashes in Cursor. Also, Claude Code agent files Leorna writes into a project reach Cursor with broken tool names.
+
+### New questions (also listed at the top)
+
+- **Q7** Cursor CLI never reads `~/.cursor/agents`:
+  - **a ⭐** keep the approved `~/.cursor/agents`, which Cursor's docs say the editor reads. AC12 proves the exact Cursor file is loaded and parsed right by the real CLI, from a workspace folder. AC13 `(live)` is Justin's check that the editor shows it.
+  - **b** also install Cursor agents into the selected project's `.cursor/agents/`. Both CLI and editor would read that, but the Cursor connector would need the project folder (like Claude Code's `ForProject`) and Sync's Cursor preflight would change. That's a re-plan.
+  - Why a: it keeps the approved design and scope, it's the documented editor location, and it proves everything an agent can prove. b changes Cursor's scope and the Sync flow.
+- **Q8** Cursor keeps quotes:
+  - **a ⭐** Cursor's renderer writes `description:` as one plain line, and skips an agent whose description has a line break (reason `Cursor agent descriptions must be one line`).
+  - **b** keep JSON quotes (AC12's "without added quotes" would then be dropped).
+  - Why a: Cursor's own parser reads the rest of the line as the value, so a plain line round-trips exactly (proven above), and `: ` inside it is fine for that parser.
+
+### Amendments that apply only on Justin's OK of Q8 a (exact text for the builder)
+
+- **AC3:** replace "(name, JSON-quoted description, instructions)" with "(name, description as one plain line, instructions)".
+- **Approach item 2:** "Claude Code and Cursor write Markdown with JSON-quoted values" becomes "Claude Code writes Markdown with JSON-quoted values; Cursor writes the description as one plain line, because Cursor's line parser keeps quotes".
+- **Reasons table:** add the row `| Cursor description | Cursor agent descriptions must be one line |`.
+- **Rendered bytes (Cursor) and T4:** `release-reviewer.md` = `"---\nname: release-reviewer\ndescription: Reviews a release: risks & \"blockers\"\n---\n\n# Role\n\nReview the release.\n"`. `general-purpose.md` = `"---\nname: general-purpose\ndescription: Built-in clash\n---\n\nPlain.\n"`. T4 adds a case where the description holds `"line one\nline two"`: no file, and the warning `agent "<name>" is not installed for cursor: Cursor agent descriptions must be one line; skipped`.
+- **`cursor/agent.go` `renderAgent`:** after the tools check, add the following. In the output, replace `out.Write(tc.QuoteYAMLLine(agent.Description))` with `out.WriteString(agent.Description + "\n")`.
+
+  ```go
+  	if strings.ContainsAny(agent.Description, "\r\n") {
+  		return "", nil, "Cursor agent descriptions must be one line"
+  	}
+  ```
+  (import `strings`).
+- AC1, AC2 and Claude Code's renderer are unchanged.
+
+### Task T9b (after T9; needs Q8 a for its "no added quotes" assertion): real Cursor CLI, AC12
+
+`toolconnector/cursor/agent_real_test.go`. It's env-gated like AC4/AC5: it skips unless `LEORNA_TEST_CURSOR_BIN` is set, so CI skips it. Everything lives under `t.TempDir()`, and the child process gets `HOME`, `XDG_CONFIG_HOME`, `CURSOR_CONFIG_DIR`, `CURSOR_DATA_DIR` and `TMPDIR` all inside it.
+
+```go
+package cursor_test
+
+import (
+	"bytes"
+	"compress/gzip"
+	"context"
+	"encoding/base64"
+	"encoding/binary"
+	"encoding/hex"
+	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	tc "github.com/LeornaAI/leorna-client/toolconnector"
+	"github.com/LeornaAI/leorna-client/toolconnector/cursor"
+)
+
+// fakeCursorAPI answers the Cursor CLI's private API just far enough for it
+// to send its request context: an API-key exchange, empty unary replies, one
+// model, and a RunSSE stream that asks for the request context once. The
+// message and field numbers come from the protobuf descriptors bundled in
+// cursor-agent 2026.11.05-86047df; a newer CLI may need them updated.
+type fakeCursorAPI struct {
+	mu       sync.Mutex
+	payloads [][]byte
+	got      chan struct{}
+	once     sync.Once
+}
+
+var hexRun = regexp.MustCompile(`[0-9a-f]{40,}`)
+
+func (f *fakeCursorAPI) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	body, _ := io.ReadAll(r.Body)
+	if len(body) > 1 && body[0] == 0x1f && body[1] == 0x8b {
+		if zr, err := gzip.NewReader(bytes.NewReader(body)); err == nil {
+			if plain, err := io.ReadAll(zr); err == nil {
+				body = plain
+			}
+		}
+	}
+	contentType := r.Header.Get("Content-Type")
+	switch {
+	case strings.HasSuffix(r.URL.Path, "/auth/exchange_user_api_key"):
+		token := fakeJWT()
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]string{"accessToken": token, "refreshToken": token})
+	case strings.HasSuffix(r.URL.Path, "/agent.v1.AgentService/RunSSE"):
+		w.Header().Set("Content-Type", "application/connect+proto")
+		// AgentServerMessage{2 exec_server_message: ExecServerMessage{1 id: 1, 15 exec_id: "e1", 10 request_context_args: {}}}
+		exec := []byte{0x08, 0x01, 0x7a, 0x02, 'e', '1', 0x52, 0x00}
+		writeFrame(w, 0x00, protoField(2, exec))
+		w.(http.Flusher).Flush()
+		select {
+		case <-f.got:
+		case <-time.After(15 * time.Second):
+		case <-r.Context().Done():
+		}
+		writeFrame(w, 0x02, []byte("{}"))
+	case strings.HasSuffix(r.URL.Path, "/aiserver.v1.BidiService/BidiAppend"):
+		f.record(body)
+		w.Header().Set("Content-Type", "application/proto")
+	case contentType == "application/proto":
+		w.Header().Set("Content-Type", "application/proto")
+		if strings.HasSuffix(r.URL.Path, "/GetUsableModels") || strings.HasSuffix(r.URL.Path, "/GetDefaultModelForCli") {
+			// {1 models|model: ModelDetails{1 model_id, 3 display_model_id, 4 display_name}}
+			model := append(append(protoField(1, []byte("gpt-5")), protoField(3, []byte("gpt-5"))...), protoField(4, []byte("GPT-5"))...)
+			_, _ = w.Write(protoField(1, model))
+		}
+	case strings.Contains(contentType, "json"):
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte("{}"))
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+// record keeps a BidiAppend body plus every hex run in it decoded, because
+// the CLI sends its client messages hex-encoded in field 1.
+func (f *fakeCursorAPI) record(body []byte) {
+	decoded := append([]byte(nil), body...)
+	for _, run := range hexRun.FindAll(body, -1) {
+		if raw, err := hex.DecodeString(string(run)); err == nil {
+			decoded = append(decoded, raw...)
+		}
+	}
+	f.mu.Lock()
+	f.payloads = append(f.payloads, decoded)
+	f.mu.Unlock()
+	if bytes.Contains(decoded, []byte("/.cursor/agents/")) {
+		f.once.Do(func() { close(f.got) })
+	}
+}
+
+// requestContext returns the first client message that names a workspace
+// .cursor/agents file, which is the CLI's request-context answer.
+func (f *fakeCursorAPI) requestContext() []byte {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	for _, payload := range f.payloads {
+		if bytes.Contains(payload, []byte("/.cursor/agents/")) {
+			return payload
+		}
+	}
+	return nil
+}
+
+func protoField(number int, value []byte) []byte {
+	out := binary.AppendUvarint([]byte{byte(number<<3 | 2)}, uint64(len(value)))
+	return append(out, value...)
+}
+
+func writeFrame(w io.Writer, flags byte, message []byte) {
+	header := make([]byte, 5)
+	header[0] = flags
+	binary.BigEndian.PutUint32(header[1:], uint32(len(message)))
+	_, _ = w.Write(append(header, message...))
+}
+
+func fakeJWT() string {
+	part := func(v any) string { b, _ := json.Marshal(v); return base64.RawURLEncoding.EncodeToString(b) }
+	now := time.Now()
+	return part(map[string]string{"alg": "HS256", "typ": "JWT"}) + "." +
+		part(map[string]any{"sub": "auth0|leorna_fixture", "iat": now.Unix(), "exp": now.Add(24 * time.Hour).Unix()}) + ".c2ln"
+}
+
+// TestCursorLoadsSyncedAgentFormat runs the real Cursor CLI with no sign-in
+// against a local fake API and checks the request context it builds from the
+// exact file the Cursor connector writes. The CLI reads agents only from the
+// workspace, so the bundle is applied below <project>/.cursor here; Sync
+// itself writes the same bytes to ~/.cursor/agents (AC3).
+func TestCursorLoadsSyncedAgentFormat(t *testing.T) {
+	cursorBin := os.Getenv("LEORNA_TEST_CURSOR_BIN")
+	if cursorBin == "" {
+		t.Skip("set LEORNA_TEST_CURSOR_BIN to a cursor-agent executable to run against the real Cursor CLI")
+	}
+	root := t.TempDir()
+	env := []string{"PATH=/usr/bin:/bin", "TERM=dumb", "NO_OPEN_BROWSER=1"}
+	for name, dir := range map[string]string{"HOME": "home", "XDG_CONFIG_HOME": "xdg", "CURSOR_CONFIG_DIR": "cursor-config", "CURSOR_DATA_DIR": "cursor-data", "TMPDIR": "tmp"} {
+		path := filepath.Join(root, dir)
+		if err := os.MkdirAll(path, 0o700); err != nil {
+			t.Fatal(err)
+		}
+		env = append(env, name+"="+path)
+	}
+	// The fake endpoint is plain HTTP, which the CLI reaches only over HTTP/1.1.
+	if err := os.WriteFile(filepath.Join(root, "cursor-config", "cli-config.json"), []byte(`{"version":1,"network":{"useHttp1ForAgent":true}}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	project := filepath.Join(root, "project")
+	connector := &cursor.Connector{Home: filepath.Join(project, ".cursor")}
+	for _, description := range []string{"LEORNA-AGENT-V1 old description", "LEORNA-AGENT-V2 Checks agent install."} {
+		bundle, err := (cursor.Transformer{}).Transform(tc.Pack{Name: "Agent check", Version: "1", Items: []tc.PackItem{{
+			Kind: tc.PackKindAgent, Name: "leorna-agent-check", Version: "1", Description: description, Body: "LEORNA-AGENT-BODY reply OK.",
+		}}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := connector.ApplyConfig(context.Background(), bundle); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(project, ".cursor", "agents", "leorna-agent-check.md.leorna.bak")); err != nil {
+		t.Fatalf("the update left no backup: %v", err)
+	}
+	version := exec.Command(cursorBin, "--version")
+	version.Env = env
+	if out, err := version.CombinedOutput(); err == nil {
+		t.Logf("cursor-agent version: %s", strings.TrimSpace(string(out)))
+	}
+
+	api := &fakeCursorAPI{got: make(chan struct{})}
+	server := httptest.NewServer(api)
+	defer server.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, cursorBin, "-p", "LEORNA-AGENT-PROBE reply OK", "--model", "gpt-5",
+		"--output-format", "stream-json", "--trust", "--api-key", "leorna-offline-fixture", "-e", server.URL)
+	command.Dir = project
+	command.Env = env
+	var output bytes.Buffer
+	command.Stdout, command.Stderr = &output, &output
+	if err := command.Start(); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case <-api.got:
+	case <-time.After(45 * time.Second):
+	}
+	cancel()
+	_ = command.Wait() // the fake never finishes a turn, so the exit status is not the result
+	t.Logf("cursor-agent output:\n%s", output.String())
+
+	sent := api.requestContext()
+	if sent == nil {
+		t.Fatal("the Cursor CLI sent no request context naming a .cursor/agents file")
+	}
+	path := []byte("/.cursor/agents/leorna-agent-check.md")
+	switch {
+	case bytes.Count(sent, path) != 1:
+		t.Fatalf("agent listed %d times, want 1", bytes.Count(sent, path))
+	case !bytes.Contains(sent, []byte("LEORNA-AGENT-V2 Checks agent install.")), bytes.Contains(sent, []byte(`"LEORNA-AGENT-V2`)):
+		t.Fatal("the updated description is missing or carries added quotes")
+	case bytes.Contains(sent, []byte("LEORNA-AGENT-V1")), bytes.Contains(sent, []byte(".leorna.bak")):
+		t.Fatal("the old version or its .leorna.bak copy was loaded")
+	case !bytes.Contains(sent, []byte("LEORNA-AGENT-BODY reply OK.")):
+		t.Fatal("the instructions are missing")
+	}
+	at := bytes.Index(sent, path)
+	t.Logf("request-context entry: %q", sent[at:min(len(sent), at+200)])
+}
+```
+
+- **Planner validation (2026-11-07, throwaway `git archive` of `7a83443` + this plan's T1/T4 code + the Q8 a amendment, removed afterwards; the real `~/.cursor` still absent):** `go vet ./toolconnector/cursor` clean. With `LEORNA_TEST_CURSOR_BIN` set, the test **PASSED in 3.7 s** against cursor-agent `2026.11.05-86047df` (log line: `request-context entry: "/.cursor/agents/leorna-agent-check.md\x12\x12leorna-agent-check\x1a%LEORNA-AGENT-V2 Checks agent install.*\ainherit2\x1bLEORNA-AGENT-BODY reply OK.8\x01r\tworkspace…"`). With the approved quoted Cursor renderer instead, it **FAILED** with `the updated description is missing or carries added quotes` (M15's proof).
+- RED: on the base the Cursor transformer writes no agent file, so the backup check fails. Apply only this file to a `git archive` of `7a83443` and run the gate command, then save `red-ac12-7a83443.txt`. With Q8 a, the approved quoted renderer (T4 before the amendment) also fails the "added quotes" case. M15/M16 repeat both proofs on the head.
+- Stop condition: if the CLI on this machine is no longer `2026.11.05-86047df` (check `--version`) and the request context never arrives, don't loosen the assertions. Re-read the bundle's descriptors (`return["ExecServerMessage|…`, `RequestContext|…`), update the field numbers, and report.
+- Memory: run it under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0` if it's ever killed. Only Chrome-free processes are involved.
+- Commit `test(86bctmuwy): real Cursor CLI loads the synced agent file`.
+
+### AC13 (live), if Q7 = a
+
+Justin runs it after the reviews and the verifier. Sync from a Leorna client whose home is the one Justin's Cursor editor uses (on Windows that's `%USERPROFILE%\.cursor`, not WSL's `~/.cursor`), then open Cursor → the subagents list, and screenshot the synced agent. The verifier marks it `not_run`, and `ac-check.sh` reports it as owed (`READY FOR THE USER`). The orchestrator must not write into a real `.cursor` folder for him.
+
+### Risks and follow-ups added by Revision 1
+
+- The fake Cursor API reimplements a private protocol: a Cursor CLI update can break AC12 without any Leorna change. The test logs the version, and the stop condition above applies.
+- F4 (real Cursor check) is now AC12 + AC13.
+- New F7: Cursor reads a project's `.claude/agents/` (on by default), and its parser keeps the Claude file's JSON quotes. Descriptions show quotes, and `tools: "Read, Grep"` becomes `"Read` + `Grep"`. Fix later by writing Claude's `tools` (and the description, when it is plain-safe) unquoted, which Claude Code's YAML also reads. Not in this story unless Justin adds it.
+- New F8: if Cursor ever makes its CLI read `~/.cursor/agents` (the docs already say it does), re-run AC12 against the user folder.
