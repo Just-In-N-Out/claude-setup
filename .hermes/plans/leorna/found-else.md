@@ -327,3 +327,6 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 
 ## 2026-11-07 — 86bcm928h-per-user-credentials fixer 2
 - P3 (on the branch from earlier rounds): golangci-lint with GOOS=windows flags application/open_tool_windows_test.go:91 (errcheck on defer source.Close()) and application/open_tool_windows.go:375 (ST1005 capitalised "Leorna does not start batch files"); make lint and CI lint only Linux, so CI doesn't see them.
+
+## 2026-11-07 — 86bcm928h-per-user-credentials verifier
+- info: TestWindowsOpenToolPassesCredentialOnlyInEnvironment writes/cleans a real Credential Manager entry under a fixed key (integrationTestCompany/github/GITHUB_PERSONAL_ACCESS_TOKEN), so two native application test runs at once on one machine can delete each other's credential mid-test; CI's separate VMs unaffected (application/open_tool_windows_test.go:401-407).
