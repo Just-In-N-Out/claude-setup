@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 2c0f653f-8021-4c94-84cf-9276a410e30a
-  modified: 2026-10-29T14:04:48.848Z
+  modified: 2026-11-08T01:06:40.842Z
 ---
 
 Found on 2026-10-23 while writing restart prompts for three stopped Leorna sessions:
@@ -13,6 +13,7 @@ Found on 2026-10-23 while writing restart prompts for three stopped Leorna sessi
 - **Finding the chat for a story or PR** (Justin asks "find me the chat from PR 97"): map the PR to its card with `gh pr view <n> --json headRefName`, then scan `~/.claude/projects/*/*.jsonl` for the card id with Python (the Bash tool's `grep` and `ls` are wrappers that misbehave). The story's own session is the one whose first user prompt names the card, usually the most hits; others only mention it. Before giving `claude --resume <id>`, check its liveness (below): a live one is open in another terminal (2026-10-29).
 
 - **Subagent transcripts** are in `~/.claude/projects/<project>/<session-id>/subagents/agent-<id>.jsonl`. `<project>` is the folder's absolute path with every non-alphanumeric character replaced by `-`, plus a hash suffix past 200 characters (binary 2.1.310). So `/Users/justin/.hermes` becomes `-Users-justin--hermes`, and WSL's `/home/justin/Leorna` becomes `-home-justin-Leorna`. A background agent's final report is in its `SubagentHandback` tool_use input, or in its last text block (Plan-type agents can end with plain text). Check both: the 901v planner's 120 KB plan was only in the last text block.
+- **Auditing what running sessions loaded** (Justin, 2026-11-07: "did the other agents load the skills?"): ListAgents' `[1dd199]` refs are not transcript filenames. Find live transcripts with `find ~/.claude/projects -maxdepth 2 -name '*.jsonl' -mmin -30`, then jq the assistant `tool_use` blocks: `.name=="Skill"` → `.input.skill`, `.name=="Agent"` → `.input.model`/`.input.effort`. Main sessions load only `leorna`; role skills are in the briefs (`~/.hermes/plans/leorna/briefs/`). Telepathy is a repo, not a hook or skill; the CortexOS link is the silent `cortexos-memory.sh` hook (a 401 from `127.0.0.1:8080/health` means it's up).
 - **Real model and effort** of an agent: `agent-<id>.meta.json` (`model`, `effort`). The agent itself can't see its effort.
 - **Messages Justin typed straight into a running subagent** appear only in that subagent's transcript, as `attachment.type == "queued_command"`.
 - **Plan mode** lets the session write only its plan file. Lessons or notes kept only in chat are lost when the session is stopped.
