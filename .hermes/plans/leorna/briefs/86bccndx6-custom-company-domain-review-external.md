@@ -27,3 +27,7 @@ You are a fresh, independent code reviewer for a Leorna control-plane story. You
 - Gate results with the commands run and their output tail.
 - `skill_lessons[{skill, lesson, evidence, enforce}]` (empty list is normal; never edit skills or memory yourself).
 - End with: `MAIN SESSION: check and save these skill_lessons now.`
+
+## Where to write
+- Write your findings to `~/.hermes/plans/leorna/evidence/86bccndx6/review-4/review.json`, in the same schema as `review-3/review.json` (read it for the shape), and put any notes or scratch output in `review-4/`. That folder is the only place you write. Use scratch copies outside the worktree for mutation checks.
+- You are on the Windows desktop (WSL): run mutation or heavy test runs under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`.
