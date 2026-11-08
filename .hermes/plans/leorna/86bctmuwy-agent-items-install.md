@@ -1,6 +1,6 @@
 # 86bctmuwy-agent-items-install: install Agent items into Claude Code, Codex and Cursor
 
-**Status: AC1–AC11 + answers approved; AC12 awaiting Justin's OK.** Approved by Justin ("go", 2026-11-07): plan + ⭐ answers 1A 2A 3A 4A 5A + AC1–AC11 as written; answer 6A was then replaced by "Add AC12 now" (Revision 1, end of file). AC12, AC13 and the Revision 1 amendments (questions 7–8) wait for Justin's OK; the builder does not start Revision 1 work before it. Builder: Opus 5.5 high. Hand-over only at the end: no push, PR or ClickUp post until Justin says.
+**Status: APPROVED by Justin ('go' 2026-11-07, Revision 1 answers 6=Add AC12, 7a, 8a, AC12+AC13 approved). Builder: Opus 5.5 high.** Hand-over only at the end: no push, PR or ClickUp post until Justin says.
 
 ClickUp: [Install Agent items into local Claude Code, Codex and Cursor tool directories](https://app.clickup.com/t/86bctmuwy) (to do, assignee Justin, tag pi-2, list E4 - Distribution, no dependencies). Repo: `~/Leorna/leorna-client` only. Pipeline: Full.
 
@@ -24,11 +24,11 @@ ClickUp: [Install Agent items into local Claude Code, Codex and Cursor tool dire
 6. Proof Cursor loads the file. **Answered (Revision 1): Justin chose "Add AC12 now", replacing 6A.** The Cursor CLI is now installed (`cursor-agent` 2026.11.05-86047df).
    - ~~a Official docs + exact-byte tests; real check is a follow-up~~ (replaced)
    - ✅ Add AC12: a real-Cursor check run by an agent (see Revision 1)
-7. (Revision 1, new) Cursor CLI 2026.11.05 never reads `~/.cursor/agents` (only project folders):
-   - a ⭐ Keep `~/.cursor/agents` (docs: editor); AC13 (live) checks the editor
+7. (Revision 1) Cursor CLI 2026.11.05 never reads `~/.cursor/agents` (only project folders). **Answered: 7a.**
+   - ✅ a Keep `~/.cursor/agents` (docs: editor); AC13 (live) checks the editor
    - b Also write Cursor agents into the project's `.cursor/agents`
-8. (Revision 1, new) Cursor's own parser keeps YAML quotes in the description:
-   - a ⭐ Write Cursor's description as one plain line
+8. (Revision 1) Cursor's own parser keeps YAML quotes in the description. **Answered: 8a.**
+   - ✅ a Write Cursor's description as one plain line (skip multi-line descriptions)
    - b Keep JSON quotes (Cursor shows the quotes)
 
 Why the ⭐s: 1a is Justin's own planner note ("never overwrite or delete a file Leorna did not write"). 2a keeps a "read-only" agent from silently getting write tools. 3a keeps every Sync that works today working (today every agent is skipped harmlessly; a hard failure would be a regression). 4a follows the existing removal rule all kinds share (consistency note). 5a: the agent would either replace the tool's own agent or be hidden by it, and Leorna can't tell which, so "installed" could be false. 6a: Cursor's docs are clear and current, but no Cursor binary exists here to load the file.
@@ -49,7 +49,7 @@ Root cause (why agents are skipped): when the client was written, no tool's agen
 
 - AC1 (proposed): Given a bundle with agent items, when a confirmed Sync runs for Claude Code with a selected project, then `<project>/.claude/agents/<name>.md` holds exactly the rendered subagent (name, JSON-quoted description, the body's `tools` line when it has one, then the instructions), its path and SHA-256 are in Claude Code's Sync evidence, no warning names it, and Check files is clean — test: TestSyncInstallsAgentForClaudeCodeProject
 - AC2 (proposed): Given the same bundle, when Sync runs for Codex, then `$CODEX_HOME/agents/<name>.toml` holds exactly `name`, `description` and `developer_instructions` as TOML strings, its path and SHA-256 are in Codex's Sync evidence, no warning names it, and Check files is clean — test: TestSyncInstallsAgentForCodexHome
-- AC3 (proposed): Given the same bundle, when Sync runs for Cursor, then `~/.cursor/agents/<name>.md` holds exactly the rendered subagent (name, JSON-quoted description, instructions), its path and SHA-256 are in Cursor's Sync evidence, no warning names it, and Check files is clean — test: TestSyncInstallsAgentForCursorHome
+- AC3 (proposed): Given the same bundle, when Sync runs for Cursor, then `~/.cursor/agents/<name>.md` holds exactly the rendered subagent (name, description as one plain line, instructions), its path and SHA-256 are in Cursor's Sync evidence, no warning names it, and Check files is clean — test: TestSyncInstallsAgentForCursorHome
 - AC4 (proposed): Given an agent Sync wrote and then updated for Claude Code, when real Claude Code (2.1.319, throwaway HOME, local fake model API) starts in that project, then it lists the agent exactly once, sends the model the updated description and tools, and ignores the `.leorna.bak` copy — test: TestClaudeLoadsSyncedAgent
 - AC5 (proposed): Given an agent Sync wrote and then updated for Codex, when real Codex (0.165.0, throwaway `CODEX_HOME`) builds its prompt, then the agent is a spawnable role exactly once with the updated description, and the `.leorna.bak` copy is not listed — test: TestCodexListsSyncedAgentRole
 - AC6 (proposed): Given agents a tool can't express (a `tools` limit on Codex or Cursor, a built-in agent's name, an unsupported frontmatter key), when Sync runs, then that tool writes no file for them, reports exactly one warning per agent `agent "<name>" is not installed for <tool>: <reason>; skipped` (also kept in the run log after reopening), lists no evidence for them, and still installs its other items with status success — test: TestSyncSkipsAgentsAToolCannotExpressWithVisibleReason
@@ -58,11 +58,10 @@ Root cause (why agents are skipped): when the client was written, no tool's agen
 - AC9 (proposed): Given an agent installed by an earlier Sync, when a later bundle no longer has it, then Sync removes the file only while it still matches the recorded SHA-256 (keeping `<file>.leorna.bak`); a file the user changed stays byte-for-byte and that tool's update stops with `write_failed` while the other tools finish (the existing rule) — test: TestSyncRemovesUnassignedAgentOnlyWhenUnchanged
 - AC10 (proposed): Given automatic updates are on, when a startup check finds a new bundle that adds an agent, then only tools a confirmed manual Sync enrolled get the agent file, and before any confirmed Sync no agent file is written anywhere — test: TestStartupSyncInstallsAgentsOnlyForConfirmedTools
 - AC11 (proposed): Given HOME, USERPROFILE, CODEX_HOME, CLAUDE_CONFIG_DIR and the XDG folders point at an empty decoy folder, when an agent Sync runs for all three tools, then nothing appears in the decoy and the only files written are the expected ones under the test's own roots — test: TestAgentSyncTouchesNoRealHome
-
 - AC12 (proposed): Given the exact bytes Sync renders for Cursor, written and then updated through the Cursor connector into a workspace `.cursor/agents/` folder, when the real Cursor CLI (2026.11.05-86047df, throwaway HOME and config dirs, local fake Cursor API, no sign-in) prepares a run there, then the request context it sends lists that agent exactly once with the same name, the updated description without added quotes, and the instructions, and leaves out the `.leorna.bak` copy — test: TestCursorLoadsSyncedAgentFormat
-- AC13 (proposed) (live): Given a Sync that installed an agent for Cursor in `~/.cursor/agents/`, when Justin opens the Cursor editor on the same machine, then the agent appears in Cursor's subagent list with its name and description — test: TestCursorEditorShowsSyncedAgentLive (only if question 7 = a; Justin's check, recorded by the verifier as `not_run` until he confirms)
+- AC13 (proposed) (live): Given a Sync that installed an agent for Cursor in `~/.cursor/agents/`, when Justin opens the Cursor editor on the same machine, then the agent appears in Cursor's subagent list with its name and description — test: TestCursorEditorShowsSyncedAgentLive (Justin's check; the verifier records it `not_run` until he confirms)
 
-No AC was `(live)` in the approved plan; Revision 1 adds AC13 `(live)` (question 7 a). AC4 and AC5 are agent-run real-tool tests, gated by `LEORNA_TEST_CLAUDE_BIN` / `LEORNA_TEST_CODEX_BIN` like the repo's other real-tool tests: they skip in CI, and the builder, verifier and auditor must run them with the variables set (commands in "Gates").
+AC13 is the only `(live)` AC (Justin's Cursor editor check, Revision 1 answer 7a). AC4 and AC5 are agent-run real-tool tests, gated by `LEORNA_TEST_CLAUDE_BIN` / `LEORNA_TEST_CODEX_BIN` like the repo's other real-tool tests: they skip in CI, and the builder, verifier and auditor must run them with the variables set (commands in "Gates").
 
 **Plan code checked (planner, 2026-11-07, throwaway `git archive` of `7a83443`, removed afterwards):** T1–T6's production code and `sync.go` change, pasted from this file's code blocks, are gofmt-clean, `go build ./...` and `go vet ./toolconnector/... ./application/` pass, T1's two tests pass, and the "Rendered bytes" and AC6 warning texts below match what that code renders. `go test ./toolconnector/... ./application/... ./usage/... ./desktop/...` (no `-race`) then fails exactly the two existing tests this plan changes, `TestTransformersSkipAgentsWithDeterministicVisibleWarnings` and `TestSyncEndToEndWithLoginMockTLSAndRealWriters`; everything else passes. No AC test was written or run.
 
@@ -84,7 +83,7 @@ Expected tallies, so a reviewer can count: 11 AC tests, 7 supporting unit tests 
 ## Approach
 
 1. **Shared parser** `toolconnector/agent.go`: `ParseAgent(item) (Agent, reason)` splits an agent body exactly as the control plane's item builder writes it (`leorna-control-plane internal/itembuilder/validate.go:170-206`, read 2026-11-07: body must start `---\n`, frontmatter closes with `\n---\n` within 4096 bytes, keys only `name`, `description`, optional `tools`, each one plain or JSON-quoted line, name and description equal to the form fields). The client trusts the item's own `Name`/`Description`, takes `tools` and the instructions from the body, and accepts a body with no frontmatter (older items) as all instructions. Anything else → a skip reason (Q3 a). Shipped library agents (`code-reviewer`, `security-auditor`, `test-engineer`, `web-performance-auditor`) have only `name`/`description`, so they install for all three tools.
-2. **Each transformer renders its own file** (pure, no file reads), next to its other kinds: Claude Code and Cursor write Markdown with JSON-quoted values (the same quoting `RenderSkill` uses, so a description can't add frontmatter keys); Codex writes three TOML basic strings with the package's existing `tomlString`. Built-in names skip (Q5 a); a `tools` limit skips for Codex and Cursor (Q2 a). A skipped agent adds one sorted warning and no file; the rest of the pack still renders. `AgentWarnings` is deleted.
+2. **Each transformer renders its own file** (pure, no file reads), next to its other kinds: Claude Code writes Markdown with JSON-quoted values; Cursor writes the description as one plain line, because Cursor's line parser keeps quotes (Revision 1, 8a) (the same quoting `RenderSkill` uses, so a description can't add frontmatter keys); Codex writes three TOML basic strings with the package's existing `tomlString`. Built-in names skip (Q5 a); a `tools` limit skips for Codex and Cursor (Q2 a). A skipped agent adds one sorted warning and no file; the rest of the pack still renders. `AgentWarnings` is deleted.
 3. **Existing-file guard** `application/agent_guard.go`, run by `SyncEngine.Run` after the baseline is chosen and before removals are computed. It hashes each planned agent file and asks the connector's existing `CheckConfig` (the `configChecker` interface in `application/file_check.go:59`, implemented by all three connectors; not part of `toolconnector.Connector`) what is on disk. Write only when the path is empty, already holds the same bytes, or still holds exactly what this tool's baseline Sync wrote. Otherwise drop that agent from the bundle with a warning naming the bundle-relative path, and keep a dropped baseline path out of `Remove` so a kept file never makes the tool's update fail (Q1 a). Symlinks, unreadable files and a tool that can't be checked are all "not written". Removal of unassigned agents stays the existing `Remove` rule (Q4 a).
 4. **Nothing else changes:** connector `ApplyConfig`/`nativewrite` already stage, roll back, refuse symlinks/escapes and keep `.leorna.bak`; the Sync evidence, Check files, startup updates and the UI's per-tool warning list (`frontend/dist/sync.js:163-166`) already carry any bundle path and warning.
 
@@ -123,6 +122,7 @@ Warning text: `agent "<name>" is not installed for <tool-id>: <reason>; skipped`
 | Codex built-in | `it has the name of a built-in Codex agent` (`default`, `explorer`, `worker`) |
 | Codex tools | `Codex agent files cannot limit tools` |
 | Cursor tools | `Cursor agent files cannot limit tools` |
+| Cursor description | `Cursor agent descriptions must be one line` |
 | Guard: foreign | `<rel path> already exists and was not written by Leorna` |
 | Guard: edited | `<rel path> was changed after Leorna wrote it` |
 | Guard: unknown | `<rel path> could not be checked` |
@@ -131,7 +131,8 @@ Check order in each renderer: `ParseAgent` → built-in name → tools.
 
 Rendered bytes for the canonical fixture agent (used by T2–T4 and AC1–AC3):
 - item: `Kind: agent, Name: "release-reviewer", Version: "1", Description: "Reviews a release: risks & \"blockers\""`, `Body: "---\nname: release-reviewer\ndescription: \"Reviews a release: risks & \\\"blockers\\\"\"\n---\n\n# Role\n\nReview the release.\n"`
-- Claude Code and Cursor, `release-reviewer.md`: `"---\nname: release-reviewer\ndescription: \"Reviews a release: risks & \\\"blockers\\\"\"\n---\n\n# Role\n\nReview the release.\n"`
+- Claude Code, `release-reviewer.md`: `"---\nname: release-reviewer\ndescription: \"Reviews a release: risks & \\\"blockers\\\"\"\n---\n\n# Role\n\nReview the release.\n"`
+- Cursor, `release-reviewer.md` (plain description, 8a): `"---\nname: release-reviewer\ndescription: Reviews a release: risks & \"blockers\"\n---\n\n# Role\n\nReview the release.\n"`
 - Codex, `release-reviewer.toml`: `"name = \"release-reviewer\"\ndescription = \"Reviews a release: risks & \\\"blockers\\\"\"\ndeveloper_instructions = \"# Role\\n\\nReview the release.\"\n"`
 - second agent with tools: `Name: "read-only-reviewer", Description: "Reads code and reports findings"`, `Body: "---\nname: read-only-reviewer\ndescription: Reads code and reports findings\ntools: Read, Grep\n---\n\nReport findings only.\n"` → Claude Code `"---\nname: read-only-reviewer\ndescription: \"Reads code and reports findings\"\ntools: \"Read, Grep\"\n---\n\nReport findings only.\n"`; Codex and Cursor skip it.
 
@@ -503,7 +504,7 @@ and `sort.Strings(warnings)` just before the final `return`. Update the `Transfo
 
 ### T4. Cursor renders agents (`cursor/agent.go`, `config.go`)
 
-RED: `toolconnector/cursor/agent_test.go`, `TestCursorRendersAgentsAsUserSubagents`: pack with `release-reviewer`, `read-only-reviewer`, `general-purpose` (body `"Plain."`), skill `review`, prompt `pr-description` (body `Write it.`). Assert `agents/release-reviewer.md` exact Cursor bytes, `agents/general-purpose.md` = `"---\nname: general-purpose\ndescription: \"Built-in clash\"\n---\n\nPlain.\n"` (Cursor documents no built-ins), no `agents/read-only-reviewer.md`, `skills/review/SKILL.md` and `commands/pr-description.md` present, warnings exactly `agent "read-only-reviewer" is not installed for cursor: Cursor agent files cannot limit tools; skipped`; `cursor.AgentPath("x") == "agents/x.md"`.
+RED: `toolconnector/cursor/agent_test.go`, `TestCursorRendersAgentsAsUserSubagents`: pack with `release-reviewer`, `read-only-reviewer`, `general-purpose` (body `"Plain."`), skill `review`, prompt `pr-description` (body `Write it.`). Assert `agents/release-reviewer.md` exact Cursor bytes, `agents/general-purpose.md` = `"---\nname: general-purpose\ndescription: Built-in clash\n---\n\nPlain.\n"` (Cursor documents no built-ins), no `agents/read-only-reviewer.md`, `skills/review/SKILL.md` and `commands/pr-description.md` present; a fourth agent `two-lines` (body `"Plain."`, description `"line one\nline two"`) writes no file; warnings exactly (sorted) `agent "read-only-reviewer" is not installed for cursor: Cursor agent files cannot limit tools; skipped`, `agent "two-lines" is not installed for cursor: Cursor agent descriptions must be one line; skipped`; `cursor.AgentPath("x") == "agents/x.md"`.
 
 GREEN: `toolconnector/cursor/agent.go`:
 
@@ -512,6 +513,7 @@ package cursor
 
 import (
 	"bytes"
+	"strings"
 
 	tc "github.com/LeornaAI/leorna-client/toolconnector"
 )
@@ -524,7 +526,9 @@ const agentsDir = "agents/"
 func AgentPath(name string) string { return agentsDir + name + ".md" }
 
 // renderAgent writes a subagent file. Cursor has no per-agent tool list, so an
-// agent that limits its tools is skipped rather than widened.
+// agent that limits its tools is skipped rather than widened. Cursor's own
+// frontmatter parser reads the rest of the line as the value and keeps
+// quotes, so the description is written as one plain line.
 func renderAgent(item tc.PackItem) (path string, content []byte, reason string) {
 	agent, reason := tc.ParseAgent(item)
 	if reason != "" {
@@ -533,9 +537,11 @@ func renderAgent(item tc.PackItem) (path string, content []byte, reason string) 
 	if agent.Tools != "" {
 		return "", nil, "Cursor agent files cannot limit tools"
 	}
+	if strings.ContainsAny(agent.Description, "\r\n") {
+		return "", nil, "Cursor agent descriptions must be one line"
+	}
 	var out bytes.Buffer
-	out.WriteString("---\nname: " + agent.Name + "\ndescription: ")
-	out.Write(tc.QuoteYAMLLine(agent.Description))
+	out.WriteString("---\nname: " + agent.Name + "\ndescription: " + agent.Description + "\n")
 	out.WriteString("---\n\n" + agent.Instructions + "\n")
 	return AgentPath(agent.Name), out.Bytes(), ""
 }
@@ -839,7 +845,7 @@ Run the Gates on the final head; save `gates-<sha7>.txt`; take the AC captures (
 | AC10 | TestStartupSyncInstallsAgentsOnlyForConfirmedTools | application | approvals/enrollment |
 | AC11 | TestAgentSyncTouchesNoRealHome | application | isolation |
 | AC12 | TestCursorLoadsSyncedAgentFormat | toolconnector/cursor (real, env-gated `LEORNA_TEST_CURSOR_BIN`) | update + `.leorna.bak` ignored; no added quotes |
-| AC13 (live) | TestCursorEditorShowsSyncedAgentLive (Justin's editor check, no Go test) | — | only if question 7 = a |
+| AC13 (live) | TestCursorEditorShowsSyncedAgentLive (Justin's editor check, no Go test) | — | owed to Justin |
 
 Supporting: TestParseAgentReadsBuilderFrontmatterAndPlainBodies, TestParseAgentRefusesBodiesToolsCannotRead, TestClaudeCodeRendersAgentsAsProjectSubagents, TestCodexRendersAgentsAsAgentRoleFiles, TestCursorRendersAgentsAsUserSubagents, TestTransformersSkipUnreadableAgentsWithOneSortedWarning, TestGuardAgentFilesDecidesFromCurrentBytesAndBaseline.
 
@@ -883,7 +889,7 @@ Capture as each check runs, never reconstructed later. One PNG per AC plus its l
 | AC11 | test PASS, plus a before/after fingerprint of the real folders (`for d in ~/.claude/agents ~/.codex/agents ~/.cursor/agents; do [ -e "$d" ] && find "$d" -printf '%P %s %T@\n' \| sort \|\| echo "$d absent"; done \| sha256sum`, read-only) taken around the full gate run; note Justin's own tools can change them | T12 | `ac11-isolation.png` |
 | gates | the three gates + real-tool runs with `EXIT=` lines | T12 | `gates-<sha7>.png` + `gates-<sha7>.txt` |
 | AC12 | real Cursor CLI run: version line, the decoded request-context entry for `leorna-agent-check` (path, name, V2 description, instructions), the `.leorna.bak` count 0 | T9b | `ac12-cursor-real-load.png` |
-| AC13 (live) | Justin's screenshot of the Cursor editor's subagent list showing the synced agent (owed to Justin; only if question 7 = a) | after review | `ac13-cursor-editor-agent.png` |
+| AC13 (live) | Justin's screenshot of the Cursor editor's subagent list showing the synced agent (owed to Justin) | after review | `ac13-cursor-editor-agent.png` |
 | mutants | table of M1–M16 results | T10 | `mutations-<sha7>.png` + `.txt` |
 
 If the AC6 harness can't be made to work within 20 minutes, use the terminal capture plus a `sqlite3`-free Go snippet in the test log showing `run_logs.files_json` warnings, and say so in the inventory; never stage a fake UI image.
@@ -937,9 +943,9 @@ If the AC6 harness can't be made to work within 20 minutes, use the terminal cap
 3. Low/medium (product, after merge): the control plane will keep telling admins agents aren't installed (`render/render.go:105-115`, `metric/content_usage.go:33-39`) until F1.
 4. Low: the Codex config reference page lists no `agents/` folder or `CODEX_HOME` rule for it; only the subagents page and source do (recorded in the research table).
 
-## Revision 1 (2026-11-07 ~21:05 EST, after "go"): AC12 real-Cursor check
+## Revision 1 (2026-11-07 ~21:05 EST, after "go"): AC12 real-Cursor check — APPLIED
 
-**Status:** AC1–AC11 and answers 1A–5A stay approved and unchanged. This section adds AC12 (agent-run), AC13 `(live)` and two amendments (questions 7–8), all **awaiting Justin's OK**. Until he answers, the builder builds the approved plan only (T0–T12), and T4 keeps its approved bytes.
+**Status: APPLIED (2026-11-07).** Justin answered 7a and 8a and approved AC12 and AC13 (live). The Q8 a amendments below are already merged into the main sections (AC3, Approach item 2, reasons table, rendered bytes, T4 and its `renderAgent`), so build from the main sections; this section stays as the record of the probe, the T9b task and its test code.
 
 ### What the probe proved (planner, throwaway `HOME`/`XDG_CONFIG_HOME`/`CURSOR_CONFIG_DIR` under `~/.cache/86bctmuwy-planner-r1`, removed afterwards; the real `~/.cursor` still doesn't exist)
 
@@ -973,7 +979,7 @@ Binary: `~/.local/bin/cursor-agent` → `~/.local/share/cursor-agent/versions/20
   - **b** keep JSON quotes (AC12's "without added quotes" would then be dropped).
   - Why a: Cursor's own parser reads the rest of the line as the value, so a plain line round-trips exactly (proven above), and `: ` inside it is fine for that parser.
 
-### Amendments that apply only on Justin's OK of Q8 a (exact text for the builder)
+### Amendments for Q8 a (applied to the main sections 2026-11-07; kept as a record)
 
 - **AC3:** replace "(name, JSON-quoted description, instructions)" with "(name, description as one plain line, instructions)".
 - **Approach item 2:** "Claude Code and Cursor write Markdown with JSON-quoted values" becomes "Claude Code writes Markdown with JSON-quoted values; Cursor writes the description as one plain line, because Cursor's line parser keeps quotes".
@@ -989,7 +995,7 @@ Binary: `~/.local/bin/cursor-agent` → `~/.local/share/cursor-agent/versions/20
   (import `strings`).
 - AC1, AC2 and Claude Code's renderer are unchanged.
 
-### Task T9b (after T9; needs Q8 a for its "no added quotes" assertion): real Cursor CLI, AC12
+### Task T9b (after T9): real Cursor CLI, AC12
 
 `toolconnector/cursor/agent_real_test.go`. It's env-gated like AC4/AC5: it skips unless `LEORNA_TEST_CURSOR_BIN` is set, so CI skips it. Everything lives under `t.TempDir()`, and the child process gets `HOME`, `XDG_CONFIG_HOME`, `CURSOR_CONFIG_DIR`, `CURSOR_DATA_DIR` and `TMPDIR` all inside it.
 
@@ -1221,7 +1227,7 @@ func TestCursorLoadsSyncedAgentFormat(t *testing.T) {
 - Memory: run it under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0` if it's ever killed. Only Chrome-free processes are involved.
 - Commit `test(86bctmuwy): real Cursor CLI loads the synced agent file`.
 
-### AC13 (live), if Q7 = a
+### AC13 (live)
 
 Justin runs it after the reviews and the verifier. Sync from a Leorna client whose home is the one Justin's Cursor editor uses (on Windows that's `%USERPROFILE%\.cursor`, not WSL's `~/.cursor`), then open Cursor → the subagents list, and screenshot the synced agent. The verifier marks it `not_run`, and `ac-check.sh` reports it as owed (`READY FOR THE USER`). The orchestrator must not write into a real `.cursor` folder for him.
 
