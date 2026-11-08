@@ -174,3 +174,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-08 | 86bcm927y | leorna (step 7.8) | Claude Code hook (git-guard.sh PreToolUse on git push to a LeornaAI feat/ branch): look up the branch PR with gh pr list --head <branch> --state merged and ask before pushing when it is already merged | offered
 - 2026-11-08 | 86bcm9284 | security-best-practices | script/test: evidence-folder scan helpers fail when the scanned folder holds fewer files than expected (gitleaks dir exits 0 on an empty folder) | offered
 - 2026-11-08 | 86bcm928t | leorna | script: each role's gates.sh greps its own combined log for an email regex as a final step and exits non-zero on a match | offered
+- 2026-11-08 | 86bcm9284 | feature-dispatch ac-check | script: ac-check.sh exits 2 on an ac.json row with both base_log and base_exempt, telling the agent to cite the base run in evidence | offered
