@@ -5,10 +5,15 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-04)
+## Status (2026-11-07)
 
-- **Current build `2026-11-04.8`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-07.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-07.1 web-code-page (website importer):** the code method pastes a captured page whole: header, page and
+    footer by the site's own elements, classes and CSS, within 2 px at every width (B-Dry 1.09 px at 53 widths), alt
+    text and page-builder markers kept, bold and italic as on the site; every class starts with the page's name
+    (`home__…`) but `site-reset-<4>`, `site-fonts`, `site-text`, `site-flat` (Justin, 2026-11-07, "Prefix every
+    name"); a site's CSS animations stay still (no `@keyframes`). Paste check **3di** (AC12, AC19, live).
   - **2026-11-04.8 icon-buttons:** a pill of words and drawn icons is Bricks' own Button drawing its icons in CSS; a
     button-shaped box inside a link is a Button with no link; a label wholly linked makes a linked Button. Paste check
     **3dg** (AC8, live: hydraulics' hero).
@@ -952,6 +957,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   `~/.hermes/plans/figma-to-bricks/evidence/method-review/report.md`): a site's elements, classes and CSS rules go into
   Bricks as they are; the measured-box route through the Figma converter is retired for websites once the whole page
   passes.
+- **Code-method class names start with the page's name** (Justin, 2026-11-07, "Never use bare names", then "Prefix
+  every name"): `<page>__<name>`, only `site-reset-<4>`, `site-fonts`, `site-text`, `site-flat` keep theirs; a static
+  slider keeps all its slides ("Keep all its slides").
 - **Lists a visitor searches and filters** (user, 2026-10-19): "In the page" (the plugin pastes every row and a small
   script; no WordPress post type) and "Spreadsheet in the panel" (a CSV per list, kept in the Figma file).
   - **On tablets and phones** (user, 2026-10-19, screenshots at 990/766/477: "whenever there's a panel, it looks clean
