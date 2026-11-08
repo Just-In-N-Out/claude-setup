@@ -297,6 +297,7 @@ Never fix bugs without a test.
 - **Testing implementation details** — test behavior/results, not internal method calls
 - **Happy path only** — always test edge cases, errors, and boundaries
 - **Brittle tests** — tests should verify behavior, not structure; refactoring shouldn't break them
+- **Races that never race** — a test of work running side by side can pass on buggy code because a fast stand-in never overlaps; slow the transport (answer calls N ms later) and assert the overlap really happened (capture-speed fixer 1)
 
 ## Final Rule
 
