@@ -176,3 +176,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-08 | 86bcm928t | leorna | script: each role's gates.sh greps its own combined log for an email regex as a final step and exits non-zero on a match | offered
 - 2026-11-08 | 86bcm9284 | feature-dispatch ac-check | script: ac-check.sh exits 2 on an ac.json row with both base_log and base_exempt, telling the agent to cite the base run in evidence | offered
 - 2026-11-08 | 86bccndx6 | leorna | script: each role's gates.sh runs an authenticated ClickHouse SELECT 1 as leorna_test via LEORNA_TEST_CLICKHOUSE_URL before the first gate and aborts if it fails | offered
+- 2026-11-08 | site-motion | figma-to-bricks | unit test in test/browser: render a payload with a non-"In" startAnimation and assert no data-interaction-hidden-on-load attribute (renderer matches Bricks' PHP) | offered
