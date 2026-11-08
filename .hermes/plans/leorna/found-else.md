@@ -310,3 +310,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 2026-11-07 — 86bcm928h-per-user-credentials builder
 - P3: under mutant e2, TestAC3OpenTool's failure message prints request.Dir holding the fake test constant testGitHubToken (not a real secret; gitleaks clean); could print a boolean instead.
 - info: sibling worktree 86bctmuwy-agent-items-install (d4bb6b2) has no migration 9 yet and touches toolconnector/ only; merge-tree with 928h exits 0.
+## 2026-11-07 — 86bctmuwy-agent-items-install (builder)
+- Low: nativewrite keeps a .leorna.bak even when new bytes equal the old (taking over an identical file leaves an identical backup); every item kind. F2 territory.
+- Low: toolconnector/claudecode/prompt_real_test.go:23 runs `binary --version` with the caller's real HOME (existing test).
+- Plan F7 stands: Cursor reads a project's .claude/agents and keeps the JSON quotes (tools names break).
