@@ -336,3 +336,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - P3 test hygiene: TestAC7CredentialBoundToItsServer failure message (integrations_test.go:451, %+v of fixture.prober.calls) prints the probe's Secret field (fixture value only); print booleans/byte counts instead.
 - info: AC5's logs clause has no positive control (captured log is 0 bytes because the flow logs nothing).
 - info: Windows %TEMP% holds two empty TestWindowsResolveUsesOnlyExistingAbsoluteExecutables* folders dated 22:13 (from an earlier role's run).
+
+## 2026-11-08 — 86bcm928h-per-user-credentials finisher
+- info: 86bcm927y is merged (control-plane PR #112, main f0a326b), so AC8's prerequisite is in place; the plan's Q4 text calling it unmerged is stale.
+- P3: no gates-1f98596.png, only the .txt log; a gates screenshot is needed from the pushed head's gate re-run before "post".
