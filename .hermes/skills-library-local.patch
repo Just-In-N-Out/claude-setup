@@ -200,7 +200,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..946fbff 100644
+index f2d882d..f955266 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -396,7 +396,7 @@ index f2d882d..946fbff 100644
 +   Likewise a "present" check passes when the page shows the value elsewhere
 +   (the generated host in three cards; "Scaleway" in the header): assert the
 +   specific element (its id plus `value`, or the status line) and the absence
-+   of the wrong state (86bccndx6 auditor 2).
++   of the wrong state (86bccndx6 auditor 2); and an "absent" check alone passes on a page whose whole section vanished on the error path, so pair it with a positive assertion of the refused state (its status line; 86bccndx6 review 10).
  2. **Wrong layer.** The test exercised the base module while production
     constructed a subclass that overrode the method. Exercise the class
     production actually builds.
