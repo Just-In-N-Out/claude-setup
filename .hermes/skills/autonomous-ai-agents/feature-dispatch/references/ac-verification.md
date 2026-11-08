@@ -57,7 +57,7 @@ When Justin decides something mid-build that changes an approved AC, a planner a
 
 1. **VERIFIER** (existing role; source read-only), only after `review-check.sh` prints MOVE ON for the current head (`review-loop.md`): besides re-running the gates and confirming findings are closed (when it re-runs an earlier round's probe files, it takes the file list from that round's log `<file>_test.go:NN:` prefixes, not a `*probe*` name search, and diffs the outcome lines against that log: a name search missed one file, 901j verifier 3), it does the AC work above in `<evidence>/verifier/` and writes `verifier/ac.json`. Its `verdict: clean` needs every AC accepted, `(live)` ACs marked `not_run` aside.
 2. **Not clean** → a fixer → a fresh review of that fix (`review-check.sh` until MOVE ON) → verifier.
-3. **Clean** → dispatch the **AC AUDITOR**: a fresh Opus 5.5 xhigh agent, source read-only. Give it only the approved plan copy, the worktree, the head SHA, the base commit and its own folder `<evidence>/auditor/`. Never give it the verifier's folder or report, the reviews or the builder's summary. It does the AC work on its own and writes `auditor/ac.json`. Skills: the project skill, `engineering-best-practices`.
+3. **Clean** → dispatch the **AC AUDITOR**: a fresh Opus 5.5 high agent, source read-only. Give it only the approved plan copy, the worktree, the head SHA, the base commit and its own folder `<evidence>/auditor/`. Never give it the verifier's folder or report, the reviews or the builder's summary. It does the AC work on its own and writes `auditor/ac.json`. Skills: the project skill, `engineering-best-practices`.
 4. **The orchestrator runs one command and reads its last line:**
 
    ```

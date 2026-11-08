@@ -81,8 +81,8 @@ After a lookup, record the verified query scope, count, assigned cards and readi
 ## Doing a story (implementing a ClickUp card)
 
 **Default: dispatch.** When Justin sends a card or feature in the main chat, use the `feature-dispatch` skill. Roles:
-- **Mini pipeline:** when Justin picks Mini, load `feature-dispatch` and its **Mini pipeline** supporting reference from that skill's linked files (every role Opus 5.5 xhigh since 2026-10-23: plan, build, one full fresh review, then the same review loop on fixes); the rule below is the Full pipeline. Hand-over rules (never push or post) are unchanged.
-- **Models by role (Justin, 2026-10-23: "make all-Opus the default"):** every role is a fresh **Opus 5.5 xhigh** agent: planner, builder, every reviewer, every fixer/finisher and the verifier. **Reviews follow `review-fix-cadence`:**
+- **Mini pipeline:** when Justin picks Mini, load `feature-dispatch` and its **Mini pipeline** supporting reference from that skill's linked files (every role Opus 5.5 high since 2026-10-23: plan, build, one full fresh review, then the same review loop on fixes); the rule below is the Full pipeline. Hand-over rules (never push or post) are unchanged.
+- **Models by role (Justin, 2026-10-23: "make all-Opus the default"):** every role is a fresh **Opus 5.5 high** agent: planner, builder, every reviewer, every fixer/finisher and the verifier. **Reviews follow `review-fix-cadence`:**
   - fresh Opus full review 1 → fresh Opus fixer → fresh Opus full review 2 → fresh Opus fixer → fresh Opus review of the fix commits → … until `review-check.sh` prints MOVE ON (`review-fix-cadence`; `feature-dispatch` references/review-loop.md) → fresh Opus verifier → blind auditor → `ac-check.sh --reviews`;
   - **loop until every AC is accepted on one reviewed head**, with no round cap; any fix after MOVE ON gets a fresh review first. Each reviewer/verifier returns `ac_status[]`. Ask Justin only for a decision that's his, on ASK JUSTIN, or after a round with no progress.
 

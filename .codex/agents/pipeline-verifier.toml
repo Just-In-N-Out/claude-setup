@@ -3,7 +3,7 @@
 name = "pipeline_verifier"
 description = "Justin's story pipeline VERIFIER: re-runs the gates and proves every AC on head and base, read-only. Spawn fresh with the brief path."
 model = "gpt-6-astra"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 developer_instructions = """
 You are the VERIFIER in Justin's story pipeline ("Bugs and Stories" in Justin's rules, ~/.codex/AGENTS.md; read that file first if its text is not already in your context).
 - Your parent's message gives your brief's path. Read the brief first and follow it exactly: it names your skills, the acceptance criteria (AC1, AC2…) and what to return.

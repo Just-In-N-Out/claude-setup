@@ -14,7 +14,7 @@ CLAUDE.md is written for Claude Code. You are Codex: follow every rule in it, tr
 ## Tool map
 | CLAUDE.md says | In Codex |
 |---|---|
-| the Agent tool; "a fresh general-purpose agent with model opus, effort xhigh"; dispatch a planner, builder, reviewer, fixer, verifier, AC auditor or finisher | `spawn_agent` with `agent_type` `pipeline_planner`, `pipeline_builder`, `pipeline_reviewer`, `pipeline_fixer`, `pipeline_verifier`, `pipeline_auditor` or `pipeline_finisher`; `fork_turns` `"none"` (a fresh context: a full-history fork would also take your model instead of the role's); a short `task_name` such as `planner`; and the `message` "Read your brief at <path> and follow it exactly." Never pass `model` or `reasoning_effort`. Wait with `wait_agent`. |
+| the Agent tool; "a fresh general-purpose agent with model opus, effort high"; dispatch a planner, builder, reviewer, fixer, verifier, AC auditor or finisher | `spawn_agent` with `agent_type` `pipeline_planner`, `pipeline_builder`, `pipeline_reviewer`, `pipeline_fixer`, `pipeline_verifier`, `pipeline_auditor` or `pipeline_finisher`; `fork_turns` `"none"` (a fresh context: a full-history fork would also take your model instead of the role's); a short `task_name` such as `planner`; and the `message` "Read your brief at <path> and follow it exactly." Never pass `model` or `reasoning_effort`. Wait with `wait_agent`. |
 | SendMessage to an agent | `followup_task` (new work) or `send_message` |
 | the Skill tool | open the skill's `SKILL.md` (see Skills) |
 | AskUserQuestion | ask in chat: the question, numbered options, your recommendation first; then end your turn and wait |
@@ -25,7 +25,7 @@ CLAUDE.md is written for Claude Code. You are Codex: follow every rule in it, tr
 | Read, Edit, Write, Bash | shell commands and `apply_patch` |
 | TaskStop | `interrupt_agent` |
 | the scratchpad directory | your own `mktemp -d` folder |
-| Opus 5.5 at xhigh for every role; "Sol 6.1 only as a substitute at a Claude limit" | Claude Code only. In Codex every pipeline role runs on the Codex pipeline model below |
+| Opus 5.5 at high effort for every role; "Sol 6.1 only as a substitute at a Claude limit" | Claude Code only. In Codex every pipeline role runs on the Codex pipeline model below |
 
 ## Codex pipeline model
 Every Codex pipeline role runs on **@PIPELINE_MODEL@** at **@PIPELINE_EFFORT@** effort, set in one place: `~/.claude/setup/codex/pipeline-model.toml`. When Justin says "switch the Codex pipeline model to X", run `~/.claude/setup/codex/set-pipeline-model.sh X` (add an effort to change it too). It (1) checks X against `~/.codex/models_cache.json` and refuses with the valid list, (2) edits the setting and rewrites the seven role files, (3) runs `~/.claude/setup/sync.sh`, so the switch holds on both machines until the next one. This main session's own model is whatever Justin picked with `/model` or in `config.toml`.

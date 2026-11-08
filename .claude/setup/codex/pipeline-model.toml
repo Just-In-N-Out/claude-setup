@@ -2,4 +2,4 @@
 # fixers, verifier, auditor, finisher) runs on this model and effort. Switch it with
 # ~/.claude/setup/codex/set-pipeline-model.sh <model> [effort]; never edit the role files by hand.
 model = "gpt-6-astra"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
