@@ -72,6 +72,6 @@ The main session never rules on a finding's severity, and never drops or rewrite
 
 ## After MOVE ON
 
-Every later commit, even a records-only one, needs a fresh delta review (Full's round 2 is full) before the verifier runs on it: a verifier finding, a NOT ACCEPTED round, a rebase that resolved conflicts. `ac-check.sh --reviews <evidence>` enforces it: it runs the referee and refuses a head that no clean review covers. Fixers batch records into their fix commit to keep these reviews few.
+Every later commit, even a records-only one, needs a fresh delta review (Full's round 2 is full) before the verifier runs on it: a verifier finding, a NOT ACCEPTED round, a rebase that resolved conflicts (to review a docs-only resolution, rebuild it: `git merge-file -p --diff3 <old head file> <old base file> <new base file>`, apply the intended rule per conflict, `cmp` with head's file, and `cmp` the changed lines of `git diff <old head> <new head>` against `git diff <old base> <new base>`; elementor-map review 6). `ac-check.sh --reviews <evidence>` enforces it: it runs the referee and refuses a head that no clean review covers. Fixers batch records into their fix commit to keep these reviews few.
 
 Mini: the same loop and brakes, with round 1 the only full round (`mini-pipeline.md`).
