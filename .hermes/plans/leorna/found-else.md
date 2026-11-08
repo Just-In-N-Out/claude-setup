@@ -300,3 +300,9 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - info: memory (leorna-control-plane-workflow.md:21) said the desktop lacks go/make/gcc; make and gcc are on PATH and the pinned toolchain is off PATH under ~/.local (memory line updated).
 - P3: the Windows CI job lists packages by name, so ./desktop, ./distribution, ./usage and ./handoff tests never run on Windows (.github/workflows/ci.yml windows-client step; known no-ci-changes gap).
 - P3: Makefile:10 `fmt` lists top-level packages by name, so a new top-level package would silently skip the gofmt check.
+
+## 2026-11-07 — 86bctmuwy-agent-items-install (planner)
+- Medium: `nativewrite` replaces files Leorna never wrote at skill, prompt and config paths, keeping them only as `.leorna.bak` (nativewrite/README.md; application/sync.go:247-266 has no check). Plan follow-up F2.
+- Low: the shared leorna-client main checkout is at f105e27, 28 commits behind GitHub main 7a83443.
+- Low/medium: after 86bctmuwy merges, control plane still tells admins agents aren't installed (render/render.go:105-115, metric/content_usage.go:33-39). Plan follow-up F1.
+- Low: Codex config reference page doesn't mention `agents/`; only the subagents page and source do.
