@@ -1,0 +1,34 @@
+# VERIFIER brief, round 1: 86bctmuwy-agent-items-install (Leorna, leorna-client)
+
+**Role:** fresh, read-only VERIFIER. You never saw the build. Change no source and commit nothing; write only into `~/.hermes/plans/leorna/evidence/86bctmuwy/verifier/` (create it). All scratch goes in your own fresh folder `~/.cache/86bctmuwy-verifier/` (`mkdir` without `-p`), including TMPDIR, Chrome profiles and built binaries (not `/tmp`, which is a small shared RAM disk).
+**Model/effort:** Opus 5.5, high.
+
+## Story and inputs
+ClickUp 86bctmuwy, "Install Agent items into local Claude Code, Codex and Cursor tool directories".
+- Worktree: `/home/justin/Leorna/leorna-client/.claude/worktrees/86bctmuwy-agent-items-install`, branch `feat/86bctmuwy-agent-items-install`
+- Head `5ed210324b9bcb32f131146ccb212918be35a05a` (review loop said MOVE ON at this head). Base `7a834434d00ec7afae8464f5e7ce6cc17881bb7b` (= `git merge-base HEAD origin/main`).
+- Approved plan (read-only; the AC list AC1–AC13 is the contract): `~/.hermes/plans/leorna/evidence/86bctmuwy/plan-approved.md`. AC13 is `(live)`, Justin's Cursor editor check: mark it `"accepted": false, "not_run": "live: <why>"`.
+- Review records and fixer answers (to confirm each P0–P2 finding is closed): `~/.hermes/plans/leorna/evidence/86bctmuwy/review-1/`, `review-2/`, `review-3/` (each `review.json`, plus `report-summary.md` for 1–2), `fixer-1/answers.md`, `fixer-2/answers.md`. P0–P2 to confirm closed: R1-1, R1-2, R2-1. Earlier reviewers' probe files are in `review-2/zz_review2_probe_test.go`, `review-3/zz_review3_probe_test.go` and `~/.cache/86bctmuwy-review1/zz_review1_*_test.go`; re-run them with `go test -overlay` (take the file list from those rounds' logs, not a name search).
+
+## Skills to load (say so in your first steps)
+`leorna` (VERIFIER role), `engineering-best-practices`, `mutation-testing-discipline`, `authorized-write-safety` (it's named in the plan's `## Skills`; also any Agent Defect Loop skills the plan's `## Skills` marks — re-run their Required Validation Gates). Then follow `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` → "Folders and the run recipe" and Steps → VERIFIER exactly.
+
+## What to do
+1. Re-run the project's gates on head yourself, exactly as the plan's Gates section (`make check` with a real, non-symlinked TMPDIR under `~/.cache/86bctmuwy-verifier/`; `node --test scripts/*-ui.test.cjs`; `make lint audit` with go1.27.3, golangci-lint 2.14.0, govulncheck v1.7.0 from `~/.local/leorna-toolchain`, first in PATH, versions echoed).
+2. Confirm R1-1, R1-2 and R2-1 are closed (original scenarios and the earlier probes), and look for regressions the fixes caused.
+3. **Every AC (AC1–AC12):** run only that AC's named test on head and on base, per `ac-verification.md`, writing `verifier/ac<n>-5ed2103.log` and `verifier/ac<n>-base-7a83443.log` (base in a separate detached copy, never the worktree; Go: copy head's AC test files plus the test files of any package the story creates that the test imports). The test must pass on head (its own pass line, no skip) and fail on base. Before judging an AC, `git log -p 7a83443..HEAD -- <its test files>` and read every changed assertion against the approved AC text. For a clause the test seems not to exercise, prove it with an overlay mutant.
+4. Real-tool ACs: AC4 with `LEORNA_TEST_CLAUDE_BIN` (real Claude Code 2.1.319), AC5 with `LEORNA_TEST_CODEX_BIN` (real Codex 0.165.0), AC12 with `LEORNA_TEST_CURSOR_BIN=/home/justin/.local/share/cursor-agent/versions/2026.11.05-86047df/cursor-agent`. Exact commands in the plan's Gates section. A skip is not a pass.
+5. One screenshot per AC, your own, in `verifier/` (`ac<n>-<what>.png`): a `<pre>` page of that AC's head log rendered with Chrome for Testing as `ac-verification.md` describes for the WSL desktop (`~/.cache/chrome-for-testing/chrome-linux64/chrome`, `LD_LIBRARY_PATH=~/.cache/chrome-libs/root/usr/lib/x86_64-linux-gnu`, `--headless=new --no-sandbox --disable-gpu --disable-software-rasterizer`, under `env -u DISPLAY -u WAYLAND_DISPLAY`, height from the page). Check each PNG's magic bytes, look at it, and check the log's `EXIT=` line is on it. No email, URL, token or tenant ID may be visible.
+6. Write `verifier/ac.json` in the format at the top of `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh`. Self-check blind as the guide says: copy your `ac.json`, logs and images to a scratch folder and run `ac-check.sh --repo <worktree> --base 7a834434d00ec7afae8464f5e7ce6cc17881bb7b --plan ~/.hermes/plans/leorna/evidence/86bctmuwy/plan-approved.md verifier/ac.json <scratch>/ac.json` (no `--reviews`), then remove the copy.
+
+## Rules
+- Isolation: every test/probe uses throwaway HOME, USERPROFILE, CODEX_HOME, CLAUDE_CONFIG_DIR, XDG_CONFIG_HOME, CURSOR_CONFIG_DIR and CURSOR_DATA_DIR. Never touch the real `~/.claude`, `~/.codex`, `~/.cursor` or `~/.config/cursor`; after sourcing an env that changes HOME, write evidence paths in full (`/home/justin/...`). Check before and after that `~/.cursor` and `~/.config/cursor` don't exist and the real `~/.claude/agents`, `~/.codex/agents` are unchanged.
+- The worktree must stay clean (`git status --porcelain` empty) and at head.
+- WSL PATH has entries with spaces (`/mnt/c/Program Files/...`): export PATH in scripts, never pass `PATH=…:$PATH` unquoted; read an EXIT=127 as an invocation error.
+- Memory (WSL desktop): SIGTERM / exit 143 / 137 / "Killed" may be earlyoom — check `journalctl -u earlyoom --since "-30 min" -o short-iso | grep sending`; mutants and heavy runs under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`.
+- Long commands: start with `cmd >log 2>&1 & echo pid=$!`, wait with repeated `timeout 165 tail --pid=<pid> -f /dev/null` (Bash timeout 175000); don't end your turn to wait.
+- Other bugs: `found_else` (one line each, severity, evidence).
+- **skill_lessons:** If you learn something reusable (a gotcha, an approach that worked after one failed, a skill step that was wrong, missing or stale), don't edit any skill or memory file: list it in `skill_lessons[{skill, lesson, evidence, enforce}]` and a "Skill lessons" section, naming the skill (or `memory`); `enforce` is `none`, or, when the lesson is about a rule that was broken or nearly broken, a one-line proposal for a check that would have caught it (kind, what it checks, where it runs). An empty list is the normal answer.
+
+## Report (as text)
+`{verdict: clean|findings, findings[{id, severity, claim, evidence}], ac_status[{ac, accepted, test, screenshot, evidence}], gates[{name, exit, log}], closed_findings[{id, closed, evidence}], found_else[], skill_lessons[]}`. `clean` requires every AC accepted except AC13 (`not_run`). End with `MAIN SESSION: check and save these skill_lessons now.`
