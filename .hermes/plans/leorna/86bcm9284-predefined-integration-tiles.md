@@ -1,6 +1,6 @@
 # 86bcm9284 — Predefined integration tiles: GitHub, Google Workspace, ClickUp
 
-Card: [Predefined integration tiles: GitHub, Google Workspace, ClickUp](https://app.clickup.com/t/86bcm9284) (Justin, size L, E14, "to do"). Pipeline: Full. Planned 2026-11-08T01:15Z by the Opus planner. **Plan only: not approved. Nothing builds until Justin says "go".**
+Card: [Predefined integration tiles: GitHub, Google Workspace, ClickUp](https://app.clickup.com/t/86bcm9284) (Justin, size L, E14, "to do"). Pipeline: Full. Planned 2026-11-08T01:15Z by the Opus planner. **Approved by Justin ("go", 2026-11-07); see "Approval" at the end. The builder waits for 927y on main (Q1 A).**
 
 ## Questions for Justin (answer these with "go" or pick letters)
 
