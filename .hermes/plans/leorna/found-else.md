@@ -330,3 +330,9 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 
 ## 2026-11-07 — 86bcm928h-per-user-credentials verifier
 - info: TestWindowsOpenToolPassesCredentialOnlyInEnvironment writes/cleans a real Credential Manager entry under a fixed key (integrationTestCompany/github/GITHUB_PERSONAL_ACCESS_TOKEN), so two native application test runs at once on one machine can delete each other's credential mid-test; CI's separate VMs unaffected (application/open_tool_windows_test.go:401-407).
+
+## 2026-11-08 — 86bcm928h-per-user-credentials auditor
+- P3 plan drift: plan-approved.md (Approach §5, Windows starter interface) still says powershell.exe -NoLogo -NoExit -Command claude|codex; head starts each tool's own absolute .exe (0e96596, 1f98596). No AC names the launch mechanism; note it in the PR text.
+- P3 test hygiene: TestAC7CredentialBoundToItsServer failure message (integrations_test.go:451, %+v of fixture.prober.calls) prints the probe's Secret field (fixture value only); print booleans/byte counts instead.
+- info: AC5's logs clause has no positive control (captured log is 0 bytes because the flow logs nothing).
+- info: Windows %TEMP% holds two empty TestWindowsResolveUsesOnlyExistingAbsoluteExecutables* folders dated 22:13 (from an earlier role's run).
