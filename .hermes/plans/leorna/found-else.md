@@ -320,3 +320,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 2026-11-07 — 86bcm928h-per-user-credentials fixer 1
 - P3: a started tool inherits the PATH Leorna started with, so MCP servers it launches (npx, docker) miss later PATH changes (pre-existing; doesn't affect finding the tool).
 - P3: Codex/Claude Code installed outside the known locations (custom npm prefix, pnpm, scoop, standalone) gives "Could not open <tool>"; OpenTool hides the starter's "not installed where Leorna looks for it" reason.
+## 2026-11-07 — 86bctmuwy (fixer 1)
+- P3/unverified: Cursor's line parser may treat ' #' in a plain description line (8a) as a comment; the AC12 real-CLI harness could check it.
+- P3: leornaWrittenFiles reads every successful Sync run's files_json on each Sync when an agent path holds an unrecorded file; run_logs are never pruned.
+- P3: a user putting back Leorna's exact old bytes (e.g. from .leorna.bak) after removal lets a re-assigned agent update that file (Leorna's own bytes; .leorna.bak kept).
