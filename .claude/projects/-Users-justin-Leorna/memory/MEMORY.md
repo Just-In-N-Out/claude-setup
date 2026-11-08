@@ -9,3 +9,4 @@
 - [Claude Code headless agent runs](claude-code-headless-agent-runs.md) — prove a project agent ran via claude -p stream-json; allowlist and CLAUDE.md gotchas
 - [No re-verify while main moves](leorna-no-reverify-while-main-moves.md) — after ALL ACCEPTED, bring-main-in fixers run gates + AC tests only; no new verifier/auditor
 - [Cursor CLI on the desktop](cursor-cli-on-desktop.md) — installed 2026-11-07 at ~/.local/bin/cursor-agent; even --version writes ~/.config/cursor, so isolate HOME+XDG
+- [Docker Desktop crash on WSL](docker-desktop-crash-wsl.md) — mid-gate vhdx-unmount crash kills docker.sock; Postgres tests fail with connection errors; ask Justin before restarting
