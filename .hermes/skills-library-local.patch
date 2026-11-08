@@ -200,7 +200,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..f955266 100644
+index f2d882d..9dd20aa 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -542,7 +542,7 @@ index f2d882d..f955266 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +472,83 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +472,84 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -585,7 +585,8 @@ index f2d882d..f955266 100644
 +    `t.Fatalf`, and under `-v` every nested `--- FAIL` prints together after all
 +    subtests ran: assign each such line to the `=== RUN` or `=== NAME` block it
 +    follows (a parent's own lines print under `=== NAME <parent>` after its
-+    subtests; 86bccndx6 verifier 4)
++    subtests; 86bccndx6 verifier 4; a `t.Fatal` inside `t.Helper` functions is
++    reported at the first non-helper caller's line, so expect that line; 86bccndx6 auditor 4)
 +    (`awk '/^=== (RUN|NAME)/{run=$3} /_test.go:[0-9]+:/{print run, $0}'`) and match the
 +    expected failure text (902a verifier: V12/V20/V22 first graded on a log line;
 +    902a auditor: "last line before `--- FAIL`" named the last failing subtest).
