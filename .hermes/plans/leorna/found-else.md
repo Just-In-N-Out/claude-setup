@@ -324,3 +324,6 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - P3/unverified: Cursor's line parser may treat ' #' in a plain description line (8a) as a comment; the AC12 real-CLI harness could check it.
 - P3: leornaWrittenFiles reads every successful Sync run's files_json on each Sync when an agent path holds an unrecorded file; run_logs are never pruned.
 - P3: a user putting back Leorna's exact old bytes (e.g. from .leorna.bak) after removal lets a re-assigned agent update that file (Leorna's own bytes; .leorna.bak kept).
+
+## 2026-11-07 — 86bcm928h-per-user-credentials fixer 2
+- P3 (on the branch from earlier rounds): golangci-lint with GOOS=windows flags application/open_tool_windows_test.go:91 (errcheck on defer source.Close()) and application/open_tool_windows.go:375 (ST1005 capitalised "Leorna does not start batch files"); make lint and CI lint only Linux, so CI doesn't see them.

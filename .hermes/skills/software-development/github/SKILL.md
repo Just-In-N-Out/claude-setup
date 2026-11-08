@@ -42,6 +42,11 @@ Supporting assets: `scripts/gh-env.sh` + `scripts/git-credential-token.py`
   `references/auth.md` before anything else.
 - Prefer `gh` over raw REST; drop to `gh api` only for endpoints the
   porcelain lacks (the cheatsheet lists them).
+  To read or cite an upstream file (WebFetch refuses `raw.githubusercontent.com`
+  here): `gh api 'repos/<o>/<r>/contents/<path>?ref=<tag>' --jq .content | base64 -d`;
+  find it by name with `gh api 'search/code?q=repo:<o>/<r>+filename:<name>'`, not a
+  recursive `git/trees` call, which overruns the Bash tool's 2 minutes on a big repo
+  (86bcm928h fixer 2).
 - Never report CI green without checking `gh pr checks` yourself; never
   claim merged without verifying `state,mergedAt`. A non-zero `gh pr checks
   --watch` can be a network drop ("error connecting to api.github.com", e.g.
