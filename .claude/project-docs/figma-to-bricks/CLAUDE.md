@@ -7,8 +7,14 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-08)
 
-- **Current build `2026-11-08.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-08.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-08.2 capture-speed (website importer):** `npm run capture` reads up to 4 width ranges side by side in
+    separate Chrome windows (`--windows <n>`), asks Chrome's matched styles once per element, asks the site for the page
+    once per kind of visitor (public addresses), loads a failed page again in the same window and stops with one plain
+    line when the connection stays down (a lost connection is seen in the page's own requests too), asks "I am human" at
+    most once per kind, and prints `Took …`; the saved B-Dry home captures in 3.4–3.7 min (base 33–35 min), the same
+    capture as before. Paste check **3dm** (AC11, live: bdryswi.com under 10 min).
   - **2026-11-08.1 elementor-map (website importer):** with `--elementor`, `npm run site`/`site:check` fold Elementor's
     wrappers so each Elementor element is one Bricks element, and Elementor's and ElementsKit's FAQs become one Bricks
     Accordion (Nestable) that opens and closes like the site, within 2 px at every width (B-Dry's FAQ 0 px at 39 widths);
