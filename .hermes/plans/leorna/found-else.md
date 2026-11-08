@@ -314,3 +314,5 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Low: nativewrite keeps a .leorna.bak even when new bytes equal the old (taking over an identical file leaves an identical backup); every item kind. F2 territory.
 - Low: toolconnector/claudecode/prompt_real_test.go:23 runs `binary --version` with the caller's real HOME (existing test).
 - Plan F7 stands: Cursor reads a project's .claude/agents and keeps the JSON quotes (tools names break).
+## 2026-11-07 — 86bctmuwy (review 1)
+- P3: Windows reserved item names (con, aux) fail filepath.IsLocal → CheckAll errors → every agent for that tool skipped as "could not be checked" (existing pattern, all kinds; internal/filepathlite/path_windows.go:98-120).
