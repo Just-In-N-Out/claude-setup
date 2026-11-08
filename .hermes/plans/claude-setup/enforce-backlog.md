@@ -187,3 +187,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-08 | site-motion | figma-to-bricks | SessionStart hook after a reboot: list tracked files of exactly 8388608 bytes in every worktree | offered
 - 2026-11-08 | capture-speed | figma-to-bricks | test: assert capture-speed-same.test.ts's FIXTURES equals the fixtures test/web captures, in npm run check | offered
 - 2026-11-08 | site-motion | figma-to-bricks | test: render every pasted element with an enterView Interaction, assert a non-zero box and brx-animated once in view | offered
+- 2026-11-08 | 86bccndx6 | leorna | script: a gate-log scrubber that fails when a saved log matches postgres://[^:]+:[^@*]+@ before evidence is cited | offered
