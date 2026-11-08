@@ -186,7 +186,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..3452242 100644
+index f2d882d..68026cc 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -511,7 +511,7 @@ index f2d882d..3452242 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +464,77 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +464,81 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -536,7 +536,11 @@ index f2d882d..3452242 100644
 +    fails never rolls back, leaving its table and schema-wide index names for
 +    the next mutant to trip on, so recreate the disposable DB before each
 +    migration mutant (86bcm901z review 5, M4 vs M4-v2).
-+    An overlay can also add a file (a Replace entry for a path not on disk):
++    An overlay can also add a file (a Replace entry for a path not on disk),
++    or remove one: mapping an embedded file to `""` drops it from a
++    `//go:embed` glob, so a characterization test over a shipped set fails
++    with nothing touched on disk (86bcm9284 AC5, dropped `clickup.json`).
++    Adding a file:
 +    swap an unreachable call (e.g. `EvalSymlinks` on a fresh temp dir) for a
 +    failing stub, apply the same swap to old (RED) and fixed (GREEN) code, and
 +    run only the failure subtest; no test hook in production (9019). A subtest
@@ -591,7 +595,7 @@ index f2d882d..3452242 100644
  ## Specialized harnesses
  
 diff --git a/skills/security-best-practices/SKILL.md b/skills/security-best-practices/SKILL.md
-index 6f12e3e..ac9b9a1 100644
+index 6f12e3e..cc308b5 100644
 --- a/skills/security-best-practices/SKILL.md
 +++ b/skills/security-best-practices/SKILL.md
 @@ -87,3 +87,15 @@ When assigning an ID for some resource, which will then be used by exposed to th
@@ -605,7 +609,7 @@ index 6f12e3e..ac9b9a1 100644
 +
 +### Scanning untrusted trees with gitleaks
 +
-+gitleaks 8.30.1 `dir` always loads `<scanned folder>/.gitleaksignore` (case-insensitively on macOS), even when `--gitleaks-ignore-path` points elsewhere, and an inline `gitleaks:allow` suppresses a finding unless `--ignore-gitleaks-allow` is set. When the scanned content is untrusted (a PR-controlled library, uploads), reject `.gitleaksignore`/`.gitleaks.toml` in the tree or scan a copy without them, and pass `--ignore-gitleaks-allow`. Probe (2026-10-23): 3 findings with no ignore file, 0 with a root `.gitleaksignore` or `.GitLeaksIgnore`. `dir` also skips any text file that `h2non/filetype` (first read, up to 100 KB) types as `application/*`: `%PDF-`, `{\rtf`, `%!PS` at the start, and `ustar` at byte 257, `DICM` at 128, `CD001` at 32769 even after a header line. A secret there is missed (exit 0) while `gitleaks git` finds it. Scan copies whose first line carries a token-shaped canary gitleaks must report on line 1; fail closed when it's missing, drop the canary finding and shift other lines by 1. `dir` also reads in 100,000-byte chunks (plus up to 25,000 bytes of peek to a newline), so a token across the cut is missed while the canary is still reported: fail closed on any copy over 100,000 bytes. Build a fake token from an alphabet stepped by a stride coprime to its length (52 characters stepped by 13 gave only 4 distinct ones, too low-entropy for `github-pat` to flag; 86bcm901z verifier). Build the canary without vowels: the default global allowlist `(?i)^true|false|null$` is unanchored in the middle and drops any token containing "false" (read it with `strings "$(readlink -f "$(command -v gitleaks)")" | grep -F 'true|false|null'`); no `[extend]` key removes it (`useDefault` always appends the default allowlists), so catching such secrets needs a full rules file. `\uXXXX`-escaped tokens are not a bypass: decoding is on by default (tag `decoded:unicode`) unless `--max-decode-depth=0` (probes 2026-10-24). An explicit `--config` takes precedence over `GITLEAKS_CONFIG*` env, so a real-gitleaks test can't detect a dropped env scrub; pin the scrub with a recording fake scanner. Findings come back in no stable order (the same input named "description" first in 2 runs and "main body" in 1), so a refusal page that clears only the field the first finding names shows the token back through any other field holding it: on any finding, clear every user-typed field (86bcm901z fixer 2).
++gitleaks 8.30.1 `dir` always loads `<scanned folder>/.gitleaksignore` (case-insensitively on macOS), even when `--gitleaks-ignore-path` points elsewhere, and an inline `gitleaks:allow` suppresses a finding unless `--ignore-gitleaks-allow` is set. When the scanned content is untrusted (a PR-controlled library, uploads), reject `.gitleaksignore`/`.gitleaks.toml` in the tree or scan a copy without them, and pass `--ignore-gitleaks-allow`. Probe (2026-10-23): 3 findings with no ignore file, 0 with a root `.gitleaksignore` or `.GitLeaksIgnore`. `dir` also skips any text file that `h2non/filetype` (first read, up to 100 KB) types as `application/*`: `%PDF-`, `{\rtf`, `%!PS` at the start, and `ustar` at byte 257, `DICM` at 128, `CD001` at 32769 even after a header line. A secret there is missed (exit 0) while `gitleaks git` finds it. Scan copies whose first line carries a token-shaped canary gitleaks must report on line 1; fail closed when it's missing, drop the canary finding and shift other lines by 1. `dir` also exits 0 on an empty folder, so a failed copy reads as "no secrets": count the copied files against the expected list before trusting the scan (86bcm9284 builder). `dir` also reads in 100,000-byte chunks (plus up to 25,000 bytes of peek to a newline), so a token across the cut is missed while the canary is still reported: fail closed on any copy over 100,000 bytes. Build a fake token from an alphabet stepped by a stride coprime to its length (52 characters stepped by 13 gave only 4 distinct ones, too low-entropy for `github-pat` to flag; 86bcm901z verifier). Build the canary without vowels: the default global allowlist `(?i)^true|false|null$` is unanchored in the middle and drops any token containing "false" (read it with `strings "$(readlink -f "$(command -v gitleaks)")" | grep -F 'true|false|null'`); no `[extend]` key removes it (`useDefault` always appends the default allowlists), so catching such secrets needs a full rules file. `\uXXXX`-escaped tokens are not a bypass: decoding is on by default (tag `decoded:unicode`) unless `--max-decode-depth=0` (probes 2026-10-24). An explicit `--config` takes precedence over `GITLEAKS_CONFIG*` env, so a real-gitleaks test can't detect a dropped env scrub; pin the scrub with a recording fake scanner. Findings come back in no stable order (the same input named "description" first in 2 runs and "main body" in 1), so a refusal page that clears only the field the first finding names shows the token back through any other field holding it: on any finding, clear every user-typed field (86bcm901z fixer 2).
 +
 +A URL prefix allowlist (`https://host/Owner/`) for a git command can be escaped. curl squashes `..` segments, encoded ones too (`%2e%2e`, `.%2e`). A value-taking option before the URL (`--repo`, an abbreviation, `-o`) makes git use a later URL. And `url.*.insteadOf`/`include.path` via `-c` or `GIT_CONFIG_*` rewrite it. So check the rest as one name with a character allowlist (never `.`/`..`), allow only exact no-value options before the URL, and refuse rewrite keys in the same command (harness-guards fix 4).
 +
