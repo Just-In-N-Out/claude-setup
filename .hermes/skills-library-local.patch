@@ -186,7 +186,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..414a9c4 100644
+index f2d882d..3452242 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -511,7 +511,7 @@ index f2d882d..414a9c4 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +464,75 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +464,77 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -576,6 +576,8 @@ index f2d882d..414a9c4 100644
 +    a kill only on the test's own `--- FAIL` line (in table subtests sharing one
 +    fixture, read the first failing case: one mutant's write fails every later
 +    case too; 86bcm927y auditor 3). Keep the import used (e.g. `OneLine(text) + html.EscapeString("")`),
++    and a guard's variable too: write a tautology as `(x == recorded || true)` or `(!held[p] || true)`,
++    not by deleting the compare (five such first drafts failed "declared and not used" in 86bctmuwy),
 +    keep the failed receipt as NOT A KILL and supersede it with a versioned
 +    variant (`M13b-v2`) that builds. (2026-10-23, 901u v2 builder.)
 +14. **A negative fixture that drops two fields hides the second guard.** If a
