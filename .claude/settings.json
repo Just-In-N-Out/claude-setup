@@ -22,8 +22,8 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/cortexos-memory.sh reconcile",
-            "async": true,
-            "timeout": 600
+            "timeout": 600,
+            "async": true
           }
         ]
       }
@@ -44,8 +44,8 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/cortexos-memory.sh save",
-            "async": true,
-            "timeout": 30
+            "timeout": 30,
+            "async": true
           }
         ]
       }
@@ -136,7 +136,7 @@
       "effortLevel": "xhigh"
     },
     "claude-opus-5-5": {
-      "effortLevel": "medium"
+      "effortLevel": "high"
     }
   },
   "remote": {
