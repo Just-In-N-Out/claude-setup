@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: feedback
   originSessionId: hermes
-  modified: 2026-10-30T01:16:34.000Z
+  modified: 2026-11-08T22:40:00.000Z
 ---
 
 Every story Justin finishes gets **evidence on its ClickUp card**. The evidence is a closing comment plus attached screenshots (gate output included, as screenshots), written so a lead can accept the card without asking.
@@ -23,7 +23,7 @@ Every story Justin finishes gets **evidence on its ClickUp card**. The evidence 
 3. **Draft the comment with the hand-over**, next to the PR text and team message (Christian's format, plus the live run):
 
    ```
-   ✅ Closing evidence — <card title> (<clickup-id>)
+   ✅ Merged and done — <card title> (<clickup-id>)
 
    WHAT WAS DONE
    - <repo> PR #<n> (merged <date>, merge <sha7>, +<add>/-<del>, <N> files): <one plain line>.
@@ -40,7 +40,7 @@ Every story Justin finishes gets **evidence on its ClickUp card**. The evidence 
    - <honest list, or "nothing left">
    ```
 
-4. **Post only when Justin says "post"** (usually right after merge, before he moves the card on). Steps:
+4. **Post only when Justin says "post" and the PR is merged** (Justin, 2026-11-08: when it gets posted it should say it has been merged and done). The first line says "Merged and done" and WHAT WAS DONE carries the merge date, merge SHA and main's push CI run; never post merge facts as pending. If he says "post" (or "make a PR and post") while the PR is open, prepare and check the files, report "post held until merge", and post as soon as the PR is merged and main's CI has finished, without asking again (86bcm928t was posted before merge with "merge pending" and had to be edited). Steps:
    - `CLICKUP_REQUEST_ATTACHMENT_UPLOAD(task_id, file_name)` for each local file, then upload it as the returned instructions say (`curl` with the returned URL, method and multipart field). Small files (<200 KB) can go through `CLICKUP_ATTACH_TASK_FILE` with base64 instead.
    - `CLICKUP_CREATE_COMMENT(entity_type=task, entity_id=<id>, comment_text=<markdown>)`. The comment names the attached files; attachments show on the card, not inline in the comment. Reading it back, `clickup_get_task_comments` returns `comment_text` as plain text (bullets, ordered-list numbers, backticks and table pipes stripped, so strip leading `- ` and `\d+\. ` from each posted line before comparing, and a comment that refers to items by number can't show those numbers in the read-back, 86bcm902w; a table's last cell runs into the next line; a markdown link keeps only its anchor text, 902a), so compare it with the draft word by word, not as a byte diff (86bcm901a).
    - Read it back: `CLICKUP_GET_TASK(include=[attachments])` lists every file, and `CLICKUP_GET_TASK_COMMENTS` shows the comment. Report the card link.
