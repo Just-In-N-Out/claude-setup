@@ -76,7 +76,7 @@ env HOME="$OPERATOR_HOME" \
     "$LAUNCHER_BIN"
 ```
 
-Use the deployment architecture authorized by the test; do not substitute the Mac's host architecture. The working directory is essential because local-image installation consumes that source tree. It pushes and deploys a mutable tag (`<registry>/control-plane:demo`, `internal/installer/image/image.go`), so Scaleway reports that tag as the container image: a live check that binds the deployed image to a `name@sha256:` digest must resolve the tag through the registry, or the deploy must pin the digest, or it can never pass (86bccndx6 review-4).
+Use the deployment architecture authorized by the test; do not substitute the Mac's host architecture. The working directory is essential because local-image installation consumes that source tree. It pushes and deploys a mutable tag (`<registry>/control-plane:demo`, `internal/installer/image/image.go`), so Scaleway reports that tag as the container image: a live check that binds the deployed image to a `name@sha256:` digest must resolve the tag through the registry, or it can never pass (86bccndx6 review-4). Read-only Scaleway registry calls do this without a Docker login: `ListNamespaces` → `ListImages` → `ListTags`, where each tag carries its content `Digest`; the provider key needs registry read (86bccndx6 fix-3, `domainLiveImageResolves`).
 
 AppleScript shape, with `COMMAND_AS_APPLESCRIPT_STRING` safely encoded by the caller:
 
