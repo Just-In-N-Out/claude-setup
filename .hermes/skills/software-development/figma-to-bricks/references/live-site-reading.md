@@ -3,6 +3,8 @@
 Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/chrome.ts`). Never log in, never write.
 
 ## Access
+- **Where a capture's minutes go** (capture-speed planner, B-Dry): read the file's own `web.timings` (authored values aren't timed); to tag every DevTools command by tab and phase, wrap `browser.conn.send` at runtime (evidence/capture-speed/planner/profile.mjs). 93% of a capture is `CSS.getMatchedStylesForNode` (~84 ms, ~626 KB, 92% of it `inherited`). Its `inherited` entries hold each ancestor's matched rules and inline style byte-identical to that ancestor's own answer, except across a shadow tree (a `<details>` adds a slot: `inherited.length` = parent count + 1); `attributesStyle` and pseudo-elements are never in it. Asking leaves and deriving ancestors cut 2,037 asks a range to ~578.
+- **Spotting a range that holds no real page:** `web.code.context` is stored as a difference from the next wider range, so count shown nodes per range (`web.code.nodes[*].shown`: bdryswi real 1,069–1,198, check pages 5–36, Chrome's error page 17). Chrome's "No internet" page (rgb(95,99,104), 15px `sans, Arial`, status 0) gets no note, because `Page.goto` ignores `Page.navigate`'s `errorText` while the load event still fires.
 - To find which range of a saved live capture read a check page without loading the site: a check shows another body
   font in `web.code.context[<range>]`, reads in milliseconds in `web.timings["code <range>"]`, and gets the "N boxes of
   the design width's page weren't found" note (bdryswi 1024: Helvetica Neue, 31 ms, 887 missing; web-capture-steady).
