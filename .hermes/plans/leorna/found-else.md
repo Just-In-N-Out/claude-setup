@@ -316,3 +316,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Plan F7 stands: Cursor reads a project's .claude/agents and keeps the JSON quotes (tools names break).
 ## 2026-11-07 — 86bctmuwy (review 1)
 - P3: Windows reserved item names (con, aux) fail filepath.IsLocal → CheckAll errors → every agent for that tool skipped as "could not be checked" (existing pattern, all kinds; internal/filepathlite/path_windows.go:98-120).
+
+## 2026-11-07 — 86bcm928h-per-user-credentials fixer 1
+- P3: a started tool inherits the PATH Leorna started with, so MCP servers it launches (npx, docker) miss later PATH changes (pre-existing; doesn't affect finding the tool).
+- P3: Codex/Claude Code installed outside the known locations (custom npm prefix, pnpm, scoop, standalone) gives "Could not open <tool>"; OpenTool hides the starter's "not installed where Leorna looks for it" reason.
