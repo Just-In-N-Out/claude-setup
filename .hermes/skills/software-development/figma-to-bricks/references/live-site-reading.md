@@ -55,6 +55,7 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   re-run into new folders (web-compare amendment-1 builder).
 
 ## Writing readers
+- **An unresolvable `var()` computes as `unset`,** never falling back to the declaration before it (no fallback, the custom property unset or `revert`ed): Elementor's `.e-con{--z-index:revert;z-index:var(--z-index)}` after `.bg{z-index:1}` gives `auto`, hiding a `::after` behind its box's paint. 1:1 geometry can't see z-order; a pixel patch can (site-motion builder).
 - Probe pages need `<meta name=viewport content="width=device-width">`; without it the phone ranges lay the page out at 980px (web-capture verifier 2).
 - Don't tokenise words per text node: the plugin's own markup splits `(800) 457-3160.`, `50+`, `100%` into pieces;
   glue pieces with no space between them whose drawings touch (in any ground-truth script too). A whitespace-only text
@@ -164,6 +165,7 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   point at 767 (web-capture review 8).
 
 ## Hover, focus and motion
+- DevTools' keyframe `keyText` writes `from`/`to` as `0%`/`100%` and expanded values turn `#e73a3a` into `rgb(…)`: cut the written text from `CSS.getStyleSheetText` by `keyText.range` (site-motion builder).
 - Reading motion over CDP (site-motion planner probes): `getMatchedStylesForNode`'s `cssKeyframesRules` lists only the element's own animation's `@keyframes` as written (the @media-active one at that width); a `::before`/`::after`'s come only from the pseudo element's own node (`DOM.describeNode` depth 1 → `pseudoElements[].backendNodeId` → `DOM.pushNodesByBackendIdsToFrontend`). `CSS.forcePseudoState` on every element at once is cheap (~0.55 ms a call) and puts the state's rules in the matched rules (`matchingSelectors` names which selector matched), but it also makes `Element.matches(':hover')` true: run any "which element's state sets this look" test with nothing forced.
 - Bricks 2.3.9's own Interaction can play a site's own keyframes: on enterView `startAnimation` adds `brx-animated` + `brx-animate-<type>` and an inline duration, so a class rule `.c.brx-animate-<type>{animation-name:<own keyframes>}` (0,2,0) beats animate.min.css's (0,1,0); the box stays opacity 0 until then via `[data-interaction-hidden-on-load]`, `runOnce` stops a replay. It runs offline with `reference/bricks/frontend-2.3.9/bricks.min.js` (`bricksInteractions()` with `body.bricks-is-frontend`) and elements printed with `data-interactions`, `data-interaction-id`, `data-interaction-hidden-on-load="1"` (evidence/site-motion/planner/probe-bricks.json).
 - To read a hover/focus end state with `CSS.forcePseudoState`, first finish the target's transitions and stop its
