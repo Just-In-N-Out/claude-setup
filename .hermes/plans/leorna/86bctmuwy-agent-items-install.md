@@ -1,6 +1,6 @@
 # 86bctmuwy-agent-items-install: install Agent items into Claude Code, Codex and Cursor
 
-**Status: PLAN, waiting for Justin's "go".** Planner (Opus 5.5), 2026-11-07 20:26 EST. Nothing is built: no worktree, branch, code edit or commit. Hand-over only at the end: no push, PR or ClickUp post until Justin says.
+**Status: APPROVED by Justin ("go", 2026-11-07): plan + every ⭐ answer (1A 2A 3A 4A 5A 6A) + AC1–AC11 as written. Builder: Opus 5.5 high.** Hand-over only at the end: no push, PR or ClickUp post until Justin says.
 
 ClickUp: [Install Agent items into local Claude Code, Codex and Cursor tool directories](https://app.clickup.com/t/86bctmuwy) (to do, assignee Justin, tag pi-2, list E4 - Distribution, no dependencies). Repo: `~/Leorna/leorna-client` only. Pipeline: Full.
 

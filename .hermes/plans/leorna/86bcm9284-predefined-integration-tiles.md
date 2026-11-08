@@ -350,3 +350,9 @@ Hand-over only: no push, no PR, no ClickUp post or status change, no team messag
 ## Skill lessons
 
 - memory (leorna-control-plane-workflow.md): The render-parity rule ("copy a merged client change", `internal/library/render/testdata/client/SOURCE.md`) means that any change to a tile's rendered output needs a client fixture PR merged first. Check this before planning a tile edit. Enforce: none.
+
+## Approval (Justin, 2026-11-07)
+Justin replied **go**: the plan, every ⭐ answer (Q1 A … Q8 A) and AC2 as `(live)` are approved.
+- Q1 A: the builder starts only after 86bcm927y is merged on GitHub main. At approval, main was `c8abbdd`, with no 927y PR yet.
+- Q2 A: ship without 86bcm928h. Q3 A: Google stays a vetted preview tile and its AC2 part becomes a follow-up. Q4 A: Codex is listed for ClickUp. Q5 A: Enterprise Server is pinned by digest, with strict Docker rules plus a client fixture PR merged first. Q6 A: Justin messages Zayd. Q7 A: the live accounts are a GitHub test org and a ClickUp test workspace, with no Google domain. Q8 A: the tiles stay `preview`.
+- Hand-over only: no push, PR or ClickUp post until Justin says so.

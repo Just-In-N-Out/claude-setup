@@ -1,6 +1,6 @@
 # 86bcm928h: Per-user credentials for integrations on the engineer's laptop
 
-Card: [Per-user credentials for integrations on the engineer's laptop](https://app.clickup.com/t/86bcm928h) · repo `leorna-client` · Full pipeline, size L, security-sensitive · planner 2026-11-07 20:17 EST · status **PLAN, awaiting "go"**.
+Card: [Per-user credentials for integrations on the engineer's laptop](https://app.clickup.com/t/86bcm928h) · repo `leorna-client` · Full pipeline, size L, security-sensitive · planner 2026-11-07 20:17 EST · status **APPROVED** (Justin "go", 2026-11-07: plan + every ⭐ answer = **Q1 A, Q2 A, Q3 A, Q4 A, Q5 A**). Q3 A: agents may run the Windows Credential Manager tests on this desktop's Windows side with test credentials only, deleted after each run. Q4 A: AC8 (live) waits for 86bcm927y's GitHub tile on a test server once 927y is merged; it is owed to Justin. Hand-over only: no push, PR or ClickUp post until Justin says.
 
 ## Questions for Justin (the plan is written as if the ⭐ answers were chosen)
 
