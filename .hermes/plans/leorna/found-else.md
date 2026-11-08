@@ -306,3 +306,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Low: the shared leorna-client main checkout is at f105e27, 28 commits behind GitHub main 7a83443.
 - Low/medium: after 86bctmuwy merges, control plane still tells admins agents aren't installed (render/render.go:105-115, metric/content_usage.go:33-39). Plan follow-up F1.
 - Low: Codex config reference page doesn't mention `agents/`; only the subagents page and source do.
+
+## 2026-11-07 — 86bcm928h-per-user-credentials builder
+- P3: under mutant e2, TestAC3OpenTool's failure message prints request.Dir holding the fake test constant testGitHubToken (not a real secret; gitleaks clean); could print a boolean instead.
+- info: sibling worktree 86bctmuwy-agent-items-install (d4bb6b2) has no migration 9 yet and touches toolconnector/ only; merge-tree with 928h exits 0.
