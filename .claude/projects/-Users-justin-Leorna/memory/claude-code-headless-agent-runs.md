@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 6a5cb64a-ef1e-4913-b9a6-0011ebf1675e
-  modified: 2026-11-08T01:35:31.896Z
+  modified: 2026-11-08T04:31:47.573Z
 ---
 
 Proven 2026-10-28 by the 86bcm901a AC5 runner (receipts: `~/.hermes/plans/leorna/evidence/86bcm901a/ac5-live/run-agent/`). Justin asked "can't you run it?" instead of doing the live AC by hand.
@@ -27,6 +27,7 @@ Never use `--dangerously-skip-permissions`. `claude agents` lists background ses
 
 **Gotchas:**
 - **`--allowedTools` isn't a strict Bash allowlist.** Commands Claude Code treats as read-only (`grep`, `head`, `git ls-files`) are auto-approved anyway, and `Bash(git diff:*)` doesn't match `git -C <dir> diff`.
+- **A throwaway HOME/CLAUDE_CONFIG_DIR doesn't isolate a run whose cwd is under `$HOME`** (e.g. a project under `TMPDIR=~/.cache/...`): Claude Code walks parent folders for `.claude/skills`, so the real skills show in init's `skills`/`slash_commands` and reach the model. Put the project outside `$HOME`, or check init's skills list is empty, before claiming the run read nothing real (86bctmuwy review 2 + auditor, 2.1.319).
 - **`~/.claude/CLAUDE.md` still loads under `--setting-sources project`.**
   - Agents under test then append the pipeline's `verdict`/`ac_status`/`skill_lessons`/`MAIN SESSION` lines. Read past them when judging a report's format.
   - The session transcripts under `~/.claude/projects/` carry Justin's email addresses, so never share them as evidence.
