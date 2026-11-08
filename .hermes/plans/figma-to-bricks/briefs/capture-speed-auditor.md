@@ -1,0 +1,61 @@
+# BLIND AC AUDITOR (read only): capture-speed (faster capture: matched styles once, side-by-side windows, page kept per kind, retries)
+
+You are a fresh auditor (Opus 5.5, high). Independently prove the approved acceptance criteria. You have never seen a
+builder, reviewer, fixer or verifier report. Stay blind: never open anything under
+`/home/justin/.hermes/plans/figma-to-bricks/evidence/capture-speed/` except `plan-approved.md` and your own `auditor/`
+folder; nor HANDOFF, ledgers or session notes. Source and tests are read-only; commit nothing; start no agents.
+**Justin (2026-11-02): "focus on building and not too much of edge cases."** An AC fails when its own text is broken (its
+named test, or a realistic case its words cover); an edge case beyond its text goes in `found_else`.
+**Never load bdryswi.com** or any live site; no logins; never write to any WordPress site. Nothing may hide that the
+importer's Chrome is automated.
+
+## The only inputs
+- Approved plan: `/home/justin/.hermes/plans/figma-to-bricks/evidence/capture-speed/plan-approved.md` (AC1–AC11; AC11 is
+  `(live)`, owed to Justin: mark it `not_run`). Use each exact test name the plan gives (a name the plan wraps across
+  lines goes through a by-name checker; find them all first with ac-check's own grep).
+- Head `e455130b1149b8f087409e4927d50a3c145a5266` (branch `capture-speed-build`), base
+  `7ff9ba4aa7f03e3c761a8814fb1ad4021dd51373` (`main`, Build 2026-11-08.1), your own folder
+  `/home/justin/.hermes/plans/figma-to-bricks/evidence/capture-speed/auditor/` (empty).
+- AC1 (base half), AC2 and AC3 are named-only: read the tests for their variables (`F2B_BASE_TREE` = a plain `git archive`
+  of base; `F2B_CODE_PROOF_BDRY`, `F2B_CODE_PROOF_CAPTURE`: the saved bdryswi.com stand-in that web-code-page's AC9 uses —
+  find it from `test/web/site-page-bdry.test.ts`, the repo docs and `~/.hermes/plans/figma-to-bricks/evidence/web-code-page/`
+  (another job's folder: you may read it to find the stand-in's path only). Say in your report that it is the saved
+  stand-in, not the live site. AC3 runs base and head in one run under `systemd-run --user --scope -p MemoryMax=6G -p
+  MemorySwapMax=0` (base ≈ 35 min: run it in the background, poll in under-115 s steps).
+
+## Your copy
+In your own worktree: `git checkout --detach e455130b1149b8f087409e4927d50a3c145a5266`, confirm `git rev-parse HEAD` and
+a clean `git status --porcelain --untracked-files=all`. Your `ac.json` names this head and base. Never write in any other
+worktree or the main folder.
+
+## Work
+Load `engineering-best-practices`; read the project skill `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`
+with `references/testing-pitfalls.md` and `references/live-site-reading.md`; read
+`~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` and the report format at the top of
+its `scripts/ac-check.sh`; follow the blind auditor procedure there. For every runnable AC make your own head and base runs
+(log `HEAD=` first and `EXIT=` last; the named assertion must run, pass on head and fail on base for new behaviour; a setup
+failure is not RED: use a hybrid tree to reach the assertion; preservation that rightly passes on base is `base_exempt`
+with a specific reason, backed by a byte-identity probe), your own mutation proof for the guards (AC5's lost-connection and
+retry rules, AC6's ask-once, AC8's ask-once), and a screenshot per AC (a terminal image for a non-visual AC). Run
+`git log -p 7ff9ba4a..HEAD -- <each AC's test files>` and read every changed assertion against the plan. Write
+`auditor/ac.json`, then self-check by copying your report and receipts to a fresh scratch folder and running `ac-check.sh`
+on them (no `--reviews`).
+
+## Machine
+- WSL: Node `/home/justin/.local/node-v22.23.3/bin` first on PATH; `TMPDIR` at most 38 characters (`~/.cache/cs-a/tmp`);
+  `CHROME_PATH=/home/justin/.cache/chrome-for-testing/chrome-f2b`. Other agents run Chrome too: close every Chrome you
+  start (kill by its profile path if Node dies). A browser or web run counts only with `skipped 0` for the AC's tests.
+  The worktree's `node_modules` may lack `.bin`: see testing-pitfalls. Never edit a script a background run is executing.
+- Runaway memory: SIGTERM, exit 143/137 or "Killed" may be an earlyoom kill (`journalctl -u earlyoom --since "-30 min" -o
+  short-iso | grep sending`); heavy and mutation runs under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0
+  <cmd>` (B-Dry runs 6G).
+- Bash moves foreground commands to the background after about 120–180 s: keep wait loops under 115 s.
+- For base runs: `git archive -o <scratch>/base.tar <base>` then `tar -xf` in separate calls, and copy head's test files
+  plus the test-only modules they import into it.
+- Put any summary in your report, not a file.
+
+## Report
+`{verdict: clean|findings, head, base, findings[{id,severity,claim,evidence}], ac_status[{ac,accepted,test,screenshot,
+evidence}], gates, found_else[], skill_lessons[{skill,lesson,evidence,enforce}]}`. Clean needs every runnable AC accepted.
+Empty skill_lessons is normal; never edit skills or memory (`enforce` is `none` or a one-line check proposal). End with
+`MAIN SESSION: check and save these skill_lessons now.`
