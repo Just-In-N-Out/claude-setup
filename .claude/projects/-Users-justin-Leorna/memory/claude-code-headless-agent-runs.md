@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 6a5cb64a-ef1e-4913-b9a6-0011ebf1675e
-  modified: 2026-10-28T22:55:28.721Z
+  modified: 2026-11-08T01:35:31.896Z
 ---
 
 Proven 2026-10-28 by the 86bcm901a AC5 runner (receipts: `~/.hermes/plans/leorna/evidence/86bcm901a/ac5-live/run-agent/`). Justin asked "can't you run it?" instead of doing the live AC by hand.
@@ -18,7 +18,7 @@ Proven 2026-10-28 by the 86bcm901a AC5 runner (receipts: `~/.hermes/plans/leorna
 Never use `--dangerously-skip-permissions`. `claude agents` lists background sessions, not agent definitions.
 
 **The proof, all in the stream:**
-- **Agent list:** the opening `system`/`init` event's `agents` field.
+- **Agent list:** the opening `system`/`init` event's `agents` field. It is emitted even in a throwaway HOME with no sign-in (the run then exits 1), so proving an agent loads needs no login; with `ANTHROPIC_BASE_URL` pointed at a local fake, the captured request lists each agent as `- <name>: <description> (Tools: …)` (2.1.319, 86bctmuwy planner).
 - **The named agent really ran:**
   - a `tool_use` with `name: "Agent"` and `input.subagent_type` set to the agent's name (init lists the tool as `Task`, but the calls say `Agent`);
   - the `system`/`task_started` event;
