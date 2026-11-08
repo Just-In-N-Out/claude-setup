@@ -543,3 +543,6 @@ Until Justin runs it, AC8 is **NOT VERIFIED** and acceptance-blocking for "ready
 - Memory says the desktop has no go/make/gcc (2026-10-28). Now `make` and `gcc` are on PATH and go/golangci-lint/govulncheck sit under `~/.local/leorna-tools`, off PATH. Info.
 - The Windows CI job lists packages by name, so `./desktop`, `./distribution`, `./usage` and `./handoff` tests never run on Windows (known gap, `no-ci-changes`). P3.
 - `Makefile:10` `fmt` lists top-level packages by name, so a future new top-level package would skip the gofmt check silently. P3.
+
+## Hand-over state (main session, 2026-11-08)
+READY FOR THE USER on 1f98596 (ac-check.sh --reviews); hand-over drafted, nothing committed after 1f98596, not pushed, no PR, nothing posted. Waiting on Justin: AC8 (live, now unblocked: 927y merged as CP #112), the "renderings OK for ClickUp?" question, and the words push / make a PR / post. Justin, 2026-11-08: "keep this chat going as I will not be on it" — read as: keep the session open and idle; no new agents, push, PR or post while he's away.
