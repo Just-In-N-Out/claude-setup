@@ -180,3 +180,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-08 | 86bccndx6 | mutation-testing-discipline | script: ac-check.sh or review-check.sh rejects a mutants summary that labels a survivor 'equivalent' without an equivalence_probe receipt whose input states the other gate does not stop | offered
 - 2026-11-08 | 86bccndx6 | leorna | script: each role's gates.sh fails when `command -v tofu` fails on the run's PATH, and after make check greps a verbose TestGoldenHCLPassesTofuValidate log for --- PASS, failing on SKIP | offered
 - 2026-11-08 | capture-speed | figma-to-bricks | script: verifier/finisher prep compares every cached input's git hash with its source commit before a gate run | offered
+- 2026-11-08 | site-motion | feature-dispatch | brief check (script/hook): warn when an agent started with isolation: worktree is told to work in another worktree's path | offered
