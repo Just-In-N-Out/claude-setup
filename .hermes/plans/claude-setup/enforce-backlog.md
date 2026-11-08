@@ -182,3 +182,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-08 | capture-speed | figma-to-bricks | script: verifier/finisher prep compares every cached input's git hash with its source commit before a gate run | offered
 - 2026-11-08 | site-motion | feature-dispatch | brief check (script/hook): warn when an agent started with isolation: worktree is told to work in another worktree's path | offered
 - 2026-11-08 | 86bcm928t | leorna | script: a shared control-plane gate wrapper (or ac-check.sh) fails a make-check receipt unless a verbose '--- PASS: TestGoldenHCLPassesTofuValidate' log exists for the same HEAD (tofu skips silently when not on PATH); runs before ALL ACCEPTED | offered
+- 2026-11-08 | 86bccndx6 | feature-dispatch ac-verification | script: ac-check.sh rejects a base_log whose only build error is 'no non-test Go files' (or 'setup failed') as a missing-package failure, in its base_log check | offered
