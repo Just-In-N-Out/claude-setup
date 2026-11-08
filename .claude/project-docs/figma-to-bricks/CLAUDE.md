@@ -5,10 +5,15 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-07)
+## Status (2026-11-08)
 
-- **Current build `2026-11-07.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-08.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-08.1 elementor-map (website importer):** with `--elementor`, `npm run site`/`site:check` fold Elementor's
+    wrappers so each Elementor element is one Bricks element, and Elementor's and ElementsKit's FAQs become one Bricks
+    Accordion (Nestable) that opens and closes like the site, within 2 px at every width (B-Dry's FAQ 0 px at 39 widths);
+    the capture keeps hidden parts of shown elements; without the flag pastes are as before. Paste check **3dk** (AC9,
+    AC10, live).
   - **2026-11-07.1 web-code-page (website importer):** the code method pastes a captured page whole: header, page and
     footer by the site's own elements, classes and CSS, within 2 px at every width (B-Dry 1.09 px at 53 widths), alt
     text and page-builder markers kept, bold and italic as on the site; every class starts with the page's name
