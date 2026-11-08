@@ -24,3 +24,4 @@
 - [Dark structure recognition](dark-structure-recognition-status.md) — released build2026-11-04.4; independently accepted, merged, rebuilt and pushed; installed paste check3dd remains owed.
 - [Footer-column destinations](footer-column-destinations.md): Justin chose A; column membership alone never creates a page link, while supplied and independent actions remain.
 - [Keep agents busy](keep-agents-busy.md) — don't park jobs for a merge; rebase onto an accepted head early (2026-11-04)
+- [Importer whole-page paste](importer-whole-page-paste.md) — Justin wants a captured page as ONE paste (header+page+footer), not three pieces (2026-11-07)
