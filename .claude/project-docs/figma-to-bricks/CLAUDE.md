@@ -7,8 +7,12 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-09)
 
-- **Current build `2026-11-09.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-09.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-09.2 elementor-phone-fit (website importer):** with `--elementor`, a widget whose inner negative margin
+    outgrows its body at a captured width keeps its own elements, named (fold rule 8), so B-Dry's page is within 1.02 px
+    at every width (7.59 px on phones before); the plain route and Figma designs are byte for byte as before. Paste
+    check **3dl** (AC6, live: B-Dry staging at 390).
   - **2026-11-09.1 site-motion (website importer):** the capture (format 3) keeps each `@keyframes` and each element's
     hover and focus looks with their trigger; the code-method paste carries the keyframes under the page's name, keeps
     hover, focus and transition looks, plays entrances once as they come into view through Bricks' own Interaction (an
