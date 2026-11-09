@@ -201,7 +201,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..8ebecad 100644
+index f2d882d..ac0bb87 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -543,7 +543,7 @@ index f2d882d..8ebecad 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +472,88 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +472,90 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -630,6 +630,8 @@ index f2d882d..8ebecad 100644
 +15. **A "largest wins" pick over ordered keys needs two fixtures**, the largest first and the largest last: with one,
 +    the keep-first or keep-last mutant survives, and a tie case can kill it for the wrong reason (elementor-footer-fit,
 +    2026-11-08).
++
++16. **A "wait while pending" guard is killed only by a case where the thing arrives inside the wait** (held 8 s under a 15 s cap): a held-past-the-cap case passes with or without the wait, and a fake sharing one counter across retried loads hides a no-wait mutant (staging-fit-capture, 2026-11-09).
  
  ## Specialized harnesses
  
