@@ -202,3 +202,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-09 | 86bcm9284 | leorna-control-plane | test: internal/library/render test fails when testdata/client/SOURCE.md contains 'pending' or names a feat/ branch, run by make check | offered
 - 2026-11-09 | 86bctmuwy | leorna | Claude Code PreToolUse hook on Bash in ~/Leorna/*/.claude/worktrees/*: ask before 'go test'/'make check' that neither sources an env file nor sets HOME= under ~/.cache | offered
 - 2026-11-09 | site-menu | figma-to-bricks | test: a named-only web test opens every pasted details on the B-Dry stand-in capture and asserts its links are drawn | offered
+- 2026-11-09 | 86bctmuwy | leorna | Claude Code hook (git-guard.sh): deny git commit/merge/rebase when the same Bash command sets HOME= or sources a file exporting HOME, since the Leorna identity and git hooks would not load | offered
