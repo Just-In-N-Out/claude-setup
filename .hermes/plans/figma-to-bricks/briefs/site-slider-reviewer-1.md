@@ -4,8 +4,8 @@ You are a fresh reviewer who never saw the build (Fable 5.2, high). Review only:
 nothing, start no agents. Never edit the main folder `/home/justin/Documents/FigmaToBricksV2` or other worktrees (read
 them with `git show`). Never load bdryswi.com or any live site; never write to any WordPress site; no logins.
 
-**Importer rule (Justin, 2026-11-02: "focus on building and not too much of edge cases"):** report as P0–P2 only bugs a real site or normal use hits (`npm run capture -- <a real site>` on home wifi, with or without an "I am human" check, then `npm run site` / `site:check`;
-the panel opening a capture; Figma designs converting as before), each with a concrete real-use scenario. Edge
+**Importer rule (Justin, 2026-11-02: "focus on building and not too much of edge cases"):** report as P0–P2 only bugs a real site or normal use hits (a captured Elementor page pasted into Bricks 2.3.9 or 2.4.2 by `npm run site --elementor`, its sliders playing like the
+site; `site:check`; the plain route and Figma designs converting as before), each with a concrete real-use scenario. Edge
 cases are P3 (follow-ups). A P0–P2 with no concrete real-use scenario is a P3.
 
 ## Inputs
