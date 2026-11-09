@@ -34,4 +34,6 @@ Never use `--dangerously-skip-permissions`. `claude agents` lists background ses
 
 **How to apply:** when a planned `(live)` AC is really a CLI or agent run that a headless session can prove from its own event stream, offer to have an agent run it for Justin, with receipts. Keep interactive checks (a native menu, a live publish → Sync) for him.
 
+- **Reusing an existing MCP OAuth (86bcm9284):** `claude -p --strict-mcp-config --mcp-config <file>` reuses Claude Code's stored OAuth when the server's name and URL match an already-authenticated user-scope server (ClickUp connected with no prompt). `--no-session-persistence` still creates an empty `~/.claude/projects/<cwd slug>/memory`; `claude purge -y <path>` removes it (`--dry-run` first).
+
 Related: [[codex-cli-offline-checks]]

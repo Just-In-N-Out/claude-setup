@@ -16,4 +16,6 @@ Even `cursor-agent --version` writes `$XDG_CONFIG_HOME/cursor/cli-config.json` (
 - **The CLI reads agents only from the workspace** (`.cursor/agents`, `.claude/agents`, `.grok/agents`), never `~/.cursor/agents` or `$CURSOR_CONFIG_DIR/agents`, although the docs say user-level agents work in the CLI.
 - **Its frontmatter parser keeps quotes:** `description: "x"` arrives as `"x"`, and Claude's `tools: "Read, Grep"` becomes the tool names `"Read` and `Grep"`.
 
+- **MCP without a Cursor account (86bcm9284):** `cursor-agent mcp list` and `mcp list-tools <server>` make real authenticated MCP connections with no account sign-in (`mcp login <server>` prints an OAuth URL), but tool calls need the agent and so an account. Run from a folder outside HOME: with cwd == HOME, `~/.cursor/mcp.json` is read as project config and servers show "not loaded (needs approval)".
+
 Related: [[codex-cli-offline-checks]], [[claude-code-headless-agent-runs]]

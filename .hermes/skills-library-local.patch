@@ -629,10 +629,10 @@ index f2d882d..9dd20aa 100644
  ## Specialized harnesses
  
 diff --git a/skills/security-best-practices/SKILL.md b/skills/security-best-practices/SKILL.md
-index 6f12e3e..cc308b5 100644
+index 6f12e3e..5128668 100644
 --- a/skills/security-best-practices/SKILL.md
 +++ b/skills/security-best-practices/SKILL.md
-@@ -87,3 +87,15 @@ When assigning an ID for some resource, which will then be used by exposed to th
+@@ -87,3 +87,17 @@ When assigning an ID for some resource, which will then be used by exposed to th
  ### A note on TLS
  
  While TLS is important for production deployments, most development work will be with TLS disabled or provided by a separate TLS proxy. Due to this, be very careful about not reporting lack of TLS as a security issue. Also be very careful around use of "secure" cookies. They should only be set if the application will actually be over TLS. If they are set on non-TLS applications (such as when deployed for local dev or testing), it will break the application. You can provide a env or other flag to override setting secure as a way to keep it off until on a TLS production deployment. Additionally avoid recommending HSTS. It is dangerous to use without full understanding of the lasting impacts (can cause major outages and user lockout) and it is not generally recommended for the projects being reviewed by codex.
@@ -640,6 +640,8 @@ index 6f12e3e..cc308b5 100644
 +### Check decoded values, not only raw input
 +
 +A NUL, invalid-UTF-8 or CR LF check on the raw bytes of a TOML, JSON or YAML file misses what the format's escapes put back after decoding: a string escape for NUL or for CR LF passes the raw check and arrives in the decoded value. Run the same checks on every decoded string you keep, and pin each with an escaped-input test case. When stored files are later re-read with CR LF turned into LF, an escaped CR LF also makes the written item differ from its recorded checksum (86bcm901b fix 1: import succeeded, then the item read as adapted).
++
++Passing a secret to a child in a clean environment: never `env -i NAME="$SECRET" cmd`, which leaves the value in `env`'s argv (`/proc/<pid>/cmdline`) until it execs; unset the other variables in a subshell, `export NAME`, then `exec cmd` (86bcm9284 AC2 live runner).
 +
 +### Scanning untrusted trees with gitleaks
 +

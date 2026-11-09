@@ -25,4 +25,6 @@ Gotchas:
 - **`codex exec` can't prove an execpolicy allow rule:** under approval `never` (its default) rules don't lift the sandbox, exec has no on-request mode, and `--approve-for-me`'s reviewer approves escalations with no rule at all. Test rules offline with `codex execpolicy check`, and live in the TUI (codex-parity AC11, 2026-10-28).
 - **Spawn custom Codex roles with `fork_turns "none"`:** a full-history fork takes the parent's model and ignores the role file's. The spawn tool's hook `tool_name` is `collaborationspawn_agent`.
 
+- **MCP tool call with no model login (0.165, 86bcm9284 AC2 live):** `codex exec` sends its first model request before MCP servers start, so the turn has no MCP tools; `-c mcp_servers.<name>.required=true` makes it wait. Catalog models defer MCP tools behind `tool_search`. A loopback Responses-API stand-in (custom `model_provider`, no `env_key`) can drive one real MCP call: reply with a `tool_search_call` (execution client), then a `function_call` with `namespace` (e.g. `mcp__github`) and `name`. Label such runs "stand-in model".
+
 Related: [[claude-code-hook-internals]], [[zsh-bash-tool-gotchas]]
