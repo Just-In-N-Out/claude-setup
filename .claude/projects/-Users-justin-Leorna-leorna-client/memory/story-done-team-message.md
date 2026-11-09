@@ -17,4 +17,4 @@ Example (86bbu3xr4, 2026-09-27):
 
 **Why:** Justin asked for this on 2026-09-27 ("after we are done with the user story, I want a message... just the pull request and the clickup link, so I can send it on the team"). He kept asking to make these shorter; he wants to show progress to the team quickly.
 
-**How to apply:** Offer it unprompted at the end of every story, in a quote block, as short as possible. ClickUp links look like `https://app.clickup.com/t/90141510532/<clickup-id>`. Related: [[justin-profile]], [[stop-and-show-diff]].
+**How to apply:** Offer it unprompted at the end of every story, in a quote block, as short as possible. The same goes for any group-chat explanation Justin asks for (why a part is deferred or split): one or two plain, high-level sentences with no technical terms, card IDs or design detail. On 2026-11-09 (86bcm9284, Google deferral) it took five rewrites ("more simple", "high level", "shorter") to get there, so start at that length. ClickUp links look like `https://app.clickup.com/t/90141510532/<clickup-id>`. Related: [[justin-profile]], [[stop-and-show-diff]].
