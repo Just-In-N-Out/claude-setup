@@ -201,7 +201,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..9dd20aa 100644
+index f2d882d..cd4e8e4 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -503,7 +503,7 @@ index f2d882d..9dd20aa 100644
      Full transcript in `references/blind-test-patterns.md`.
  
  11. **Check-then-act races are invisible to sequential tests.** A publisher that
-@@ -221,6 +388,9 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -221,8 +388,12 @@ transcripts in `references/blind-test-patterns.md`.
  
  12. **Replayed context masqueraded as UI ownership.** A callback that records the current ContextVars can appear to belong to B even when it is A's panel; an async fixture closing over a mutable loop key has the same blind spot. Bind immutable UI owners at construction, assert the bridge's actual session identifier, and pair distinct owner decisions with equal-outcome stale-owner mutations. Equal cancellations prevent action assertions from hiding a missing identity check. Keep the negative-control body unchanged while strengthening the oracle, and require the precise owner/session failure rather than any asynchronous exception.
  
@@ -512,8 +512,11 @@ index f2d882d..9dd20aa 100644
 +
  ## Pitfalls
  
++- A "largest wins" pick over ordered keys needs two fixtures, the largest first and the largest last: with one, the keep-first or keep-last mutant survives, and a tie case can kill it for the wrong reason (elementor-footer-fit, 2026-11-08).
  1. **A no-op mutation is not a pass.** If the pattern no longer matches (you
-@@ -240,7 +410,15 @@ transcripts in `references/blind-test-patterns.md`.
+    refactored), the harness must report BLIND, not skip. A silent no-op looks
+    exactly like proof.
+@@ -240,7 +411,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -530,7 +533,7 @@ index f2d882d..9dd20aa 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -261,7 +439,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +440,11 @@ transcripts in `references/blind-test-patterns.md`.
     very edits being tested. Stale mutated bytecode can fake either red or green
     despite correct-looking source.
  8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
@@ -543,7 +546,7 @@ index f2d882d..9dd20aa 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +472,84 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +473,84 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
