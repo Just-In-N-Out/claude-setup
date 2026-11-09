@@ -119,14 +119,15 @@ index 8d8968a..f0855d3 100644
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..d0ef222 100644
+index c509c64..b664098 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
-@@ -25,10 +25,11 @@ Produce a saved, finite software plan that a context-free implementer can follow
+@@ -25,10 +25,12 @@ Produce a saved, finite software plan that a context-free implementer can follow
  ## Standing preferences and boundaries
  
  - Write for an implementer with zero codebase context: exact paths, complete code for executable tasks, exact commands, expected outcomes and explicit stop conditions.
 +- Expect exit codes the wrapper can actually report. `make <target>; echo $?` gives 2 for any failed recipe, and `go run` turns any non-zero child exit into 1 (printing `exit status N`), so a command's own 0/1/2 contract is pinned by tests on the binary or `run()` function, not through make. (2026-10-23, 901u v2.)
++- Put each cited test name whole on one plan line: `ac-check.sh` matches plan lines one by one, so a name wrapped across lines is never found. When amending, check every cited name in the approved copy, not only the changed AC (elementor-phone-fit: 2 of 3 names were wrapped).
  - Use DRY, YAGNI, vertical TDD and frequent scoped commits; prefer improving existing owned components over parallel replacements.
  - Honor the current plan-only boundary even when the task also says to work on everything. Inspect read-only context and write only the designated plan artifact; do not implement, run application tests, publish tracker changes or start coding delegates.
  - Keep the chat response brief: saved path, coverage, genuine blockers and an offer to execute later. Put depth in the plan, not a pasted Discord implementation manual.
@@ -135,7 +136,7 @@ index c509c64..d0ef222 100644
  
  ## Procedure
  
-@@ -36,7 +37,9 @@ Produce a saved, finite software plan that a context-free implementer can follow
+@@ -36,7 +38,9 @@ Produce a saved, finite software plan that a context-free implementer can follow
  
  Extract the goal, included work, exclusions, acceptance and allowed side effects from the current request. Resolve an obvious interpretation autonomously; ask one brief question only when genuinely different interpretations change the plan.
  
@@ -146,7 +147,7 @@ index c509c64..d0ef222 100644
  
  ### 2. Refresh the baseline and ownership
  
-@@ -63,7 +66,7 @@ For code-ownership migrations, plan these preservation checks before the first e
+@@ -63,7 +67,7 @@ For code-ownership migrations, plan these preservation checks before the first e
  - Preserve every independent assertion, parser, parameter, marker and contract/gap obligation. Change only measured owner fingerprints, intentional additive references and required-origin bindings; source counts are not behavioral preservation evidence.
  - Trace inventory cardinality through the canonical caller and its independent success fixture. Add a complete stale-cardinality denial regression without relaxing closed-schema, exact-count or integer-type validation.
  - Trace changed checker bytes into fixed trusted-grader digest consumers. Plan an explicit independently reviewed literal pin update bound to the measured code delta, never automatic repair or runtime-derived admission.
@@ -155,7 +156,7 @@ index c509c64..d0ef222 100644
  
  Use `references/source-migration.md` for the concrete discovery, preservation, transplant and review recipe; include its relevant checks in the saved plan rather than treating the reference as execution authorization.
  
-@@ -90,7 +93,7 @@ Each ready code task contains:
+@@ -90,7 +94,7 @@ Each ready code task contains:
  
  Inspect whether the real test runner binds immutable tracked HEAD before proposing dirty-worktree test commands. Specify a verified owner-supported way to admit both candidate identities or block execution; do not loosen provenance or present an untested checkpoint recipe as established practice.
  
@@ -164,7 +165,7 @@ index c509c64..d0ef222 100644
  
  **Done:** every ready task is executable without guessed paths, code omissions, undefined approval-dependent values or hidden host/container assumptions.
  
-@@ -98,7 +101,7 @@ Preserve already-passing regression tests as regression coverage. Do not fabrica
+@@ -98,7 +102,7 @@ Preserve already-passing regression tests as regression coverage. Do not fabrica
  
  Use the actual selected workspace, not a stale session/profile path. Obtain the timestamp with a tool, then save `.hermes/plans/YYYY-MM-DD_HHMMSS-<slug>.md` there using `write_file`, unless an exact target was supplied. Let the file tool create parents; do not create unrelated scratch/project files in a plan-only turn.
  

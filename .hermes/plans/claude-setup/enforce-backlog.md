@@ -192,3 +192,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-08 | site-motion | figma-to-bricks | script: files.sh refuses to start if another live process already uses its TMPDIR's f2b-chrome- profiles | offered
 - 2026-11-08 | 86bcm9284 | leorna | script: bring-main-in helper collects '-' lines repeated in 3+ _test.go files of git diff <old base> <main> and greps the story's changed test files for them, run by the fixer before the gates | offered
 - 2026-11-08 | 86bcm9284 | security-best-practices | Claude Code PreToolUse Bash hook / pre-commit lint flagging env -i (or env) argv entries matching (TOKEN|SECRET|PASSWORD|_KEY)[A-Z_]*="?\$ | offered
+- 2026-11-08 | elementor-phone-fit | implementation-planning | script: plan lint (when copied to plan-approved.md) fails when a quoted test name in an AC line has no one-line match | offered
