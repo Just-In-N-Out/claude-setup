@@ -118,23 +118,23 @@ staging-fit job C makes the renderer print them so.
 
 ## Root cause (file:line)
 
-1. **Every site box is a Div.** `src/core/site/kinds.ts:66` `if (n.kind === "box") return outer("div", …)`; words in a tag
-   Rich Text can't print become a Div holding a Rich Text (`kinds.ts:76`). The code method (web-code-proof Q2 A) keeps
+1. **Every site box is a Div.** `src/core/site/kinds.ts:71` `if (n.kind === "box") return outer("div", …)`; words in a tag
+   Rich Text can't print become a Div holding a Rich Text (`kinds.ts:82`). The code method (web-code-proof Q2 A) keeps
    one Bricks element per site element by design (`src/core/site/tree.ts:1-4`).
-2. **The Elementor step makes a Section only of the paste's root.** `src/core/site/elementor-fold.ts:256`
+2. **The Elementor step makes a Section only of the paste's root.** `src/core/site/elementor-fold.ts:258`
    `e.boxed && e.path === root ? section : block`. In a part paste the root is the part's root (an Elementor document
-   div/header/footer, `src/core/site/parts.ts:58-60` `prepare(capture, x.root, …)`), never a container, so a whole-page
+   div/header/footer, `src/core/site/parts.ts:53` `prepare(capture, x.root, …)`), never a container, so a whole-page
    paste has no Section at all.
-3. **The part roots are pasted as plain Divs with no label.** The root is a `header`/`main`-like box (`kinds.ts:31`
-   `PLAIN` → Div, Bricks owns those landmarks), named `<page>__site-<part>` (`parts.ts:73`), and nothing writes Bricks'
-   `label` (`src/core/site/convert.ts:257-260` `payloadOf` builds `{ id, name, parent, children, settings }` only; the
-   Figma route writes `el.label`, `src/core/emit/elements.ts:186`). So the Structure panel's top level is exactly
+3. **The part roots are pasted as plain Divs with no label.** The root is a `header`/`main`-like box (`kinds.ts:32`
+   `PLAIN` → Div, Bricks owns those landmarks), named `<page>__site-<part>` (`parts.ts:79`), and nothing writes Bricks'
+   `label` (`src/core/site/convert.ts:314-317` `payloadOf` builds `{ id, name, parent, children, settings }` only; the
+   Figma route writes `el.label`, `src/core/emit/elements.ts:190`). So the Structure panel's top level is exactly
    "Div, Div, Div".
-4. **Buttons, dividers and linked pictures have no Bricks element.** `src/core/site/elementor-fold.ts:117-138` `BODIES`
-   maps only `heading`, `image` (refusing a linked one, `:120-121`) and `text-editor`; every other widget is "kept as page
-   code" (`:279`), i.e. one Div per wrapper (17 buttons × 6 elements on B-Dry).
+4. **Buttons, dividers and linked pictures have no Bricks element.** `src/core/site/elementor-fold.ts:91-112` `BODIES`
+   maps only `heading`, `image` (refusing a linked one, `:95`) and `text-editor`; every other widget is "kept as page
+   code" (`:282`), i.e. one Div per wrapper (17 buttons × 6 elements on B-Dry).
 5. **Two fold rules refuse common Elementor widgets:** "pads" (`elementor-fold.ts:46` `[/^padding-/, zero, "pads"]`, any
-   wrapper padding) and "two margins on one side" (`:175-177`), so 33 headings, images and text editors keep their
+   wrapper padding) and "two margins on one side" (`:163`), so 33 headings, images and text editors keep their
    widget box and holder Divs.
 
 ## The general rule
@@ -237,7 +237,7 @@ on `fd1986dc`: 3453 tests, 3384 pass, 0 fail, 69 skipped. Run `npm run corpus` b
   whose page part holds two parent containers `PATHS.section` and `PATHS.second`); find each element by `sources`;
   assert `PATHS.section` and `PATHS.second` are `section`, `PATHS.inner` `container`, `PATHS.row` and `PATHS.nested`
   `block`, `PATHS.nestedInner` `container`; a container whose site tag is `a` (patch `PATHS.second` tag `a` with an
-  href) is a `block`. On main: `block` for both parents (elementor-fold.ts:256).
+  href) is a `block`. On main: `block` for both parents (elementor-fold.ts:258).
 - GREEN: `elementor-fold.ts` container branch: `const top = e.parent === null && /^(div|section)$/.test(code.nodes[e.path].tag)`;
   `name: top || e.path === root ? "section" : "block"`, role `section`/`block` as today; the inner rule unchanged.
 - Update the tests whose expectation the rule changes (list them in the ledger with the line): whole-part shapes that
@@ -245,17 +245,21 @@ on `fd1986dc`: 3453 tests, 3384 pass, 0 fail, 69 skipped. Run `npm run corpus` b
   `test/web/site-elementor-*.test.ts` for `"block"` at a parent container). Section pastes are unchanged.
 
 ### Task 3 (AC2, AC3 unit): the part's root left out when it draws nothing
+- Fixture: `elementorCode` gains an option `over.header` (a `header.elementor.elementor-location-header` part root
+  listed in `web.parts` as the header part, holding one full parent container with a heading widget "Call us today"),
+  off by default so every existing test is unchanged.
 - RED: two tests in `site-native-sections.test.ts`:
   - "a part's root that draws nothing is left out: its sections are the paste's top elements": `siteParts` of the
     fixture with the step; the page paste's top elements (parent 0) are exactly the two sections, in order; no element's
     `sources` path is the page root; each top element's `_cssGlobalClasses` starts with the reset class id; the page
     root's inherited `font-family` (patch the root's `inherited` with a family) reaches each section's class (its
-    `_typography.font-family` or custom CSS, as `withInherited` writes it today for the root); a header root with the
-    clearfix `::before` (`pseudo.before: { content: '""', display: "table", clear: "both" }`) is left out too.
+    `_typography.font-family` or custom CSS, as `withInherited` writes it today for the root); the page root patched
+    with Elementor's clearfix `::before` (`pseudo.before: { content: '""', display: "table", clear: "both" }`) is left
+    out too; the header part (fixture option below) is left out the same way.
   - "a part's root that draws or lays out stays one Block labelled with its part": patch the page root in turn with
     `padding-top: 20px`, `row-gap: 10px` + `display: flex`, `background-color: #eee`, `position: relative`, a
-    `::before` with `content: "x"`, and a header root whose first section has `margin-top: 8px` beside the clearfix:
-    each time the root is the one top element, name `block`, `label` "Page"/"Header", and the notes hold `the page's root
+    `::before` with `content: "x"`, and the clearfix `::before` while the first section has `margin-top: 8px`:
+    each time the root is the one top element, name `block`, `label` "Page", and the notes hold `the page's root
     stays: it pads (padding-top)` (resp. `lays out (row-gap)`, `paints (background-color)`, `positions (position:
     relative)`, `draws a ::before`, `its ::before keeps its first section's margin-top`).
 - GREEN: `src/core/site/lift.ts` (new, ≤ 120 lines): `liftOf(code, pr, root, sections)`. Neutral at every kept range
@@ -323,7 +327,7 @@ on `fd1986dc`: 3453 tests, 3384 pass, 0 fail, 69 skipped. Run `npm run corpus` b
   its bare line": `renderSitePaste` of a two-element paste (a linked Button with no style, a Divider with no settings):
   the `a` has classes `brxe-button … bricks-button` and no `bricks-background-*`, the words as its text; the Divider is
   `div.brxe-divider.horizontal > div.line` with no `style` attribute. On main the Divider's `.line` has an inline
-  `border-top` (render.ts:225-227) and the Button lacks `bricks-button`.
+  `border-top` (render.ts:225-228) and the Button lacks `bricks-button`.
 - GREEN: `test/browser/render.ts` `node()`: when the render is the site route (thread `site` already passed to `body`),
   add `bricks-button` (and `bricks-background-<style>` when `s.style`) to a Button's classes; for a Divider with no
   `height`/`style`/`color`, print `<div class="line"></div>` and add `horizontal`. Figma renders byte-identical (the
@@ -391,7 +395,7 @@ on `fd1986dc`: 3453 tests, 3384 pass, 0 fail, 69 skipped. Run `npm run corpus` b
   with Link to; its img's own look on > img".
 - GREEN: `elementor-fold.ts` `BODIES.image`: a chain whose last box above the `img` is an `a` with an href no longer
   refuses: the chain's wrappers through the `a` merge into the `a` (the Image's class), the `img`'s own declarations go
-  to `ClassCss.parts` under ` > img` (Bricks prints the linked Image's id and classes on the `a`, render.ts:186-189); the
+  to `ClassCss.parts` under ` > img` (Bricks prints the linked Image's id and classes on the `a`, render.ts:190-193); the
   pick carries the link (`siteLink`). An `a` that paints differently from its `img` box under a state other than hover
   colour keeps its elements (named).
 
@@ -401,7 +405,7 @@ on `fd1986dc`: 3453 tests, 3384 pass, 0 fail, 69 skipped. Run `npm run corpus` b
   background, a `width` with horizontal padding, a `margin-top` with top padding, a `%` or `em` padding: each named
   "its holder pads (padding-…)" as today), then `test/web/site-elementor-pads.test.ts` "a holder's padding moves onto a
   body that paints nothing: within 2 px at every width" on the natives fixture.
-- GREEN: in `foldable` (`elementor-fold.ts:182-188`, the PAINT loop), a wrapper's `padding-<side>` in px passes when
+- GREEN: in `foldable` (`elementor-fold.ts:131`, the PAINT loop), a wrapper's `padding-<side>` in px passes when
   the body (last box) paints nothing at any range or state (PAINT table, borders, outline, `states`), declares no size
   on that axis (`AXIS`), has no non-zero margin on that side, and isn't inline-level; `merge` adds the wrappers' px
   paddings to the body's own per side (logical `padding-block-start` etc. mapped to physical as the capture writes
@@ -415,7 +419,7 @@ on `fd1986dc`: 3453 tests, 3384 pass, 0 fail, 69 skipped. Run `npm run corpus` b
   a parent that isn't flex/grid at a range: "two margins on one side" as today), then `test/web/site-elementor-margins.test.ts`
   "margins on one side inside a flex or grid item fold as the browser adds and collapses them: within 2 px at every
   width" on the natives fixture.
-- GREEN: replace the "two margins on one side" refusal (`elementor-fold.ts:175-177`) by a `marginsOf(chain, st, r,
+- GREEN: replace the "two margins on one side" refusal (`elementor-fold.ts:163`) by a `marginsOf(chain, st, r,
   side)` in a new `src/core/site/elementor-margins.ts`: the widget box's parent is flex/grid at that range (else the
   old refusal), all margins ≥ 0, inner adjoining margins collapse (max) only between block boxes with no padding/border
   on that side, no `overflow` other than visible, not flex/grid themselves, and (bottom) `height` auto; the result is
