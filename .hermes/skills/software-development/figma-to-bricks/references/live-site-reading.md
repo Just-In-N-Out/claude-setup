@@ -56,6 +56,7 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   re-run into new folders (web-compare amendment-1 builder).
 
 ## Writing readers
+- `Page.captureScreenshot` clip coordinates are document coordinates: add `scrollY` to a `getBoundingClientRect` top, or the shot shows whatever sits at that viewport spot (site-faq planner).
 - **Measure a published Bricks page against its paste by structure:** walk the paste tree and, in the DOM, each node's nearest descendants with a `brxe-` class, in order (Bricks 2.4 prints no id for most elements; 1112 of 1112 mapped); answer the old site's pictures from the capture's bytes (CDP Fetch at Request stage) and map its host to NOTFOUND (staging-fit planner).
 - **An unresolvable `var()` computes as `unset`,** never falling back to the declaration before it (no fallback, the custom property unset or `revert`ed): Elementor's `.e-con{--z-index:revert;z-index:var(--z-index)}` after `.bg{z-index:1}` gives `auto`, hiding a `::after` behind its box's paint. 1:1 geometry can't see z-order; a pixel patch can (site-motion builder).
 - Probe pages need `<meta name=viewport content="width=device-width">`; without it the phone ranges lay the page out at 980px (web-capture verifier 2).
