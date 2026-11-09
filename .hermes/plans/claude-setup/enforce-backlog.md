@@ -194,3 +194,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-08 | 86bcm9284 | security-best-practices | Claude Code PreToolUse Bash hook / pre-commit lint flagging env -i (or env) argv entries matching (TOKEN|SECRET|PASSWORD|_KEY)[A-Z_]*="?\$ | offered
 - 2026-11-08 | elementor-phone-fit | implementation-planning | script: plan lint (when copied to plan-approved.md) fails when a quoted test name in an AC line has no one-line match | offered
 - 2026-11-09 | 86bcm9284 | ac2-live runbook | test: run-ac2-live.sh self-test feeding codex_summary a recorded text-wrapped Codex tool output, expecting SUMMARY_OK, run before each live run | offered
+- 2026-11-09 | site-slider | figma-to-bricks | test: a Swiper instance with more than 60 params still records autoplay.delay and loop in web.sliders | offered
