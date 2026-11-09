@@ -197,3 +197,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-09 | site-slider | figma-to-bricks | test: a Swiper instance with more than 60 params still records autoplay.delay and loop in web.sliders | offered
 - 2026-11-09 | site-slider | figma-to-bricks | script: the suite driver (run-files.sh) records git HEAD and dirty count at the start and end of each suite and prints MIXED-HEAD when they differ | offered
 - 2026-11-09 | site-slider | figma-to-bricks | test: payloadProblems refuses a false value on a Bricks checkbox key (autoplay, pauseOnHover, pauseOnFocus, rewind, arrows, pagination, autoHeight) | offered
+- 2026-11-09 | site-reviews | figma-to-bricks | test: capture the live-widget fixture with a fetcher refusing the page's text/html request and assert the widget is still one embed or the capture notes the served page couldn't be read | offered
