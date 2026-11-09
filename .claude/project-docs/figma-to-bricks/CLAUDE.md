@@ -5,10 +5,16 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-08)
+## Status (2026-11-09)
 
-- **Current build `2026-11-08.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-09.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-09.1 site-motion (website importer):** the capture (format 3) keeps each `@keyframes` and each element's
+    hover and focus looks with their trigger; the code-method paste carries the keyframes under the page's name, keeps
+    hover, focus and transition looks, plays entrances once as they come into view through Bricks' own Interaction (an
+    entrance that starts hidden takes a type Bricks hides on load; an element that plays one keeps a box; a drawing
+    plays from load), and stands still for reduced motion with every entrance shown; older captures and Figma designs
+    paste byte for byte as before. Paste check **3dj** (AC13, AC14, live).
   - **2026-11-08.2 capture-speed (website importer):** `npm run capture` reads up to 4 width ranges side by side in
     separate Chrome windows (`--windows <n>`), asks Chrome's matched styles once per element, asks the site for the page
     once per kind of visitor (public addresses), loads a failed page again in the same window and stops with one plain
@@ -24,7 +30,8 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
     footer by the site's own elements, classes and CSS, within 2 px at every width (B-Dry 1.09 px at 53 widths), alt
     text and page-builder markers kept, bold and italic as on the site; every class starts with the page's name
     (`home__…`) but `site-reset-<4>`, `site-fonts`, `site-text`, `site-flat` (Justin, 2026-11-07, "Prefix every
-    name"); a site's CSS animations stay still (no `@keyframes`). Paste check **3di** (AC12, AC19, live).
+    name"); a site's CSS animations stay still (no `@keyframes`; site-motion, 2026-11-09.1, carries them). Paste
+    check **3di** (AC12, AC19, live).
   - **2026-11-04.8 icon-buttons:** a pill of words and drawn icons is Bricks' own Button drawing its icons in CSS; a
     button-shaped box inside a link is a Button with no link; a label wholly linked makes a linked Button. Paste check
     **3dg** (AC8, live: hydraulics' hero).
