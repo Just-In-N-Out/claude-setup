@@ -1,6 +1,6 @@
 # Role: reviewer (Full round 1, report only): staging-fit-capture
 
-You are a fresh reviewer who never saw the build (Opus 5.5, high). Review only: change no source or test, commit
+You are a fresh reviewer who never saw the build (Fable 5.2, high). Review only: change no source or test, commit
 nothing, start no agents. Never edit the main folder `/home/justin/Documents/FigmaToBricksV2` or other worktrees (read
 them with `git show`). Never load bdryswi.com or any live site; never write to any WordPress site; no logins.
 
