@@ -11,4 +11,4 @@
 - [Cursor CLI on the desktop](cursor-cli-on-desktop.md) — installed 2026-11-07 at ~/.local/bin/cursor-agent; even --version writes ~/.config/cursor, so isolate HOME+XDG
 - [Docker Desktop crash on WSL](docker-desktop-crash-wsl.md) — mid-gate vhdx-unmount crash kills docker.sock; Postgres tests fail with connection errors; ask Justin before restarting
 - [Lead status with story name](lead-status-with-story-name.md) — start every story status reply with card title + ID and a done/not-done verdict
-- [Finisher briefs and shared notes](finisher-brief-shared-notes.md) — never-edit-memory rule covers lessons only; ClickUp post waits until the PR is merged
+- [Finisher briefs and shared notes](finisher-brief-shared-notes.md) — lessons-only edit rule; ClickUp post waits for merge; "make a PR" includes the PR-number record commit before saying ready
