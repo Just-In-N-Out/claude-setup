@@ -1237,3 +1237,8 @@ Justin runs it after the reviews and the verifier. Sync from a Leorna client who
 - F4 (real Cursor check) is now AC12 + AC13.
 - New F7: Cursor reads a project's `.claude/agents/` (on by default), and its parser keeps the Claude file's JSON quotes. Descriptions show quotes, and `tools: "Read, Grep"` becomes `"Read` + `Grep"`. Fix later by writing Claude's `tools` (and the description, when it is plain-safe) unquoted, which Claude Code's YAML also reads. Not in this story unless Justin adds it.
 - New F8: if Cursor ever makes its CLI read `~/.cursor/agents` (the docs already say it does), re-run AC12 against the user folder.
+
+## Decision 9 (Justin, 2026-11-09, after bringing main f3bc960 in): D1 = option 2, "Report + skip"
+- A Sync that keeps a user-edited Leorna agent file ("changed after Leorna wrote it") keeps that file in the tool's evidence with its last recorded hash. Check files and the admin drift report then keep showing it as modified, and Restore can put it back after a preview.
+- Restore uses the agent guard: it skips agent paths Leorna doesn't own, shows the same warning in the preview, and restores the tool's other files instead of refusing the whole tool.
+- Built as a fix on the brought-in head with its own tests; ACs AC1–AC13 are unchanged. Record: `evidence/86bctmuwy/bring-main-1/justin.json`.
