@@ -1242,3 +1242,7 @@ Justin runs it after the reviews and the verifier. Sync from a Leorna client who
 - A Sync that keeps a user-edited Leorna agent file ("changed after Leorna wrote it") keeps that file in the tool's evidence with its last recorded hash. Check files and the admin drift report then keep showing it as modified, and Restore can put it back after a preview.
 - Restore uses the agent guard: it skips agent paths Leorna doesn't own, shows the same warning in the preview, and restores the tool's other files instead of refusing the whole tool.
 - Built as a fix on the brought-in head with its own tests; ACs AC1–AC13 are unchanged. Record: `evidence/86bctmuwy/bring-main-1/justin.json`.
+
+## Decision 10 (Justin, 2026-11-09, review 5 finding R5-1): "Record removals"
+- Each Sync records in its run evidence the agent files it removed. When Leorna works out whether it wrote a file at a path, it stops at the newest removal of that path in the same destination: a file there after a removal is the user's own. It is never put into the evidence, reported as drift, restored over or able to block a later drop.
+- Record: `evidence/86bctmuwy/review-5/justin.json`.
