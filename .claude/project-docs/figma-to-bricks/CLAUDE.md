@@ -326,8 +326,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     don't change the remote or the helper.
   - **Not in git (rebuilt by tools):** `node_modules/`, `dist/`, `corpus/out|paste|compare/`, `corpus/report-v2.json`.
 - **Every bug or feature runs the orchestrated pipeline** in the first section of the global `~/.claude/CLAUDE.md`
-  (user, 2026-10-23): the session only orchestrates; fresh Opus 5.5 xhigh `general-purpose` agents plan, build,
-  review, fix, verify and audit, and `ac-check.sh` decides when every AC is accepted. Never plan, build or review in
+  (user, 2026-10-23): the session only orchestrates; fresh `general-purpose` agents with their role's model and effort (the
+  global file's role table) plan, build, review, fix, verify and audit, and `ac-check.sh` decides when every AC is accepted. Never plan, build or review in
   the session itself (this replaces the single-session `superpowers:writing-plans` flow). This repo's specifics:
   - **Start:** in a terminal in the main folder, `claude -w <feature-name>` (`.claude/worktrees/<feature-name>` on
     branch `worktree-<feature-name>`, with what `.worktreeinclude` lists: this file, `node_modules/` and v1's corpus
