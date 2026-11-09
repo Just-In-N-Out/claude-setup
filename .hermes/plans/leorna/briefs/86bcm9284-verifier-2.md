@@ -33,4 +33,4 @@ A command that dies with SIGTERM, exit 143/137 or "Killed" may be an earlyoom ki
 If you learn something reusable, don't edit any skill or memory file: list it in `skill_lessons[{skill, lesson, evidence, enforce}]` and a "Skill lessons" section. `enforce` is `none` or a one-line proposal for a check (kind, what it checks, where it runs). An empty list is normal.
 
 ## Report back
-`verdict` (`clean` only when AC1, AC3, AC4 and AC5 are accepted and AC2 is `not_run` live; otherwise `not_clean`, with what failed), `ac_status` per AC, gate results with log paths, the ac.json path and its self-check last line, and skill_lessons. End with `MAIN SESSION: check and save these skill_lessons now.`
+`verdict` (`clean` only when AC1, AC3, AC4 and AC5 are accepted and AC2 is accepted or `not_run` live with the owed checks named; otherwise `not_clean`, with what failed), the AC2 live TAP lines, `ac_status` per AC, gate results with log paths, the ac.json path and its self-check last line, and skill_lessons. End with `MAIN SESSION: check and save these skill_lessons now.`
