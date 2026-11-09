@@ -33,10 +33,10 @@ index d8e25dc..da8c1c3 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..1f84c86 100644
+index d6a2493..dbaaf89 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
-@@ -60,30 +60,35 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
+@@ -60,30 +60,36 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
  Use this as a scan order, not a rigid form:
  
  - Scope: change matches request, no unrelated churn, no generated junk.
@@ -45,6 +45,7 @@ index d6a2493..1f84c86 100644
 +- Trusted references: when a fix checks every item against one trusted item (the first load, a baseline, the design width), probe that reference being the bad one, and the step before it that it depends on; a compare that skips whatever the reference lacks accepts everything, and a test built from the plan's example (items after the reference fail) still passes (staging-fit-capture review 1, 2026-11-09). Also probe an item that doesn't exist at the reference (a widget the site hides at the design width): a rule reading state from one trusted width reads "nothing" there and drops what every other width agrees on (site-faq review 1).
 +- Host blocks: when a tool blocks a host with a wildcard resolver rule (Chrome `--host-resolver-rules "MAP *.<host> ~NOTFOUND"`), probe a target on a subdomain of the blocked host (`staging.<old site>`); Chrome resolves any `*.localhost` to loopback, so `a.localhost` against `x.staging.a.localhost:<port>` reproduces it locally (staging-fit-renderer review 1).
 +- Second fetches: when a fix leans on data from a separate request (the page "as the server sends it"), probe with that request refused (403 or a check page) and read the user's latest real artefact for the tell that it was empty; a stand-in on 127.0.0.1 never fails that fetch (site-reviews review 1).
++- Normalised keys: when a compare keys items by a normalised key (an address without its query) and counts them, probe two items of different origin sharing the key (one served, one a script adds only sometimes); a rule that skips an absent item still fails on the count (staging-fit-capture review 2).
  - Contracts: API, schema, CLI, config, events, storage, migrations, compatibility.
 -- Data and state: consistency, transactions, idempotency, rollback, retention.
 -- Security-sensitive logic: authn/authz, secrets, injection, deserialization, untrusted input, sensitive logging.
@@ -78,7 +79,7 @@ index d6a2493..1f84c86 100644
  - Readiness budgets: reject nonfinite and negative numeric timeouts before resource or persistent-state claims, including direct API callers. Preserve zero only when it is the documented immediate-timeout control; use bounded fake-clock regressions rather than launching an infinite wait.
  - Maintainability: simple design, local conventions, names, duplication, abstraction fit.
  - Docs and rollout: README, changelog, feature flags, migration notes, operator impact.
-@@ -95,6 +100,13 @@ Use this as a scan order, not a rigid form:
+@@ -95,6 +101,13 @@ Use this as a scan order, not a rigid form:
  - Safety metadata: compare explicit canonical status/date/approval fields across human-readable docs and machine manifests. Keyword presence is not agreement; retain full-entrypoint negative fixtures where one field contradicts the manifest while unrelated caveats remain, and reject missing/duplicate/conflicting fields without treating the checker as release authorization.
  - Execution provenance: require contemporaneous complete consumed-source hashes or a dirty patch before and after dirty-tree runs. HEAD plus a dirty flag or one wrapper hash does not bind every helper, test or workflow; inherit only demonstrated unchanged bytes/consumed fields rather than fabricating retrospective attestation.
  - Scanner coverage: inspect the exact resolved packaged implementation and its actual revision-range, pagination and merge filtering. Full checkout depth only supplies history; it does not prove all relevant commits were scanned, and a mutable-tag source snapshot does not authenticate the future packaged runtime.
