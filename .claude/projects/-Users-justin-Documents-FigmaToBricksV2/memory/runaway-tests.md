@@ -32,3 +32,5 @@ misread stop either hides a real runaway in the product code or counts a crash a
   session when any node process passes 6 GB or earlyoom stops one, names the worktree (`agent-<id>` = the agent), and
   the orchestrator messages that agent at once: what grew, the stop, the rule above. Restart the watcher after each
   alert. See [[run-without-stopping]].
+
+**2026-11-09: three WSL restarts in one day (about 06:50, 14:40, 17:02) that were NOT Linux memory runaways:** `~/crashlog/linux-<date>.log` showed 12–15 GB available and no earlyoom kill each time, while the Windows log showed only ~3.7 GB free with `vmmemWSL` holding 18 GB. Cause unknown (offered to Justin as its own job). After each: `uptime -s` gives the restart time; agents' committed work survives; tracked files can be cut to exactly 8388608 bytes; resume Fable/Opus agents with SendMessage (they keep their model) and tell them the restart time.
