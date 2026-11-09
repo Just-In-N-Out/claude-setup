@@ -199,3 +199,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-09 | site-slider | figma-to-bricks | test: payloadProblems refuses a false value on a Bricks checkbox key (autoplay, pauseOnHover, pauseOnFocus, rewind, arrows, pagination, autoHeight) | offered
 - 2026-11-09 | site-reviews | figma-to-bricks | test: capture the live-widget fixture with a fetcher refusing the page's text/html request and assert the widget is still one embed or the capture notes the served page couldn't be read | offered
 - 2026-11-09 | 86bccndx6 | leorna | script: in the finisher's make-a-PR step and the post-merge check, fail when a story's delivery/stories.json prs list is empty while gh pr list --state all --search <card id> returns a PR for that repo | offered
+- 2026-11-09 | 86bcm9284 | leorna-control-plane | test: internal/library/render test fails when testdata/client/SOURCE.md contains 'pending' or names a feat/ branch, run by make check | offered
