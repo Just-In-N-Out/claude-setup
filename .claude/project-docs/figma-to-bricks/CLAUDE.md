@@ -7,8 +7,12 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-09)
 
-- **Current build `2026-11-09.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-09.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-09.3 elementor-footer-fit (website importer):** with `--elementor`, a widget whose measured box is
+    stretched past its body plus inner margins at a captured width keeps its own elements, named (fold rule 9), so
+    B-Dry's whole page (header, page, footer) is within 2 px at every width (footer 51.89 px at 1025 before); the plain
+    route and Figma designs are byte for byte as before. Paste check **3dn** (AC6, live: B-Dry staging at 1025).
   - **2026-11-09.2 elementor-phone-fit (website importer):** with `--elementor`, a widget whose inner negative margin
     outgrows its body at a captured width keeps its own elements, named (fold rule 8), so B-Dry's page is within 1.02 px
     at every width (7.59 px on phones before); the plain route and Figma designs are byte for byte as before. Paste
