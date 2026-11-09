@@ -26,3 +26,4 @@
 - [Keep agents busy](keep-agents-busy.md) — don't park jobs for a merge; rebase onto an accepted head early (2026-11-04)
 - [Importer whole-page paste](importer-whole-page-paste.md) — Justin wants a captured page as ONE paste (header+page+footer), not three pieces (2026-11-07)
 - [Importer test steps](importer-test-steps.md) — Elementor sites: test with --elementor (plain route drops scripts, FAQ dead); tablet/phone gap vs site:check is open (2026-11-09)
+- [Importer native structure](importer-native-structure.md) — Justin wants the importer paste to be Section/Container/Block, Heading, Button… like the Figma plugin, not div div div (2026-11-09)
