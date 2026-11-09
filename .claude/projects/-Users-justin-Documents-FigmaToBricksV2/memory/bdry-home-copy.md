@@ -71,3 +71,5 @@ motion was seen; Bricks/iPhone live checks 3bo/3bn/3bp owed. Scripts in `v3/scri
 and the slider-only draft.
 
 The `bdry-source/tree-*.json` captures recorded lazy Elementor images unloaded at 767/390 (24px tall, e.g. the Fee picture): a live re-measure must scroll each image into view, set loading=eager and wait for load. Justin's live pages for checks: https://bdryswi.com/ and https://bdry.staging.growithgro.com/homev2/?bricks_preview=1793276386 (our paste is on /homev2/, page 155; his combined header+Home paste is Downloads/bdry-home-with-header.json = header-v1 + v4).
+
+**Trustindex reviews (site-reviews planner, 2026-11-09):** bdryswi.com's reviews are Trustindex's hosted loader (`cdn.trustindex.io/loader.js?<id>`) in an Elementor HTML widget (`f414ab0`); the loader replaces its own `<script>` with `div.ti-widget` + a style, so the live DOM keeps no `script[src]` — read the served HTML to find it. B-Dry staging has no Trustindex plugin.
