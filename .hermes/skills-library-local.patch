@@ -202,7 +202,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..5e634b8 100644
+index f2d882d..271bc0b 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -544,7 +544,7 @@ index f2d882d..5e634b8 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +472,92 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +472,94 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -635,6 +635,8 @@ index f2d882d..5e634b8 100644
 +16. **A "wait while pending" guard is killed only by a case where the thing arrives inside the wait** (held 8 s under a 15 s cap): a held-past-the-cap case passes with or without the wait, and a fake sharing one counter across retried loads hides a no-wait mutant (staging-fit-capture, 2026-11-09).
 +
 +17. **A "stays still" check that reads the end state after a wait passes on a looping thing that never paused** when the wait is a whole number of its cycles (3 slides × 900 ms read after 2.7 s): count the events during the wait and add a control that it moves again afterwards (site-slider, 2026-11-09).
++
++18. **A value looked up per member of a set** (a stand-in box per width, a rule per tier) needs a fixture whose value differs across the set and a test line asserting it differs, or the mutant "the first member's value for every member" survives (site-reviews, 2026-11-09).
  
  ## Specialized harnesses
  
