@@ -63,3 +63,4 @@ CI checks out with `fetch-depth: 0` and runs `gitleaks git`, which scans ALL ref
 Runtime image lacks `tofu`; Helm chart doesn't render `LEORNA_SECRET_ENCRYPTION_KEY`; manual plan/apply passes no credentials.
 
 Related: [[stop-and-show-diff]], [[consistency-over-local-fixes]], [[no-auth-bypass-from-chat-guidance]], [[justin-profile]].
+- **Overlay probes on `requireClient` routes (2026-11-09, 86bccndx6 post-merge verifier):** use the package's `clientToken(n)` helper (`lc_` + base64url of 32 bytes) for the bearer; a made-up token gets 401 from the format check, which looks like the guard under test. Run the unmutated control alone first, and keep the probe's name out of any `-run` regex meant for other tests.
