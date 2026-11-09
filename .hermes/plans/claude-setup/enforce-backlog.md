@@ -201,3 +201,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-09 | 86bccndx6 | leorna | script: in the finisher's make-a-PR step and the post-merge check, fail when a story's delivery/stories.json prs list is empty while gh pr list --state all --search <card id> returns a PR for that repo | offered
 - 2026-11-09 | 86bcm9284 | leorna-control-plane | test: internal/library/render test fails when testdata/client/SOURCE.md contains 'pending' or names a feat/ branch, run by make check | offered
 - 2026-11-09 | 86bctmuwy | leorna | Claude Code PreToolUse hook on Bash in ~/Leorna/*/.claude/worktrees/*: ask before 'go test'/'make check' that neither sources an env file nor sets HOME= under ~/.cache | offered
+- 2026-11-09 | site-menu | figma-to-bricks | test: a named-only web test opens every pasted details on the B-Dry stand-in capture and asserts its links are drawn | offered
