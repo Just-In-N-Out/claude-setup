@@ -196,3 +196,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-09 | 86bcm9284 | ac2-live runbook | test: run-ac2-live.sh self-test feeding codex_summary a recorded text-wrapped Codex tool output, expecting SUMMARY_OK, run before each live run | offered
 - 2026-11-09 | site-slider | figma-to-bricks | test: a Swiper instance with more than 60 params still records autoplay.delay and loop in web.sliders | offered
 - 2026-11-09 | site-slider | figma-to-bricks | script: the suite driver (run-files.sh) records git HEAD and dirty count at the start and end of each suite and prints MIXED-HEAD when they differ | offered
+- 2026-11-09 | site-slider | figma-to-bricks | test: payloadProblems refuses a false value on a Bricks checkbox key (autoplay, pauseOnHover, pauseOnFocus, rewind, arrows, pagination, autoHeight) | offered
