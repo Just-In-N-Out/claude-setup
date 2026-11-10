@@ -450,6 +450,10 @@ MUTANTS = [
     ("H1m", "a move's heading is not charged at the file it goes to", [(L + "mistakes.py",
         '            n_in, new = in_cost(dest, {e[0], o["area"]}, len(e[1].encode()))\n',
         '            n_in, new = in_cost(dest, {e[0], o["area"]}, 0)\n')], ["classcap"]),
+    ("W2", "the repeat-mistakes change cap counts only what the editor adds, not what it removes (review 3's W2)", [
+        (L + "guards.py",
+         "            changed = nb([ln for ln in ed.added if ln not in mi]) + nb([ln for ln in ed.removed if ln not in mo])\n",
+         "            changed = nb([ln for ln in ed.added if ln not in mi])\n")], ["capedge"]),
     ("P1", "a pointer line is accepted in any file, not only where the text left", [(L + "guards.py",
         '            mv = G.pointers.get((G.live(d), ln)) if d.status == "M" else None\n',
         "            mv = next((v for (p, l), v in G.pointers.items() if l == ln), None)\n")], ["pointer"]),

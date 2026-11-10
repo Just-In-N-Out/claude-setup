@@ -912,6 +912,19 @@ class OrderTests(unittest.TestCase):
                                                     % area + "".join(sized(t, "gone-%02d-guard" % i, 567) for i in range(7)), t))
         got = mistakes.orders(h.denv(), t)
         self.assertEqual(len(got), 6, [o["id"] for o in got])
+        # the guard behind the orders measures the same change: all seven removals, ordered by hand, are refused
+        from dreamlib import guards, targets
+        seven = got + [dict(got[0], id="remove:gone-06-guard", kind="gone-06-guard")]
+        d = h.root / "seven"
+        for root in ("snap", "copy"):
+            f = d / root / PROJ_RM_COPY
+            f.parent.mkdir(parents=True, exist_ok=True)
+            f.write_text(h.read(fh.PROJ_RM))
+        ch = obey.obey(str(d / "copy"), [dict(o, file=PROJ_RM_COPY) for o in seven])
+        diffs, links = targets.diff_copy(d)
+        G = guards.Input(h.denv(), d, {PROJ_RM_COPY: {"live": fh.PROJ_RM, "sha": "x"}}, diffs, links, [], seven,
+                         {"changes": ch, "already_saved": [], "declined": []}, t, targets.load_rules(h.denv()))
+        self.assertTrue(any("bytes changed (cap 4000 per run" in x for x in guards.g_caps(G)), "removed bytes count too")
         log = self.exact_runs(h, t)
         self.assertEqual([f for _, f in log], [[]] * len(log))
         self.assertEqual([len(ids) for ids, _ in log], [6, 1])
