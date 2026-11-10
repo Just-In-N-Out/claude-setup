@@ -1,0 +1,12 @@
+# The dream pass at 05:00 and 17:00. Persistent: a slot missed while Ubuntu was down runs once when it
+# next starts. Enabled only by `dream install --enable` or `systemctl --user enable --now dream.timer`.
+[Unit]
+Description=Dream pass at 05:00 and 17:00
+
+[Timer]
+OnCalendar=*-*-* 05:00:00
+OnCalendar=*-*-* 17:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

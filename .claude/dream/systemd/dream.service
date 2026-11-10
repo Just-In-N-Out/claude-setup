@@ -1,0 +1,16 @@
+# The dream pass (rules: ~/.claude/dream/DREAM.md). Installed by `dream install` into
+# ~/.config/systemd/user/. A run by hand: systemctl --user start dream.service (same memory cap).
+[Unit]
+Description=Dream pass: learn from recent Claude Code sessions (rules: ~/.claude/dream/DREAM.md)
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=-%h/.config/dream/env
+ExecStart=/usr/bin/python3 %h/.claude/dream/bin/dream run
+MemoryMax=6G
+MemorySwapMax=0
+Nice=10
+TimeoutStartSec=5400
+SuccessExitStatus=3
