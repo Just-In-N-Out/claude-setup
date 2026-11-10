@@ -87,6 +87,28 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(h.calls_by_role(), [], "no model call")
         self.assertIn("--safe-mode", h.local("last-run.json")["reason"])
 
+    def test_the_checkers_prompt_names_the_four_changes_that_need_no_finding(self):
+        """R4-8: DREAM.md section 6 lets four changes go in with no finding or order (a move word for word, the one
+        pointer line it may leave, a duplicate removed, the script's own rewrite of a repeat-mistakes file). The
+        checker's own prompt says so, so a checker that follows its first rules does not refuse them. Every other
+        test uses a fake checker, so this pins the prompt the real one gets, read from the call itself."""
+        from dreamlib import guards
+        self.h = h = FakeHome("r48", repo=True)
+        fh.standard(h)
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        prompt = " ".join(flag([c for c in h.calls_by_role() if c["role"] == "checker"][0]["argv"],
+                               "--system-prompt").split())
+        need = ["Four changes need no finding or order, because DREAM.md section 6 allows them and the script checks "
+                "each: text moved word for word from one file to another; the one line such a move may leave, exactly "
+                "``%s`` or ``%s``; a line removed as a duplicate of a whole line that stays; and the script's own "
+                "rewrite of the counts, stories and order of the entries in a repeat-mistakes file."
+                % (guards.POINTER % ("<path>", "<heading>"), guards.POINTER_BARE % "<path>"),
+                "Answer \"yes\" only when every change traces to a finding, an order or one of those four, and no fact "
+                "was lost."]
+        self.assertEqual([n for n in need if n not in prompt], [])
+        self.assertNotIn("traces to a finding or an order and no fact was lost", prompt, "the old rule, unqualified")
+        self.assertIn("## 6. How it edits", prompt)
+
     def test_ac30_eight_session_helpers_per_run_three_at_a_time_newest_first(self):
         self.h = h = FakeHome("ac30", repo=True)
         h.write(".claude/dream/state/tally.json", paths.dump_json(dict(state.default_tally(), backfill_done=True)))

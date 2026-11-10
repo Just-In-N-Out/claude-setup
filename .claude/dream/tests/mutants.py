@@ -87,7 +87,10 @@ T = {
     "classcap": "test_orders_done_exactly_at_their_largest_size_pass_every_guard_run_after_run",
     "capedge": "test_at_the_change_caps_edge_blank_lines_and_area_headings_count_too",
     "pointer": "test_a_move_out_of_an_over_budget_file_may_leave_one_pointer_line_the_script_checks",
+    # fixer 4 (Justin's 2026-11-10 round)
+    "checkerprompt": "test_the_checkers_prompt_names_the_four_changes_that_need_no_finding",
 }
+P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
               "g_dated_lines,\n       g_dates_on_additions, g_secrets, g_repeat_mistakes, g_memory_index, g_library]")
 
@@ -489,6 +492,21 @@ MUTANTS = [
         ' and cs and all(c.get("basis") == "move" for c in cs):\n', ":\n")], ["pointer"]),
     ("P12", "the shape the script builds is not the one DREAM.md and the prompt give", [(L + "guards.py",
         '(moved there word for word)."\nPOINTER_BARE', '(moved word for word)."\nPOINTER_BARE')], ["pointer"]),
+    # fixer 4: R4-8, the checker's prompt
+    ("C1", "the checker's prompt no longer names the changes that need no finding (R4-8 back)", [(P + "checker.md",
+        "Four changes need no finding or order, because DREAM.md section 6 allows them and the script checks each:\n"
+        "text moved word for word from one file to another; the one line such a move may leave, exactly\n"
+        "``See `<path>` for the section \"<heading>\" (moved there word for word).`` or\n"
+        "``See `<path>` (moved there word for word).``; a line removed as a duplicate of a whole line that stays;\n"
+        "and the script's own rewrite of the counts, stories and order of the entries in a repeat-mistakes file.\n", "")],
+     ["checkerprompt"]),
+    ("C2", "the checker's yes rule is unqualified again", [(P + "checker.md",
+        "traces to a finding, an order or one of those four, and no\nfact was lost.",
+        "traces to a finding or an order and no fact was lost.")], ["checkerprompt"]),
+    ("C3", "the pointer shape the checker is given is not the one the script builds", [(P + "checker.md",
+        "``See `<path>` (moved there word for word).``;", "``See `<path>` (moved word for word).``;")], ["checkerprompt"]),
+    ("C4", "the checker is not told a duplicate removed needs no finding", [(P + "checker.md",
+        " a line removed as a duplicate of a whole line that stays;\n", "\n")], ["checkerprompt"]),
 ]
 
 
