@@ -300,6 +300,7 @@ Never fix bugs without a test.
 - **Happy path only** — always test edge cases, errors, and boundaries
 - **Brittle tests** — tests should verify behavior, not structure; refactoring shouldn't break them
 - **Races that never race** — a test of work running side by side can pass on buggy code because a fast stand-in never overlaps; slow the transport (answer calls N ms later) and assert the overlap really happened (capture-speed fixer 1)
+- **`| grep -q` under `set -o pipefail`** — `grep -q` exits at the first match, a producer writing more than a pipe buffer (about 64 KB) dies of SIGPIPE, and the pipeline reads as "no match" at random; use `grep pat >/dev/null` or grep a file (dream-trim builder: an 80 KB list failed AC6 once)
 
 ## Final Rule
 

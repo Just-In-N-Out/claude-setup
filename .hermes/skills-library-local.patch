@@ -208,7 +208,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..8fbaadc 100644
+index f2d882d..00ea164 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -547,7 +547,7 @@ index f2d882d..8fbaadc 100644
 +   any host honors attacker-supplied links. A guard over a set (a
 +   `ContainsAny` of CR and LF, a denylist) needs one mutant per member: a test
 +   usually pins one member, so dropping another survives (901b review 2:
-+   dropping CR from a description's one-line check survived 24 tests). When re-porting an earlier round's mutants to rewritten code, re-derive which test should kill each (case folding off on an upper-case name list now fails the lower-case witnesses) and confirm the mutant still builds: dropping one side of an `||` can leave an unused variable, a build failure, not a kill (901j fixer 2). For a
++   dropping CR from a description's one-line check survived 24 tests). A guard that matches an anchor at the start of a line needs a fixture where the anchor's text also sits mid-line in another line, or `startswith` → `in` survives (dream-trim M9). When re-porting an earlier round's mutants to rewritten code, re-derive which test should kill each (case folding off on an upper-case name list now fails the lower-case witnesses) and confirm the mutant still builds: dropping one side of an `||` can leave an unused variable, a build failure, not a kill (901j fixer 2). For a
 +   path rule built as prefix + name + suffix (`commands/<name>.toml`), the
 +   widening mutant per part makes that part optional (strip it before the
 +   check); setting the prefix or suffix to "" narrows instead, because the
