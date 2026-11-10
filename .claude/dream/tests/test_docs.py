@@ -88,8 +88,11 @@ class DocsTests(unittest.TestCase):
         need(".claude/CLAUDE.md", r"(?m)^## Dream Pass$", r"dream undo", r"dream mode off",
              r"systemctl --user disable --now dream\.timer", r"dream-log\.md", r"justin-list\.md",
              r"pre-dream-2026-11-09", r"never hand-edit", r"dream reads the same skills and never duplicates a saved lesson")
-        if len(cm.encode()) >= 30000:
-            problems.append("CLAUDE.md is %d bytes (budget 30,000)" % len(cm.encode()))
+        # the global CLAUDE.md's budget: 36,000 bytes (Justin, 2026-11-10), the same in DREAM.md and budgets.tsv
+        need(".claude/dream/DREAM.md", r"`~/\.claude/CLAUDE\.md` 36,000;")
+        need(".claude/dream/conf/budgets.tsv", r"(?m)^\.claude/CLAUDE\.md\t36000$")
+        if len(cm.encode()) >= 36000:
+            problems.append("CLAUDE.md is %d bytes (budget 36,000)" % len(cm.encode()))
         self.assertEqual(problems, [])
 
 

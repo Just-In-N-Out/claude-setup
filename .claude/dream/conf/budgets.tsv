@@ -6,7 +6,7 @@
 .hermes/skills-library/skills/**/SKILL.md	90000
 .hermes/skills/**/*.md	60000
 .hermes/skills-library/skills/**/*.md	60000
-.claude/CLAUDE.md	30000
+.claude/CLAUDE.md	36000
 .claude/project-docs/figma-to-bricks/CLAUDE.md	61600
 .claude/project-docs/*/CLAUDE.md	40000
 .claude/projects/*/memory/MEMORY.md	12000	200

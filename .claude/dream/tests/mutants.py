@@ -105,6 +105,9 @@ T = {
     "r61": "test_a_listed_mistake_seen_again_in_lines_past_the_150_a_run_reads_stays_listed",
     "r61unread": "test_no_repeat_mistakes_order_is_given_while_review_lines_on_disk_wait_unread",
     "r61late": "test_a_mistake_removed_while_a_review_file_lands_during_the_run_is_not_retired_for_good",
+    # fixer 8: the global CLAUDE.md's budget is 36,000 (Justin, 2026-11-10)
+    "cm36": "test_the_global_claude_md_budget_is_36000_bytes",
+    "ac36": "test_ac36_pointer_lines_and_docs_are_in_place",
 }
 P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
@@ -649,6 +652,12 @@ MUTANTS = [
     ('R6f', 'a removal while lines wait keeps the kind listed in the tally, its entry gone', [('.claude/dream/lib/dreamlib/mistakes.py', '            k["listed_in"], k["retired"] = None, bool(settled)\n', '            k["listed_in"], k["retired"] = (None if settled else k["listed_in"]), bool(settled)\n')], ['r61late']),
     ('R6g', "every review line on disk counts as uncounted (the tally's seen ignored)", [('.claude/dream/lib/dreamlib/mistakes.py', '    return extract.review_lines(env, tally.get("seen") or [])\n', '    return extract.review_lines(env, [])\n')], ['r61', 'ac28']),
     ('R6h', 'the apply step settles the tally only while lines wait (inverted)', [('.claude/dream/lib/dreamlib/apply.py', 'R.now, settled=not mistakes.unread(env, tally_after))', 'R.now, settled=bool(mistakes.unread(env, tally_after)))')], ['r61late', 'ac28']),
+    # fixer 8: the global CLAUDE.md's budget, 36,000 bytes (Justin, 2026-11-10)
+    ('B36a', "the global CLAUDE.md's budget back to 30,000", [('.claude/dream/conf/budgets.tsv', '.claude/CLAUDE.md\t36000\n', '.claude/CLAUDE.md\t30000\n')], ['cm36', 'ac36']),
+    ('B36b', "the global CLAUDE.md's budget widened by one byte", [('.claude/dream/conf/budgets.tsv', '.claude/CLAUDE.md\t36000\n', '.claude/CLAUDE.md\t36001\n')], ['cm36', 'ac36']),
+    ('B36c', "the global CLAUDE.md's budget narrowed by one byte", [('.claude/dream/conf/budgets.tsv', '.claude/CLAUDE.md\t36000\n', '.claude/CLAUDE.md\t35999\n')], ['cm36', 'ac36']),
+    ('B36d', 'DREAM.md states the old 30,000 budget for the global CLAUDE.md', [('.claude/dream/DREAM.md', '`~/.claude/CLAUDE.md` 36,000;', '`~/.claude/CLAUDE.md` 30,000;')], ['ac36']),
+    ('B36e', 'the global CLAUDE.md grows past 36,000 bytes', [('.claude/CLAUDE.md', '# Global Instructions\n', '# Global Instructions\n' + 'x' * 6100 + '\n')], ['ac36']),
 ]
 
 

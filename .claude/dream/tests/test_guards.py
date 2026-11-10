@@ -127,6 +127,25 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(guards.g_budgets(self.G({idx: (many, many + "- [x](x.md)\n- [y](y.md)\n")})),
                         "the 200-line budget of a memory index")
 
+    def test_the_global_claude_md_budget_is_36000_bytes(self):
+        """Justin, 2026-11-10 (the approved plan's last answer): the global CLAUDE.md's budget is 36,000 bytes,
+        not Q2 (a)'s 30,000; every other budget stands."""
+        c = "claude/CLAUDE.md"
+
+        def sized(n):  # a CLAUDE.md of exactly n bytes
+            head = "# Global Instructions\n\n"
+            return head + "x" * (n - len(head) - 1) + "\n"
+
+        now = sized(31900)  # about main's file plus the story's lines, 2026-11-10
+        self.assertEqual(len(now.encode()), 31900)
+        self.assertEqual(guards.g_budgets(self.G({c: (now, now + "- one more line\n")})), [], "31,900 bytes may grow")
+        self.assertEqual(guards.g_budgets(self.G({c: (now, sized(35999))})), [], "an edit that stays under 36,000")
+        self.assertEqual(guards.g_budgets(self.G({c: (now, sized(36000))})), [], "36,000 itself is not past it")
+        self.assertTrue(guards.g_budgets(self.G({c: (now, sized(36001))})), "an edit past 36,000 is refused")
+        over = sized(36500)
+        self.assertTrue(guards.g_budgets(self.G({c: (over, over + "- one more line\n")})), "over 36,000 it may only shrink")
+        self.assertEqual(guards.g_budgets(self.G({c: (over, sized(36400))})), [])
+
     def test_ac15_change_caps_block_oversized_runs_and_ignore_verbatim_moves(self):
         g = guards.g_caps
         old = "# Notes\n"
