@@ -97,6 +97,7 @@ def _run(env, mode, hooks):
     if mode == "off":
         return 0
     R = Ctx(env, mode, hooks)
+    apply.clear_dead_dream_lock(env)
     if (env.local / "apply-journal.json").exists():
         rc = apply.recover(R)
         if rc is not None:
@@ -113,7 +114,10 @@ def _run(env, mode, hooks):
     R.facts["unattributed"] = ledger.check(env, R.now, write=(mode == "live"))
     cursors = state.load_cursors(env)
     unsettled = state.load_unsettled(env)
-    sc = state.scan(env, cursors, R.now)
+    # lines whose findings already wait in unsettled.json are not read again (their helpers ran)
+    eff = dict(cursors)
+    eff.update(unsettled.get("markers_after") or {})
+    sc = state.scan(env, eff, R.now)
     R.facts["format_errors"] = [str(e) for e in sc.errors]
     tally = unsettled.get("tally") or state.load_state(env, "tally", state.default_tally())
     lines = extract.review_lines(env, tally.get("seen", []))
@@ -148,7 +152,7 @@ def _run(env, mode, hooks):
             continue
         unsettled["findings"] = merge_findings(unsettled["findings"], b.passed)
         unsettled["list_items"] += b.list_items
-        unsettled["markers_after"][r.key] = state.markers_after(r, used, cursors.get(r.key))
+        unsettled["markers_after"][r.key] = state.markers_after(r, used, eff.get(r.key))
         t = unsettled["log"].setdefault("typed", {})
         t[r.project] = t.get(r.project, 0) + len(used)
         c = unsettled["log"].setdefault("corrections", {})
@@ -179,6 +183,9 @@ def _run(env, mode, hooks):
         tally["kinds"].get(o["kind"], {})["parked"] = True
     unsettled["findings"] = [f for f in unsettled["findings"] if f.get("tries", 0) < 2]
     unsettled["orders"] = [o for o in unsettled["orders"] if o.get("tries", 0) < 2]
+    unsettled["parked_ids"] = sorted(set(unsettled.get("parked_ids") or []) | {f["id"] for f in parked})
+    if mode == "live" and (parked or parked_orders):
+        state.save_unsettled(env, unsettled)
     findings, orders = unsettled["findings"], unsettled["orders"]
     rules = targets.load_rules(env)
     mapping, diffs, links, changes = {}, [], [], {"changes": [], "already_saved": [], "declined": []}
@@ -303,11 +310,9 @@ def main(argv, doc=""):
         print("dream: mode is now %s" % rest[0])
         return 0
     if cmd == "install":
-        from . import install
-        return install.install(env, enable="--enable" in rest)
+        return install(env, enable="--enable" in rest)
     if cmd == "uninstall":
-        from . import install
-        return install.uninstall(env)
+        return uninstall(env)
     if cmd == "undo" and len(rest) == 1:
         return apply.undo(env, rest[0])
     if cmd == "init":
@@ -347,4 +352,50 @@ def status(env):
     u = state.load_unsettled(env)
     print("waiting: %d finding(s), %d order(s)" % (len(u["findings"]), len(u["orders"])))
     print("journal: %s" % ("an unfinished apply is waiting" if (env.local / "apply-journal.json").exists() else "none"))
+    return 0
+
+
+# ---------- install ----------
+
+UNITS = ("dream.service", "dream.timer")
+
+
+def systemctl(env, *args):
+    return subprocess.run(["systemctl", "--user"] + list(args), capture_output=True, text=True, env=env.environ)
+
+
+def install(env, enable=False):
+    """local/ (mode dry-run unless a mode is set), the units in ~/.config/systemd/user, a daemon-reload;
+    the timer is enabled only with --enable."""
+    env.local.mkdir(parents=True, exist_ok=True)
+    if not (env.local / "mode").exists():
+        paths.write_atomic(env.local / "mode", "dry-run\n")
+    units = env.home / ".config/systemd/user"
+    units.mkdir(parents=True, exist_ok=True)
+    for u in UNITS:
+        shutil.copyfile(env.dream / "systemd" / u, units / u)
+    r = systemctl(env, "daemon-reload")
+    if r.returncode != 0:
+        print("dream install: systemctl --user daemon-reload failed: %s" % r.stderr.strip(), file=sys.stderr)
+        return 4
+    if enable:
+        r = systemctl(env, "enable", "--now", "dream.timer")
+        if r.returncode != 0:
+            print("dream install: enabling the timer failed: %s" % r.stderr.strip(), file=sys.stderr)
+            return 4
+    print("dream install: units in %s, mode %s, timer %s" % (units, env.mode(), "enabled" if enable else
+                                                              "not enabled (dream install --enable, or systemctl --user enable --now dream.timer)"))
+    return 0
+
+
+def uninstall(env):
+    systemctl(env, "disable", "--now", "dream.timer")
+    units = env.home / ".config/systemd/user"
+    for u in UNITS:
+        try:
+            (units / u).unlink()
+        except OSError:
+            pass
+    systemctl(env, "daemon-reload")
+    print("dream uninstall: timer off and units removed; %s is kept" % env.local)
     return 0

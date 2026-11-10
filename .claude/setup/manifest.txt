@@ -12,6 +12,14 @@
 :(glob).claude/project-docs/*/CLAUDE.md
 :(glob).claude/plans/*.md
 .claude/dream/DREAM.md
+:(glob).claude/dream/*.md
+:(glob).claude/dream/bin/**
+:(glob).claude/dream/lib/**
+:(glob).claude/dream/conf/**
+:(glob).claude/dream/prompts/**
+:(glob).claude/dream/state/**
+:(glob).claude/dream/systemd/**
+:(glob).claude/dream/tests/**
 :(glob).hermes/skills/**
 .hermes/skills-library-keep.txt
 .hermes/skills-library-claude.txt

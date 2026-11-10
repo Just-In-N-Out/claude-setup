@@ -103,5 +103,5 @@ def who_changed(env, rel):
     r = last_rows(env).get(rel)
     if not r:
         return "nobody recorded (no ledger row)"
-    return "%s (session %s, agent %s, %s)" % (r.get("agent") or "?", (r.get("session") or "?")[:8],
-                                              r.get("agent") or "-", r.get("time"))
+    return "the %s row of %s: session %s, agent %s" % (r.get("agent") or "hook", r.get("time"),
+                                                       r.get("session") or "?", r.get("agent") or "main session")

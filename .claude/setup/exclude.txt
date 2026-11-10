@@ -11,6 +11,7 @@
 /.hermes/skills/.usage.json.lock
 /.hermes/skills-library/
 /.claude/hooks/state/
+/.claude/dream/local/
 /.claude/skills/
 .DS_Store
 __pycache__/

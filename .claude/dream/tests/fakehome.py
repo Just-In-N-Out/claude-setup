@@ -94,6 +94,35 @@ def slash(uuid, name, args, minute=1):
             "origin": {"kind": "human"}, "message": {"role": "user", "content": text}}
 
 
+MEM_LIVE = ".claude/projects/%s/memory/build-notes.md" % PROJ
+MEM_COPY = MEM_LIVE[1:]
+LINT_Q = "from now on always run the linter before every commit"
+LINT_LINE = "- Run the linter before every commit (2026-11-09)."
+
+
+def finding(uuid, quote, **kw):
+    f = {"uuid": uuid, "quote": quote, "kind": "correction", "statement": "Run the linter before every commit.",
+         "general": False, "replaces": "", "matches_pending": "", "loosens_safety": False, "weakens_check": False,
+         "personal": False, "ambiguous": False, "depends_on_image": False}
+    f.update(kw)
+    return f
+
+
+def standard(h, sid="s1", extra_findings=(), edits=None, changes=None, checker=None, **kw):
+    """One session with one correction; the editor adds one dated line to the project's memory note."""
+    h.session(PROJ, sid, [assistant("I committed without linting."), typed("u1", "No, " + LINT_Q + ", please.")])
+    sc = {"session-helper": {sid: {"findings": [finding("u1", LINT_Q)] + list(extra_findings)}},
+          "editor": {"edits": edits if edits is not None else [{"file": MEM_COPY, "append": LINT_LINE + "\n"}],
+                     "changes": changes if changes is not None else {"changes": [
+                         {"file": MEM_COPY, "basis": "finding", "finding_ids": "ALL", "order_id": "",
+                          "summary": "lint before commit", "additions": [LINT_LINE], "removals": []}],
+                         "already_saved": [], "declined": []}},
+          "checker": checker or {"verdict": "yes", "lost_facts": [], "untraced": [], "notes": ""}}
+    sc.update(kw)
+    h.scenario(sc)
+    return sc
+
+
 def fake_secret():
     """A string gitleaks flags, built from pieces so no synced file holds it whole."""
     return "aws_secret_access_key = " + "Zx9pQ2rT7vW1yB4n" + "M8kL3jH6gF5dS0aQwErTyUiO"
@@ -217,6 +246,20 @@ class FakeHome:
         self.sh("git", "init", "-q", "--bare", "-b", "main", str(self.remote))
         self.sync("init")
         self.sync()
+
+    def on_pull(self, script):
+        """Run `script` (bash, in $HOME) each time sync.sh is called with `pull`, after the real pull;
+        $N is the call's number (1 = the run's first pull)."""
+        setup = self.p(".claude/setup")
+        real = setup / "sync.real.sh"
+        if not real.exists():
+            (setup / "sync.sh").rename(real)
+            (setup / "sync.sh").write_text(
+                '#!/usr/bin/env bash\nbash "$(dirname "$0")/sync.real.sh" "$@"; rc=$?\n'
+                'if [ "$1" = pull ] && [ -f "%s/on-pull.sh" ]; then n=$(( $(cat "%s/pulls" 2>/dev/null || echo 0) + 1 ));'
+                ' echo $n > "%s/pulls"; N=$n bash "%s/on-pull.sh"; fi\nexit $rc\n' % ((self.root,) * 4))
+        (self.root / "on-pull.sh").write_text("cd \"$HOME\"\n" + script)
+        (self.root / "pulls").write_text("0")
 
     def make_library(self):
         lib = self.p(".hermes/skills-library")

@@ -1,0 +1,128 @@
+"""Repeat-mistakes files: AC27, AC28 (plan Task 11)."""
+import json
+import re
+import unittest
+
+import fakehome as fh
+from fakehome import FakeHome
+from dreamlib import mistakes, state, paths
+
+KIND = {"id": "link-path-guard", "title": "a guard checks the link path, not the real path",
+        "description": "an allowlist that never resolves links", "area": "Guards"}
+ENTRY = ("\n## Guards\n### link-path-guard — a guard checks the link path, not the real path (1×: x)\n"
+         "- **Build it this way:** resolve every link before the allowlist (2026-11-10).\n"
+         "- **Check for it:** a test with a link into a never-listed folder.\n")
+PROJ_RM_COPY = "hermes/skills/sd/proj-skill/references/repeat-mistakes.md"
+GEN_RM_COPY = "hermes/skills/ad/feature-dispatch/references/repeat-mistakes.md"
+
+
+def review(h, project, story, claims, n=1):
+    h.write(".hermes/plans/%s/evidence/%s/review-%d/review.json" % (project, story, n), json.dumps(
+        {"findings": [{"id": "F%d" % i, "severity": "P2", "claim": c, "file_line": "a:%d" % i}
+                      for i, c in enumerate(claims)]}))
+
+
+class MistakeTests(unittest.TestCase):
+    def tearDown(self):
+        self.h.cleanup()
+
+    def entries(self, rel):
+        text = self.h.read(rel)
+        return re.findall(r"^### (\S+) — .* \((\d+)×: ([^)]*)\)$", text, re.M), text
+
+    def test_ac27_repeat_mistake_entry_appears_at_two_stories_and_moves_to_general(self):
+        self.h = h = FakeHome("ac27", repo=True)
+        h.write(".claude/dream/state/tally.json", paths.dump_json(dict(state.default_tally(), backfill_done=True)))
+        h.git("add", "--", ".claude/dream/state/tally.json")
+        h.git("commit", "-qm", "seed")
+        # one story: not yet a repeat, so no order
+        review(h, "proj", "story-a", ["guard took the link path"])
+        h.scenario({"review-helper": {"assign": "new", "new_kind": KIND, "enforce_proposal": ""}})
+        self.assertEqual(h.run(), 0)
+        self.assertEqual(mistakes.orders(h.denv(), json.loads(h.read(".claude/dream/state/tally.json"))), [])
+        # a second story of the same project: the editor is ordered to add it to that project's file
+        review(h, "proj", "story-b", ["again the link path, not the real path"])
+        h.scenario({"review-helper": {"assign": "link-path-guard"},
+                    "editor": {"edits": [{"file": PROJ_RM_COPY, "append": ENTRY}],
+                               "changes": {"changes": [{"file": PROJ_RM_COPY, "basis": "order", "finding_ids": [],
+                                                        "order_id": "add:link-path-guard", "additions": [], "removals": []}]}}})
+        self.assertEqual(h.run(), 0)
+        got, text = self.entries(fh.PROJ_RM)
+        self.assertEqual(got, [("link-path-guard", "2", "story-a, story-b")], "count and stories written by the script")
+        self.assertIn("- **Build it this way:**", text)
+        self.assertIn("- **Check for it:**", text)
+        self.assertEqual(self.entries(fh.GENERAL_RM)[0], [])
+        orders = [c for c in h.calls_by_role() if c["role"] == "editor"]
+        self.assertEqual(len(orders), 1)
+        # seen in a second project: it belongs in the general file and nowhere else
+        review(h, "other", "story-c", ["link path checked again"])
+        moved = ENTRY
+        h.scenario({"review-helper": {"assign": "link-path-guard"},
+                    "editor": {"edits": [{"file": PROJ_RM_COPY, "write": h.read(fh.PROJ_RM).replace(
+                        text[text.index("\n## Guards"):], "")},
+                                         {"file": GEN_RM_COPY, "append": moved.replace("(1×: x)", "(2×: story-a, story-b)")}],
+                               "changes": {"changes": [
+                                   {"file": PROJ_RM_COPY, "basis": "order", "order_id": "move:link-path-guard",
+                                    "finding_ids": [], "additions": [], "removals": []},
+                                   {"file": GEN_RM_COPY, "basis": "order", "order_id": "move:link-path-guard",
+                                    "finding_ids": [], "additions": [], "removals": []}]}}})
+        self.assertEqual(h.run(), 0)
+        self.assertEqual(self.entries(fh.PROJ_RM)[0], [])
+        g, gtext = self.entries(fh.GENERAL_RM)
+        self.assertEqual(g, [("link-path-guard", "3", "story-a, story-b, story-c")])
+        self.assertEqual(self.entries(fh.OTHER_RM)[0], [])
+        # within an area, the most frequent entry comes first (the script orders them)
+        two = ("\n## Guards\n### rare-one — rare (1×: s)\n- **Build it this way:** a.\n- **Check for it:** b.\n"
+               "### common-one — common (5×: s)\n- **Build it this way:** c.\n- **Check for it:** d.\n")
+        tally = {"kinds": {"rare-one": {"projects": {"p": {"stories": ["s1"]}}},
+                           "common-one": {"projects": {"p": {"stories": ["s1", "s2", "s3"]}}}}}
+        out = mistakes.normalize_text("# head\n" + two, tally)
+        self.assertLess(out.index("### common-one"), out.index("### rare-one"))
+        self.assertIn("(3×: s1, s2, s3)", out)
+
+    def test_ac28_entry_retires_after_ten_stories_and_a_repeat_becomes_an_enforce_proposal(self):
+        self.h = h = FakeHome("ac28", repo=True)
+        listed = ENTRY.replace("(1×: x)", "(2×: story-a, story-b)")
+        h.write(fh.PROJ_RM, h.read(fh.PROJ_RM) + listed)
+        tally = dict(state.default_tally(), backfill_done=True)
+        tally["kinds"]["link-path-guard"] = dict(KIND, projects={"proj": {"stories": ["story-a", "story-b"], "findings": 2,
+                                                                         "last_story": "story-b"}},
+                                                 listed_in=fh.PROJ_RM, listed_since={"date": "2026-11-01", "seq": 2},
+                                                 repeats_while_listed=[], retired=False)
+        tally["stories"] = {"proj": ["story-a", "story-b"]}
+        tally["story_seq"] = ["proj/story-a", "proj/story-b"]
+        h.write(".claude/dream/state/tally.json", paths.dump_json(tally))
+        h.git("add", "--", ".claude/dream/state/tally.json", fh.PROJ_RM)
+        h.git("commit", "-qm", "seed")
+        # seen again in a story that began after it was listed: one enforce-backlog line, wording unchanged
+        review(h, "proj", "story-c", ["link path again"])
+        h.scenario({"review-helper": {"assign": "link-path-guard",
+                                      "enforce_proposal": "test: a link into a never-listed folder, in guards tests"}})
+        backlog_before = h.read(".hermes/plans/claude-setup/enforce-backlog.md")
+        body_before = h.read(fh.PROJ_RM).split("### link-path-guard")[1].split("\n", 1)[1]
+        self.assertEqual(h.run(), 0)
+        new_lines = h.read(".hermes/plans/claude-setup/enforce-backlog.md")[len(backlog_before):].splitlines()
+        self.assertEqual(len(new_lines), 1)
+        self.assertRegex(new_lines[0], r"^- 2026-11-10 \| dream \| proj-skill \| test: a link into a never-listed "
+                                       r"folder, in guards tests \| offered$")
+        self.assertEqual(h.read(fh.PROJ_RM).split("### link-path-guard")[1].split("\n", 1)[1], body_before,
+                         "the entry's wording does not change")
+        self.assertEqual([c["role"] for c in h.calls_by_role()], ["review-helper"], "no editor call for a repeat")
+        # 10 later stories of the project without it: the script orders it removed, and it is gone
+        for i in range(10):
+            review(h, "proj", "later-%02d" % i, ["an unrelated finding %d" % i])
+        rm_text = h.read(fh.PROJ_RM)
+        h.scenario({"review-helper": {"assign": "none"},
+                    "editor": {"edits": [{"file": PROJ_RM_COPY, "write": rm_text[:rm_text.index("\n## Guards")] + "\n"}],
+                               "changes": {"changes": [{"file": PROJ_RM_COPY, "basis": "order",
+                                                        "order_id": "remove:link-path-guard", "finding_ids": [],
+                                                        "additions": [], "removals": []}]}}})
+        self.assertEqual(h.run(), 0)
+        self.assertNotIn("link-path-guard", h.read(fh.PROJ_RM))
+        t = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertTrue(t["kinds"]["link-path-guard"]["retired"])
+        self.assertIsNone(t["kinds"]["link-path-guard"]["listed_in"])
+
+
+if __name__ == "__main__":
+    unittest.main()
