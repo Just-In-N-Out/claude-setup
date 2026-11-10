@@ -768,6 +768,7 @@ class OrderTests(unittest.TestCase):
             t = backfill(n_stale, 12)
             log = self.exact_runs(h, t)
             runs_ok("backfill with %d stale kinds" % n_stale, log, 2)
+            self.assertGreater(len(log[0][0]), 8, "the first run fills the empty file past 4,000 bytes (no cap yet)")
             self.assertEqual(mistakes.orders(h.denv(), t), [], "nothing left owed")
             self.assertEqual(sorted(k for k, v in t["kinds"].items() if v.get("retired")),
                              ["old-%02d-guard" % i for i in range(n_stale)], "every stale entry retired")
@@ -785,6 +786,17 @@ class OrderTests(unittest.TestCase):
         log = self.exact_runs(h, t)
         runs_ok("nine adds into a file with entries", log, 2)
         self.assert_consistent(h, t)
+        # (f) removals and adds in one run share one cap: four listed entries due to retire, six kinds waiting
+        fresh()
+        t = backfill(4, 1)
+        runs_ok("five listed", self.exact_runs(h, t, runs=1))
+        for i in range(6):
+            t["kinds"]["wait-%02d-guard" % i] = kind_row({"proj": [names[38], names[39]]})
+        log = self.exact_runs(h, t)
+        runs_ok("removals and adds together", log, 2)
+        self.assertTrue(any(i.startswith("remove:") for i in log[0][0]) and any(i.startswith("add:") for i in log[0][0]),
+                        log[0][0])
+        self.assert_consistent(h, t)
         # (c) moves, out of a file with entries into the general file, empty and then holding entries, the add of a
         # move whose entry is gone, and adds into the project file in the same runs
         fresh()
@@ -800,8 +812,8 @@ class OrderTests(unittest.TestCase):
             for i in range(half, 12, 2):
                 k = t["kinds"]["new-%02d-guard" % i]
                 k["projects"]["other"] = {"stories": [st], "findings": 1, "last_story": st}
-            for i in range(6):                  # and six more kinds of the project wait in the same runs
-                t["kinds"]["more-%02d-guard" % (i + 6 * half)] = kind_row({"proj": [names[38], names[39]]})
+            for i in range(6):                  # and six more frequent kinds of the project wait in the same runs
+                t["kinds"]["more-%02d-guard" % (i + 6 * half)] = kind_row({"proj": names[36:40]})
             log = self.exact_runs(h, t)
             runs_ok("moves to the general file, half %d" % half, log)
             ids |= {i for x, _ in log for i in x}
@@ -810,6 +822,22 @@ class OrderTests(unittest.TestCase):
         self.assert_consistent(h, t)
         self.assertEqual(sorted(k for k, v in t["kinds"].items() if v["listed_in"] == fh.GENERAL_RM),
                          ["new-%02d-guard" % i for i in range(12)])
+        # (g) moves into a general file that holds entries and that more frequent adds have nearly filled
+        fresh()
+        t = backfill(0, 4)
+        t["stories"]["other"] = ["o-09"]
+        t["story_seq"].append("other/o-09")
+        t["kinds"]["gen-00-guard"] = kind_row({"proj": names[38:39], "other": ["o-09"]})
+        runs_ok("four listed in the project, one in the general file", self.exact_runs(h, t))
+        for i in range(6):
+            t["kinds"]["both-%02d-guard" % i] = kind_row({"proj": names[36:39], "other": ["o-09"]})
+        for i in range(4):
+            t["kinds"]["new-%02d-guard" % i]["projects"]["other"] = {"stories": ["o-09"], "findings": 1, "last_story": "o-09"}
+        log = self.exact_runs(h, t)
+        runs_ok("adds and moves into the general file", log, 2)
+        self.assertEqual(sorted(k for k, v in t["kinds"].items() if v["listed_in"] == fh.GENERAL_RM),
+                         ["both-%02d-guard" % i for i in range(6)] + ["gen-00-guard"] + ["new-%02d-guard" % i for i in range(4)])
+        self.assert_consistent(h, t)
         # (d) end to end (review 3's pM5): 30 stories, 11 kinds last seen more than 10 stories back, the file starts
         # empty; each run has one new correction and the editor does exactly what orders.json says
         h.cleanup()
@@ -831,6 +859,62 @@ class OrderTests(unittest.TestCase):
         self.assertEqual(sorted(k for k, _, _ in self.entries(fh.PROJ_RM)[0]), ["new-%02d-guard" % i for i in range(4)])
         self.assertFalse(any(v.get("parked") for v in t["kinds"].values()))
         self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
+
+    def test_at_the_change_caps_edge_blank_lines_and_area_headings_count_too(self):
+        """R3-1's charges at the edge of the 4,000-byte cap: seven entries that fit to the byte do not fit once
+        the blank line after each, the heading of the new area they open, or the heading of the area their
+        removal empties is counted, so the script orders six and the seventh waits."""
+        self.h = h = FakeHome("r31x")
+        names = ["story-%02d-%s" % (i, ("header-fit", "footer-fit", "menu-fit")[i % 3]) for i in range(40)]
+
+        def tally_with(kinds):
+            t = dict(state.default_tally(), backfill_done=True)
+            t["stories"] = {"proj": list(names)}
+            t["story_seq"] = ["proj/" + s for s in names]
+            t["kinds"] = kinds
+            return t
+
+        def titled(t, kid, heading_bytes):
+            """A title that makes the tally's heading for kid exactly heading_bytes long."""
+            need = heading_bytes - len(mistakes.heading_for(kid, "", t).encode())
+            title = ("the guard is skipped on a second path that reaches the write " * 9)[:need]
+            t["kinds"][kid]["title"] = title[:-1] + "x"
+            assert len(mistakes.heading_for(kid, t["kinds"][kid]["title"], t).encode()) == heading_bytes
+            return t["kinds"][kid]["title"]
+
+        def sized(t, kid, total):
+            o = {"kind": kid, "title": t["kinds"][kid]["title"], "count": len(mistakes.all_stories(t["kinds"][kid], t)),
+                 "stories": [x.split("/", 1)[1] for x in mistakes.all_stories(t["kinds"][kid], t)], "max_entry_bytes": total}
+            return "".join(obey.largest_entry(o))
+
+        fresh_kind = lambda: kind_row({"proj": names[36:39]}, listed_in=fh.PROJ_RM)
+        header = fh.RM_HEADER.format(p="proj")
+        for label, area, heading_bytes in (("the blank line after each entry", "Guards", 171),
+                                           ("the heading of the new area", "Late builds and checks of every guard", 166)):
+            t = tally_with({"keep-00-guard": fresh_kind()})
+            for i in range(8):
+                t["kinds"]["edge-%02d-guard" % i] = kind_row({"proj": names[38:40]}, area=area)
+                titled(t, "edge-%02d-guard" % i, heading_bytes)
+            h.write(fh.PROJ_RM, mistakes.normalize_text(header + "\n## Guards\n" + sized(t, "keep-00-guard", 400), t))
+            got = mistakes.orders(h.denv(), t)
+            self.assertEqual(len(got), 6, "%s: %s" % (label, [o["id"] for o in got]))
+            log = self.exact_runs(h, t)
+            self.assertEqual([f for _, f in log], [[]] * len(log), label)
+            self.assertEqual([len(ids) for ids, _ in log], [6, 2], label)
+        # removals that empty their area: its heading and the blank line before it go too
+        area = "Retired builds and checks of every guard"
+        t = tally_with({"keep-00-guard": fresh_kind()})
+        for i in range(7):
+            t["kinds"]["gone-%02d-guard" % i] = kind_row({"proj": [names[i], names[i + 9]]}, listed_in=fh.PROJ_RM, area=area)
+            titled(t, "gone-%02d-guard" % i, 167)
+        h.write(fh.PROJ_RM, mistakes.normalize_text(header + "\n## Guards\n" + sized(t, "keep-00-guard", 400) + "\n## %s\n"
+                                                    % area + "".join(sized(t, "gone-%02d-guard" % i, 567) for i in range(7)), t))
+        got = mistakes.orders(h.denv(), t)
+        self.assertEqual(len(got), 6, [o["id"] for o in got])
+        log = self.exact_runs(h, t)
+        self.assertEqual([f for _, f in log], [[]] * len(log))
+        self.assertEqual([len(ids) for ids, _ in log], [6, 1])
+        self.assertNotIn(area, h.read(fh.PROJ_RM), "the emptied area's heading went with its last entry")
 
 
 if __name__ == "__main__":

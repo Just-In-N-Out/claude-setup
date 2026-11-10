@@ -15,7 +15,7 @@ import re
 HEAD = re.compile(r"^### ([a-z0-9][a-z0-9-]*) — ")
 AREA = re.compile(r"^## (?!#)(.+?)\s*$")
 BUILD = "- **Build it this way:** "
-CHECK = "- **Check for it:** a test that goes through every path this entry names; each must be refused."
+CHECK = "- **Check for it:** a test of %s through every path this entry names; each must be refused."
 PAD = "do it the way the entry says, on every path that reaches the write, with one test per path"
 
 
@@ -78,10 +78,11 @@ def paste(text, area, entry, blank_after=True):
 def largest_entry(o):
     """An entry of exactly the order's max_entry_bytes, heading included (the count and stories as given)."""
     head = "### %s — %s (%d×: %s)\n" % (o["kind"], o["title"], o["count"], ", ".join(o["stories"]))
-    room = o["max_entry_bytes"] - len(head.encode()) - len(CHECK.encode()) - 2   # two newlines
-    body = (BUILD + (PAD + ", ") * 40)[:room - 1] + "."
+    check = CHECK % o["kind"]      # every entry's lines its own, so no line of one reads as moved from another
+    room = o["max_entry_bytes"] - len(head.encode()) - len(check.encode()) - 2   # two newlines
+    body = (BUILD + "for %s, " % o["kind"] + (PAD + ", ") * 40)[:room - 1] + "."
     assert len(body.encode()) == room, (room, len(body.encode()))
-    return [head, body + "\n", CHECK + "\n"]
+    return [head, body + "\n", check + "\n"]
 
 
 def obey(copy_dir, orders, blank_after=True):
