@@ -36,6 +36,8 @@ class Input:
             if isinstance(c, dict):
                 self.by_file.setdefault(str(c.get("file", "")), []).append(c)
         self.copy = self.dir / "copy"
+        # the copy's targets: the files copied in and the files the editor added (never _dream/)
+        self.targets = set(mapping) | {d.copy for d in diffs if d.status == "A"}
         # lines that left one file and arrived in another, word for word
         added = {}
         removed = {}
@@ -272,13 +274,17 @@ def g_canary(G):
 # ---------- AC17: every removed and added line is accounted for ----------
 
 def _valid_changes(G, d):
+    """The changes whose lines may count in this file (R2-1). A finding change counts only in a file every
+    finding it cites may change (its narrowest place, AC18); a tidy (duplicate or move) counts where the
+    allowlist lets it, and adds nothing. An order names a repeat-mistakes file, which mistakes.check_copy
+    checks entry by entry and this accounting skips, so an order change counts in no file here."""
+    real = G.env.real_rel(G.live(d)) if d.status == "A" else G.live(d)
     out = []
     for c in G.by_file.get(d.copy, []):
         basis = c.get("basis")
         ids = c.get("finding_ids") or []
-        if basis == "finding" and ids and all(i in G.findings for i in ids):
-            out.append(c)
-        elif basis == "order" and c.get("order_id") in G.orders:
+        if basis == "finding" and ids and all(
+                i in G.findings and targets.in_scope(targets.scope_for(G.env, G.findings[i]), real) for i in ids):
             out.append(c)
         elif basis in ("duplicate", "move"):
             out.append(c)
@@ -314,12 +320,12 @@ def removal_ok(G, d, line, cs):
             reason = r.get("reason")
             if reason in ("outdated", "wrong") and c.get("basis") == "finding":
                 return True
-            if reason == "retired" and c.get("basis") == "order":
-                return True
             if reason == "duplicate" and duplicate_ok(G, line, r):
                 return True
             if reason == "moved":
-                t = G.copy_text(str(r.get("moved_to") or ""))
+                # the destination is a target of the copy, never the editor's own _dream/ files (R2-1)
+                dest = str(r.get("moved_to") or "")
+                t = G.copy_text(dest) if dest in G.targets else None
                 if t is not None and n in norm(t):
                     return True
     return False
@@ -337,9 +343,10 @@ def g_accounting(G):
                 continue
             if not removal_ok(G, d, ln, cs):
                 out.append("%s: a removed line is not accounted for: \"%s\"" % (G.live(d), ln.strip()[:80]))
-        # text a tidy writes (basis duplicate or move) is not evidence: only a finding or an order may add a
-        # line; text moved word for word from another target is not an addition (R1-2)
-        adds = [norm(a) for c in cs if c.get("basis") in ("finding", "order")
+        # text a tidy writes (basis duplicate or move) is not evidence: only a finding may add a line here (an
+        # order adds only to its repeat-mistakes file); text moved word for word from another target is not an
+        # addition (R1-2, R2-1)
+        adds = [norm(a) for c in cs if c.get("basis") == "finding"
                 for a in (c.get("additions") or []) if isinstance(a, str)]
         for ln in d.added:
             if not ln.strip() or ln in mi:
@@ -402,7 +409,7 @@ def g_dated_lines(G):
         if G.is_rm(d):
             continue
         mo = G.moved_out.get(d.copy, set())
-        cs = G.by_file.get(d.copy, [])
+        cs = G.by_file.get(d.copy, [])  # an order replaces no dated line: it adds only to its repeat-mistakes file (R2-1)
         for ln in d.removed:
             dates = DATE.findall(ln)
             if not dates or ln in mo:
@@ -421,8 +428,6 @@ def g_dated_lines(G):
                     for r in c.get("removals") or []:
                         if isinstance(r, dict) and n in norm(r.get("text")) and duplicate_ok(G, ln, r):
                             ok = True
-                elif c.get("basis") == "order":
-                    ok = True
             if not ok:
                 out.append("%s: a dated line was removed or replaced without a clear typed finding naming what it "
                            "replaces: \"%s\"" % (G.live(d), ln.strip()[:80]))

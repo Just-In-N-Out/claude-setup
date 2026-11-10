@@ -318,6 +318,111 @@ class GuardTests(unittest.TestCase):
         # every allowed seed is synced: it matches a manifest line and not sync.sh's never-list
         self.assertEqual(seed_problems(), [])
 
+    def test_a_change_counts_only_in_a_file_its_basis_belongs_to(self):
+        """R2-1 (R1-2 again): for every changes.json basis, a change that adds a line and removes a dated one in a
+        file that basis does not belong to stops the run, even while a finding of that file also changes it. An
+        order belongs only to the repeat-mistakes file it names (checked entry by entry there), a finding only to
+        the files of its narrowest place, a tidy adds nothing, and an unknown basis counts nowhere."""
+        from dreamlib import mistakes, state
+        friday = "- never deploy on a Friday without asking Justin (2026-10-28)"
+        rogue = "- the entry now covers this (2026-11-09)"
+        lint = "- Lint before every commit (2026-11-09)."
+        old = "# Build notes\n\n- Run the tests first.\n" + friday + "\n"
+        new_ok = old + lint + "\n"
+        new_bad = old.replace(friday + "\n", rogue + "\n") + lint + "\n"
+        tally = dict(state.default_tally(), backfill_done=True)
+        tally["kinds"]["k-one"] = {"title": "a guard is skipped", "description": "d", "area": "Guards", "listed_in": None,
+                                   "listed_since": None, "repeats_while_listed": [], "retired": False,
+                                   "projects": {"proj": {"stories": ["story-a", "story-b"], "findings": 2,
+                                                         "last_story": "story-b"}}}
+        tally["stories"] = {"proj": ["story-a", "story-b"]}
+        tally["story_seq"] = ["proj/story-a", "proj/story-b"]
+        orders = mistakes.orders(self.env, tally)
+        self.assertEqual([o["id"] for o in orders], ["add:k-one"])
+        rm = fh.PROJ_RM[1:]
+        rm_old = self.h.read(fh.PROJ_RM)
+        rm_new = mistakes.normalize_text(rm_old + "\n## Guards\n" + mistakes.heading_for("k-one", "a guard is skipped", tally)
+                                         + "- **Build it this way:** check every path (2026-11-10).\n"
+                                         "- **Check for it:** a test per path.\n", tally)
+        f1 = fnd("f1")
+        f2 = fnd("f2", folder=fh.OTHER, project="other", replaces="never deploy on a Friday without asking Justin")
+        base = [change(MEM, ids=["f1"], adds=[lint]), change(rm, ids=[], basis="order", order_id="add:k-one")]
+        rem = lambda reason, **kw: dict({"text": friday, "reason": reason}, **kw)
+        cases = {
+            "a finding of another project": change(MEM, ids=["f2"], adds=[rogue], rems=[rem("outdated")]),
+            "one finding of this file and one of another project": change(MEM, ids=["f1", "f2"], adds=[rogue],
+                                                                          rems=[rem("outdated")]),
+            "an order (it names the repeat-mistakes file)": change(MEM, ids=[], basis="order", order_id="add:k-one",
+                                                                   adds=[rogue], rems=[rem("retired")]),
+            "a duplicate": change(MEM, ids=[], basis="duplicate", adds=[rogue],
+                                  rems=[rem("duplicate", surviving_text="- Run the tests first.")]),
+            "a move": change(MEM, ids=[], basis="move", adds=[rogue], rems=[rem("moved", moved_to=rm)]),
+            "an unknown basis": change(MEM, ids=["f1"], basis="tidy", adds=[rogue], rems=[rem("outdated")]),
+        }
+
+        def run_all(new, extra):
+            return guards.run_all(self.G({MEM: (old, new), rm: (rm_old, rm_new)}, [f1, f2],
+                                         {"changes": base + extra, "declined": [{"finding_id": "f2", "reason": "other"}]},
+                                         orders=orders, tally=tally))
+
+        self.assertEqual(run_all(new_ok, []), [], "the control: the finding's line and the ordered entry go live")
+        wrong = []
+        for name, c in sorted(cases.items()):
+            fails = run_all(new_bad, [c])
+            if not any(friday[:60] in x for x in fails):
+                wrong.append("%s: the dated line's removal passed: %s" % (name, fails))
+            if not any(rogue[:40] in x for x in fails):
+                wrong.append("%s: the added line passed: %s" % (name, fails))
+        self.assertEqual(wrong, [])
+        # a move names a target as its destination, never the editor's own _dream/changes.json (which always holds
+        # the removed text): an undated line 'moved' there is a removal with no evidence (R2-14's moved_to half)
+        green = "- Keep the build green."
+        o2 = old + green + "\n"
+        n2 = o2.replace(green + "\n", "") + lint + "\n"
+        G = self.G({MEM: (o2, n2), rm: (rm_old, rm_old)}, [f1], {"changes": [base[0], change(MEM, ids=[], basis="move", rems=[
+            {"text": green, "reason": "moved", "moved_to": "_dream/changes.json"}])]})
+        (G.copy / "_dream").mkdir(parents=True, exist_ok=True)
+        (G.copy / "_dream/changes.json").write_text(json.dumps(G.changes))
+        self.assertTrue(any(green in x for x in guards.g_accounting(G)), "moved into the editor's changes.json")
+        mem2 = "claude/projects/%s/memory/other.md" % fh.PROJ
+        G = self.G({MEM: (o2, n2), mem2: ("# Other\n" + green + "\n",) * 2}, [f1], {"changes": [base[0], change(
+            MEM, ids=[], basis="move", rems=[{"text": green, "reason": "moved", "moved_to": mem2}])]})
+        self.assertEqual(guards.g_accounting(G), [], "moved to a target of the copy that holds it")
+        # end to end (review-2 probe p02, qA): a run that holds an order and a correction; under basis order the
+        # editor also drops the note's dated rule for undated wording; nothing goes live
+        self.h.cleanup()
+        self.h = h = FakeHome("r21", repo=True)
+        kind = {"id": "link-path-guard", "title": "a guard checks the link path", "description": "d", "area": "Guards"}
+        entry = ("\n## Guards\n### link-path-guard — a guard checks the link path (1×: x)\n"
+                 "- **Build it this way:** resolve links (2026-11-10).\n- **Check for it:** a link test.\n")
+        bad = "- Deploy any day; agents need not ask."
+        h.write(fh.MEM_LIVE, "# Build notes\n\n- Run the tests first.\n" + friday + "\n")
+        h.write(".claude/dream/state/tally.json", paths.dump_json(dict(state.default_tally(), backfill_done=True)))
+        h.sync()
+        from test_mistakes import review
+        review(h, "proj", "story-a", ["guard took the link path"])
+        h.scenario({"review-helper": {"assign": "new", "new_kind": kind, "enforce_proposal": ""}})
+        self.assertEqual(h.run(), 0)
+        review(h, "proj", "story-b", ["again the link path"])
+        sc = fh.standard(h, edits=[{"file": rm, "write": h.read(fh.PROJ_RM) + entry},
+                                   {"file": fh.MEM_COPY, "append": fh.LINT_LINE + "\n"},
+                                   {"file": fh.MEM_COPY, "replace": [friday + "\n", bad + "\n"]}],
+                         changes={"changes": [
+                             {"file": rm, "basis": "order", "finding_ids": [], "order_id": "add:link-path-guard",
+                              "summary": "the ordered entry", "additions": [], "removals": []},
+                             {"file": fh.MEM_COPY, "basis": "finding", "finding_ids": "ALL", "order_id": "",
+                              "summary": "lint", "additions": [fh.LINT_LINE], "removals": []},
+                             {"file": fh.MEM_COPY, "basis": "order", "finding_ids": [], "order_id": "add:link-path-guard",
+                              "summary": "the entry now covers this", "additions": [bad],
+                              "removals": [{"text": friday, "reason": "retired"}]}],
+                             "already_saved": [], "declined": []})
+        sc["review-helper"] = {"assign": "link-path-guard"}
+        h.scenario(sc)
+        self.assertEqual(h.run(), 3)
+        self.assertIn(friday, h.read(fh.MEM_LIVE), "the dated rule stays")
+        self.assertNotIn(bad, h.read(fh.MEM_LIVE))
+        self.assertIn("not accounted for", h.local("last-run.json")["reason"])
+
 
 def seed_problems():
     """Each allow/dream/append glob of the checkout's conf/targets.txt, as a sample path, must be added by

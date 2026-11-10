@@ -74,6 +74,8 @@ T = {
     "denials": "test_the_editor_leaving_its_folder_stops_the_run",
     "libpre": "test_the_library_clone_must_have_nothing_staged_and_equal_the_patch_file",
     "gitstatus": "test_the_apply_step_refuses_a_target_with_someone_elses_uncommitted_edit",
+    # review 2 fixes (fixer 2)
+    "basis": "test_a_change_counts_only_in_a_file_its_basis_belongs_to",
 }
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
               "g_dated_lines,\n       g_dates_on_additions, g_secrets, g_repeat_mistakes, g_memory_index, g_library]")
@@ -221,9 +223,9 @@ MUTANTS = [
     ("F1e", "an unreadable session stops review lines and waiting findings", [(L + "run.py",
         "    if sc.errors and not sc.reads and not lines and not state.has_work(unsettled):\n",
         "    if sc.errors and not sc.reads:\n")], ["unread"]),
-    ("F2a", "a tidy may add text", [(L + "guards.py", '        adds = [norm(a) for c in cs if c.get("basis") in ("finding", "order")\n',
-                                     '        adds = [norm(a) for c in cs if c.get("basis") in ("finding", "order", "duplicate", "move")\n')],
-     ["tidy"]),
+    ("F2a", "a tidy may add text (re-derived: fixer 2 left only finding changes adding lines)", [(L + "guards.py",
+        '        adds = [norm(a) for c in cs if c.get("basis") == "finding"\n',
+        '        adds = [norm(a) for c in cs if c.get("basis") in ("finding", "duplicate", "move")\n')], ["tidy"]),
     ("F2b", "a surviving line need not have been there before", [(L + "guards.py",
         "s not in G.before_lines or s not in G.after_lines", "s not in G.after_lines")], ["tidy"]),
     ("F2c", "a surviving line need not stay", [(L + "guards.py",
@@ -293,6 +295,36 @@ MUTANTS = [
      ["evidence"]),
     ("F13d", "a crash leaves no last-run.json", [(L + "run.py", "        except Exception as e:\n", "        except ZeroDivisionError as e:\n")],
      ["crash"]),
+    # fixer 2 (review 2): one or more per fix
+    ("G1a", "an order change counts in any file again (its lines, a 'retired' removal)", [
+        (L + "guards.py", '        elif basis in ("duplicate", "move"):\n            out.append(c)\n    return out\n',
+         '        elif basis == "order" and c.get("order_id") in G.orders:\n            out.append(c)\n'
+         '        elif basis in ("duplicate", "move"):\n            out.append(c)\n    return out\n'),
+        (L + "guards.py", '        adds = [norm(a) for c in cs if c.get("basis") == "finding"\n',
+         '        adds = [norm(a) for c in cs if c.get("basis") in ("finding", "order")\n'),
+        (L + "guards.py", '            if reason == "duplicate" and duplicate_ok(G, line, r):\n',
+         '            if reason == "retired" and c.get("basis") == "order":\n                return True\n'
+         '            if reason == "duplicate" and duplicate_ok(G, line, r):\n')], ["basis"]),
+    ("G1ab", "G1a and the dated guard's order branch: the head's code (V9's class)", [
+        (L + "guards.py", '        elif basis in ("duplicate", "move"):\n            out.append(c)\n    return out\n',
+         '        elif basis == "order" and c.get("order_id") in G.orders:\n            out.append(c)\n'
+         '        elif basis in ("duplicate", "move"):\n            out.append(c)\n    return out\n'),
+        (L + "guards.py", '        adds = [norm(a) for c in cs if c.get("basis") == "finding"\n',
+         '        adds = [norm(a) for c in cs if c.get("basis") in ("finding", "order")\n'),
+        (L + "guards.py", '            if reason == "duplicate" and duplicate_ok(G, line, r):\n',
+         '            if reason == "retired" and c.get("basis") == "order":\n                return True\n'
+         '            if reason == "duplicate" and duplicate_ok(G, line, r):\n'),
+        (L + "guards.py", '                            ok = True\n            if not ok:\n',
+         '                            ok = True\n                elif c.get("basis") == "order":\n                    ok = True\n'
+         '            if not ok:\n')], ["basis"]),
+    ("G1c", "a finding change counts in a file outside its narrowest place", [(L + "guards.py",
+        "                i in G.findings and targets.in_scope(targets.scope_for(G.env, G.findings[i]), real) for i in ids):\n",
+        "                i in G.findings for i in ids):\n")], ["basis"]),
+    ("G1d", "one in-scope finding is enough for a change citing two", [(L + "guards.py",
+        '        if basis == "finding" and ids and all(\n', '        if basis == "finding" and ids and any(\n')], ["basis"]),
+    ("G1e", "a move's destination may be the editor's own _dream/ files", [(L + "guards.py",
+        "                t = G.copy_text(dest) if dest in G.targets else None\n", "                t = G.copy_text(dest)\n")],
+     ["basis"]),
 ]
 
 
