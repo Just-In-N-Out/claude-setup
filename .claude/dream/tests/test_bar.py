@@ -145,6 +145,10 @@ class BarTests(unittest.TestCase):
         from dreamlib import guards
         self.assertTrue(guards.log_secrets(self.env, "entry\n" + fh.fake_secret() + "\n"))
         self.assertEqual(guards.log_secrets(self.env, "a clean log entry\n"), [])
+        stripe = "the key is %s here" % fh.fake_stripe_key()   # only gitleaks knows this shape
+        self.assertFalse(any(rx.search(stripe) for rx in extract.TOKEN_RES))
+        self.assertTrue(guards.log_secrets(self.env, stripe + "\n"))
+        self.assertTrue(guards.g_secrets(guards_input_with_added(self.env, h, stripe)))
         self.assertTrue(guards.g_secrets(guards_input_with_added(self.env, h, fh.fake_secret())))
         self.assertEqual(guards.g_secrets(guards_input_with_added(self.env, h, "a harmless line")), [])
 

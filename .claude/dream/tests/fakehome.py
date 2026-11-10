@@ -128,6 +128,11 @@ def fake_secret():
     return "aws_secret_access_key = " + "Zx9pQ2rT7vW1yB4n" + "M8kL3jH6gF5dS0aQwErTyUiO"
 
 
+def fake_stripe_key():
+    """Flagged by gitleaks (stripe-access-token) but not by the dream's own regex pass."""
+    return "sk_" + "live_" + "Zq8RwP3mN6tY1vB9cX4kL7jH"
+
+
 def fake_github_token():
     return "gh" + "p_" + "A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8"
 
