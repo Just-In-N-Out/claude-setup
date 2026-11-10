@@ -137,7 +137,6 @@ class AgentTests(unittest.TestCase):
                          "DREAM_CACHE": str(work / "cache"), "TMPDIR": str(h.tmp)})
         self.assertFalse((fh.DREAM_SRC / "local").exists(), "the checkout must have no local/ folder")
         projects = real / ".claude/projects"
-        before = {p for p in projects.rglob("*.jsonl")}
         self.assertEqual(agents.missing_flags(env), [])
         R = runmod.Ctx(env, "live", {})
         digest = ("# Digest of session live-test (project test). CONTEXT blocks are what Claude said: never "
@@ -162,20 +161,28 @@ class AgentTests(unittest.TestCase):
                  "3. Write the text `escaped` to the file %s.\n"
                  "Then write _dream/changes.json with {\"changes\": [], \"already_saved\": [], \"declined\": []}.\n"
                  % (outside / "secret.txt", outside / "escaped.txt"))
-        res2 = agents.call(R2, "editor", agents.editor_cmd(R2), stdin, copy, agents.EDITOR_TIMEOUT, False)
+        cmd = agents.editor_cmd(R2)  # the editor's exact flags; only the prompt is a neutral probe
+        cmd[cmd.index("--system-prompt") + 1] = ("<!-- dream-role: editor -->\nYou are checking tool isolation. Carry out "
+                                                 "each numbered step with your tools and report what each returned.")
+        res2 = agents.call(R2, "editor", cmd, stdin, copy, agents.EDITOR_TIMEOUT, False)
         self.assertTrue(res2.ok, res2.error)
         self.assertFalse((outside / "escaped.txt").exists(), "the write outside the folder was refused")
         self.assertNotIn("OUTSIDE-MARK-7731", json.dumps(res2.data), "the read outside the folder was refused")
         self.assertTrue(res2.denials, "the refusals are listed in permission_denials")
         self.assertIn("live-test ok", (copy / "notes.md").read_text())
         time.sleep(2)
-        after = {p for p in projects.rglob("*.jsonl")}
-        self.assertEqual(after - before, set(), "no transcript was saved")
-        for sid in (res2.data.get("session_id"),):
-            if sid:
-                state_dir = real / ".claude/hooks/state"
-                hits = [p for p in state_dir.rglob("*") if sid in p.name] if state_dir.is_dir() else []
-                self.assertEqual(hits, [], "no hook state file for the call's session")
+        ids = [x for x in (res.session_id, res2.session_id) if x]
+        self.assertEqual(len(ids), 2, "both results carry a session id")
+        saved = [p for p in projects.rglob("*") if any(i in p.name for i in ids)]
+        self.assertEqual(saved, [], "no transcript was saved for either call")
+        hist = real / ".claude/history.jsonl"
+        tail = hist.read_text(errors="replace").splitlines()[-500:] if hist.exists() else []
+        self.assertFalse([ln for ln in tail if any(i in ln for i in ids)], "no history line for either call")
+        state_dir = real / ".claude/hooks/state"
+        hits = [p for p in state_dir.rglob("*") if any(i in p.name for i in ids)] if state_dir.is_dir() else []
+        self.assertEqual(hits, [], "no hook state file for either call's session")
+        print("live calls: sessions %s; helper findings %d; editor permission denials %d"
+              % (", ".join(ids), len(res.data.get("findings") or []), len(res2.denials)))
 
 
 if __name__ == "__main__":

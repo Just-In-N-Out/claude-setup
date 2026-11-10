@@ -36,6 +36,7 @@ class Result:
         self.denials = []
         self.usage = {}
         self.cost = 0.0
+        self.session_id = ""
 
 
 def claude_bin(env):
@@ -120,6 +121,7 @@ def call(R, role, cmd, stdin, cwd, timeout, schema):
         res.error = "%s exit %d, output is not JSON" % (role, p.returncode)
         return _done(R, res)
     res.usage = out.get("usage") or {}
+    res.session_id = str(out.get("session_id") or "")
     res.cost = out.get("total_cost_usd") or 0.0
     res.denials = out.get("permission_denials") or []
     status = out.get("api_error_status")
