@@ -140,6 +140,19 @@ class StageTests(unittest.TestCase):
         self.assertIn("could not apply automatically", h.read(".claude/dream/justin-list.md"))
         self.assertEqual(snapshot(h), before)
 
+    def test_a_secret_in_the_log_entry_stops_the_run(self):
+        """R1-14 (AC12): the log entry is scanned before anything goes live; a secret only the log would hold
+        (here in the editor's summary, which no file holds) stops the run."""
+        self.h = h = FakeHome("logsecret", repo=True)
+        sc = fh.standard(h)
+        sc["editor"]["changes"]["changes"][0]["summary"] = "lint before commit, key %s" % fh.fake_stripe_key()
+        h.scenario(sc)
+        before = snapshot(h)
+        self.assertEqual(h.run(), 3)
+        self.assertEqual(snapshot(h), before)
+        self.assertIn("the log entry holds what looks like a secret", h.local("last-run.json")["reason"])
+        self.assertNotIn(fh.fake_stripe_key(), h.read(".claude/dream/dream-log.md"))
+
     def test_the_editor_leaving_its_folder_stops_the_run(self):
         """The stop the plan names in step 5: a non-empty .permission_denials means the editor tried to read or
         write outside its copy; nothing goes live, whatever it changed in the copy."""

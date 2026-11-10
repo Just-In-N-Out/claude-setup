@@ -111,6 +111,12 @@ class NoticeTests(unittest.TestCase):
         self.assertEqual(h.run(), 0, "nothing new")
         self.assertEqual(self.notice(), "", "the failure is cleared")
         self.assertEqual(h.local("last-run.json")["result"], "nothing-new")
+        # a run that changed something and was not shown yet is not cleared by a later run with nothing new
+        changed = {"run": "r8", "time": "2026-11-10T05:00-05:00", "mode": "live", "result": "changed", "reason": "",
+                   "commit": "abc1234", "files": 2, "findings": 2, "list_open": 0, "push_pending": False}
+        h.write(".claude/dream/local/last-run.json", json.dumps(changed))
+        self.assertEqual(h.run(), 0, "nothing new")
+        self.assertIn("changed 2 files", self.notice())
         # a failure, then dream mode off: the line no longer says the next run tries again
         h.write(".claude/dream/local/last-run.json", json.dumps({
             "run": "r9", "time": "2026-11-10T17:00-05:00", "mode": "live", "result": "failed", "reason": "GitHub unreachable",

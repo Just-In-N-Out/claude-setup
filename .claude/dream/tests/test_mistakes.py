@@ -165,7 +165,8 @@ class ScriptRewriteTests(unittest.TestCase):
         before = h.read(fh.PROJ_RM)
         self.assertEqual(h.run(), 3)
         self.assertEqual(h.read(fh.PROJ_RM), before)
-        self.assertIn("repeat-mistakes.md", h.local("last-run.json")["reason"])
+        self.assertIn("repeat-mistakes.md: no finding or order allows this file", h.local("last-run.json")["reason"],
+                      "the allowlist itself refuses it, not only the entry check")
 
     def entries(self, rel):
         return MistakeTests.entries(self, rel)

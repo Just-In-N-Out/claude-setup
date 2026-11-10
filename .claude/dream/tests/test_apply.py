@@ -110,6 +110,58 @@ class ApplyTests(unittest.TestCase):
         self.assertIn("- Write the plan first (2026-11-09).", h.read(fh.MEM_LIVE))
         self.assertEqual(json.loads(h.read(tl)).get("mac_note"), "kept", "the next run starts from the file")
 
+    def test_the_library_clone_must_have_nothing_staged_and_equal_the_patch_file(self):
+        """R1-14 (AC20): under the lock, before any write, the library clone has nothing staged and its diff is
+        the patch file; an edit that arrives in between stops the run with nothing written."""
+        self.h = h = FakeHome("libpre", repo=True, library=True)
+        lib = h.p(".hermes/skills-library")
+        other = lib / "skills/other-lib/SKILL.md"
+        other.parent.mkdir(parents=True)
+        other.write_text("# Other lib skill\n\n- Be brief.\n")
+        h.sh("git", "-C", str(lib), "add", "-A")
+        h.sh("git", "-C", str(lib), "commit", "-qm", "another skill")
+        h.sh("git", "-C", str(lib), "push", "-q", "origin", "main")
+        lib_copy = "hermes/skills-library/skills/lib-skill/SKILL.md"
+        line = "- Review twice, once for the tests (2026-11-09)."
+        fh.standard(h, edits=[{"file": lib_copy, "replace": ["- Review twice.", line]}],
+                    changes={"changes": [{"file": lib_copy, "basis": "finding", "finding_ids": "ALL", "additions": [line],
+                                          "removals": [{"text": "- Review twice.", "reason": "outdated"}]}]})
+        sc = json.loads(h.scenario_path.read_text())
+        sc["session-helper"]["s1"]["findings"][0]["general"] = True
+        h.scenario(sc)
+        skill = lib / "skills/lib-skill/SKILL.md"
+        before = skill.read_text()
+        h.on_pull('[ "$N" = 2 ] || exit 0\necho "- staged meanwhile" >> %s && git -C %s add -- skills/other-lib/SKILL.md\n'
+                  % (other, lib))
+        self.assertEqual(h.run(), 3)
+        self.assertIn("staged changes", h.local("last-run.json")["reason"])
+        self.assertEqual(skill.read_text(), before, "nothing written")
+        h.sh("git", "-C", str(lib), "reset", "-q", "--hard", "origin/main")
+        h.on_pull('[ "$N" = 2 ] || exit 0\necho "- edited meanwhile" >> %s\n' % other)
+        self.assertEqual(h.run(), 3)
+        self.assertIn("differ from skills-library-local.patch", h.local("last-run.json")["reason"])
+        self.assertEqual(skill.read_text(), before, "nothing written")
+        h.sh("git", "-C", str(lib), "checkout", "-q", "--", ".")
+        (h.root / "on-pull.sh").write_text("exit 0\n")
+        self.assertEqual(h.run(), 0)
+        self.assertIn(line, skill.read_text())
+
+    def test_the_apply_step_refuses_a_target_with_someone_elses_uncommitted_edit(self):
+        """R1-14 (AC21): a target with an edit git has not committed is not written over, even when the copy
+        was made from it (the two pulls normally commit such edits first; here they do not run)."""
+        from dreamlib import run as runmod
+        self.h = h = FakeHome("gitstatus", repo=True)
+        fh.standard(h)
+        h.write(fh.MEM_LIVE, h.read(fh.MEM_LIVE) + "- another session's edit, not committed\n")
+        real = runmod.pull
+        runmod.pull = lambda R: 0
+        try:
+            self.assertEqual(h.run(), 3)
+        finally:
+            runmod.pull = real
+        self.assertIn("uncommitted edits by someone else", h.local("last-run.json")["reason"])
+        self.assertNotIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+
     def test_ac20_library_edit_travels_only_in_the_patch_file(self):
         self.h = h = FakeHome("ac20", repo=True, library=True)
         lib = h.p(".hermes/skills-library")

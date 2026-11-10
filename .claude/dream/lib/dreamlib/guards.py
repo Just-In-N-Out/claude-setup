@@ -14,6 +14,11 @@ WORD = re.compile(r"[a-z0-9]+")
 TYPED_LABELS = ("TYPED", "QUEUED", "mid-turn", "ANSWER", "PASTE (whole message)")
 
 
+def typed_label(label):
+    """Entries of text Justin typed, slash-command text included (plan step 2; R1-19)."""
+    return label in TYPED_LABELS or str(label or "").startswith("SLASH /")
+
+
 def norm(s):
     return " ".join((s or "").split())
 
@@ -410,7 +415,7 @@ def g_dated_lines(G):
                 if c.get("basis") == "finding":
                     fs = [G.findings.get(i) for i in c.get("finding_ids") or []]
                     if any(f and f.get("replaces", "").strip() and not f.get("ambiguous") and
-                           f.get("label") in TYPED_LABELS for f in fs):
+                           typed_label(f.get("label")) for f in fs):
                         ok = True
                 elif c.get("basis") == "duplicate":
                     for r in c.get("removals") or []:

@@ -225,6 +225,11 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(acc(dup_new, dup("the")), "a word found somewhere is not a surviving line")
         self.assertTrue(acc(dup_new, dup("- Keep the build green.")), "a line that stays but says something else")
         self.assertTrue(acc(dup_new, dup("Run the tests first")), "part of a line is not a whole line")
+        both = old.replace("- Run the tests first.\n- Run the tests first, always.\n", "")
+        self.assertTrue(acc(both, [change(MEM, ids=[], basis="duplicate", rems=[
+            {"text": "- Run the tests first, always.", "reason": "duplicate", "surviving_text": "- Run the tests first."},
+            {"text": "- Run the tests first.", "reason": "duplicate", "surviving_text": "- Run the tests first, always."}])]),
+            "both copies removed, each naming the other: nothing stays")
         # a surviving line written in this same run is not text that stays
         swapped = old.replace("- Run the tests first, always.\n", "- Run the tests first, always, twice.\n")
         self.assertTrue(acc(swapped, [change(MEM, adds=["- Run the tests first, always, twice."]),
@@ -342,6 +347,135 @@ def seed_problems():
             if subprocess.run(["grep", "-qE", deny], input=s, text=True).returncode == 0:
                 probs.append("%s: never synced (DENY_RE)" % g)
     return probs
+
+
+class WiringTests(unittest.TestCase):
+    """R1-14: the ACs say the run does not go live; these tests fail when one guard is left out of
+    guards.run_all, or when one cap or limit is not applied, each through a fixture only it refuses."""
+
+    def setUp(self):
+        self.h = FakeHome("wiring", library=True)
+        self.env = self.h.denv()
+        self.gt = GuardTests("test_ac9_addition_from_typed_finding_carries_its_date")
+        self.gt.h, self.gt.env, self.gt.n = self.h, self.env, 300
+
+    def tearDown(self):
+        self.h.cleanup()
+
+    def G(self, *a, **kw):
+        return self.gt.G(*a, **kw)
+
+    def test_run_all_runs_every_guard(self):
+        h = self.h
+        old = "# Build notes\n\n- Run the tests first.\n"
+        line = "- Lint before every commit (2026-11-09)."
+        ok_change = {"changes": [change(MEM, adds=[line])]}
+        c = "claude/CLAUDE.md"
+        big = "# Notes\n" + "".join("- line %04d of the note\n" % i for i in range(400))
+        lib = h.p(".hermes/skills-library")
+        long = "".join("- rule %02d\n" % i for i in range(30))
+        (lib / "skills/lib-skill/SKILL.md").write_text(long)
+        h.sh("git", "-C", str(lib), "commit", "-qam", "longer skill")
+        lib_rel = "hermes/skills-library/skills/lib-skill/SKILL.md"
+        linked = self.G({MEM: (old, old + line + "\n")}, [fnd()], ok_change)
+        os.symlink("/etc/hostname", linked.copy / "claude/escape.md")
+        linked.diffs, linked.links = targets.diff_copy(linked.dir)
+        order = {"id": "add:k-one", "action": "add", "kind": "k-one", "file": fh.PROJ_RM, "title": "t", "area": "Guards",
+                 "count": 2, "stories": ["a", "b"]}
+        rm_text = self.h.read(fh.PROJ_RM)
+        cases = {
+            "g_links": (linked, "the copy holds a link"),
+            "g_allowlist": (self.G({"codex/AGENTS.md": (None, "# x\n")}, [fnd()], {"changes": [change("codex/AGENTS.md", adds=["# x"])]}),
+                            "not an allowed target"),
+            "g_protected": (self.G({c: (fh.CLAUDE_MD, fh.CLAUDE_MD.replace("never push to Leorna", "never push to Leorna!"))}),
+                            "changed the frozen section"),
+            "g_budgets": (self.G({MEM: (big, big + "- one more line\n")}), "over its budget"),
+            "g_caps": (self.G({MEM: (old, old + "".join("- added line %05d %s\n" % (i, "x" * 40) for i in range(51)))}),
+                       "bytes added (cap"),
+            "g_canary": (self.G({c: (fh.CLAUDE_MD, fh.CLAUDE_MD.replace("- never push to Leorna without asking (2026-10-01)\n", ""))}),
+                         "lost the exact fact"),
+            "g_accounting": (self.G({MEM: (old, "# Build notes\n")}), "a removed line is not accounted for"),
+            "g_settled": (self.G({MEM: (old, old)}, [fnd()]), "neither applied, already saved nor declined"),
+            "g_dated_lines": (self.G({MEM: (old + "- Old way (2026-10-01).\n", old)}, [fnd()], {"changes": [change(
+                MEM, rems=[{"text": "- Old way (2026-10-01).", "reason": "outdated"}])]}), "a dated line was removed"),
+            "g_dates_on_additions": (self.G({MEM: (old, old + "- Lint before every commit.\n")}, [fnd()],
+                                            {"changes": [change(MEM, adds=["- Lint before every commit."])]}),
+                                     "does not carry its date"),
+            "g_secrets": (self.G({MEM: (old, old + "- the key is %s (2026-11-09)\n" % fh.fake_stripe_key())}, [fnd()],
+                                 {"changes": [change(MEM, adds=["- the key is %s (2026-11-09)" % fh.fake_stripe_key()])]}),
+                          "gitleaks or the token check"),
+            "g_repeat_mistakes": (self.G({fh.PROJ_RM[1:]: (rm_text, rm_text)}, orders=[order]), "missing k-one"),
+            "g_memory_index": (self.G({"claude/projects/%s/memory/lint.md" % fh.PROJ: (None, "# Lint\n")}),
+                               "must be named in its folder's MEMORY.md"),
+            "g_library": (self.G({lib_rel: (long, long.replace("- rule 01\n", "- rule one\n").replace("- rule 28\n", "- rule 28b\n"))}),
+                          "diff blocks against the library"),
+        }
+        self.assertEqual(sorted(cases), sorted(g.__name__ for g in guards.ALL), "a case for every guard in run_all")
+        missing = []
+        for name, (G, text) in sorted(cases.items()):
+            if not any(text in f for f in getattr(guards, name)(G)):
+                missing.append("%s: the fixture does not trip it" % name)
+            elif not any(text in f for f in guards.run_all(G)):
+                missing.append("%s: run_all did not run it" % name)
+        self.assertEqual(missing, [])
+
+    def test_each_cap_and_limit_stops_the_run_on_its_own(self):
+        add = lambda n, tag="a": "".join("- %s line %05d %s\n" % (tag, i, "x" * 40) for i in range(n))  # 56 bytes a line
+        problems = []
+
+        def expect(label, fails, text):
+            if not any(text in f for f in fails):
+                problems.append("%s: no \"%s\" in %s" % (label, text, fails))
+
+        # the whole-run removed cap: five notes, each under its own cap of 3,000, 14,000 bytes in all
+        notes = {"claude/projects/%s/memory/n%d.md" % (fh.PROJ, i): ("# N\n" + add(60), "# N\n" + add(60)[56 * 50:])
+                 for i in range(5)}
+        expect("run removed", guards.g_caps(self.G(notes)), "bytes removed in this run (cap 12000)")
+        self.assertEqual(guards.g_caps(self.G(dict(list(notes.items())[:1]))), [], "one of them is under every cap")
+        # the moved cap: 31,376 bytes moved word for word to references/
+        section = "## Long section\n" + add(560)
+        sk = targets.copy_rel(fh.PROJ_SKILL + "/SKILL.md")
+        ref = targets.copy_rel(fh.PROJ_SKILL + "/references/long.md")
+        expect("moved", guards.g_caps(self.G({sk: ("# Skill\n\n" + section + "\n## Tail\n", "# Skill\n\n## Tail\n"),
+                                               ref: (None, section)})), "bytes moved in this run (cap 30000)")
+        # the repeat-mistakes cap, once the file has an entry: 4,000 bytes a run
+        rm = fh.PROJ_RM[1:]
+        rm_old = self.h.read(fh.PROJ_RM) + "\n## Guards\n### k-one — t (2×: a, b)\n- **Build it this way:** x.\n- **Check for it:** y.\n"
+        expect("repeat-mistakes", guards.g_caps(self.G({rm: (rm_old, rm_old + add(80))})), "bytes changed (cap 4000")
+        # at most 2 files over budget tidied with no finding
+        over = "# Big\n- the same rule twice\n- the same rule twice\n" + add(150)  # over the 8,000 of a note
+        tidy = {"claude/projects/%s/memory/big%d.md" % (fh.OTHER, i): (over, over.replace("- the same rule twice\n", "", 1))
+                for i in range(3)}
+        tch = {"changes": [change(f, ids=[], basis="duplicate", rems=[{"text": "- the same rule twice", "reason": "duplicate",
+                                                                      "surviving_text": "- the same rule twice"}]) for f in tidy]}
+        expect("tidy limit", guards.g_allowlist(self.G(tidy, [], tch)), "tidied 3 files over budget")
+        self.assertEqual(guards.g_allowlist(self.G(dict(list(tidy.items())[:2]), [], tch)), [], "two are fine")
+        # changes.json naming a finding that is not in this run
+        old = "# Build notes\n\n- Run the tests first.\n"
+        line = "- Lint (2026-11-09)."
+        expect("stranger", guards.g_settled(self.G({MEM: (old, old + line + "\n")}, [fnd()],
+                                                   {"changes": [change(MEM, ids=["f1", "nope"], adds=[line])]})),
+               "names a finding that is not in this run")
+        # text moved between two files no finding allows (a swap): each is a move destination of the other
+        a = "claude/projects/%s/memory/a.md" % fh.OTHER
+        b = "claude/projects/%s/memory/b.md" % fh.OTHER
+        swap = self.G({a: ("# A\n- rule of a\n", "# A\n- rule of b\n"), b: ("# B\n- rule of b\n", "# B\n- rule of a\n")}, [fnd()])
+        expect("move source", guards.g_allowlist(swap), "text moved here from a file no finding allows")
+        self.assertEqual(problems, [])
+
+    def test_a_dated_line_is_replaced_only_by_a_finding_from_typed_text(self):
+        """AC45 and R1-19: typed text includes slash-command text; a finding with no typed label cannot replace
+        a dated line (the label check, pinned)."""
+        old = "- Use the old header (2026-10-01).\n- Keep plans short.\n"
+        new = "- Use the new header (2026-11-09).\n- Keep plans short.\n"
+        ch = {"changes": [change("claude/CLAUDE.md", adds=["- Use the new header (2026-11-09)."],
+                                 rems=[{"text": "- Use the old header (2026-10-01).", "reason": "outdated"}])]}
+        g = lambda label: guards.g_dated_lines(self.G({"claude/CLAUDE.md": (old, new)},
+                                                      [fnd(label=label, replaces="Use the old header")], ch))
+        for label in ("TYPED", "QUEUED", "mid-turn", "ANSWER", "PASTE (whole message)", "SLASH /loop"):
+            self.assertEqual(g(label), [], label)
+        for label in ("", "CONTEXT", "REVIEW"):
+            self.assertTrue(g(label), "no typed label: %r" % label)
 
 
 class SettledTests(unittest.TestCase):
