@@ -33,10 +33,10 @@ index d8e25dc..da8c1c3 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..c5a079a 100644
+index d6a2493..74fc40b 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
-@@ -60,30 +60,36 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
+@@ -60,30 +60,38 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
  Use this as a scan order, not a rigid form:
  
  - Scope: change matches request, no unrelated churn, no generated junk.
@@ -46,6 +46,8 @@ index d6a2493..c5a079a 100644
 +- Host blocks: when a tool blocks a host with a wildcard resolver rule (Chrome `--host-resolver-rules "MAP *.<host> ~NOTFOUND"`), probe a target on a subdomain of the blocked host (`staging.<old site>`); Chrome resolves any `*.localhost` to loopback, so `a.localhost` against `x.staging.a.localhost:<port>` reproduces it locally (staging-fit-renderer review 1).
 +- Second fetches: when a fix leans on data from a separate request (the page "as the server sends it"), probe with that request refused (403 or a check page) and read the user's latest real artefact for the tell that it was empty; a stand-in on 127.0.0.1 never fails that fetch (site-reviews review 1). When a fix lets one part stand for the whole (a script tag alone as a widget's code), probe inputs where the part depends on its served neighbours (a placeholder the script replaces; a library tag plus an inline call), each paired with the same input in the shape the fix was written for as a control: the part runs, draws nothing, and a checker that stands in at the captured size still says OK (review 2).
 +- Normalised keys: when a compare keys items by a normalised key (an address without its query) and counts them, probe two items of different origin sharing the key (one served, one a script adds only sometimes); a rule that skips an absent item still fails on the count (staging-fit-capture review 2).
++- Moved margins: when a fold or merge moves a wrapper's margins onto an inner element that keeps a percentage width or max-width, probe a wrapper with side margins of its own; a proof on measured boxes compares border boxes, which leave margins out, so it passes while the percentage now resolves against the outer container and the element overflows by the margins (site-native-structure review 2).
++- Own process group: when a fix gives a child a process group of its own, probe at both heads every way the parent can die that its handlers don't cover (SIGQUIT, a group SIGKILL): the child used to die with the group and now survives (staging-fit-renderer review 3).
  - Contracts: API, schema, CLI, config, events, storage, migrations, compatibility.
 -- Data and state: consistency, transactions, idempotency, rollback, retention.
 -- Security-sensitive logic: authn/authz, secrets, injection, deserialization, untrusted input, sensitive logging.
@@ -79,7 +81,7 @@ index d6a2493..c5a079a 100644
  - Readiness budgets: reject nonfinite and negative numeric timeouts before resource or persistent-state claims, including direct API callers. Preserve zero only when it is the documented immediate-timeout control; use bounded fake-clock regressions rather than launching an infinite wait.
  - Maintainability: simple design, local conventions, names, duplication, abstraction fit.
  - Docs and rollout: README, changelog, feature flags, migration notes, operator impact.
-@@ -95,6 +101,13 @@ Use this as a scan order, not a rigid form:
+@@ -95,6 +103,13 @@ Use this as a scan order, not a rigid form:
  - Safety metadata: compare explicit canonical status/date/approval fields across human-readable docs and machine manifests. Keyword presence is not agreement; retain full-entrypoint negative fixtures where one field contradicts the manifest while unrelated caveats remain, and reject missing/duplicate/conflicting fields without treating the checker as release authorization.
  - Execution provenance: require contemporaneous complete consumed-source hashes or a dirty patch before and after dirty-tree runs. HEAD plus a dirty flag or one wrapper hash does not bind every helper, test or workflow; inherit only demonstrated unchanged bytes/consumed fields rather than fabricating retrospective attestation.
  - Scanner coverage: inspect the exact resolved packaged implementation and its actual revision-range, pagination and merge filtering. Full checkout depth only supplies history; it does not prove all relevant commits were scanned, and a mutable-tag source snapshot does not authenticate the future packaged runtime.
