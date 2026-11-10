@@ -586,7 +586,7 @@ class OrderTests(unittest.TestCase):
         got = mistakes.orders(env, tally)
         most = len(mistakes.heading_for("link-path-guard", KIND["title"], tally).encode()) + mistakes.ENTRY_ALLOWANCE
         self.assertEqual([(o["id"], o["action"], o["file"], o.get("to"), o.get("max_entry_bytes")) for o in got],
-                         [("add:link-path-guard", "add", fh.GENERAL_RM, None, most)])
+                         [("add:link-path-guard", "add", fh.GENERAL_RM, "", most)])
         # check_copy holds the entry the editor writes to those bytes
         n = [0]
 
@@ -648,13 +648,14 @@ class OrderTests(unittest.TestCase):
         self.h = h = FakeHome("ordk", repo=True)
         t = state_of(h)
         got = mistakes.orders(h.denv(), t)
-        want = {"add:k-add": ("add", fh.PROJ_RM, None), "move:k-move": ("move", fh.PROJ_RM, fh.GENERAL_RM),
-                "add:k-gone": ("add", fh.GENERAL_RM, None), "remove:k-old": ("remove", fh.PROJ_RM, None),
-                "remove:k-lost": ("remove", fh.PROJ_RM, None)}
+        want = {"add:k-add": ("add", fh.PROJ_RM, ""), "move:k-move": ("move", fh.PROJ_RM, fh.GENERAL_RM),
+                "add:k-gone": ("add", fh.GENERAL_RM, ""), "remove:k-old": ("remove", fh.PROJ_RM, ""),
+                "remove:k-lost": ("remove", fh.PROJ_RM, "")}
         self.assertEqual({o["id"]: (o["action"], o["file"], o["to"]) for o in got}, want)
         fields = {"id", "action", "kind", "title", "description", "area", "count", "stories", "file", "to",
                   "max_entry_bytes"}
         self.assertEqual([sorted(set(o) ^ fields) for o in got], [[]] * 5, "every order carries every field")
+        self.assertEqual({type(o["to"]) for o in got}, {str}, "`to` is text in every order (a move's file, else empty)")
         self.assertEqual([o["id"] for o in got if o["max_entry_bytes"] is not None], ["add:k-add", "add:k-gone"])
         kept = mistakes.merge_orders(json.loads(json.dumps([dict(o, tries=1) for o in got])), got)
         self.assertEqual([dict(o, tries=0) for o in kept], [dict(o, tries=0) for o in got])

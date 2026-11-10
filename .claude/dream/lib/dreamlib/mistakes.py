@@ -139,7 +139,8 @@ def orders(env, tally):
     """Remove, move and add orders for the editor. Entries that would take a file past about 15 KB are not
     ordered (R1-9): the most frequent kinds go first, and a kind left out is not parked, it waits for room.
     Every order carries the same fields (id, action, kind, title, description, area, count, stories, file,
-    to, max_entry_bytes), so no reader of an order meets a missing one (R3-2)."""
+    to, max_entry_bytes), so no reader of an order meets a missing one (R3-2); `to` is text in each (a move's
+    file, else empty)."""
     size, texts = {}, {}
 
     def entries(f):
@@ -147,7 +148,7 @@ def orders(env, tally):
             texts[f] = entries_of(_rewritten(env, f, tally))
         return texts[f]
 
-    def order(info, action, file, to=None):
+    def order(info, action, file, to=""):
         # an add order carries the bytes its entry may take, heading included: what the room below is sized
         # by, what the editor is told (orders.json) and what check_copy holds the added entry to (R2-3)
         most = len(heading_for(info["kind"], info["title"], tally).encode()) + ENTRY_ALLOWANCE if action == "add" else None
