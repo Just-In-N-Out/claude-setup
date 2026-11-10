@@ -215,7 +215,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..46fb9fd 100644
+index f2d882d..a6079e9 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,62 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -472,7 +472,7 @@ index f2d882d..46fb9fd 100644
  6. **A redundant fallback masked the primary path.** Two mechanisms resolved
     the same input, so either could be deleted invisibly. Test each path with a
 -   payload that exercises *only* that path.
-+   payload that exercises *only* that path. A secret guard that ORs gitleaks with its own regex needs a fixture only gitleaks flags (a Stripe-shaped `sk_live_…` key built from pieces), or the "gitleaks result ignored" mutant survives (dream-pass M6). A registry of guards (a `run_all` list) needs one wiring test: run the registry on a fixture per guard, assert that guard's own message comes out, and assert the set of cases equals the registry; unit tests that call each guard directly leave every "left out of the list" mutant alive (dream-pass review 1: 13 of 14 survived 28 tests). A rule that swaps in a trusted value
++   payload that exercises *only* that path. A secret guard that ORs gitleaks with its own regex needs a fixture only gitleaks flags (a Stripe-shaped `sk_live_…` key built from pieces), or the "gitleaks result ignored" mutant survives (dream-pass M6). A scrubber that removes several encodings of one secret needs a fixture where the encodings differ: an alphanumeric password's base64 holds no `/` or `+`, so its JSON-escaped and base64url forms equal the plain one and a mutant dropping a form survives; use a typed secret with non-ASCII letters and signs whose base64 holds `/`, `+` and padding (site-media-upload fixer 1, S8). A registry of guards (a `run_all` list) needs one wiring test: run the registry on a fixture per guard, assert that guard's own message comes out, and assert the set of cases equals the registry; unit tests that call each guard directly leave every "left out of the list" mutant alive (dream-pass review 1: 13 of 14 survived 28 tests). A rule that swaps in a trusted value
 +   whenever the measure looks safe (the browser's own size while a box sits
 +   inside its limit) masks every error that shrinks the measure: kill those
 +   mutants with a case past the limit whose wrong measure looks inside it
