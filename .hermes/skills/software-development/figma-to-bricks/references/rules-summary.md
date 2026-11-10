@@ -1,6 +1,7 @@
 # FigmaToBricksV2 rules summary (read first)
 
 CLAUDE.md wins. Read its current compact Status and relevant standing rules/HANDOFF/ledger; pending filenames alone do not prove current status is behind. Process/pitfalls: `figma-to-bricks` SKILL.md. Rules only.
+Moved out of CLAUDE.md (2026-11-09 trim, lines unchanged): older Status build entries → `references/project-status-log.md`; the detail under 14 long decisions → `references/project-decisions.md`, each under a copy of its headline. CLAUDE.md keeps every decision headline; a newer line there wins.
 
 ## Pipeline and hard constraints
 - Figma→editable Bricks2.3.9/ExampleBricks; v1 read-only. General structural logic, never sample names/IDs/text/pixels/colours/fonts/order. Generic controls/fallback; ask special cases.
