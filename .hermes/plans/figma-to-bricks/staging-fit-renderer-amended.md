@@ -67,31 +67,38 @@ cited test of the line it supports and names its log in that row's evidence (`ac
   cited test's file, so the cited test doesn't run it):
   `test/web/site-live.test.ts` › "site:live reads a page published under the old site's host, and nothing else under that host"
 - **Receipts that still encode the old expectations** (all under `evidence/staging-fit-renderer/`; sorted by
-  `git show <head>:test/web/site-live.test.ts | grep -c "leaves it out"`: 1 at `1991e231`, `eb59608e`, `0f72a12f` and
-  `f32ed6c2`, 0 from `60af39eb` on; and `grep -c '"GET only"'`: 1 up to `f32ed6c2` and `60af39eb`, 0 from `227dbeac` on):
+  `git show <head>:test/web/site-live.test.ts | grep -c "leaves it out"`: 1 at `1991e231`, 2 at `eb59608e`, `0f72a12f`
+  and `f32ed6c2`, 0 from `60af39eb` on; and `grep -c '"GET only"'`: 1 up to `f32ed6c2`, at `60af39eb` and `c01c53e2`, 0
+  from `227dbeac` on):
   - Amendment 1, the old test "…and leaves it out" passing, the line "not the paste's element (left out)", `notCounted`
     1 at 1440 and one element fewer in the renderer comparison, where a swapped page now exits 1 or is named and
     compared: `builder/ac4/live-head.log` (`6e47a6ab`), `builder/ac4/red-task4head.log`,
-    `builder/cont/ac4/green-head-site-live.log` and `builder/cont/ac4/red-task4head.log`, `builder/cont/ac2/green-head.log`
-    and `builder/cont/gates/head/test_web_site-live.test.ts.log` (`0f72a12f`, whole-file runs listing the old test),
+    `builder/cont/ac4/green-head-site-live.log` and `builder/cont/ac4/red-task4head.log`,
+    `builder/cont/ac2/green-head.log` and `builder/cont/gates/head/test_web_site-live.test.ts.log` (`0f72a12f`,
+    whole-file runs listing the old test),
     `builder/cont/takeover/green-worktree-uncommitted.log` and `red-ed3a.log`, the terminal shots
     `builder/cont/shots/ac2-terminal.png` and `ac4-terminal.png` (their text beside them in `terminal/`),
     `review-1/tests.log` and `review-1/probe1.log` (the finding's own evidence: `/swapped-big/` exit 0),
     `fixer-1/red/r1-1-red.tap` (the RED, old behaviour by design), `fixer-1/flake/rev-1.tap` to `rev-4.tap` (runs of
     `f32ed6c2`). `fixer-1/gates/summary.txt` and `files-compare*.txt` show the expected difference by name: the old test
-    "base ok head -", the new one "base - head ok". Mutants `M9` ("the element left out at 1440") and `M10` ("the
-    element left out of the renderer comparison") in `builder/cont/mutants/` died on assertions that no longer exist:
-    fixer 1's run (`fixer-1/mutants/`, 45 mutants) replaces them; `M7`, `M8`, `M16`, `M20`, `M33` died on the faithful
-    page's exit code, an unchanged assertion, and stay valid.
+    "base ok head -", the new one "base - head ok". In `builder/cont/mutants/`, `M7`, `M8`, `M9`, `M10`, `M16`, `M20`
+    and `M33` were all killed through the old-named test: `M9` ("the element left out at 1440") and `M10` ("the element
+    left out of the renderer comparison") on assertions that no longer exist, in code the fix removed, so they prove
+    nothing about head; the five others on assertions of that test other than the two "left out" ones (`summary.txt`;
+    `M7` on the unmapped element's exit code, `0 !== 1`), which the renamed test keeps (the element named in `differs`,
+    "not mapped" exits 1, the paste twice exits 2): whoever counts on one re-reads its failed line against head's
+    test. Fixer 1's run (`fixer-1/mutants/`, 45 mutants on `97745575` and `5cb8fdaf`) is the current proof of these
+    guards.
   - Amendment 1, the dry runs on staging, measured with the 8 swapped Code elements left out of both comparisons:
     `builder/ac5/dry2/run.log`, `builder/cont/ac5/dry3.log` and `dry3/`, `builder/cont/shots/ac5-dry-terminal.png`, and
-    HANDOFF's "Proof" numbers taken from them. On `b512ec6a` the same page has those elements compared: each of the
-    three flip faces (386×300 where the paste has 50×50) fails the run, named; the dry run wasn't repeated (no agent
-    loads the live site in a fix round).
+    HANDOFF's "Proof" numbers taken from them. On `b512ec6a` the same page has those elements compared: HANDOFF expects
+    each of the three flip faces (386×300 where the paste has 50×50) to fail the run, named, and a swapped icon of the
+    same size to be named and pass; not measured, since the dry run wasn't repeated (the fixer loaded no live site).
   - Amendment 2, the old assertion `served.every(GET)` on a page that ran no script (it couldn't fail): every green
-    site-live log up to `f32ed6c2` (`builder/ac2/try1.log` to `try3.log`, `builder/cont/ac2/green-head.log`, the
-    builder's gate log and mutant controls above); none of the builder's mutants died on it. Now the page runs scripts
-    and the refused writes are named (`fixer-1/red/get-only-red.tap`, `fixer-1/green/get-only-try2.tap`).
+    site-live log up to `f32ed6c2` (`builder/ac2/try3.log`, `builder/cont/ac2/green-head.log`, the builder's gate log
+    and its mutant controls `builder/cont/mutants/control-*-site-live.test.ts.log`); none of the builder's mutants died
+    on it (`summary.txt`). Now the page runs scripts and the refused writes are named (`fixer-1/red/get-only-red.tap`,
+    `fixer-1/green/get-only-try2.tap`).
   - Amendment 3 has no earlier receipt (the case wasn't tested before `c01c53e2`): `review-1/probe2.log` shows the old
     failure, `fixer-1/red/r1-2-red.tap` and `fixer-1/green/r1-2-green.tap` the fix.
   - Not behaviour, for the next fix or finish pass: `test/browser/render-site-flip-face.test.ts`'s header comment (line
