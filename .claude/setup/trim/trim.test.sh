@@ -343,19 +343,20 @@ ac6_protected_lines_intact() {
   py "$CHECK" protect --map "$MAP" --root "$P1" --out "$S/protected.tsv" || fail "could not list the protected lines" || return 1
   local n h
   n=$(grep -vc '^#' "$S/protected.tsv")
+  cut -f4 "$S/protected.tsv" >"$S/protected-text.txt"   # a file, not a pipe into grep -q (pipefail + early exit)
   [ "$n" -ge 100 ] || fail "only $n protected lines: the list is too short to be the plan's" || return 1
   # the plan's sections are in the list (pinned here, not read from the map)
   for h in '## Hard rules (details live in memory)' '7. **"make a PR"** (push + open, never merge).' \
            '   9. Offer **post** for the ClickUp evidence.' '## Merge policy per project' '## Skills every agent loads' \
            '### Phase 3b: Fresh review, then finish' '## Step 4: Merge into main (from the main folder)' \
            '## Working in this repo'; do
-    cut -f4 "$S/protected.tsv" | grep -qF -- "$h" || fail "the protected list lacks '$h'" || return 1
+    grep -qF -- "$h" "$S/protected-text.txt" || fail "the protected list lacks '$h'" || return 1
   done
   # lines outside those sections that only a rule word plus a safety word protects ("never", "don't", "refuses")
   for h in '- Never use bare `git stash`: every copy shares the stash list.' \
            '- **goal:** `PLANNER for <project> feature "<name>". Write a plan Justin will approve;' \
            '  - `git branch -d` refuses a branch that has an `origin/` upstream'; do
-    cut -f4 "$S/protected.tsv" | grep -qF -- "${h:0:80}" || fail "the protected list lacks '$h'" || return 1
+    grep -qF -- "${h:0:80}" "$S/protected-text.txt" || fail "the protected list lacks '$h'" || return 1
   done
   py "$CHECK" protect --map "$MAP" --root "$P1" --check "$P2" 2>&1 | head -n 20 | cut -c1-200
   [ "${PIPESTATUS[0]}" = 0 ] || fail "a protected line is missing or changed after pass 2" || return 1
@@ -461,7 +462,7 @@ EOF
   [ "$rc" = 0 ] || fail "land.sh exit $rc" || return 1
   [ "$(g log -3 --format=%s main | tr '\n' '|')" = "$P1_SUBJECT|trim: tools|sync(test): 1 file(s)|" ] \
     || fail "main is not sync → tools → pass 1: $(g log -3 --format=%s main | tr '\n' '|')" || return 1
-  g show "main:.claude/project-docs/proj/CLAUDE.md" | cmp -s - "$COPY" || fail "the copy in \$HOME is not main's" || return 1
+  g show "main:.claude/project-docs/proj/CLAUDE.md" >"$S/main-copy" && cmp -s "$S/main-copy" "$COPY" || fail "the copy in \$HOME is not main's" || return 1
   grep -qxF -- '- **Paste checks owed:** 3x.' "$COPY" || fail "pass 1 was not made again on the newer main" || return 1
   ! grep -qF '1.1 older' "$COPY" && grep -qF 'proj-status-log.md` → "Older builds"' "$COPY" \
     && grep -qF '  - **1.1 older:** moves.' "$H/.hermes/skills/x/sk/references/proj-status-log.md" \
@@ -472,8 +473,9 @@ EOF
   out=$(cd "$H" && in_h bash .claude/setup/sync.sh status 2>&1); rc=$?
   printf '%s\n' "$out" | sed 's/^/#   /'
   [ "$rc" = 0 ] || fail "sync.sh status exit $rc" || return 1
-  g show "main:.claude/project-docs/proj/CLAUDE.md" | cmp -s - "$COPY" || fail "the sync put the old text back in the copy" || return 1
-  ! g diff --cached --name-only | grep -qxF .claude/project-docs/proj/CLAUDE.md || fail "the sync staged a change to the copy" || return 1
+  g show "main:.claude/project-docs/proj/CLAUDE.md" >"$S/main-copy" && cmp -s "$S/main-copy" "$COPY" || fail "the sync put the old text back in the copy" || return 1
+  out=$(g diff --cached --name-only) || fail "git diff --cached failed" || return 1
+  ! grep -qxF .claude/project-docs/proj/CLAUDE.md <<<"$out" || fail "the sync staged a change to the copy" || return 1
   cmp -s "$PROJ/CLAUDE.md" "$COPY" || fail "after the sync the project file and the copy differ" || return 1
   [ ! -e "$GD/setup-sync.lock" ] || fail "the lock was left behind" || return 1
   [ "$(g worktree list | wc -l | tr -d ' ')" = 2 ] || fail "land.sh left a scratch worktree: $(g worktree list)" || return 1

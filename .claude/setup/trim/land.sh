@@ -68,7 +68,8 @@ P1NEW= P2BASE= P2NEW=
 for c in $COMMITS; do
   s=$(g log -1 --format=%s "$c")
   if [ "$s" = "$P1_SUBJECT" ]; then
-    if g log --format=%s "$MB..$MAIN" | grep -qxF "$P1_SUBJECT"; then say "skip $c (main already has pass 1)"; continue; fi
+    # grep without -q in pipes here: under pipefail, grep -q's early exit can fail the writer with SIGPIPE
+    if g log --format=%s "$MB..$MAIN" | grep -xF "$P1_SUBJECT" >/dev/null; then say "skip $c (main already has pass 1)"; continue; fi
     [ -f "$W/$MAP" ] || stop "map $MAP is not in the tree (the tool commit must come first)"
     python3 -B "$W/.claude/setup/trim/move-to-references.py" --map "$W/$MAP" --root "$W" | sed 's/^/land:   /'
     [ "${PIPESTATUS[0]}" = 0 ] || stop "the mover refused main's files (an anchor changed?); nothing merged"
@@ -165,7 +166,7 @@ case "$(uname -s)" in Darwin) COL=2 ;; *) COL=3 ;; esac
 COL=${SETUP_SYNC_PATH_COL:-$COL}
 PROJ=$(awk -F'\t' -v c="$COL" '!/^#/ && NF >= 5 && $5 == "yes" { print $1 "\t" $c }' "$HOME/.claude/setup/projects.tsv" 2>/dev/null |
   while IFS=$'\t' read -r name path; do
-    printf '%s\n' "$touched" | grep -qxF ".claude/project-docs/$name/CLAUDE.md" && printf '%s\t%s\n' "$name" "$path"
+    printf '%s\n' "$touched" | grep -xF ".claude/project-docs/$name/CLAUDE.md" >/dev/null && printf '%s\t%s\n' "$name" "$path"
   done)
 while IFS=$'\t' read -r name path; do
   [ -n "$name" ] || continue
