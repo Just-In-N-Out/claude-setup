@@ -22,7 +22,7 @@ Otherwise recommend **Full**. Justin's explicit pick always wins.
 | Reviewer (separate, fresh, never saw the build) | **Fable 5.2**, a fresh one per round: round 1 full, then one per fix round | **high** |
 | Fixer (on REVIEW AGAIN, verifier findings or NOT ACCEPTED) | **Opus 5.5**, fresh | **xhigh** |
 | Verifier (after the MOVE ON that follows a fix; fresh) | **Fable 5.2** | **high** |
-| AC auditor (blind, fresh, before every finish step) | **Fable 5.2** | **high** |
+| AC auditor (blind, fresh, before every finish step) | **Opus 5.5** | **xhigh** |
 
 Sol 6.1 is only a substitute Justin approves when Claude is at its limit (ask, never switch silently). The 2026-10-22 Sol builder/finisher rows are superseded, and so is "Sol" in the steps below.
 
