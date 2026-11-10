@@ -74,6 +74,7 @@ All paths are relative to `$HOME`.
 | `.claude/hooks/*.sh`, `.claude/hooks/tests/` | The pipeline's guard hooks (`subagent-ac-gate`, `subagent-lessons-gate`, `subagent-handback-gate`, `skill-review-nudge`), the rule guards `git-guard` (Bash: git identity, accounts, remotes, credential helpers, hook bypasses; asks before a Leorna push; needs `python3`) and `orchestrator-guard` (asks before the main session edits code), the memory hook `cortexos-memory` (desktop only: searches the local CortexOS memory on each message and copies memory notes and skill lessons to it; silent with no key file, see `desktop.md`), and their tests. They need `jq`. |
 | `.claude/githooks/` | Git hooks for every repo once a machine sets `git config --global core.hooksPath '~/.claude/githooks'` (one time each; see `mac.md`/`desktop.md`): `githook.sh` refuses a staged `CLAUDE.md` outside this repo, an email that doesn't match the folder and an AI co-author trailer (also for `git am`), then runs the repo's own hook; the other 16 files are wrappers. |
 | `.claude/setup/` | This sync system: `sync.sh`, `manifest.txt`, `exclude.txt`, `gitleaks.toml`, `projects.tsv`, `mac.md`, `desktop.md`. `codex/` holds the Codex adapter (see *Codex*). |
+| `.claude/dream/` | The dream pass (desktop only): its rules `DREAM.md`, the job `bin/dream` and `lib/`, `conf/` (targets, budgets, caps, frozen sections, exact facts), the agent `prompts/`, the units in `systemd/`, `tests/`, and what it writes: `dream-log.md`, `justin-list.md`, `state/` (pending list, tally, applied, trend). Its hooks are `.claude/hooks/dream-ledger.sh` and `dream-notice.sh`. Guide: `desktop.md`, "Dream pass". |
 | `.codex/hooks.json`, `.codex/hooks/`, `.codex/agents/`, `.codex/rules/setup-sync.rules` | Codex's hooks, the seven `pipeline_*` roles and the rule that lets Codex run `sync.sh` (see *Codex*). |
 | `.claude/projects/<key>/memory/` | Claude's per-project memory notes. `<key>` is the project's absolute path with every non-alphanumeric character turned into `-`. The Mac keys look like `-Users-justin-…`; the desktop links its own keys to them (see `projects.tsv`). |
 | `.claude/project-docs/<name>/CLAUDE.md` | Copies of the personal projects' own `CLAUDE.md` files. Those never go in the projects' repos; `projects.tsv` maps each one to its folder. |
@@ -96,6 +97,7 @@ All paths are relative to `$HOME`.
 | Hermes agent, its database, cache and sessions | Mac only, and huge (about 40 GB) | Not on the desktop |
 | `~/.hermes/plans/**/evidence/` (screenshots, about 15 GB), `**/private/` | Size and privacy | Stay on the machine that made them |
 | Claude Code plugins, history, transcripts | Per machine | Plugins are installed on each machine (see `desktop.md`) |
+| The dream's machine state: `~/.claude/dream/local/` (markers, write ledger, findings waiting, mode, last run, journal) and its working files `~/.cache/dream/` | Per machine; the dream runs on the desktop only | `dream install` creates `local/` on the desktop; the Mac has none, so both dream hooks are silent there |
 
 ## Accounts and identities
 
@@ -159,10 +161,12 @@ Codex CLI, signed in with ChatGPT, uses this same setup on both machines: the sa
 | Codex follows old rules | `bash ~/.claude/setup/codex/build-codex.sh` (`--check` exits 1 when `~/.codex/AGENTS.md` is stale). |
 | `githooks (pre-commit)`, `githooks (commit-msg)`, `githooks (pre-applypatch)`, `githooks (applypatch-msg)` | The rule it names was about to be broken: fix that (unstage `CLAUDE.md`, drop the trailer, fix git config), don't skip it. Off switch, one machine: `git config --global --unset core.hooksPath` in a terminal. |
 | `git-guard:` denied, or a Leorna push / orchestrator prompt | The rule in the reason is the rule. Off switch for a Claude Code guard: delete its entry from `~/.claude/settings.json` (it syncs; `/hooks` shows what is on). |
+| The session-start line says `Dream … FAILED: …` | The dream changed nothing and retries at the next run. The reason names the fix (login, a missing CLI flag, an unknown transcript shape, a conflict); `~/.claude/dream/bin/dream status` and `desktop.md`, "Dream pass", Troubleshooting. Off: `dream mode off`. |
 
 ## Status
 
 - **Done (2026-10-26):** the repo, the first snapshot, manual sync with `sync.sh` (tested on macOS and Ubuntu), these guides, and the `CLAUDE.md` rules that tell Claude to pull before plans and sync after edits.
+- **Built (2026-11-10): the dream pass** (`~/.claude/dream/`, desktop only): lands with mode dry-run and the timer off; Justin starts the first dry run and live run by hand, then enables `dream.timer` (`desktop.md`, "Dream pass"). Plan: `~/.hermes/plans/claude-setup/dream-pass.md`.
 - **Planned, not built yet: automatic sync.**
   - a hook that pushes about 20 s after any edit to a synced file;
   - a pull at every session start;

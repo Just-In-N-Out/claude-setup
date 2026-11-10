@@ -1,0 +1,2 @@
+# Repeat mistakes: general (every project, and setup stories)
+Builders and fixers: build it the way each entry says. Reviewers: check for each entry. Kept by the dream pass (`~/.claude/dream/DREAM.md`, section 7); do not edit by hand.

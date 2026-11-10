@@ -175,6 +175,40 @@ Codex CLI, signed in with ChatGPT, uses this same setup inside Ubuntu: the same 
 - Codex follows old rules: `bash ~/.claude/setup/codex/build-codex.sh` (`--check` exits 1 when `AGENTS.md` is stale).
 - Tests: `bash ~/.claude/setup/codex/codex-parity.test.sh` (offline, no sign-in).
 
+## Dream pass
+
+The dream (`~/.claude/dream/DREAM.md`) runs on this desktop only. It rereads new typed messages and review findings twice a day and updates skills, `CLAUDE.md` files and memory notes, one `dream(<time>): …` commit per run.
+
+**Install (once, after the story lands):** in the Ubuntu window,
+```bash
+~/.claude/dream/bin/dream install          # local/ with mode dry-run, the units in ~/.config/systemd/user, timer NOT enabled
+~/.claude/dream/bin/dream init             # first markers (sessions with fewer than 3 typed messages start at their end) and the ledger baseline
+~/.claude/dream/bin/dream status
+```
+**Linger (once, Justin):** `sudo loginctl enable-linger justin`, so the user timer runs without a login. It does not keep Ubuntu running: a slot missed while Windows had Ubuntu stopped runs once at the next start (`Persistent=true`).
+
+**Modes:** `~/.claude/dream/bin/dream mode dry-run` (the default; also when `local/mode` is missing: everything except the apply step), `dream mode live`, `dream mode off`. First a dry run by hand, read its diff, then `dream mode live`, one live run by hand, check the commit on GitHub, then the timer:
+```bash
+systemctl --user start dream.service        # a run by hand, with the same 6 GB memory cap as the timer's
+systemctl --user enable --now dream.timer   # 05:00 and 17:00
+systemctl --user list-timers dream.timer
+```
+Typing `dream run` directly works too, but without the memory cap.
+
+**Where things are:** the log `~/.claude/dream/dream-log.md` and Justin's list `~/.claude/dream/justin-list.md` (synced); the pending list and the tally in `~/.claude/dream/state/` (synced); this machine's markers `local/cursors.json`, the write ledger `local/ledger.jsonl`, findings waiting `local/unsettled.json`, the mode and `local/last-run.json` (never synced); working files (digests, the editor's copy, `would-apply.diff`) under `~/.cache/dream/<run>/`, kept 14 days. The session-start line reports the last run.
+
+**Undo a run:** `~/.claude/dream/bin/dream undo <commit>` (it also resets the library clone and project `CLAUDE.md` files; a bare `git revert` does not). Everything before the first dream: the tag `pre-dream-2026-11-09`.
+
+**Off switches:** `dream mode off`, or `systemctl --user disable --now dream.timer`, or `dream uninstall` (timer off, units removed, `local/` kept).
+
+**Login:** the headless calls use the existing `claude` login. If a run fails on login, open `claude` once. Or run `claude setup-token` once and put the token in `~/.config/dream/env` (`CLAUDE_CODE_OAUTH_TOKEN=…`, mode 600, never synced); the service reads that file when it exists.
+
+**Troubleshooting** (the reason is in the session-start line, `dream status` and `last-run.json`):
+- *login or limits (HTTP 401, 403, 429):* open `claude` once, or set up the token above; the run changed nothing and the next one retries.
+- *a CLI flag is missing:* Claude Code updated itself and dropped a flag the dream's isolation needs. Nothing ran. Check `claude --help`, then fix `lib/dreamlib/agents.py` in a story and re-run the live test (`bash ~/.claude/dream/tests/run.sh --live`).
+- *unknown transcript shape:* a session has a line the extractor does not know (a new Claude Code format, or a line cut off mid-write). That session is not read and its marker stays; the others go on. Extend `lib/dreamlib/extract.py` in a story.
+- *another sync kept the setup repo locked, CONFLICT, GitHub unreachable:* the same as for `sync.sh` (`~/.github/README.md`, Troubleshooting).
+
 ## Desktop notes
 
 - **Leorna client:** it's a Wails desktop app. Building or running it from WSL isn't covered here; treat it as its own task.

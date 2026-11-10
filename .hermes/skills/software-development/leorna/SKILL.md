@@ -80,6 +80,8 @@ After a lookup, record the verified query scope, count, assigned cards and readi
 
 ## Doing a story (implementing a ClickUp card)
 
+Builders, reviewers and fixers read `leorna/references/repeat-mistakes.md` and `feature-dispatch/references/repeat-mistakes.md` before they start; every brief for those roles says so.
+
 **Default: dispatch.** When Justin sends a card or feature in the main chat, use the `feature-dispatch` skill. Roles:
 - **Mini pipeline:** when Justin picks Mini, load `feature-dispatch` and its **Mini pipeline** supporting reference from that skill's linked files (same role routing as Full: plan, build, one full fresh review, then the same review loop on fixes); the rule below is the Full pipeline. Hand-over rules (never push or post) are unchanged.
 - **Models by role (Justin, 2026-11-10):** each role is a fresh agent: planner Fable 5.2 high; builder Opus 5.5 xhigh; reviewer round 1 Fable 5.2 high, later rounds Opus 5.5 high; fixer Opus 5.5 high; verifier Opus 5.5 high; AC auditor Opus 5.5 xhigh; finisher Opus 5.5 high; pipeline main session Opus 5.5 high (`feature-dispatch` → role table). **Reviews follow `review-fix-cadence`:**

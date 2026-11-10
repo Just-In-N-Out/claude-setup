@@ -137,6 +137,8 @@ Every coding agent, in any project, loads in this order and says so in its first
 
 Put the line for its role, with the specialists named, into every dispatch context: spawn, revise, or continuation.
 
+Builders, reviewers and fixers read `<project skill>/references/repeat-mistakes.md` (none for setup stories) and `feature-dispatch/references/repeat-mistakes.md` before they start; every brief for those roles says so.
+
 - **PLANNER:** `implementation-planning` (a plan a context-free builder can follow). For a bug, also `systematic-debugging`: root cause with evidence before any fix is planned. The plan gets a `## Skills` section naming the specialist skills the build needs, marking those with the Agent Defect Loop (next section).
 - **BUILDER:** `test-driven-development` (a failing test before each code change). Also `systematic-debugging` whenever a test fails unexpectedly or a corpus number gets worse (find the cause, don't patch around it), and `mutation-testing-discipline` for permission, identity or data-integrity guards.
 - **REVIEWER:** `requesting-code-review` (security scan and quality gates) and `code-review-practice`, plus `mutation-testing-discipline` for its mutation checks, alongside the project skill's review rules. Report only: never apply an auto-fix. Tell it to skip `requesting-code-review`'s "independent reviewer subagent" and auto-fix steps: it *is* the fresh reviewer, and a child can't spawn agents.

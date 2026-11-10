@@ -60,6 +60,8 @@ Inside the copy (always `terminal(..., workdir=<copy>)`):
 
 ## Step 3: Build the milestone
 
+Builders, reviewers and fixers read `figma-to-bricks/references/repeat-mistakes.md` and `feature-dispatch/references/repeat-mistakes.md` before they start; every brief for those roles says so.
+
 **Plan approval first (Justin, 2026-10-20; replaces CLAUDE.md's "no stop between plan and run" for Hermes chats).** In a normal chat, every feature or fix starts with a plan Justin approves:
 - Play the request back in plain numbered words and write the plan. Then send a short WhatsApp message: the questions first (lettered options, the recommended one marked ⭐), then at most 3 one-line facts (what's wrong, the fix, the main risk). Always attach the full plan as a file (`MEDIA:`).
 - **Stop and wait** for "go" or his changes. Make no copy, code or commits before that.
