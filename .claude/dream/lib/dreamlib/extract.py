@@ -465,11 +465,33 @@ def line_id(project, story, claim):
     return hashlib.sha256(("%s\0%s\0%s" % (project, story, claim)).encode()).hexdigest()
 
 
+def mtime(f):
+    try:
+        return f.stat().st_mtime
+    except OSError:
+        return None
+
+
+def story_times(env, files=None):
+    """{"<project>/<story>": the time of the story's first evidence file}: its earliest review.json or ac.json.
+    A later review round adds newer files and leaves it as it was; evidence never leaves the machine it was
+    written on (setup/mac.md), so these are that machine's own clock (R5-1)."""
+    out = {}
+    for project, story, f in evidence_files(env) if files is None else files:
+        t, key = mtime(f), "%s/%s" % (project, story)
+        if t is not None and (key not in out or t < out[key]):
+            out[key] = t
+    return out
+
+
 def review_lines(env, seen):
-    """One line per new P0-P2 (or high/medium) finding and per failed AC; `seen` holds line ids done."""
+    """One line per new P0-P2 (or high/medium) finding and per failed AC; `seen` holds line ids done. Each line
+    carries `time`, its file's time, and `story_time`, its story's first evidence (story_times)."""
     seen = set(seen)
     out = []
-    for project, story, f in evidence_files(env):
+    files = evidence_files(env)
+    first = story_times(env, files)
+    for project, story, f in files:
         try:
             data = json.loads(f.read_text())
         except (OSError, ValueError):
@@ -496,5 +518,6 @@ def review_lines(env, seen):
                 continue
             seen.add(lid)
             out.append({"id": lid, "project": project, "story": story, "finding": fid, "severity": sev,
-                        "file": where, "claim": claim})
+                        "file": where, "claim": claim, "time": mtime(f),
+                        "story_time": first.get("%s/%s" % (project, story))})
     return out

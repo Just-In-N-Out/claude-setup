@@ -985,6 +985,243 @@ class OrderTests(unittest.TestCase):
         self.assertIn("A mistake already due to retire where it would be listed is not added or moved there; it is "
                       "listed once it comes back in a newer story.", (fh.DREAM_SRC / "DREAM.md").read_text())
 
+    def test_the_first_run_counts_stories_by_their_dates_not_their_folder_names(self):
+        """R5-1: at the first live run (the review backfill) every story is new at once. The tally's clock is the
+        stories' dates (a story's date is its first evidence file's), not the order the evidence walk finds them
+        (projects by name, then story folders by name). A real-sized backfill (54 stories of 3 projects, two review
+        rounds each and a late third round for five long stories, 336 lines) whose folder names sort in another order
+        than their dates: a story counts at its first evidence file's date (also when that round found no P0-P2), and
+        a mistake found again in a late round counts at that round's date. Run after run with an
+        editor that does exactly what the orders say, every kind seen in a project's 10 newest stories is listed,
+        every kind last seen 10 or more stories back is never listed (and never retired), and that holds for the
+        general file, whose clock is all projects' stories, and for claude-setup's stories, which sort first."""
+        import datetime
+        import os
+        from dreamlib import extract
+        self.h = h = FakeHome("r51", repo=True)
+        h.write(".claude/dream/state/tally.json", paths.dump_json(state.default_tally()))
+        h.sync()
+        day = datetime.datetime(2026, 10, 20, 9, 0).timestamp()
+        proj = ["after-hero-band", "banner-crop-fit", "button-states", "capture-retries", "card-grid-gaps",
+                "carousel-dots", "contact-form-map", "cookie-bar", "embed-code-panel", "faq-accordion",
+                "footer-columns", "form-validation", "gallery-lightbox", "header-sticky", "hero-video-bg",
+                "icon-list-fit", "image-alt-sync", "logo-strip", "map-embed-size", "media-upload-sizes",
+                "menu-mobile-drawer", "modal-focus-trap", "native-sections", "nav-dropdowns", "page-anchors",
+                "panel-preview", "pricing-tiers", "quote-slider", "reviews-stars", "search-overlay", "shape-dividers",
+                "site-fonts-load", "slider-swipe", "social-icons", "staging-capture-fit", "staging-render-fit",
+                "tabs-keyboard", "team-cards", "timeline-steps", "video-autoplay", "web-compare-diff", "web-tier-pages"]
+        other = ["86bq0d2ma", "86bq1k7ce", "86bq3x9tu", "86bq4c2wy", "86bq6h5rn", "86bq7m1fa", "86bq9p4zd"]
+        when = {("proj", s): day + (i * 11 % 42) * 0.45 * 86400 for i, s in enumerate(proj)}
+        when.update({("other", s): day + 6.1 * 86400 + (i * 3 % 7) * 1.5 * 86400 for i, s in enumerate(other)})
+        when.update({("claude-setup", s): day + d * 86400 for s, d in (
+            ("agent-budgets", 20.0), ("hook-timeouts", 1.1), ("lesson-gate", 19.6), ("sync-locks", 2.1),
+            ("worktree-merge", 9.3))})
+        assert sorted(proj) == proj and sorted(other) == other and len(set(when.values())) == len(when) == 54
+        by_date = sorted(when, key=when.get)
+        self.assertNotEqual(by_date, sorted(when), "control: the folder names sort in another order than the dates")
+        newest = {p: [s for q, s in reversed(by_date) if q == p] for p in ("proj", "other", "claude-setup")}
+        kinds = {}                                      # kind: [(project, story)]
+        for i in range(5):                              # two of proj's 10 newest stories each: listed
+            kinds["recent-%d-guard" % i] = [("proj", newest["proj"][2 * i]), ("proj", newest["proj"][2 * i + 1])]
+        kinds["edge-guard"] = [("proj", newest["proj"][11]), ("proj", newest["proj"][9])]    # 9 later: listed
+        kinds["stale-edge-guard"] = [("proj", newest["proj"][12]), ("proj", newest["proj"][10])]   # 10 later
+        for i in range(5):                              # two of proj's 10 oldest stories each: never listed
+            kinds["old-%d-guard" % i] = [("proj", newest["proj"][-1 - 2 * i]), ("proj", newest["proj"][-2 - 2 * i])]
+        for i in range(3):
+            kinds["other-%d-guard" % i] = [("other", newest["other"][2 * i]), ("other", newest["other"][2 * i + 1])]
+        kinds["setup-recent-guard"] = [("claude-setup", "agent-budgets"), ("claude-setup", "lesson-gate")]
+        kinds["setup-stale-guard"] = [("claude-setup", "hook-timeouts"), ("claude-setup", "sync-locks")]
+        kinds["two-projects-guard"] = [("proj", newest["proj"][0]), ("other", newest["other"][0])]
+        # a long story: seen in the oldest story's first round and again in its third, after every proj story began
+        kinds["long-story-guard"] = [("proj", newest["proj"][-1]), ("proj", newest["proj"][-3])]
+        long_rounds = {("proj", s): day + (19.0 + i / 10) * 86400 for i, s in enumerate(newest["proj"][-5:])}
+        clean_first = ("proj", newest["proj"][20])    # its first round found no P0-P2: the story began then all the same
+        assigns, n_lines = [], 0
+        for (p, s), t0 in sorted(when.items()):
+            for r in (1, 2, 3):
+                if r == 3 and (p, s) not in long_rounds:
+                    continue
+                claims = ["%s round %d, finding %d: the %s check missed a case of %s" % (s, r, j, ("size", "link", "path")[j], p)
+                          for j in range(3)]
+                rel = ".hermes/plans/%s/evidence/%s/review-%d/review.json" % (p, s, r)
+                if (p, s, r) == clean_first + (1,):
+                    h.write(rel, json.dumps({"findings": [{"id": "F%d" % j, "severity": "P3", "claim": c, "file_line": "a:%d" % j}
+                                                          for j, c in enumerate(claims)]}))
+                else:
+                    review(h, p, s, claims, r)
+                    n_lines += len(claims)
+                t = long_rounds[(p, s)] if r == 3 else t0 + (r - 1) * (1.0 if (p, s) == clean_first else 0.3) * 86400
+                os.utime(h.p(rel), (t, t))
+                for kid, where in sorted(kinds.items()):
+                    if (p, s) in where and (r == 1 or (r == 3 and kid == "long-story-guard")):
+                        assigns.append({"line_id": extract.line_id(p, s, claims[r - 1]), "kind": "new", "enforce_proposal": "",
+                                        "new_kind": {"id": kid, "title": MIST, "description": "d", "area": "Guards"}})
+        self.assertEqual((len(when), n_lines), (54, 336))
+        backlog = h.read(".hermes/plans/claude-setup/enforce-backlog.md")
+        for i in range(1, 6):
+            correction(h, i)
+            sc = json.loads(h.scenario_path.read_text())
+            sc["review-helper"] = {"assignments": assigns}
+            h.scenario(sc)
+            self.assertEqual(h.run(), 0, "run %d: %s" % (i, h.local("last-run.json")))
+            t = json.loads(h.read(".claude/dream/state/tally.json"))
+            if not mistakes.orders(h.denv(), t):
+                break
+        self.assertEqual(mistakes.orders(h.denv(), t), [], "nothing is owed")
+        self.assertTrue(t["backfill_done"])
+        listed = {k: v["listed_in"] for k, v in t["kinds"].items() if v.get("listed_in")}
+        want = dict({"recent-%d-guard" % i: fh.PROJ_RM for i in range(5)}, **{"edge-guard": fh.PROJ_RM,
+                                                                             "long-story-guard": fh.PROJ_RM})
+        want.update({"other-%d-guard" % i: fh.OTHER_RM for i in range(3)})
+        want.update({"setup-recent-guard": fh.GENERAL_RM, "two-projects-guard": fh.GENERAL_RM})
+        self.assertEqual(listed, want)
+        self.assertEqual({k for k, v in t["kinds"].items() if not v.get("listed_in")},
+                         {"stale-edge-guard", "setup-stale-guard"} | {"old-%d-guard" % i for i in range(5)})
+        self.assertFalse(any(v.get("retired") or v.get("parked") for v in t["kinds"].values()), "never listed, never retired")
+        self.assertEqual(t["story_seq"], ["%s/%s" % x for x in by_date], "the tally's clock is the stories' dates")
+        self.assertEqual({p: t["stories"][p] for p in newest}, {p: newest[p][::-1] for p in newest})
+        self.assert_consistent(h, t)
+        self.assertEqual(h.read(".hermes/plans/claude-setup/enforce-backlog.md"), backlog)
+        self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
+
+    def test_a_story_counted_in_a_later_run_takes_its_place_by_its_date(self):
+        """R5-1's neighbour: a story whose lines are counted only in a later run (its project's backfill helper
+        failed, its first rounds had no P0-P2 finding, its lines waited for the 150-line limit) takes its place by
+        its date among the stories already counted, not at the end. A kind listed before it was counted counts it
+        as a story that began before the listing (no enforce line) when it began before a story counted then; a
+        story that began after every one of them still gives the line."""
+        import datetime
+        self.h = h = FakeHome("r51late")
+        env = h.denv()
+        now = datetime.datetime(2026, 11, 10, 5, 0)
+        made = []
+
+        def line(p, s, t):
+            made.append(s)
+            return {"id": "line-%02d" % len(made), "project": p, "story": s, "finding": "F1", "severity": "P2",
+                    "file": "a.py:%d" % len(made), "claim": "the guard missed case %d in %s" % (len(made), s), "time": t,
+                    "story_time": t}
+
+        def seen(ln):
+            return {"line_id": ln["id"], "kind": "new", "new_kind": dict(KIND, id="late-guard"), "enforce_proposal": ""}
+
+        t = dict(state.default_tally(), backfill_done=True)
+        # the backfill: proj's helper answered; other's failed, so its lines wait for the next run
+        a, b, c = line("proj", "site-hero", 100.0), line("proj", "site-footer", 300.0), line("proj", "site-menu", 500.0)
+        self.assertEqual(mistakes.record(env, t, [a, b, c], [seen(a), seen(b)], now), [])
+        mistakes.after_commit(t, [{"kind": "late-guard", "action": "add", "file": fh.PROJ_RM, "to": ""}], now)
+        # the next run: other's stories (folder names in the other order than their dates) and a proj story whose
+        # first P0-P2 finding came only now, all older than the newest story counted before the listing but one
+        o1, o2, o3 = line("other", "86bq9p4zd", 50.0), line("other", "86bq4c2wy", 400.0), line("other", "86bq0d2ma", 600.0)
+        p2 = line("proj", "site-cards", 200.0)
+        got = mistakes.record(env, t, [o3, o2, o1, p2], [seen(o1), seen(o2), seen(o3), seen(p2)], now)
+        self.assertEqual(t["story_seq"], ["other/86bq9p4zd", "proj/site-hero", "proj/site-cards", "proj/site-footer",
+                                          "other/86bq4c2wy", "proj/site-menu", "other/86bq0d2ma"])
+        self.assertEqual(t["stories"], {"proj": ["site-hero", "site-cards", "site-footer", "site-menu"],
+                                        "other": ["86bq9p4zd", "86bq4c2wy", "86bq0d2ma"]})
+        self.assertEqual(t["kinds"]["late-guard"]["repeats_while_listed"], ["other/86bq0d2ma"],
+                         "only the story that began after every story counted at the listing")
+        self.assertEqual(len(got), 1, got)
+
+    def test_a_mistake_seen_again_in_a_later_round_of_an_older_story_is_not_stale(self):
+        """R5-1's neighbour: "has not come back in 10 later stories" counts the stories that began after the
+        mistake was last seen. A long story's later review round that finds it again is a sighting at that round's
+        date, even though the story itself began before 10 others: the kind is not due to retire, so it is listed
+        (or stays listed); the same kind last seen in that story's first round is due."""
+        import datetime
+        self.h = h = FakeHome("r51round")
+        env = h.denv()
+        now = datetime.datetime(2026, 11, 10, 5, 0)
+        made = []
+
+        def line(s, t, story_t):
+            made.append(s)
+            return {"id": "line-%02d" % len(made), "project": "proj", "story": s, "finding": "F1", "severity": "P2",
+                    "file": "a.py:%d" % len(made), "claim": "round finding %d of %s" % (len(made), s), "time": t,
+                    "story_time": story_t}
+
+        def seen(ln, kid):
+            return {"line_id": ln["id"], "kind": "new", "new_kind": dict(KIND, id=kid), "enforce_proposal": ""}
+
+        names = ["site-%02d-%s" % (i, ("hero", "menu", "cards")[i % 3]) for i in range(12)]
+        t = dict(state.default_tally(), backfill_done=True)
+        first = [line(s, 100.0 * (i + 1), 100.0 * (i + 1)) for i, s in enumerate(names)]   # round 1 of each story
+        kinds = ["again-guard", "once-guard", "listed-again-guard", "listed-once-guard"]
+        mistakes.record(env, t, first, [seen(first[i], k) for k in kinds for i in (0, 1)], now)
+        mistakes.after_commit(t, [{"kind": k, "action": "add", "file": fh.PROJ_RM, "to": ""} for k in kinds[2:]], now)
+        # a later round of names[1] (it began at 200), after names[2] to names[10] began: two kinds seen again there
+        late = [line(names[1], 1150.0, 200.0), line(names[1], 1160.0, 200.0)]
+        self.assertEqual(mistakes.record(env, t, late, [seen(late[0], "again-guard"), seen(late[1], "listed-again-guard")],
+                                         now), [], "the story began before the listing: no enforce line")
+        self.assertEqual({k: mistakes.retire_due(env, t, k, fh.PROJ_RM) for k in kinds},
+                         {"again-guard": False, "once-guard": True, "listed-again-guard": False, "listed-once-guard": True})
+        self.assertEqual(sorted(o["id"] for o in mistakes.orders(env, t)), ["add:again-guard", "remove:listed-once-guard"])
+
+    def test_a_tally_written_before_stories_had_dates_is_put_in_their_order_by_date(self):
+        """R5-1: a tally written by the previous code holds its stories in the order the evidence walk found them
+        (folder names) and no dates. It is migrated, not rebuilt (a rebuild would pay the review helpers again): at
+        the run's start its stories are put in order of their first evidence file's date, a story whose evidence is
+        gone counts as the oldest, and each listing's boundary moves with the stories counted before it. A kind
+        listed by the old order is not removed for stories that only sort after it, and a kind last seen in the
+        oldest stories is not added."""
+        import datetime
+        import os
+        from dreamlib import extract
+        self.h = h = FakeHome("r51mig", repo=True)
+        names = ["after-hero-band", "banner-crop-fit", "button-states", "capture-retries", "card-grid-gaps",
+                 "carousel-dots", "contact-form-map", "cookie-bar", "embed-code-panel", "faq-accordion",
+                 "footer-columns", "form-validation"]
+        day = datetime.datetime(2026, 10, 20, 9, 0).timestamp()
+        when = {s: day + (len(names) - 1 - i) * 86400 for i, s in enumerate(names)}    # the first names are newest
+        seen = []
+        for s in names:
+            claim = "%s: the guard missed a case of the old order" % s
+            review(h, "proj", s, [claim])
+            os.utime(h.p(".hermes/plans/proj/evidence/%s/review-1/review.json" % s), (when[s], when[s]))
+            seen.append(extract.line_id("proj", s, claim))
+        old = dict(state.default_tally(), backfill_done=True, seen=seen)
+        old["stories"] = {"proj": list(names) + ["gone-story"]}
+        old["story_seq"] = ["proj/" + s for s in names] + ["proj/gone-story"]   # the walk's order, and one whose evidence is gone
+        old["kinds"] = {"recent-guard": dict(kind_row({"proj": names[:2]}, listed_in=fh.PROJ_RM),
+                                             listed_since={"date": "2026-11-09", "seq": 2}),
+                        "old-guard": kind_row({"proj": names[-2:]})}
+        h.write(fh.PROJ_RM, mistakes.normalize_text(fh.RM_HEADER.format(p="proj") + "\n## Guards\n" + mistakes.heading_for(
+            "recent-guard", MIST, old) + "- **Build it this way:** resolve the link (2026-11-09).\n- **Check for it:** a link test.\n",
+            old))
+        h.write(".claude/dream/state/tally.json", paths.dump_json(old))
+        h.sync()
+        self.assertEqual(sorted(o["id"] for o in mistakes.orders(h.denv(), json.loads(json.dumps(old)))),
+                         ["add:old-guard", "remove:recent-guard"], "control: the old order calls the newest stories stale")
+        correction(h, 1)
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        t = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertEqual({k: v["listed_in"] for k, v in t["kinds"].items()}, {"recent-guard": fh.PROJ_RM, "old-guard": None})
+        self.assertEqual([k for k, _, _ in self.entries(fh.PROJ_RM)[0]], ["recent-guard"])
+        self.assertEqual(t["story_seq"], ["proj/gone-story"] + ["proj/" + s for s in reversed(names)])
+        self.assertEqual(t["stories"]["proj"], ["gone-story"] + names[::-1])
+        self.assertEqual(t["kinds"]["recent-guard"]["listed_since"]["seq"], 13, "both its stories stay before the boundary")
+        self.assertEqual(mistakes.orders(h.denv(), t), [])
+
+    def test_of_two_equally_frequent_mistakes_with_room_for_one_the_more_recent_is_listed(self):
+        """R5-1's neighbour: when a file has room for one more entry and two kinds seen equally often wait for it,
+        the one seen more recently is ordered first (then the kind's name), not the one whose name sorts first:
+        the older one is nearer to retiring, and the first run's room should go to the newest mistakes."""
+        self.h = h = FakeHome("r51tie")
+        env = h.denv()
+        names = ["story-%02d-%s" % (i, ("header-fit", "footer-fit", "menu-fit")[i % 3]) for i in range(12)]
+        t = dict(state.default_tally(), backfill_done=True)
+        t["stories"] = {"proj": list(names)}
+        t["story_seq"] = ["proj/" + s for s in names]
+        t["kinds"] = {"keep-guard": kind_row({"proj": names[4:7]}, listed_in=fh.PROJ_RM),
+                      "early-guard": kind_row({"proj": [names[2], names[5]]}),     # the same count, seen longer ago
+                      "late-guard": kind_row({"proj": [names[8], names[11]]})}
+        late, early = (len(mistakes.heading_for(k, MIST, t).encode()) + mistakes.ENTRY_ALLOWANCE
+                       for k in ("late-guard", "early-guard"))
+        h.write(fh.PROJ_RM, rm_file(h, t, 400, mistakes.FILE_TARGET - max(late, early)))
+        self.assertEqual([o["id"] for o in mistakes.orders(env, t)], ["add:late-guard"])
+        h.write(fh.PROJ_RM, rm_file(h, t, 400, mistakes.FILE_TARGET - late - early))
+        self.assertEqual([o["id"] for o in mistakes.orders(env, t)], ["add:early-guard", "add:late-guard"], "control: room for both")
+
     def test_at_the_change_caps_edge_blank_lines_and_area_headings_count_too(self):
         """R3-1's charges at the edge of the 4,000-byte cap: seven entries that fit to the byte do not fit once
         the blank line after each, the heading of the new area they open, or the heading of the area their

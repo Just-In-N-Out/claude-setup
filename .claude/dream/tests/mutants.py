@@ -92,6 +92,12 @@ T = {
     "foldtoken": "test_a_fold_keeps_the_old_lines_last_word_or_number_whole",
     "plainname": "test_a_pointer_names_only_a_plainly_named_file",
     "retireb": "test_a_kind_already_due_to_retire_is_not_listed_until_it_comes_back",
+    # fixer 5: R5-1 (stories counted by date)
+    "r51first": "test_the_first_run_counts_stories_by_their_dates_not_their_folder_names",
+    "r51late": "test_a_story_counted_in_a_later_run_takes_its_place_by_its_date",
+    "r51round": "test_a_mistake_seen_again_in_a_later_round_of_an_older_story_is_not_stale",
+    "r51mig": "test_a_tally_written_before_stories_had_dates_is_put_in_their_order_by_date",
+    "r51tie": "test_of_two_equally_frequent_mistakes_with_room_for_one_the_more_recent_is_listed",
 }
 P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
@@ -585,8 +591,8 @@ MUTANTS = [
     ('B1', 'a kind already due to retire where it would be listed is added or moved all the same (option (a) back)', [('.claude/dream/lib/dreamlib/mistakes.py', '        if want and retire_due(env, tally, kid, want):\n            want = None\n', '')], ['retireb']),
     ('B2', 'due is judged where the kind is listed, not where it would be listed', [('.claude/dream/lib/dreamlib/mistakes.py', '        if want and retire_due(env, tally, kid, want):\n', '        if want and retire_due(env, tally, kid):\n')], ['retireb']),
     ('B3', 'retire_due ignores the file it is given', [('.claude/dream/lib/dreamlib/mistakes.py', '    f = f or k.get("listed_in")\n', '    f = k.get("listed_in")\n')], ['retireb']),
-    ('B4a', "a project's kind is due one story early (9 later stories)", [('.claude/dream/lib/dreamlib/mistakes.py', '        if mine and len(lst) - 1 - max(mine) >= RETIRE_AFTER:\n', '        if mine and len(lst) - 1 - max(mine) >= RETIRE_AFTER - 1:\n')], ['retireb']),
-    ('B4b', 'a general kind is due one story early (9 later stories)', [('.claude/dream/lib/dreamlib/mistakes.py', '        return bool(mine) and len(seq) - 1 - max(mine) >= RETIRE_AFTER\n', '        return bool(mine) and len(seq) - 1 - max(mine) >= RETIRE_AFTER - 1\n')], ['retireb']),
+    ('B4a-v2', "a project's kind is due one story early (9 later stories; B4a on R5-1's text)", [('.claude/dream/lib/dreamlib/mistakes.py', '        if last is not None and len(lst) - 1 - last >= RETIRE_AFTER:\n', '        if last is not None and len(lst) - 1 - last >= RETIRE_AFTER - 1:\n')], ['retireb']),
+    ('B4b-v2', 'a general kind is due one story early (9 later stories; B4b on R5-1\'s text)', [('.claude/dream/lib/dreamlib/mistakes.py', '        return last is not None and len(seq) - 1 - last >= RETIRE_AFTER\n', '        return last is not None and len(seq) - 1 - last >= RETIRE_AFTER - 1\n')], ['retireb']),
     ('B4c', "a general kind is judged by its project's stories (another project's 10 stories make it due)", [('.claude/dream/lib/dreamlib/mistakes.py', '    if f == targets.general_rm(env):\n', '    if f == targets.general_rm(env) or True:\n')], ['retireb']),
     ('B5', 'only an add is held back; a move into a file where the kind is due goes ahead', [('.claude/dream/lib/dreamlib/mistakes.py', '        if want and retire_due(env, tally, kid, want):\n', '        if want and not k.get("listed_in") and retire_due(env, tally, kid, want):\n')], ['retireb']),
     ('B6', 'DREAM.md section 7 does not say the rule', [('.claude/dream/DREAM.md', '- A mistake already due to retire where it would be listed is not added or moved there; it is listed once it comes back in a newer story.\n', '')], ['retireb']),
@@ -605,6 +611,25 @@ MUTANTS = [
         "``See `<path>` (moved there word for word).``;", "``See `<path>` (moved word for word).``;")], ["checkerprompt"]),
     ("C4", "the checker is not told a duplicate removed needs no finding", [(P + "checker.md",
         " a line removed as a duplicate of a whole line that stays;\n", "\n")], ["checkerprompt"]),
+    # fixer 5: R5-1, stories counted by date
+    ('R5a', 'a new story goes at the end, not at its date (R5-1 back)', [('.claude/dream/lib/dreamlib/mistakes.py', '    return next((i for i, x in enumerate(keys) if times.get(x, float("-inf")) > t), len(keys))\n', '    return len(keys)\n')], ['r51first', 'r51late']),
+    ('R5b', "a story placed before a listing's boundary does not move it", [('.claude/dream/lib/dreamlib/mistakes.py', '                k["listed_since"]["seq"] += 1\n', '                pass\n')], ['r51late']),
+    ('R5c', "a story placed right at a listing's boundary moves it too", [('.claude/dream/lib/dreamlib/mistakes.py', '            if (k.get("listed_since") or {}).get("seq", 0) > i:\n', '            if (k.get("listed_since") or {}).get("seq", 0) >= i:\n')], ['r51late']),
+    ('R5d', "a project's own list takes new stories at its end", [('.claude/dream/lib/dreamlib/mistakes.py', '            lst.insert(_place(["%s/%s" % (p, x) for x in lst], times, key), s)\n', '            lst.append(s)\n')], ['r51first', 'r51late']),
+    ('R5e', "a story's date is its newest evidence file, not its first", [('.claude/dream/lib/dreamlib/extract.py', '        if t is not None and (key not in out or t < out[key]):\n', '        if t is not None and (key not in out or t > out[key]):\n')], ['r51first']),
+    ('R5f', "a story's date is the file of its first counted line, not its first evidence file", [('.claude/dream/lib/dreamlib/extract.py', '                        "story_time": first.get("%s/%s" % (project, story))})\n', '                        "story_time": mtime(f)})\n')], ['r51first']),
+    ('R5g', "a line's own date is its story's date (a late round is no later sighting)", [('.claude/dream/lib/dreamlib/extract.py', '                        "file": where, "claim": claim, "time": mtime(f),\n', '                        "file": where, "claim": claim, "time": first.get("%s/%s" % (project, story)),\n')], ['r51first']),
+    ('R5h', 'the date a kind was last seen is not kept', [('.claude/dream/lib/dreamlib/mistakes.py', '            pk["last_seen"] = ln["time"]    # a later review round of an older story is a sighting at its own date\n', '            pass\n')], ['r51round', 'r51first']),
+    ('R5i', 'the date a kind was last seen keeps its first sighting', [('.claude/dream/lib/dreamlib/mistakes.py', 'if ln.get("time") is not None and ln["time"] > (pk.get("last_seen") or float("-inf")):\n', 'if ln.get("time") is not None and pk.get("last_seen") is None:\n')], ['r51round']),
+    ('R5j', "retiring ignores a later round's sighting", [('.claude/dream/lib/dreamlib/mistakes.py', '    if seen:\n        mine += ', '    if False:\n        mine += ')], ['r51round', 'r51first']),
+    ('R5k', 'a tally written before stories had dates is not migrated', [('.claude/dream/lib/dreamlib/run.py', '    mistakes.migrate(env, tally)    # a tally written before stories had dates goes in their order of date (R5-1)\n', '')], ['r51mig']),
+    ('R5l', 'a story whose evidence is gone counts as the newest', [('.claude/dream/lib/dreamlib/mistakes.py', '    times = tally["story_time"] = {x: found.get(x, 0.0) for x in old}\n', '    times = tally["story_time"] = {x: found.get(x, 1e12) for x in old}\n')], ['r51mig']),
+    ('R5m', 'a migrated listing keeps its old boundary', [('.claude/dream/lib/dreamlib/mistakes.py', '            since["seq"] = 1 + max(new.index(x) for x in old[:since["seq"]])\n', '            pass\n')], ['r51mig']),
+    ('R5n', "a migrated project's own list keeps the old order", [('.claude/dream/lib/dreamlib/mistakes.py', '        lst.sort(key=lambda s: times.get("%s/%s" % (p, s), 0.0))\n', '        pass\n')], ['r51mig']),
+    ('R5o', 'migration dates the stories but keeps their old order', [('.claude/dream/lib/dreamlib/mistakes.py', '    new = tally["story_seq"] = sorted(old, key=lambda x: times[x])\n', '    new = tally["story_seq"] = list(old)\n')], ['r51mig']),
+    ('R5p', 'equally frequent kinds go by name again', [('.claude/dream/lib/dreamlib/mistakes.py', 'key=lambda o: (-o["count"], -recency(o), o["kind"]))\n', 'key=lambda o: (-o["count"], o["kind"]))\n')], ['r51tie']),
+    ('R5q', 'equally frequent kinds go oldest first', [('.claude/dream/lib/dreamlib/mistakes.py', 'key=lambda o: (-o["count"], -recency(o), o["kind"]))\n', 'key=lambda o: (-o["count"], recency(o), o["kind"]))\n')], ['r51tie']),
+    ('R5r', 'a tally with nothing counted yet is migrated too, so a run with nothing new changes it', [('.claude/dream/lib/dreamlib/mistakes.py', '    if "story_time" in tally or not tally.get("story_seq"):\n', '    if "story_time" in tally:\n')], ['ac21']),
 ]
 
 

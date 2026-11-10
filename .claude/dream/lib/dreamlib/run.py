@@ -132,6 +132,7 @@ def _run(env, mode, hooks):
     R.facts["format_errors"] = [str(e) for e in sc.errors]
     R.facts["unreadable"] = [e.session for e in sc.errors]
     tally = unsettled.get("tally") or state.load_state(env, "tally", state.default_tally())
+    mistakes.migrate(env, tally)    # a tally written before stories had dates goes in their order of date (R5-1)
     lines = extract.review_lines(env, tally.get("seen", []))
     # an unreadable session stops only a run that has nothing else to do (ruling R1-1): new review lines
     # and findings waiting from an earlier run go on, and the session shows in the session-start line

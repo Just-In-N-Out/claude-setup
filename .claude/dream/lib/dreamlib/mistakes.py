@@ -2,8 +2,10 @@
 
 The script owns which entries exist, their order and the text in the heading's brackets; the editor
 owns the wording. state/tally.json: {kinds: {<id>: {title, description, area, projects: {<project>:
-{stories, findings, last_story}}, listed_in, listed_since: {date, seq}, repeats_while_listed, retired,
-parked}}, stories: {<project>: [...]}, story_seq: ["<project>/<story>", ...], seen: [line ids], backfill_done}.
+{stories, findings, last_story, last_seen}}, listed_in, listed_since: {date, seq}, repeats_while_listed, retired,
+parked}}, stories: {<project>: [...]}, story_seq: ["<project>/<story>", ...], story_time: {"<project>/<story>":
+its first evidence file's date}, seen: [line ids], backfill_done}. Both story lists are in order of date (R5-1);
+last_seen is the date of the newest review file that found the kind in that project.
 """
 import re
 
@@ -32,12 +34,28 @@ def record(env, tally, given, assigns, now):
     kinds = tally.setdefault("kinds", {})
     stories = tally.setdefault("stories", {})
     seq = tally.setdefault("story_seq", [])
+    times = tally.setdefault("story_time", {})
     by_id = {ln["id"]: ln for ln in given}
+    new = []
     for ln in given:  # every story counts, also one whose findings are all one-offs
-        if ln["story"] not in stories.setdefault(ln["project"], []):
-            stories[ln["project"]].append(ln["story"])
-        if "%s/%s" % (ln["project"], ln["story"]) not in seq:
-            seq.append("%s/%s" % (ln["project"], ln["story"]))
+        key = "%s/%s" % (ln["project"], ln["story"])
+        if key not in seq and key not in new:
+            new.append(key)
+            if ln.get("story_time") is not None:
+                times[key] = ln["story_time"]
+    # the stories new in this run take their places by date, not in the order the evidence walk found them
+    # (projects, then story folders, by name): at the first run every story is new at once, and a story counted
+    # only in a later run goes among the stories counted before it (R5-1)
+    for key in new:
+        p, s = key.split("/", 1)
+        i = _place(seq, times, key)
+        seq.insert(i, key)
+        for k in kinds.values():   # the stories counted before a listing stay before its boundary
+            if (k.get("listed_since") or {}).get("seq", 0) > i:
+                k["listed_since"]["seq"] += 1
+        lst = stories.setdefault(p, [])
+        if s not in lst:
+            lst.insert(_place(["%s/%s" % (p, x) for x in lst], times, key), s)
     out = []
     for a in assigns:
         ln = by_id.get(a.get("line_id"))
@@ -65,6 +83,8 @@ def record(env, tally, given, assigns, now):
             pk["stories"].append(s)
         pk["findings"] = pk.get("findings", 0) + 1
         pk["last_story"] = s
+        if ln.get("time") is not None and ln["time"] > (pk.get("last_seen") or float("-inf")):
+            pk["last_seen"] = ln["time"]    # a later review round of an older story is a sighting at its own date
         since = k.get("listed_since") or {}
         ps = "%s/%s" % (p, s)
         if k.get("listed_in") and not k.get("retired") and new_story and seq.index(ps) >= since.get("seq", 0) \
@@ -77,6 +97,38 @@ def record(env, tally, given, assigns, now):
     tally.setdefault("seen", [])
     tally["seen"] += [ln["id"] for ln in given if ln["id"] not in set(tally["seen"])]
     return out
+
+
+def migrate(env, tally):
+    """A tally written before stories had dates (no story_time; R5-1) holds them in the order the evidence walk
+    found them, folder names at the first run. It is migrated, not rebuilt (a rebuild would pay the review helpers
+    again): each story gets its first evidence file's date (one whose evidence is gone counts as the oldest), the
+    lists go in order of date, and each listing's boundary (listed_since.seq) moves to just after the last story
+    counted before it, so a story counted then still began before the listing."""
+    if "story_time" in tally or not tally.get("story_seq"):
+        return      # dated already, or nothing counted yet: record() dates each story as it comes
+    from . import extract
+    found = extract.story_times(env)
+    old = list(tally.get("story_seq") or [])
+    times = tally["story_time"] = {x: found.get(x, 0.0) for x in old}
+    new = tally["story_seq"] = sorted(old, key=lambda x: times[x])
+    for p, lst in (tally.get("stories") or {}).items():
+        lst.sort(key=lambda s: times.get("%s/%s" % (p, s), 0.0))
+    if new == old:
+        return
+    for k in (tally.get("kinds") or {}).values():
+        since = k.get("listed_since") or {}
+        if since.get("seq"):
+            since["seq"] = 1 + max(new.index(x) for x in old[:since["seq"]])
+
+
+def _place(keys, times, key):
+    """Where key goes in keys (in order of date): before the first story that began after it. A story with no
+    date (a tally written by hand) counts as older than every dated one."""
+    t = times.get(key)
+    if t is None:
+        return len(keys)
+    return next((i for i, x in enumerate(keys) if times.get(x, float("-inf")) > t), len(keys))
 
 
 def all_stories(k, tally):
@@ -106,15 +158,31 @@ def retire_due(env, tally, kid, f=None):
         return False
     if f == targets.general_rm(env):
         seq = tally.get("story_seq") or []
-        mine = [i for i, x in enumerate(seq) if x in set(all_stories(k, tally))]
-        return bool(mine) and len(seq) - 1 - max(mine) >= RETIRE_AFTER
+        last = _last(tally, k, seq, list(k.get("projects") or {}))
+        return last is not None and len(seq) - 1 - last >= RETIRE_AFTER
     owner = [p for p in (k.get("projects") or {}) if targets.rm_for_project(env, p) == f]
     for p in owner:
-        lst = (tally.get("stories") or {}).get(p, [])
-        mine = [lst.index(s) for s in k["projects"][p].get("stories") or [] if s in lst]
-        if mine and len(lst) - 1 - max(mine) >= RETIRE_AFTER:
+        lst = ["%s/%s" % (p, s) for s in (tally.get("stories") or {}).get(p, [])]
+        last = _last(tally, k, lst, [p])
+        if last is not None and len(lst) - 1 - last >= RETIRE_AFTER:
             return True
     return False
+
+
+def _last(tally, k, keys, projects):
+    """The place in keys (stories "<project>/<story>" in order of date) where kind k was last seen in projects:
+    its newest story there, or, when a later review round of an older story found it again (last_seen, that
+    round's file date), the newest story that had begun by then (R5-1). None when it was seen in none of keys."""
+    pv = k.get("projects") or {}
+    own = {"%s/%s" % (p, s) for p in projects for s in (pv.get(p) or {}).get("stories") or []}
+    mine = [i for i, x in enumerate(keys) if x in own]
+    if not mine:
+        return None
+    seen = [pv[p]["last_seen"] for p in projects if (pv.get(p) or {}).get("last_seen") is not None]
+    times = tally.get("story_time") or {}
+    if seen:
+        mine += [i for i, x in enumerate(keys) if x in times and times[x] <= max(seen)]
+    return max(mine)
 
 
 def change_cap(env):
@@ -239,7 +307,15 @@ def orders(env, tally):
                 left[key] -= 1
             size[o["file"]] = size_of(o["file"]) - entry_bytes(o["file"], o["kind"])
             out.append(o)
-    growing = sorted((o for o in cands if o["action"] != "remove"), key=lambda o: (-o["count"], o["kind"]))
+    seq = tally.get("story_seq") or []
+
+    def recency(o):     # where the kind was last seen among all stories, in order of date (R5-1)
+        k = tally["kinds"][o["kind"]]
+        last = _last(tally, k, seq, list(k.get("projects") or {}))
+        return -1 if last is None else last
+
+    # most frequent first; of equally frequent kinds, the one seen most recently (the other is nearer to retiring)
+    growing = sorted((o for o in cands if o["action"] != "remove"), key=lambda o: (-o["count"], -recency(o), o["kind"]))
     full = set()
     for o in growing:
         dest = o.get("to") or o["file"]
