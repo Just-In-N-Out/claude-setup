@@ -37,6 +37,12 @@ $SD/leorna/SKILL.md
 $SD/review-fix-cadence/SKILL.md
 $SD/figma-to-bricks/SKILL.md
 .claude/setup/codex/agents-header.md"
+FIGMA_DOCS=.claude/project-docs/figma-to-bricks/CLAUDE.md
+scan_files() { # the rule files, then every project CLAUDE.md copy in .claude/project-docs/ (sync.sh keeps them
+               # equal to the projects' own files): checks 5 and 7 read them all
+  printf '%s\n' "$RULE_FILES"
+  (cd "$SRC" && for f in .claude/project-docs/*/CLAUDE.md; do [ -f "$f" ] && printf '%s\n' "$f"; done)
+}
 old_phrases() { # the older pairings and replaced rules, one a line: none may be left in any rule file
   cat <<'EOF'
 once by each model
@@ -60,6 +66,9 @@ Opus 5.5 at high effort for every role
 not by lowering effort
 you run verifier → auditor → `ac-check.sh` again on it
 forces another verifier → auditor round
+→ `ac-check.sh` again on the new head
+the AC receipts no longer match
+two fresh Opus reviews
 EOF
 }
 # where a pinned statement lives: the file of each key in prose() below
@@ -71,6 +80,7 @@ file_of() {
     away) echo "$FD/references/away-and-recovery.md" ;;
     leorna) echo "$SD/leorna/SKILL.md" ;;  rfc) echo "$SD/review-fix-cadence/SKILL.md" ;;
     f2b) echo "$SD/figma-to-bricks/SKILL.md" ;;  header) echo ".claude/setup/codex/agents-header.md" ;;
+    figma) echo "$FIGMA_DOCS" ;;   # wrapped text: its statements are compared flat (one space for each run)
     *) return 1 ;;
   esac
 }
@@ -132,22 +142,33 @@ rfc|  - (e) from round 3, a round with only P2 left (no P0 or P1) → ASK JUSTIN
 rfc|No fixed round cap, but from round 3 Justin is asked before a P2-only round is fixed (e).
 rfc|A pure rebase (no conflict) needs no new review and no new verifier: the finisher's rebase receipt and `ac-check.sh --rebase-receipt` carry the earlier reports
 f2b|(its role table names each round's model and effort) and any explicit user override; do not hard-code a model
+figma|Then two fresh full reviews, each on the model and effort the global routing gives its round (global CLAUDE.md "Agent models")
+figma|If HEAD now differs from the head `ac-check.sh` accepted, global CLAUDE.md step 7 decides what runs before step 2
+figma|a rebase receipt carries the earlier reports only when HEAD is a pure rebase of the accepted head. The ledger commit made here before the rebase is a patch that head lacks, so HEAD is not a pure rebase of it and the session takes step 7's full path on the new head: a fresh review of what the accepted head lacks, then verifier → auditor → `ac-check.sh`.
 header|| The per-role Claude models and efforts, and the pipeline main session on Opus 5.5 high (`/model opus`, `/effort high`); "Sol 6.1 only as a substitute at a Claude limit" | Claude Code only.
 EOF
 }
 wrong_pairs() { # wrong_pairs <file>…: each clause that pairs a later round, a delta review, a fixer, the verifier or
                 # the main session with Fable or xhigh. Dated history is left out: *Why …* notes, *(Superseded …)*
                 # notes and "supersedes the <date> table (…)". Clauses end at ; , ( ) | → and ". ".
-  awk '{
-    l = $0
+  # A wrapped line (indented, not a list item or table row) is read with the line it continues.
+  awk 'function check(l, at,   c, n, i) {
     gsub(/\*Why[^*]*\*/, "", l); gsub(/\*\(Superseded[^)]*\)\*/, "", l)
     gsub(/supersedes the [0-9-]+ table \([^)]*\)/, "", l)
     n = split(l, c, /[;,()|]|→|\. /)
     for (i = 1; i <= n; i++)
       if (c[i] ~ /[Ll]ater[ -]rounds?|[Dd]elta|round 2|[Ff]ixe[rs]|[Vv]erifier|main session/ && c[i] ~ /Fable|xhigh/)
-        print FILENAME ":" FNR ": [" c[i] "]"
-  }' "$@"
+        print at ": [" c[i] "]"
+  }
+  FNR == 1 { if (buf != "") check(buf, at); buf = "" }
+  {
+    if (buf != "" && $0 ~ /^[ \t]+[^ \t]/ && $0 !~ /^[ \t]*([-*] |[0-9]+\. |\|)/) { l = $0; sub(/^[ \t]+/, "", l); buf = buf " " l; next }
+    if (buf != "") check(buf, at)
+    buf = $0; at = FILENAME ":" FNR
+  }
+  END { if (buf != "") check(buf, at) }' "$@"
 }
+flat() { tr '\n\t' '  ' <"$1" | tr -s ' '; }   # flat <file>: the text on one line, each run of spaces one space
 
 fail() { echo "FAIL: $*"; return 1; }
 need() { [ -e "$1" ] || fail "missing $1 (not built yet)"; }
@@ -182,7 +203,7 @@ row() { # row <file> <row start> <must have>… [-- <must not have>…]: a table
 
 routing_text_agrees() {
   local f t bad=0 p S
-  for f in $RULE_FILES; do need "$SRC/$f" || return 1; done
+  for f in $RULE_FILES $FIGMA_DOCS; do need "$SRC/$f" || return 1; done
   # 1. the routing sentence, word for word, in every file that states the routing
   for f in $CLAUDE_MD $FD/SKILL.md $FD/references/mini-pipeline.md $SD/leorna/SKILL.md $SD/review-fix-cadence/SKILL.md; do
     grep -qF -- "$ROUTING" "$SRC/$f" || { fail "$f lacks the routing sentence [$ROUTING]"; bad=1; }
@@ -223,29 +244,31 @@ routing_text_agrees() {
   t=$(one $SD/review-fix-cadence/SKILL.md '  - (e)') || { echo "$t"; return 1; }
   holds "review-fix-cadence's brake (e)" "$t" 'only P2' || return 1
   echo "# 4. the round-3 question, the rebase receipt, the 2026-11-10 date and the 300k rule are stated"
-  # 5. no older pairing or replaced rule is left
-  while IFS= read -r p; do
-    for f in $RULE_FILES; do
-      if grep -qF -- "$p" "$SRC/$f"; then fail "$f still has the old [$p]"; bad=1; fi
-    done
-  done <<EOF
+  # 5. no older pairing or replaced rule is left, in a rule file or a project's CLAUDE.md copy
+  for f in $(scan_files); do   # read flat, so a phrase wrapped over two lines is still found
+    t=$(flat "$SRC/$f")
+    while IFS= read -r p; do
+      case $t in *"$p"*) fail "$f still has the old [$p]"; bad=1 ;; esac
+    done <<EOF
 $(old_phrases)
 EOF
+  done
   [ $bad = 0 ] || return 1
-  echo "# 5. none of the $(old_phrases | grep -c '^') old phrases is left in the $(printf '%s\n' "$RULE_FILES" | grep -c '^') rule files"
+  echo "# 5. none of the $(old_phrases | grep -c '^') old phrases is left in the $(printf '%s\n' "$RULE_FILES" | grep -c '^') rule files and the $(scan_files | grep -c '^project-docs/\|^\.claude/project-docs/') project CLAUDE.md copies"
   # 6. every other prose statement of a role's model or effort, and of the changed rules, word for word
   while IFS= read -r p; do
     f=$(file_of "${p%%|*}") || { fail "prose(): no file for the key [${p%%|*}]"; bad=1; continue; }
-    holds "$f" "$(cat "$SRC/$f")" "${p#*|}" || bad=1
+    if [ "$f" = "$FIGMA_DOCS" ]; then t=$(flat "$SRC/$f"); else t=$(cat "$SRC/$f"); fi
+    holds "$f" "$t" "${p#*|}" || bad=1
   done <<EOF
 $(prose)
 EOF
   [ $bad = 0 ] || return 1
   echo "# 6. the $(prose | grep -c '^') prose statements of a role's model, effort or changed rule read as pinned"
   # 7. no clause anywhere else pairs a later round, a fixer, the verifier or the main session with Fable or xhigh
-  p=$(cd "$SRC" && wrong_pairs $RULE_FILES)
+  p=$(cd "$SRC" && wrong_pairs $(scan_files))
   [ -z "$p" ] || { fail "a role paired with the wrong model or effort: $p"; return 1; }
-  echo "# 7. no rule file pairs a later round, a fixer, the verifier or the main session with Fable or xhigh"
+  echo "# 7. no rule file or project CLAUDE.md copy pairs a later round, a fixer, the verifier or the main session with Fable or xhigh"
   # 8. the Codex copy, built from this checkout's CLAUDE.md and header
   S=$(mktemp -d "${TMPDIR:-/tmp}/pipeline-rules-test.XXXXXX") || { fail "mktemp"; return 1; }
   CODEX_HOME="$S/codex" CODEX_BUILD_RULES="$SRC/$CLAUDE_MD" bash "$SRC/.claude/setup/codex/build-codex.sh" \

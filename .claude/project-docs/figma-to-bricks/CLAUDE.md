@@ -261,9 +261,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     changes something. Make the read-only copy first: `mkdir -p <evidence> && install -m 444 <plan>
     <evidence>/plan-approved.md`. Evidence goes in `~/.hermes/plans/figma-to-bricks/evidence/<name>/`.
   - **Build and review:** the builder keeps a ledger in `.superpowers/sdd/<plan>/progress.md` and runs `npm run
-    corpus` before Task 1 and at the close. Then two fresh Opus reviews with a fix pass after each (each fix test
-    first), then the verifier, the blind AC auditor and `ac-check.sh`, looping until every AC is accepted (global
-    CLAUDE.md steps 5–6).
+    corpus` before Task 1 and at the close. Then two fresh full reviews, each on the model and effort the global
+    routing gives its round (global CLAUDE.md "Agent models"), with a fix pass after each (each fix test first), then
+    the verifier, the blind AC auditor and `ac-check.sh`, looping until every AC is accepted (global CLAUDE.md steps
+    5–6).
     **Review rounds are capped** (Justin, 2026-10-31: "I need this to be built fast"; memory `review-round-cap`):
     every AC is still met and accepted with no cap, but review → fix rounds stop after 3 in all (1–2 for major bugs,
     the rest for the main edge cases); what a later review would still find goes to `follow-ups.md` and HANDOFF
@@ -283,9 +284,11 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     1. **Finisher agent, in the copy:** move the ledger to `docs/plans/<plan>-ledger.md`, commit everything, then
        `git rebase main`. On a conflict keep both sides' meaning; HANDOFF sections usually both stay. Run `npm run
        check` and `npm run corpus` again on the rebased branch: two features that pass alone can break together. It
-       stops and reports the new HEAD. If HEAD now differs from the head `ac-check.sh` accepted, the AC receipts no
-       longer match: the session runs verifier → auditor → `ac-check.sh` again on the new head before step 2 (agents
-       don't start agents).
+       stops and reports the new HEAD. If HEAD now differs from the head `ac-check.sh` accepted, global CLAUDE.md
+       step 7 decides what runs before step 2 (agents don't start agents): a rebase receipt carries the earlier
+       reports only when HEAD is a pure rebase of the accepted head. The ledger commit made here before the rebase
+       is a patch that head lacks, so HEAD is not a pure rebase of it and the session takes step 7's full path on
+       the new head: a fresh review of what the accepted head lacks, then verifier → auditor → `ac-check.sh`.
     2. **Session: leave the copy.** Call the ExitWorktree tool with action `"keep"` (the user's standing permission).
        Claude Code refuses git commands and edits aimed at the main folder from inside a copy (`git -C …`
        included), so the merge runs from the main folder. If ExitWorktree finds no worktree session, EnterWorktree
