@@ -350,9 +350,24 @@ def g_settled(G):
     out = []
     ch = G.changes
     seen = {}
+    by_copy = {d.copy: d for d in G.diffs}
     for c in ch.get("changes") or []:
-        for i in c.get("finding_ids") or []:
+        ids = c.get("finding_ids") or []
+        for i in ids:
             seen.setdefault(i, []).append("applied")
+        if not ids:
+            continue
+        # applied means the file really changed and holds what the change lists (R1-4)
+        d = by_copy.get(str(c.get("file") or ""))
+        if d is None:
+            out.append("finding %s: changes.json lists it as applied to %s, which the editor did not change"
+                       % (", ".join(ids), c.get("file")))
+            continue
+        added = norm("\n".join(d.added))
+        for a in c.get("additions") or []:
+            if norm(a) and norm(a) not in added:
+                out.append("finding %s: an addition changes.json lists is not in the diff of %s: \"%s\""
+                           % (", ".join(ids), c.get("file"), norm(a)[:80]))
     for s in ch.get("already_saved") or []:
         i = s.get("finding_id")
         seen.setdefault(i, []).append("saved")

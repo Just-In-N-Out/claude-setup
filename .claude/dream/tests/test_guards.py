@@ -398,6 +398,34 @@ class SettledTests(unittest.TestCase):
         self.assertEqual(h.run(), 0)
         self.assertEqual([c["role"] for c in h.calls_by_role()], ["session-helper"])
 
+    def test_a_finding_listed_as_applied_needs_a_diff_holding_its_additions(self):
+        """R1-4: changes.json alone never settles a finding as applied: the file it names must have changed,
+        and every addition it lists must be in that file's added lines."""
+        gt = GuardTests("test_ac9_addition_from_typed_finding_carries_its_date")
+        gt.h, gt.env, gt.n = self.h, self.env, 200
+        text = "# Build notes\n\n- Run the tests first.\n"
+        line = "- Lint before every commit (2026-11-09)."
+        other = "claude/projects/%s/memory/MEMORY.md" % fh.PROJ
+        ok = gt.G({MEM: (text, text + line + "\n")}, [fnd()], {"changes": [change(MEM, adds=[line])]})
+        self.assertEqual(guards.g_settled(ok), [])
+        no_diff = gt.G({MEM: (text, text)}, [fnd()], {"changes": [change(MEM, adds=[line])]})
+        self.assertTrue(guards.g_settled(no_diff), "the named file did not change")
+        elsewhere = gt.G({MEM: (text, text + line + "\n"), other: ("# Memory\n", "# Memory\n")}, [fnd()],
+                         {"changes": [change(other, adds=[line])]})
+        self.assertTrue(guards.g_settled(elsewhere), "the change names a file that did not change")
+        missing = gt.G({MEM: (text, text + "- Something else (2026-11-09).\n")}, [fnd()],
+                       {"changes": [change(MEM, adds=[line, "- Something else (2026-11-09)."])]})
+        self.assertTrue(guards.g_settled(missing), "a listed addition that is not in the diff")
+        # end to end (review-1 probe pD): the editor changed nothing but wrote changes.json as planned
+        self.h.cleanup()
+        self.h = h = FakeHome("r14", repo=True)
+        fh.standard(h, edits=[])
+        before = h.read(fh.MEM_LIVE)
+        self.assertEqual(h.run(), 3)
+        self.assertEqual(h.read(fh.MEM_LIVE), before)
+        self.assertEqual(json.loads(h.read(".claude/dream/state/applied.json"))["ids"], [], "not marked applied")
+        self.assertEqual([f["tries"] for f in h.local("unsettled.json")["findings"]], [1], "it waits for the next run")
+
 
 if __name__ == "__main__":
     unittest.main()
