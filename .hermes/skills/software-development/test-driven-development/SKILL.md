@@ -116,7 +116,9 @@ legitimately start green; label it honestly and establish sensitivity when neede
 Do not weaken or distort its oracle to manufacture a failure.
 
 **Test errors?** Diagnose setup within the primary skill's existing time/repair
-allowance; an import/fixture failure is not the intended RED. Narrow or block,
+allowance; an import/fixture failure is not the intended RED (so a test file meant
+to go RED on the old tree imports none of the fix's new exports: tests of a new
+helper go in their own file; site-menu fixer 1). Narrow or block,
 never rerun indefinitely.
 
 ### GREEN — Minimal Code
