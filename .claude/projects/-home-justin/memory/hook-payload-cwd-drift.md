@@ -12,3 +12,5 @@ A Claude Code hook payload's `cwd` follows the session's `cd`, worktrees include
 
 **Why:** cortexos-memory-hook review 1 (R1-2), evidence in ~/.hermes/plans/claude-setup/evidence/cortexos-memory-hook/review-1/cwd-drift.txt.
 **How to apply:** any hook or script keyed on the session's project folder ([[cortexos-local]]).
+
+**Memory folder is per git repository, not per transcript folder (2026-11-10, dream-pass fixer 2, from code.claude.com/docs/en/memory and real keys):** worktrees and subdirectories of one repo share the repo root's `~/.claude/projects/<key>/memory`; outside a git repo the project root is used. So a session started in a worktree has its transcript under the worktree's key but loads memory from the repo's key (the control-plane worktree key has no memory folder; `-home-justin-Leorna-leorna-control-plane/memory` exists). Resolve it with `git rev-parse --path-format=absolute --git-common-dir` from the transcript's `cwd`; don't guess from the key's prefix (the sibling folder `~/Leorna/86bcm927y-…` is a worktree of leorna-control-plane).
