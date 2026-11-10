@@ -176,3 +176,7 @@ Pass 1 of dream-trim lands first: figma-to-bricks is over the limit today, so dr
 - Two `references/` files are already large and have no size check: figma-to-bricks `testing-pitfalls.md` 74,847 bytes and `live-site-reading.md` 51,958. Low.
 - The project `CLAUDE.md` Status log holds 34 build entries of roughly 500 characters each, while the figma-to-bricks skill says Status gets "one feature line" per merge: the finishers' entries are several lines long, which is how the file grew. Low.
 - Where Hermes enforces the 100,000 limit was not found by a quick search of `~/.hermes/hermes-agent`; the number comes from `~/.claude/CLAUDE.md` and the existing test. Low.
+
+## Justin's answers
+
+Approved by Justin 2026-11-09. His message was "Continue sorry", sent after both plans and their questions were shown; the main session read it as "go" with every recommended option. Q1 (a): a redone pass 1 may land without a second verifier and auditor round when the reviewed tool and map are unchanged and the lossless check and pins pass. Q2 (a): text moved out of the project CLAUDE.md goes to the figma-to-bricks skill's references/. Q3 (a): Leorna's "make a PR" steps stay in the main file. Q4 (a): target sizes as listed. Pass 2 still waits for his "land pass 2" (AC9, live).

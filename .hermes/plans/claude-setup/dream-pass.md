@@ -438,3 +438,7 @@ On this machine only, at install: `~/.claude/dream/local/`, `~/.config/systemd/u
 ## Completion and reporting
 
 The builder stops at `ready-for-review` with the worktree branch and HEAD, the AC1–AC38 and AC42–AC45 test output, the mutation table, `<evidence>/baseline.md` and one terminal capture per AC. AC39, AC40 and AC41 are owed to Justin after the merge. The finish follows "Worktrees from `claude -w`" applied to the setup repo: rebase on local `main` (after dream-trim), `merge --ff-only`, the after-merge steps in "Staging" (1 and 2 only), then `sync.sh`.
+
+## Justin's answers
+
+Approved by Justin 2026-11-09. His message was "Continue sorry", sent after both plans and their questions were shown; the main session read it as "go" with every recommended option: Q1 (a) Hermes memory files are not targets; Q2 (a) budgets as recommended; Q3 (a) caps as recommended; Q4 (a) systemd timer with Persistent=true, linger enabled; Q5 (a) drop a finding whose quote is not in the message, discard the helper output if more than half fail; Q6 (a) use the existing login; Q7 (a) Codex ledger rows are a follow-up; Q8 (a) cut only what his message proves outdated, duplicates, word-for-word moves and retired entries; Q9 (a) one dry run by hand, one live run by hand, then the timer. AC39, AC40 and AC41 are live and stay his.
