@@ -691,6 +691,147 @@ class OrderTests(unittest.TestCase):
             self.assertIn("repeat-mistakes order: %s %s in %s" % (a, i.split(":")[1], to or f), lst)
         self.assertTrue(all(v.get("parked") for v in json.loads(h.read(".claude/dream/state/tally.json"))["kinds"].values()))
 
+    def exact_runs(self, h, tally, runs=12, blank_after=True):
+        """Run after run on the three repeat-mistakes files: the script's orders, done exactly by obey.py at their
+        largest size on a copy, through every guard of run_all; then live, and the tally as after the commit.
+        Returns [(order ids, guard failures)] per run, stopping at the first failure or when nothing is owed."""
+        import datetime
+        from dreamlib import guards, targets
+        env = h.denv()
+        files = {fh.PROJ_RM: PROJ_RM_COPY, fh.GENERAL_RM: GEN_RM_COPY, fh.OTHER_RM: fh.OTHER_RM[1:]}
+        mapping = {c: {"live": live, "sha": "x"} for live, c in files.items()}
+        out = []
+        for r in range(runs):
+            got = mistakes.orders(env, tally)
+            if not got:
+                break
+            self.n = getattr(self, "n", 0) + 1
+            d = h.root / ("x%d" % self.n)
+            for live, c in files.items():
+                for root in ("snap", "copy"):
+                    f = d / root / c
+                    f.parent.mkdir(parents=True, exist_ok=True)
+                    f.write_text(h.read(live))
+            given = [dict(o, file=files[o["file"]], to=files[o["to"]] if o["to"] else "") for o in got]
+            ch = obey.obey(str(d / "copy"), given, blank_after)
+            mistakes.normalize_copy(env, d, mapping, tally, got)
+            diffs, links = targets.diff_copy(d)
+            G = guards.Input(env, d, mapping, diffs, links, [], got, {"changes": ch, "already_saved": [], "declined": []},
+                             tally, targets.load_rules(env))
+            fails = guards.run_all(G)
+            out.append(([o["id"] for o in got], fails))
+            if fails:
+                break
+            for live, c in files.items():
+                h.write(live, (d / "copy" / c).read_text())
+            mistakes.after_commit(tally, got, datetime.datetime(2026, 11, 10, 5, 0))
+        return out
+
+    def assert_consistent(self, h, tally):
+        """Every listed kind has its entry in the file the tally lists it in, and nowhere else."""
+        have = {live: {k for k, _, _ in self.entries(live)[0]} for live in (fh.PROJ_RM, fh.GENERAL_RM, fh.OTHER_RM)}
+        for k, v in tally["kinds"].items():
+            self.assertEqual({f for f, ks in have.items() if k in ks}, {v["listed_in"]} if v.get("listed_in") else set(), k)
+
+    def test_orders_done_exactly_at_their_largest_size_pass_every_guard_run_after_run(self):
+        """R3-1 (R1-3, R2-2 again), closed as a class: the script orders no more than one run may change. For every
+        kind of order (add, move, remove, and the add of a move whose entry is gone), an editor that does exactly
+        what the orders say, at the largest size they allow (each added entry at its max_entry_bytes, blank lines,
+        new areas opened and emptied ones closed), passes every guard on the state a backfill leaves, run after
+        run, and whatever does not fit one run's 4,000-byte change waits, unparked, and is done in a later run."""
+        self.h = h = FakeHome("r31")
+        names = ["story-%02d-%s" % (i, ("header-fit", "footer-fit", "menu-fit")[i % 3]) for i in range(40)]
+
+        def backfill(n_stale, n_recent):
+            t = dict(state.default_tally(), backfill_done=True)
+            t["stories"] = {"proj": list(names)}
+            t["story_seq"] = ["proj/" + s for s in names]
+            for i in range(n_stale):             # seen twice early on, in none of the newest 10 stories
+                t["kinds"]["old-%02d-guard" % i] = kind_row({"proj": [names[i], names[i + 9]]})
+            for i in range(n_recent):            # seen lately; every third in an area of its own
+                t["kinds"]["new-%02d-guard" % i] = kind_row({"proj": [names[28 + i % 6], names[34 + i % 6]]},
+                                                            area="Builds" if i % 3 == 0 else "Guards")
+            return t
+
+        def fresh():
+            for live, p in ((fh.PROJ_RM, "proj"), (fh.GENERAL_RM, "general"), (fh.OTHER_RM, "other")):
+                h.write(live, fh.RM_HEADER.format(p=p))
+
+        def runs_ok(label, log, at_least=1):
+            for i, (ids, fails) in enumerate(log):
+                self.assertEqual(fails, [], "%s, run %d (%d orders: %s)" % (label, i + 1, len(ids), ids))
+            self.assertGreaterEqual(len(log), at_least, label)
+
+        # (a) the backfill fills the empty file (no change cap yet); the stale entries retire over the next runs
+        for n_stale in (8, 11, 14):
+            fresh()
+            t = backfill(n_stale, 12)
+            log = self.exact_runs(h, t)
+            runs_ok("backfill with %d stale kinds" % n_stale, log, 2)
+            self.assertEqual(mistakes.orders(h.denv(), t), [], "nothing left owed")
+            self.assertEqual(sorted(k for k, v in t["kinds"].items() if v.get("retired")),
+                             ["old-%02d-guard" % i for i in range(n_stale)], "every stale entry retired")
+            self.assertFalse(any(v.get("parked") for v in t["kinds"].values()))
+            self.assert_consistent(h, t)
+            if n_stale == 14:
+                self.assertGreaterEqual(len([1 for ids, _ in log if any(i.startswith("remove:") for i in ids)]), 2,
+                                        "fourteen removals do not fit one run")
+        # (b) adds into a file that has entries: 9 waiting kinds of the largest entries do not fit one run
+        fresh()
+        t = backfill(0, 10)
+        runs_ok("ten listed", self.exact_runs(h, t))
+        for i in range(9):
+            t["kinds"]["late-%02d-guard" % i] = kind_row({"proj": [names[38], names[39]]}, area="Late" if i == 8 else "Guards")
+        log = self.exact_runs(h, t)
+        runs_ok("nine adds into a file with entries", log, 2)
+        self.assert_consistent(h, t)
+        # (c) moves, out of a file with entries into the general file, empty and then holding entries, the add of a
+        # move whose entry is gone, and adds into the project file in the same runs
+        fresh()
+        t = backfill(0, 12)
+        runs_ok("twelve listed", self.exact_runs(h, t))
+        h.write(fh.PROJ_RM, obey.cut(h.read(fh.PROJ_RM), "new-05-guard")[0])     # deleted by hand
+
+        ids = set()
+        for half in (0, 1):     # half the listed kinds seen in a second project: the general file empty, then not
+            st = "o-%02d" % half
+            t["stories"].setdefault("other", []).append(st)
+            t["story_seq"].append("other/" + st)
+            for i in range(half, 12, 2):
+                k = t["kinds"]["new-%02d-guard" % i]
+                k["projects"]["other"] = {"stories": [st], "findings": 1, "last_story": st}
+            for i in range(6):                  # and six more kinds of the project wait in the same runs
+                t["kinds"]["more-%02d-guard" % (i + 6 * half)] = kind_row({"proj": [names[38], names[39]]})
+            log = self.exact_runs(h, t)
+            runs_ok("moves to the general file, half %d" % half, log)
+            ids |= {i for x, _ in log for i in x}
+        self.assertTrue({"add:new-05-guard", "move:new-00-guard", "move:new-01-guard"} <= ids, sorted(ids))
+        self.assertEqual(mistakes.orders(h.denv(), t), [])
+        self.assert_consistent(h, t)
+        self.assertEqual(sorted(k for k, v in t["kinds"].items() if v["listed_in"] == fh.GENERAL_RM),
+                         ["new-%02d-guard" % i for i in range(12)])
+        # (d) end to end (review 3's pM5): 30 stories, 11 kinds last seen more than 10 stories back, the file starts
+        # empty; each run has one new correction and the editor does exactly what orders.json says
+        h.cleanup()
+        self.h = h = FakeHome("r31e", repo=True)
+        t = dict(state.default_tally(), backfill_done=True)
+        t["stories"] = {"proj": names[:30]}
+        t["story_seq"] = ["proj/" + s for s in names[:30]]
+        for i in range(11):
+            t["kinds"]["old-%02d-guard" % i] = kind_row({"proj": [names[i], names[i + 6]]})
+        for i in range(4):
+            t["kinds"]["new-%02d-guard" % i] = kind_row({"proj": [names[20 + i], names[26 + i]]})
+        h.write(".claude/dream/state/tally.json", paths.dump_json(t))
+        h.sync()
+        for i in range(1, 6):
+            line = correction(h, i)
+            self.assertEqual(h.run(), 0, "run %d: %s" % (i, h.local("last-run.json")))
+            self.assertIn(line, h.read(fh.MEM_LIVE))
+        t = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertEqual(sorted(k for k, _, _ in self.entries(fh.PROJ_RM)[0]), ["new-%02d-guard" % i for i in range(4)])
+        self.assertFalse(any(v.get("parked") for v in t["kinds"].values()))
+        self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
+
 
 if __name__ == "__main__":
     unittest.main()

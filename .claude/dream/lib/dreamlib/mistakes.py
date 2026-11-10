@@ -7,11 +7,12 @@ parked}}, stories: {<project>: [...]}, story_seq: ["<project>/<story>", ...], se
 """
 import re
 
-from . import targets
+from . import paths, targets
 
 RETIRE_AFTER = 10
 FILE_TARGET = 15000     # DREAM.md section 7: about 15 KB per file (the budget is 16,000)
 ENTRY_ALLOWANCE = 400   # bytes expected for an entry's Build and Check lines, on top of its heading
+SLACK = 2               # blank lines an editor may add or take around one ordered entry or area heading
 HEAD = re.compile(r"^### (?P<kind>[a-z0-9][a-z0-9-]*) — (?P<mistake>.*?)(?: \((?P<n>\d+)×: (?P<stories>[^)]*)\))?\s*$")
 AREA = re.compile(r"^## (.+?)\s*$")
 BUILD = "- **Build it this way:**"
@@ -113,6 +114,18 @@ def retire_due(env, tally, kid):
     return False
 
 
+def change_cap(env):
+    """The bytes a repeat-mistakes file that has entries may change in one run (conf/caps.conf; DREAM.md
+    section 6), counted by guards.g_caps on the editor's change."""
+    v = paths.read_kv(env.conf / "caps.conf").get("repeat_mistakes_change", "4000")
+    return int(v) if v.lstrip("-").isdigit() else 4000
+
+
+def has_entries(text):
+    """A repeat-mistakes file is held to the change cap once it has an entry; before, it may fill to its budget."""
+    return "\n### " in "\n" + text
+
+
 def _rewritten(env, rel, tally):
     """The file as the script's own rewrite will leave it (counts, stories, order from the tally): the room an
     order has is measured on that, so a rewrite that waited through review-only runs keeps its room (R2-2)."""
@@ -171,9 +184,51 @@ def orders(env, tally):
         e = entries(f).get(kind)
         return len((e[1] + e[2]).encode()) if e else 0
 
+    # One run's orders are bounded by the change cap as well as by the room (R3-1): a file that has entries
+    # changes at most change_cap bytes a run (DREAM.md section 6), and an editor that does exactly what the
+    # orders say must stay inside it. Each order is charged what guards.g_caps counts for it at its largest:
+    # an entry taken out whole (a move's two lines arrive word for word elsewhere, so only its heading),
+    # an added entry at its max_entry_bytes (a move's heading), a little for blank lines, and an area's
+    # heading when the order opens or empties that area. What does not fit waits for a later run, unparked.
+    cap, charge, capped, areas, left, opened = change_cap(env), {}, {}, {}, {}, set()
+
+    def fits(f, n):
+        if f not in capped:
+            try:
+                capped[f] = has_entries((env.home / f).read_text())
+            except OSError:
+                capped[f] = False
+        return not capped[f] or charge.get(f, 0) + n <= cap
+
+    def area_cost(f, area):
+        if f not in areas:
+            areas[f] = {AREA.match(a.rstrip("\n")).group(1): pre for a, pre, _ in parse(_rewritten(env, f, tally))[1]}
+        return len(("## %s" % area).encode()) + 1 + len(areas[f].get(area, "").encode()) + SLACK
+
+    def out_cost(f, kind, whole):
+        e = entries(f).get(kind)
+        if not e:
+            return 0, None
+        key = (f, e[0])
+        left.setdefault(key, sum(1 for a, _, _ in entries(f).values() if a == e[0]))
+        n = len((e[1] + e[2] if whole else e[1]).encode()) + SLACK
+        return n + (area_cost(f, e[0]) if left[key] == 1 else 0), key   # its area left empty: the heading may go
+
+    def in_cost(f, names, n):
+        if f not in areas:
+            area_cost(f, "")
+        new = [a for a in names if a not in areas[f] and (f, a) not in opened]
+        return n + SLACK + (max(area_cost(f, a) for a in new) if new else 0), new
+
     out = []
     for o in cands:
         if o["action"] == "remove":
+            n, key = out_cost(o["file"], o["kind"], True)
+            if not fits(o["file"], n):
+                continue    # not owed this run: it retires in a later one
+            charge[o["file"]] = charge.get(o["file"], 0) + n
+            if key:
+                left[key] -= 1
             size[o["file"]] = size_of(o["file"]) - entry_bytes(o["file"], o["kind"])
             out.append(o)
     growing = sorted((o for o in cands if o["action"] != "remove"), key=lambda o: (-o["count"], o["kind"]))
@@ -181,13 +236,25 @@ def orders(env, tally):
     for o in growing:
         dest = o.get("to") or o["file"]
         size_of(dest)
-        est = entry_bytes(o["file"], o["kind"]) if o["action"] == "move" else o["max_entry_bytes"]
-        if dest in full or size[dest] + est > FILE_TARGET:
+        if o["action"] == "move":
+            est = entry_bytes(o["file"], o["kind"])
+            n_out, key = out_cost(o["file"], o["kind"], False)
+            e = entries(o["file"])[o["kind"]]
+            n_in, new = in_cost(dest, {e[0], o["area"]}, len(e[1].encode()))
+        else:
+            est, n_out, key = o["max_entry_bytes"], 0, None
+            n_in, new = in_cost(dest, {o["area"]}, est)
+        if dest in full or size[dest] + est > FILE_TARGET or not fits(dest, n_in) or not fits(o["file"], n_out):
             full.add(dest)  # not owed, and nothing less frequent jumps ahead: they wait until the file has room
             continue
         size[dest] += est
+        charge[dest] = charge.get(dest, 0) + n_in
+        opened.update((dest, a) for a in new)
         if o["action"] == "move":
             size[o["file"]] = size_of(o["file"]) - est
+            charge[o["file"]] = charge.get(o["file"], 0) + n_out
+            if key:
+                left[key] -= 1
         out.append(o)
     return sorted(out, key=lambda o: o["kind"])
 
