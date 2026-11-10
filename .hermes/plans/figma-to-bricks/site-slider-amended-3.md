@@ -34,6 +34,12 @@ nothing" (`:where(:where(.<name>, .<name> *).splide__slide img)`, since `ba98025
 the reference file's 41 rules, and the fourth criterion's cited unit test asserts that and names the one rule. Its
 sub-bullet on R2-3 is corrected by amendment 7, and its "one line to re-read" is settled by amendment 8.
 
+*(amendment 11; planner, 2026-11-09)* Amendment 11 changes only which capture the ninth criterion's named-only test
+reads (the stack finisher's finding on `7d9754ed`, branch `site-slider-stack1-fix3`). No criterion is added, removed,
+renumbered or retagged, and no cited test name changes; the code and the tests change nothing. The text before it
+(amendments 1 to 10) is the approved copy `evidence/site-slider/plan-approved.md` it amends (sha256
+`73c5b576a6dd444eb96368b3eb9e63507467a633922d0a94d4f00995fb40627c`).
+
 - **Amendment 1 (review 1's R1-3, P2; Question 4's answer A read another way; to be confirmed with Justin):** the plan
   said a Bricks tier takes "the site's value at each Bricks tier's widest width (991/767/478)". Swiper applies a
   breakpoint from its width up, and Elementor's own Swiper keys are 0/767/1024 (its `adjustConfig`), so the one sample
@@ -238,6 +244,34 @@ sub-bullet on R2-3 is corrected by amendment 7, and its "one line to re-read" is
   copy of it (`test/web/lib/site-check.ts`: a copy keeps its content's ids and comes first in the page where several
   slides show). No line of this plan says which element the check reads inside a slider (the seventh criterion, root
   cause 3(c) and Task 5 speak only of holding the slider on its first slide), so nothing is added.
+- **Amendment 11 (the ninth criterion's input only; the stack finisher's finding, `evidence/site-slider/stack-1/`):**
+  since Build 2026-11-09.4 (staging-fit-capture, main `3cfc54ac`) `npm run site`, `site:check`, `capture:check` and
+  the panel refuse Justin's saved 2026-11-09 capture: it read widths 768–991 from page loads without the site's
+  stylesheets. The refusal is right and stays. The ninth criterion now reads a clean B-Dry capture: Justin's
+  re-capture made with Build 2026-11-09.4 or later once it exists, the stand-in named there until then. Its three
+  clauses and its cited test name are unchanged; changed are the line naming the file (and main's paste and report,
+  remade from the same file), "the capture's 48 widths" (every width the capture read) and "on the saved capture".
+  The "outside 768–991" clause stands: the test's own code compares only those widths (a fixed filter), and on a
+  clean capture it still compares exactly what the clause says. The code changes nothing.
+  - The clean captures on this machine, each checked with `7d9754ed`'s own `capture:check` and `unstyledRanges`
+    (`~/.cache/ssl-pa3/capture-check.log`, `t1.log`): none is refused (no exit 2, no styleless range); each fails
+    `capture:check`'s other checks (16 shown pictures without bytes, 15 nodes without a stored picture: the saved
+    page's), which `site`, `site:check` and the test don't refuse on. All are code version 3 (the version the head
+    reads), 12 ranges, 38 widths, one Swiper of 3 slides, and give the hero AC9's exact settings, its 3 Blocks, no
+    Elementor arrow element and the pause note: `evidence/elementor-phone-fit/planner/bdry-standin.f2b-capture.json`
+    (build stamp 2026-11-08.1, captured 2026-11-08T21:14Z, no sheets record; chosen),
+    `~/.cache/sm-b/bdry-standin-v3.f2b-capture.json` and `-v3b` (2026-11-07.1), site-menu's
+    `fixer-1/bdry-dryrun/*/standin-menu.f2b-capture.json` (2026-11-09.3, made by site-menu's unmerged tree, with
+    its extra `web.code.opens`), and `~/.cache/sfx-b/caps/bdry-standin-head.f2b-capture.json` (2026-11-09.4 stamp,
+    sheets recorded, made by staging-fit-cancels' unmerged tree `b0fd064a`). The chosen one sits in an evidence
+    folder (the others are in scratch caches or carry another job's capture fields) and is the stand-in earlier B-Dry
+    jobs proved on; site-native-structure's fixer 1 holds no capture.
+  - Not needing a fixer: the test's code doesn't assume the styleless ranges except its fixed 768–991 filter in the
+    second test, which on a clean capture only leaves those widths out. A scratch probe with the filter removed
+    (`~/.cache/ssl-pa3/probe-every-width.log`) measured 3 elements, worst 0 px at every width of the stand-in,
+    768–991 included; widening the clause is a follow-up, not part of this amendment. The test's header comment
+    (Justin's 2026-11-09 capture, "48 widths") and HANDOFF's site-slider lines ("all 48 widths", the 768–991 known
+    limit) are records the merge finisher brings up to date.
 - **Receipts that still encode the old expectations** (all under `evidence/site-slider/`). Sorted by
   `git show <head>:test/unit/site-slider.test.ts | grep -c '768: { slidesPerView'` (the old tier row, on a Swiper key
   768 Elementor never prints: 1 from `23c05e21` to `1b193b45`, 0 from `3ba7315c` on),
@@ -310,6 +344,22 @@ sub-bullet on R2-3 is corrected by amendment 7, and its "one line to re-read" is
     text (every selector at its own weight, the picture rule too) up to `7feeeb3d`, fixer 1's
     `logs/final-ac-unit.log` and `unit-head.tap` included; `fixer-2/logs/final-ac-unit.log` (`b9a084ad`) is the
     current receipt.
+  - *(amendment 11)* Every B-Dry receipt up to and including the stack's `7d9754ed` ran on the capture main now
+    refuses (`/home/justin/f2b-test/bdryswi-com-home.f2b-capture.json`, sha256 `2aab92b7…56b94`, styleless ranges
+    922-991, 835-921, 769-834 and 768-768), with main's pastes and report made from it
+    (`builder/bdry/base-*`, `builder/bdry-check-base/report.json`, from `fd1986dc`): `builder/logs/ac9-head2.log`
+    and `ac9-final.log`, `builder/cont/logs/ac9-final.log` and `red-main-ac9.log`, `builder/mutation4/M2g.log`, the
+    builder's and fixer 1's `gates/head-web/driver.log`, `fixer-1/logs/ac9-final.log`, `fixer-2/logs/ac9-final.log`
+    and `fixer-2/gates/head-web/site-slider-bdry.test.log`, review 3's run (`~/.cache/ssl-r3/out/bdry-test.log`) and
+    the stack finisher's `stack-1/logs/test_web_site-slider-bdry.test.ts-ac9-named.log`,
+    `stack-1/logs/ac9-site-check-output.log` and `stack-1/first-pass-12fc9848/`. The difference now expected: the
+    same three tests on the clean capture, with base inputs remade from it; the third no longer stops at
+    `ENOENT … report.json`. The first two convert the capture with `siteParts` themselves (no refusal there), so
+    they passed on the refused file too; only the third runs `tools/site-check.ts`, which refuses it (exit 2). Those
+    receipts stay valid as records of the refused file, never as AC9's receipt for a head. The planner's check of
+    the stand-in on `7d9754ed` (`~/.cache/ssl-pa3/`, outside the evidence tree, no receipt for any role): all three
+    tests pass (`ac9-all-epf.log`: one heading in the frame at all 38 widths, 768–991 included; 3 elements, worst
+    0 px; new failing rows inside the hero slider 0; `EXIT=0`), with main's paste and report made by `3cfc54ac`.
 
 ## Questions (the standing auto-go takes the ⭐ answers)
 
@@ -623,16 +673,29 @@ a ruling, not yet confirmed.
 
   Test: `test/unit/site-slider-unchanged.test.ts` "pastes without an Elementor slider are byte-identical" (passes on
   main by construction; its mutant: the slider step run on the plain route fails it).
-- **AC9 (proposed):** B-Dry, named-only (`F2B_BDRY_CAPTURE=/home/justin/f2b-test/bdryswi-com-home.f2b-capture.json`).
+- **AC9 (proposed):** B-Dry, named-only, on a clean capture *(amendment 11)*: `F2B_BDRY_CAPTURE` is Justin's
+  re-capture of bdryswi.com's home made with Build 2026-11-09.4 or later once it exists (one that `npm run
+  capture:check` doesn't refuse: no exit 2); until then the saved stand-in
+  `~/.hermes/plans/figma-to-bricks/evidence/elementor-phone-fit/planner/bdry-standin.f2b-capture.json` (sha256
+  `3c238957cea09ba6ac78027600d76eea53f29cd2981a85a3a9cdcbf774686dda`). The stand-in is a capture of the saved
+  2026-10-29 home served locally, not the live site; the live proof is the tenth criterion's. `F2B_BDRY_BASE` and
+  `F2B_BDRY_BASE_REPORT` are main's paste and main's `site:check --all --elementor` report of that same file, made
+  with the base commit's code (`git merge-base HEAD main`). The verifier and the auditor of one head read the same
+  file and name it with its sha256 in their evidence. Was:
+  `F2B_BDRY_CAPTURE=/home/justin/f2b-test/bdryswi-com-home.f2b-capture.json`, the capture main now refuses.
   - The `--elementor` whole paste has exactly one `slider-nested` (the hero) holding 3 Blocks, with settings
     `autoplay true, interval "7500", speed "2500", pauseOnHover true, pauseOnFocus true, arrows true, gap "10",
     height "auto"` and no `type`/`perPage`. The two `elementor-swiper-button` Divs are gone, and the pause-on-interaction
     note is present.
-  - Rendered at the capture's 48 widths, exactly one of the three slide headings shows inside the hero frame, 768–991
-    included.
-  - Outside 768–991, the first slide's heading and buttons are within 2 px of today's paste.
-  - `site:check --all --elementor` on the saved capture gives no new failing row against main's report, except inside
-    the hero slider's subtree.
+  - Rendered at every width the capture read *(amendment 11)* (48 on Justin's 2026-11-09 capture, 38 on the
+    stand-in), exactly one of the three slide headings shows inside the hero frame, 768–991 included. Was: "at the
+    capture's 48 widths".
+  - Outside 768–991, the first slide's heading and buttons are within 2 px of today's paste. *(amendment 11)* On a
+    clean capture 768–991 is read with the site's styles too; the test still compares only the widths outside it
+    (its fixed filter, `test/web/site-slider-bdry.test.ts` line 98), each element's box against the page root's in
+    head's paste and in main's paste of the same capture, so the clause stands as written.
+  - `site:check --all --elementor` on that capture *(amendment 11; was: "on the saved capture")* gives no new
+    failing row against main's report, except inside the hero slider's subtree.
 
   Test: `test/web/site-slider-bdry.test.ts` "B-Dry's hero is one Slider (Nestable) of 3 slides playing every 7.5 s"
   (RED on main).
