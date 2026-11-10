@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-10)
 
-- **Current build `2026-11-10.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-10.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-10.4 staging-fit-renderer (website importer checks):** the test renderer prints a class's control CSS
+    with the element's `brxe` class on the site route and Bricks 2.4.2's front-end CSS, as Bricks prints the page
+    (`--bricks 2.3.9` for the older); `site:check -- <capture> --whole` draws header, page and footer together, and a
+    picture the capture holds no bytes of (another host's icon) stands in at its img tag's size; new `npm run site:live
+    -- <capture> <page address> [--elementor] [--bricks …]` reads a published Bricks page (reads only: everything but
+    GET/HEAD/OPTIONS is refused and its Chrome is ended by kill), maps it to the paste and measures it against the
+    capture and the renderer's drawing, naming an element the page holds in another's place; pastes and Figma designs
+    are byte for byte as before. Paste check **3ds** (AC5, live: `site:live` on B-Dry staging /homev2/ after the
+    re-paste).
   - **2026-11-10.3 site-slider (website importer):** with `--elementor`, a captured Elementor carousel (Image Carousel,
     Nested Carousel, Pro's Slides and carousels; either key family) pastes as one Slider (Nestable) holding its own
     slides: the site's timing, loop or fade, pause under the mouse, arrows and dots where the site draws them, per view
@@ -279,6 +288,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **The importer never hides that its Chrome is automated** (no `AutomationControlled` flag, no `navigator.webdriver`
   patch, no new user agent, no stealth script, nothing that clicks or types into a site's check): a person passes a
   person check in the visible window (web-human-check).
+- **`npm run site:live` only reads a published page** (staging-fit-renderer): its Chrome refuses every request but
+  GET/HEAD/OPTIONS, with Chrome's own report uploads off, and is ended by killing its process group, never asked to
+  close (a closing page sends its goodbye POSTs); it stops at a login page and never signs in. A tool that loads a
+  user's site keeps to this (`tools/lib/read-only.ts`).
 - **The plugin's conversion** (`src/plugin/convert.ts`) must stay byte-identical to `npm run replay` for the same
   snapshot (`test/unit/plugin-convert.test.ts`).
 - **Checks:** `npm run check` runs typecheck, build and the unit and rule tests. Tests use `node --test` on `.ts` files
