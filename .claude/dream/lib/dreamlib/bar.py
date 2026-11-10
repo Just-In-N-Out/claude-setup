@@ -10,7 +10,7 @@ import datetime
 import hashlib
 import re
 
-from . import extract, paths
+from . import extract, paths, targets
 
 QUOTE_MIN = 15
 PENDING_DAYS = 60
@@ -109,6 +109,7 @@ def check(env, read, used, findings, pending, applied, now):
         source = "\n".join(t for e in entries for t in quotable(e))
         fid = finding_id(session, uuid, quote)
         rec = {"id": fid, "session": session, "folder": read.folder, "project": read.project, "uuid": uuid,
+               "memory": targets.memory_key(env, read.folder, getattr(read, "cwd", None)),
                "quote": quote, "kind": f.get("kind"), "statement": str(f.get("statement") or ""),
                "date": entries[0]["date"], "label": entries[0]["label"], "general": bool(f.get("general")),
                "two_projects": False, "replaces": str(f.get("replaces") or ""), "ambiguous": bool(f.get("ambiguous")),

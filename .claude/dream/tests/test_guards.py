@@ -319,6 +319,82 @@ class GuardTests(unittest.TestCase):
         # every allowed seed is synced: it matches a manifest line and not sync.sh's never-list
         self.assertEqual(seed_problems(), [])
 
+    def test_a_finding_of_a_worktree_session_targets_the_memory_folder_of_its_repository(self):
+        """R2-5: Claude Code keeps auto memory per git repository, shared by its worktrees and subdirectories
+        (code.claude.com/docs/en/memory: "The <project> path is derived from the git repository, so all worktrees
+        and subdirectories within the same repo share one auto memory directory. Outside a git repo, the project
+        root is used instead"). A finding's memory folder is that repository's, never a folder no session loads."""
+        from dreamlib import state
+        h = self.h
+        h.cleanup()
+        self.h = h = FakeHome("r25", repo=True)
+        repo, wt = h.p("work/repo"), h.p("work/repo/.claude/worktrees/story-x")
+        h.sh("git", "init", "-q", "-b", "main", str(repo))
+        h.sh("git", "-C", str(repo), "commit", "-q", "--allow-empty", "-m", "init")
+        h.sh("git", "-C", str(repo), "worktree", "add", "-q", "-b", "story-x", str(wt))
+        key = lambda p: re.sub(r"[^A-Za-z0-9]", "-", str(p))
+        rkey, wkey = key(repo), key(wt)
+        rmem = ".claude/projects/%s/memory" % rkey
+        h.write(rmem + "/MEMORY.md", "# Memory\n\n- [Build notes](build-notes.md)\n")
+        h.write(rmem + "/build-notes.md", "# Build notes\n\n- Run the tests first.\n")
+        h.sync()
+        h.session(wkey, "s25", [fh.assistant("I committed without linting.", cwd=str(wt)),
+                                typed("u1", "No, " + fh.LINT_Q + ", please.", cwd=str(wt))])
+        wmem = "claude/projects/%s/memory" % wkey
+        note = "- Run the linter before every commit (2026-11-09)."
+        sc = {"session-helper": {"s25": {"findings": [fh.finding("u1", fh.LINT_Q)]}},
+              "editor": {"edits": [{"file": wmem + "/lint.md", "write": "# Lint\n\n" + note + "\n"},
+                                   {"file": wmem + "/MEMORY.md", "write": "# Memory\n\n- [Lint](lint.md): lint before commits (2026-11-09)\n"}],
+                         "changes": {"changes": [
+                             {"file": wmem + "/lint.md", "basis": "finding", "finding_ids": "ALL", "summary": "lint",
+                              "additions": ["# Lint", note], "removals": []},
+                             {"file": wmem + "/MEMORY.md", "basis": "finding", "finding_ids": "ALL", "summary": "index",
+                              "additions": ["# Memory", "- [Lint](lint.md): lint before commits (2026-11-09)"], "removals": []}],
+                             "already_saved": [], "declined": []}},
+              "checker": {"verdict": "yes", "lost_facts": [], "untraced": [], "notes": ""}}
+        h.scenario(sc)
+        # review-2 probe p06 (qH): a note in the worktree key's own memory folder, which no session loads
+        self.assertEqual(h.run(), 3)
+        self.assertFalse(h.p(".claude/projects/%s/memory" % wkey).exists(), "nothing written where no session looks")
+        self.assertIn("no finding or order allows this file", h.local("last-run.json")["reason"])
+        self.assertEqual([f.get("memory") for f in h.local("unsettled.json")["findings"]], [rkey],
+                         "the bar records the repository's key with the finding")
+        # the repository's memory folder is the finding's narrowest place: the lesson goes live there
+        sc["editor"] = {"edits": [{"file": rmem[1:] + "/build-notes.md", "append": note + "\n"}], "changes": {"changes": [
+            {"file": rmem[1:] + "/build-notes.md", "basis": "finding", "finding_ids": "ALL", "summary": "lint",
+             "additions": [note], "removals": []}], "already_saved": [], "declined": []}}
+        h.scenario(sc)
+        h.env["DREAM_NOW"] = "2026-11-10T05:01:00-05:00"   # a run of its own (its own folder under ~/.cache/dream)
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        self.assertIn(note, h.read(rmem + "/build-notes.md"))
+        # the rule, case by case
+        env = h.denv()
+        sib = h.p("work/story-y")                              # a worktree beside the repository, not inside it
+        h.sh("git", "-C", str(repo), "worktree", "add", "-q", "-b", "story-y", str(sib))
+        plain = h.p("work/plain")
+        plain.mkdir(parents=True)
+        (repo / "src").mkdir()
+        cases = {
+            "a worktree under .claude/worktrees": (wkey, str(wt), rkey),
+            "a worktree beside the repository": (key(sib), str(sib), rkey),
+            "a subdirectory of the repository": (key(repo / "src"), str(repo / "src"), rkey),
+            "a folder outside any git repository: its own key": (key(plain), str(plain), key(plain)),
+            "a worktree under .claude/worktrees that is gone": (key(repo) + "--claude-worktrees-gone",
+                                                               str(repo) + "/.claude/worktrees/gone", rkey),
+            "a folder that is gone, its own key with no memory folder": ("-gone-folder", "/gone/folder", None),
+            "a folder that is gone, its own key with a memory folder": (fh.PROJ, "/gone/proj", fh.PROJ),
+            "no working folder known (a finding from before this fix)": (fh.PROJ, None, fh.PROJ),
+        }
+        got = {k: targets.memory_key(env, folder, cwd) for k, (folder, cwd, _) in cases.items()}
+        self.assertEqual(got, {k: want for k, (_, _, want) in cases.items()})
+        # the bar records it from the session read; the editor's targets name that folder only
+        r = state.scan(env, {}, env.now()).reads
+        self.assertEqual([x.cwd for x in r if x.folder == wkey], [str(wt)])
+        f = fnd(folder=wkey, project=wkey, memory=rkey)
+        self.assertEqual(targets.scope_for(env, f)[0], targets.memory_dir(env, rkey) + "/")
+        self.assertNotIn(env.real_rel(".claude/projects/%s/memory" % wkey) + "/", targets.scope_for(env, f))
+        self.assertEqual(targets.scope_for(env, fnd(folder="-gone-folder", memory=None)), [], "no memory folder at all")
+
     def test_a_lesson_folded_into_a_line_keeps_that_line_whole_and_needs_no_replaces(self):
         """R2-4: DREAM.md section 6 and the editor's step 2 say to fold a lesson into an existing line first. A fold
         keeps the old line whole, word for word, at the start of the new one (only its final full stop may go) and

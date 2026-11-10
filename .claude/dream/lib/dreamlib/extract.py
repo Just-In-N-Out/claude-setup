@@ -58,6 +58,7 @@ class SessionRead:
         self.rewritten = False       # the marker no longer matched: read again from the top
         self.line_meta = {}          # line index -> (uuid, sha256 of the line), for markers
         self.freeze_lines = []       # 1-based numbers of NUL-only lines after the marker, skipped
+        self.cwd = None              # the first working folder a line names: where its memory folder comes from
 
 
 def freeze_artefact(line):
@@ -196,6 +197,8 @@ def read_session(path, start_line=0, seen=(), expect=None):
             raise UnknownShape(r.session, idx + 1, "a line that is not a JSON object")
         if obj.get("entrypoint"):
             entrypoints.add(obj["entrypoint"])
+        if r.cwd is None and isinstance(obj.get("cwd"), str) and obj["cwd"]:
+            r.cwd = obj["cwd"]
         if idx >= start_line - 1:
             r.line_meta[idx] = (obj.get("uuid"), hashlib.sha256(ln.encode()).hexdigest())
         if idx < start_line:

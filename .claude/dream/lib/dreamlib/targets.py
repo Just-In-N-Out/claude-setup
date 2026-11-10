@@ -3,6 +3,8 @@
 import difflib
 import fnmatch
 import os
+import re
+import subprocess
 from pathlib import Path
 
 from . import paths
@@ -93,13 +95,43 @@ def memory_dir(env, folder):
     return env.real_rel(".claude/projects/%s/memory" % folder)
 
 
+def key_of_path(path):
+    """The folder key Claude Code gives a path under ~/.claude/projects: every character that is not a letter
+    or a digit becomes '-' (/home/justin/.claude -> -home-justin--claude)."""
+    return re.sub(r"[^A-Za-z0-9]", "-", str(path))
+
+
+def memory_key(env, folder, cwd=None):
+    """The folder key whose memory/ Claude Code loads for a session, or None (R2-5). Auto memory is kept per git
+    repository and shared by its worktrees and subdirectories; outside a git repository the project root is
+    used (code.claude.com/docs/en/memory). So: the repository of the session's working folder while that folder
+    exists (the session's own key outside any repository); once it is gone, the repository a Claude Code
+    worktree path (<repo>/.claude/worktrees/<name>) names; else the session's own key when it has a memory
+    folder, and otherwise none: a folder no session loads is never a target."""
+    if cwd and os.path.isdir(cwd):
+        p = subprocess.run(["git", "-C", cwd, "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                           capture_output=True, text=True, env=env.environ)
+        if p.returncode != 0:
+            return folder
+        common = p.stdout.strip()
+        if os.path.basename(common) == ".git":
+            return key_of_path(os.path.dirname(common))
+    else:
+        m = re.match(r"^(/.+?)/\.claude/worktrees/[^/]+(/|$)", cwd or "")
+        if m:
+            return key_of_path(m.group(1))
+    return folder if (env.projects_dir / folder / "memory").is_dir() else None
+
+
 def scope_for(env, finding):
-    """$HOME-relative real prefixes a finding may change: its project's memory folder, project skill and
-    project CLAUDE.md copy; ["*"] (anything allowed) when it is general or seen in two projects."""
+    """$HOME-relative real prefixes a finding may change: the memory folder its session's repository loads
+    (memory_key), its project skill and project CLAUDE.md copy; ["*"] (anything allowed) when it is general
+    or seen in two projects."""
     if finding.get("general") or finding.get("two_projects"):
         return ["*"]
     proj = project_of(env, finding["folder"])
-    out = [memory_dir(env, finding["folder"]) + "/"]
+    mkey = finding["memory"] if "memory" in finding else memory_key(env, finding["folder"])
+    out = [memory_dir(env, mkey) + "/"] if mkey else []
     if proj.get("skill"):
         out.append(env.real_rel(proj["skill"]) + "/")
     doc = ".claude/project-docs/%s/CLAUDE.md" % proj["name"]

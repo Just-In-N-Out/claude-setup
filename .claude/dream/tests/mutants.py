@@ -79,6 +79,7 @@ T = {
     "rmcharge": "test_the_scripts_own_rewrite_of_a_repeat_mistakes_file_is_not_charged_to_its_cap_or_budget",
     "allowance": "test_an_ordered_entry_is_held_to_the_allowance_the_editor_is_given",
     "fold": "test_a_lesson_folded_into_a_line_keeps_that_line_whole_and_needs_no_replaces",
+    "memkey": "test_a_finding_of_a_worktree_session_targets_the_memory_folder_of_its_repository",
 }
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
               "g_dated_lines,\n       g_dates_on_additions, g_secrets, g_repeat_mistakes, g_memory_index, g_library]")
@@ -365,6 +366,24 @@ MUTANTS = [
         "        kept = set(folds(G, d).values())  # a dated line", "        kept = set()  # a dated line")], ["fold"]),
     ("G4f", "the line accounting ignores folds (R2-4 back)", [(L + "guards.py",
         "        kept = set(fo.values())\n", "        kept, fo = set(), {}\n")], ["fold"]),
+    ("G5a", "a finding's memory folder is its session's own folder key again (R2-5 back)", [(L + "targets.py",
+        '    mkey = finding["memory"] if "memory" in finding else memory_key(env, finding["folder"])\n',
+        '    mkey = finding["folder"]\n')], ["memkey"]),
+    ("G5b", "the bar records no memory key with a finding", [(L + "bar.py",
+        '               "memory": targets.memory_key(env, read.folder, getattr(read, "cwd", None)),\n', "")], ["memkey"]),
+    ("G5c", "the repository of an existing working folder is not looked up", [(L + "targets.py",
+        "        if os.path.basename(common) == \".git\":\n            return key_of_path(os.path.dirname(common))\n",
+        "        if False:\n            return key_of_path(os.path.dirname(common))\n")], ["memkey"]),
+    ("G5d", "a gone Claude Code worktree no longer names its repository", [(L + "targets.py",
+        "        if m:\n            return key_of_path(m.group(1))\n", "        if False:\n            return key_of_path(m.group(1))\n")],
+     ["memkey"]),
+    ("G5e", "a session's own key is used though it has no memory folder (widening)", [(L + "targets.py",
+        '    return folder if (env.projects_dir / folder / "memory").is_dir() else None\n', "    return folder\n")], ["memkey"]),
+    ("G5f", "outside any git repository no memory folder is given (narrowing)", [(L + "targets.py",
+        "        if p.returncode != 0:\n            return folder\n", "        if p.returncode != 0:\n            return None\n")],
+     ["memkey"]),
+    ("G5g", "the session read keeps no working folder", [(L + "extract.py",
+        '            r.cwd = obj["cwd"]\n', "            pass\n")], ["memkey"]),
     ("G3e", "a listed entry is held to the bytes of an add order for its kind too (widening the check's reach)", [
         (L + "mistakes.py", '                if kind not in before and o["action"] == "add" and o["kind"] == kind:\n',
          '                if o["action"] == "add" and o["kind"] == kind:\n')], ["allowance"]),
