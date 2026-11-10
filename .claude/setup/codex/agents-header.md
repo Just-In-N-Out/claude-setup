@@ -25,7 +25,7 @@ CLAUDE.md is written for Claude Code. You are Codex: follow every rule in it, tr
 | Read, Edit, Write, Bash | shell commands and `apply_patch` |
 | TaskStop | `interrupt_agent` |
 | the scratchpad directory | your own `mktemp -d` folder |
-| Opus 5.5 at high effort for every role; "Sol 6.1 only as a substitute at a Claude limit" | Claude Code only. In Codex every pipeline role runs on the Codex pipeline model below |
+| The per-role Claude models and efforts, and the pipeline main session on Opus 5.5 high (`/model opus`, `/effort high`); "Sol 6.1 only as a substitute at a Claude limit" | Claude Code only. In Codex every pipeline role runs on the Codex pipeline model below |
 
 ## Codex pipeline model
 Every Codex pipeline role runs on **@PIPELINE_MODEL@** at **@PIPELINE_EFFORT@** effort, set in one place: `~/.claude/setup/codex/pipeline-model.toml`. When Justin says "switch the Codex pipeline model to X", run `~/.claude/setup/codex/set-pipeline-model.sh X` (add an effort to change it too). It (1) checks X against `~/.codex/models_cache.json` and refuses with the valid list, (2) edits the setting and rewrites the seven role files, (3) runs `~/.claude/setup/sync.sh`, so the switch holds on both machines until the next one. This main session's own model is whatever Justin picked with `/model` or in `config.toml`.

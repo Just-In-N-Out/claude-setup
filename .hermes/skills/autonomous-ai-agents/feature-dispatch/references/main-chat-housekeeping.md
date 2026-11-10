@@ -15,6 +15,8 @@ Open items are saved: <one line, e.g. "2 plans waiting for go" or "nothing open"
 - Never ask while an agent is live: `/new` cuts running agents off.
 - Before asking, make sure everything needed is saved: the board is current, every plan and his answers are in their plan files, and rulings are in HANDOFF. A fresh chat rebuilds the state from the board ("What are we working on?").
 
+**In Claude Code (2026-11-10):** a pipeline main session runs on Opus 5.5 high. At step 1 it says which model and effort it is on and, when they differ, asks for `/model opus` and `/effort high` in the same question as Full or Mini. Each time the last running agent returns, it reads its own context size: `python3 ~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/token-report/report.py context ~/.claude/projects/<project key>/<session id>.jsonl` (both names are in its scratchpad path, `/tmp/claude-<uid>/<project key>/<session id>/scratchpad`). Past 300k tokens with no agent running, it asks once per quiet spell for a fresh session, by the rules above (nothing live; every plan, brief, his answers and every evidence file saved), and the new session resumes from the plans, briefs and evidence. *Why: the main session was 10.1% of the pipeline's tokens, at 331k of context per call on average.*
+
 ## What are we working on
 
 When Justin asks this (or "what's going on", "list the agents", "status"), answer from real state, never from memory of the chat:
