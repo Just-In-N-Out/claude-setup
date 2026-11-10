@@ -175,7 +175,9 @@ tracker, automatic publication or a competing agent lifecycle.
   `load(url, context, nextLoad)`, transform only the exact target module's returned
   source; fail if the replacement did not match, and assert exactly one module
   replacement per test-file child process (the `--test` parent loads no product
-  module; `NODE_OPTIONS='--import <hook.mjs>'` reaches every child). Run an unhooked green control afterward and verify
+  module; `NODE_OPTIONS='--import <hook.mjs>'` reaches every child, except a CLI the
+  test spawns with its own small `env`: count APPLIED per process and aim the mutant at a
+  test that imports the module itself). Run an unhooked green control afterward and verify
   status. Select focused tests that actually import the module: zero replacements
   is a harness failure, not a killed product mutation. Go: `go test -overlay <json>`
   swaps a source file for a mutated scratch copy, or adds a scratch
