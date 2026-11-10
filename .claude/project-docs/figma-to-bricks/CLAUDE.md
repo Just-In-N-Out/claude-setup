@@ -7,8 +7,16 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-10)
 
-- **Current build `2026-11-10.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-10.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-10.5 site-media-upload (website importer):** `npm run site:upload -- <capture> <outDir> <https://site>`
+    (`--dry-run`, `--svg`, `--elementor`, `--part`, `--basic-text`, `--user`, `--record`) uploads a scanned page's own
+    pictures to that WordPress site's media library with the panel's uploader (each file once, as served, the old
+    site's alt in Media; a dry run sends nothing; the password at a hidden prompt; a typed yes), writes media.json and
+    the pastes showing the library's pictures; `npm run site … --media <media.json>` remakes them offline; without it
+    pastes are byte for byte as before. A stop (Ctrl+C) loses no upload and a re-run uploads no file twice (HANDOFF
+    names the rare exceptions); every printed line is scrubbed of anything password-shaped. Q1–Q12 not yet confirmed.
+    Paste check **3dt** (AC15, AC16, live: re-capture bdryswi.com, dry run, upload to B-Dry staging, re-paste).
   - **2026-11-10.4 staging-fit-renderer (website importer checks):** the test renderer prints a class's control CSS
     with the element's `brxe` class on the site route and Bricks 2.4.2's front-end CSS, as Bricks prints the page
     (`--bricks 2.3.9` for the older); `site:check -- <capture> --whole` draws header, page and footer together, and a
@@ -292,6 +300,14 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   GET/HEAD/OPTIONS, with Chrome's own report uploads off, and is ended by killing its process group, never asked to
   close (a closing page sends its goodbye POSTs); it stops at a login page and never signs in. A tool that loads a
   user's site keeps to this (`tools/lib/read-only.ts`).
+- **One tool writes to WordPress: `npm run site:upload`** (Justin, 2026-11-10: a scanned page's pictures "upload
+  to my Wordpress media library like how it is in the plugin", run "From the command line"). It only adds media
+  items (never changes, moves or deletes one; never touches pages, posts or settings), only on the site whose
+  address was typed, after reading that site and a typed `yes`; the Application Password is typed at its hidden
+  prompt and never goes in an argument, a variable, a file, the paste or a log. Only Justin runs it, in his own
+  terminal, against his own site. Agents never run it against his site or any live site, never ask for or hold his
+  password, and test it only against `test/fixtures/wp-standin.ts`. Every other tool (capture, the helper, site,
+  site:check, compare, replay) stays read-only; the helper still binds 127.0.0.1 only and never writes to a site.
 - **The plugin's conversion** (`src/plugin/convert.ts`) must stay byte-identical to `npm run replay` for the same
   snapshot (`test/unit/plugin-convert.test.ts`).
 - **Checks:** `npm run check` runs typecheck, build and the unit and rule tests. Tests use `node --test` on `.ts` files
@@ -573,6 +589,14 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **Code-method class names start with the page's name** (Justin, 2026-11-07, "Never use bare names", then "Prefix
   every name"): `<page>__<name>`, only `site-reset-<4>`, `site-fonts`, `site-text`, `site-flat` keep theirs; a static
   slider keeps all its slides ("Keep all its slides").
+- **A scanned page's pictures go to WordPress from the command line** (Justin, 2026-11-10, "From the command
+  line", Full pipeline; ⭐ not yet confirmed, Q12 open, HANDOFF "A scanned page's pictures go to WordPress's media
+  library"): its own command `site:upload` (Q1 A); the password at a hidden prompt each run, never saved (Q2 A); every
+  picture the site's own markup shows, each file once, script-made ones and `data:` left (Q3 A); no file in the
+  capture: its old address (Q4 A); SVG only with `--svg` (Q5 A); files as served, never re-encoded (Q6 A); the old
+  site's first alt with words in Media, an alt in WordPress never changed by a re-run (Q7 A); no alttext.ai (Q8 A); a
+  record per computer at `~/.config/figma-to-bricks/site-uploads.json` (Q9 A); https, the site read first, a typed yes
+  (Q10 A); a stopped run keeps what went up, the next sends the rest (Q11 A).
 - **Lists a visitor searches and filters** (user, 2026-10-19): "In the page" (the plugin pastes every row and a small
   script; no WordPress post type) and "Spreadsheet in the panel" (a CSV per list, kept in the Figma file).
   - **On tablets and phones** (user, 2026-10-19, screenshots at 990/766/477: "whenever there's a panel, it looks clean
