@@ -71,6 +71,14 @@ class Input:
     def is_rm(self, d):
         return self.live(d).endswith("/references/repeat-mistakes.md")
 
+    def base(self, d):
+        """What a file's change is measured from. For a repeat-mistakes file that is the script's own rewrite
+        of it as it was (counts, stories and order from the tally: mistakes.normalize_text), which is not the
+        editor's change and is charged to no cap or budget (R2-2); for any other file, the file as it was."""
+        if self.is_rm(d) and d.status == "M":
+            return mistakes.normalize_text(d.old, self.tally)
+        return d.old
+
     def copy_text(self, rel):
         try:
             return (self.copy / rel).read_text()
@@ -195,8 +203,9 @@ def g_budgets(G):
         b = budget_for(G.env, live)
         if not b or d.status == "D":
             continue
-        for what, old, new, cap in (("bytes", len(d.old.encode()), len(d.new.encode()), b[0]),
-                                    ("lines", len(d.old.splitlines()), len(d.new.splitlines()), b[1])):
+        base = G.base(d)
+        for what, old, new, cap in (("bytes", len(base.encode()), len(d.new.encode()), b[0]),
+                                    ("lines", len(base.splitlines()), len(d.new.splitlines()), b[1])):
             if cap is None:
                 continue
             if old > cap and new > old:
@@ -237,9 +246,11 @@ def g_caps(G):
         removed = nb([ln for ln in d.removed if ln not in mo])
         moved += nb([ln for ln in d.removed if ln in mo])
         if G.is_rm(d):
-            if "\n### " in "\n" + d.old and added + removed > c.get("repeat_mistakes_change", 4000):
+            ed = targets.FileDiff(d.copy, d.status, G.base(d), d.new)  # the editor's change, not the script's (R2-2)
+            changed = nb([ln for ln in ed.added if ln not in mi]) + nb([ln for ln in ed.removed if ln not in mo])
+            if "\n### " in "\n" + d.old and changed > c.get("repeat_mistakes_change", 4000):
                 out.append("%s: %d bytes changed (cap %d per run once it has entries)"
-                           % (live, added + removed, c.get("repeat_mistakes_change", 4000)))
+                           % (live, changed, c.get("repeat_mistakes_change", 4000)))
             continue
         if added > c.get("file_added", 3000):
             out.append("%s: %d bytes added (cap %d)" % (live, added, c.get("file_added", 3000)))

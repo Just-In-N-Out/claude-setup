@@ -113,11 +113,13 @@ def retire_due(env, tally, kid):
     return False
 
 
-def _live_size(env, rel):
+def _rewritten(env, rel, tally):
+    """The file as the script's own rewrite will leave it (counts, stories, order from the tally): the room an
+    order has is measured on that, so a rewrite that waited through review-only runs keeps its room (R2-2)."""
     try:
-        return (env.home / rel).stat().st_size
+        return normalize_text((env.home / rel).read_text(), tally)
     except OSError:
-        return 0
+        return ""
 
 
 def orders(env, tally):
@@ -141,26 +143,27 @@ def orders(env, tally):
             cands.append(dict(info, id="add:" + kid, action="add", file=want))
     size, texts = {}, {}
 
+    def size_of(f):
+        if f not in size:
+            size[f] = len(_rewritten(env, f, tally).encode())
+        return size[f]
+
     def entry_bytes(f, kind):
         if f not in texts:
-            try:
-                texts[f] = entries_of((env.home / f).read_text())
-            except OSError:
-                texts[f] = {}
+            texts[f] = entries_of(_rewritten(env, f, tally))
         e = texts[f].get(kind)
         return len((e[1] + e[2]).encode()) if e else 0
 
     out = []
     for o in cands:
         if o["action"] == "remove":
-            size.setdefault(o["file"], _live_size(env, o["file"]))
-            size[o["file"]] -= entry_bytes(o["file"], o["kind"])
+            size[o["file"]] = size_of(o["file"]) - entry_bytes(o["file"], o["kind"])
             out.append(o)
     growing = sorted((o for o in cands if o["action"] != "remove"), key=lambda o: (-o["count"], o["kind"]))
     full = set()
     for o in growing:
         dest = o.get("to") or o["file"]
-        size.setdefault(dest, _live_size(env, dest))
+        size_of(dest)
         est = entry_bytes(o["file"], o["kind"]) if o["action"] == "move" else 0
         est = est or len(heading_for(o["kind"], o["title"], tally).encode()) + ENTRY_ALLOWANCE
         if dest in full or size[dest] + est > FILE_TARGET:
@@ -168,8 +171,7 @@ def orders(env, tally):
             continue
         size[dest] += est
         if o["action"] == "move":
-            size.setdefault(o["file"], _live_size(env, o["file"]))
-            size[o["file"]] -= est
+            size[o["file"]] = size_of(o["file"]) - est
         out.append(o)
     return sorted(out, key=lambda o: o["kind"])
 

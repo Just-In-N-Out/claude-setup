@@ -76,6 +76,7 @@ T = {
     "gitstatus": "test_the_apply_step_refuses_a_target_with_someone_elses_uncommitted_edit",
     # review 2 fixes (fixer 2)
     "basis": "test_a_change_counts_only_in_a_file_its_basis_belongs_to",
+    "rmcharge": "test_the_scripts_own_rewrite_of_a_repeat_mistakes_file_is_not_charged_to_its_cap_or_budget",
 }
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
               "g_dated_lines,\n       g_dates_on_additions, g_secrets, g_repeat_mistakes, g_memory_index, g_library]")
@@ -176,9 +177,9 @@ MUTANTS = [
     ("R-runremoved", "the whole-run removed cap", [(L + "guards.py", '    if run_rem > c.get("run_removed", 12000):\n',
                                                      "    if False:\n")], ["limits"]),
     ("R-moved", "the moved cap", [(L + "guards.py", '    if moved > c.get("moved", 30000):\n', "    if False:\n")], ["limits"]),
-    ("R-rmcap", "the repeat-mistakes change cap", [(L + "guards.py",
-        '            if "\\n### " in "\\n" + d.old and added + removed > c.get("repeat_mistakes_change", 4000):\n',
-        "            if False:\n")], ["limits"]),
+    ("R-rmcap", "the repeat-mistakes change cap (re-derived: fixer 2 measures it from the script's rewrite)", [
+        (L + "guards.py", '            if "\\n### " in "\\n" + d.old and changed > c.get("repeat_mistakes_change", 4000):\n',
+         "            if False:\n")], ["limits", "rmcharge"]),
     ("R-tidy2", "the 2-file tidy limit", [(L + "guards.py", "    if over_budget_tidies > 2:\n", "    if False:\n")], ["limits"]),
     ("R-movesrc", "a move destination whose source no finding allows", [(L + "guards.py",
         "        if not sources <= ok_files:\n", "        if False:\n")], ["limits"]),
@@ -325,6 +326,16 @@ MUTANTS = [
     ("G1e", "a move's destination may be the editor's own _dream/ files", [(L + "guards.py",
         "                t = G.copy_text(dest) if dest in G.targets else None\n", "                t = G.copy_text(dest)\n")],
      ["basis"]),
+    ("G2a", "the budget charges the script's own rewrite again", [(L + "guards.py", "        base = G.base(d)\n",
+                                                                   "        base = d.old\n")], ["rmcharge"]),
+    ("G2b", "the change cap charges the script's own rewrite again", [(L + "guards.py",
+        "            ed = targets.FileDiff(d.copy, d.status, G.base(d), d.new)", "            ed = targets.FileDiff(d.copy, d.status, d.old, d.new)")],
+     ["rmcharge"]),
+    ("G2c", "the orders measure room on the live bytes, not on the pending rewrite", [(L + "mistakes.py",
+        "        return normalize_text((env.home / rel).read_text(), tally)\n", "        return (env.home / rel).read_text()\n")],
+     ["rmcharge"]),
+    ("G2d", "nothing the editor writes in a repeat-mistakes file is charged (widening)", [(L + "guards.py",
+        "            return mistakes.normalize_text(d.old, self.tally)\n", "            return d.new\n")], ["rmcharge"]),
 ]
 
 

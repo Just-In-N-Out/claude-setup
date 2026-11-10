@@ -16,6 +16,63 @@ PROJ_RM_COPY = "hermes/skills/sd/proj-skill/references/repeat-mistakes.md"
 GEN_RM_COPY = "hermes/skills/ad/feature-dispatch/references/repeat-mistakes.md"
 
 
+MIST = "the guard is skipped when the input comes through a link or a second code path"
+STORIES = ["story-a-header-fit", "story-b-footer-fit", "story-c-menu-fit", "story-d-hero-fit"]
+
+
+def listed_tally(n, counts):
+    """n mistake kinds of project proj, all listed in its repeat-mistakes file; kind i was seen in the first
+    counts[i] of four stories (none is due to retire)."""
+    tally = dict(state.default_tally(), backfill_done=True)
+    tally["stories"] = {"proj": list(STORIES)}
+    tally["story_seq"] = ["proj/" + s for s in STORIES]
+    for i in range(n):
+        st = STORIES[:counts[i]]
+        tally["kinds"]["kind-%02d-guard-skipped" % i] = {
+            "title": MIST, "description": "d", "area": "Guards", "listed_in": fh.PROJ_RM,
+            "listed_since": {"date": "2026-11-01", "seq": 4}, "repeats_while_listed": [], "retired": False,
+            "projects": {"proj": {"stories": list(st), "findings": len(st), "last_story": st[-1]}}}
+    return tally
+
+
+def come_back(tally, story, which):
+    """A copy of the tally in which kinds `which` (numbers) were seen again in a new story."""
+    t = json.loads(json.dumps(tally))
+    t["stories"].setdefault("proj", []).append(story)
+    t["story_seq"].append("proj/" + story)
+    for i in which:
+        p = t["kinds"]["kind-%02d-guard-skipped" % i]["projects"]["proj"]
+        p["stories"].append(story)
+        p["findings"] += 1
+        p["last_story"] = story
+    return t
+
+
+def rm_entry(tally, kind, body):
+    """One entry: the script's heading, then a Build and a Check line of `body` bytes in all (newlines included)."""
+    c = "- **Check for it:** a test through the link and one through the second path; both must be refused."
+    b = ("- **Build it this way:** resolve every link and run the same check on every path that reaches the write"
+         + ", with one test per path and per guard" * 20)[:body - len(c) - 3] + "."
+    return mistakes.heading_for(kind, MIST, tally) + b + "\n" + c + "\n"
+
+
+def rm_file(h, tally, body, total=None):
+    """The project's repeat-mistakes file holding every listed kind of the tally, padded to `total` bytes."""
+    kinds = [k for k, v in sorted(tally["kinds"].items()) if v.get("listed_in")]
+    t = mistakes.normalize_text(RM_HEADER_TEXT(h) + "\n## Guards\n" + "".join(rm_entry(tally, k, body) for k in kinds),
+                                tally)
+    if total:
+        need = total - len(t.encode())
+        assert need >= 0, need
+        t = t[:-2] + "x" * need + ".\n"
+        assert len(t.encode()) == total
+    return t
+
+
+def RM_HEADER_TEXT(h):
+    return fh.RM_HEADER.format(p="proj")
+
+
 def review(h, project, story, claims, n=1):
     h.write(".hermes/plans/%s/evidence/%s/review-%d/review.json" % (project, story, n), json.dumps(
         {"findings": [{"id": "F%d" % i, "severity": "P2", "claim": c, "file_line": "a:%d" % i}
@@ -170,6 +227,97 @@ class ScriptRewriteTests(unittest.TestCase):
 
     def entries(self, rel):
         return MistakeTests.entries(self, rel)
+
+    def test_the_scripts_own_rewrite_of_a_repeat_mistakes_file_is_not_charged_to_its_cap_or_budget(self):
+        """R2-2 (R1-3 again): the script's own rewrite (counts, stories, order) is measured out of the 4,000-byte
+        change cap and the 16,000-byte budget, which judge only what the editor changed on top of it; the orders
+        keep room for the rewrite; and a rewrite that waited through review-only runs goes live with the next
+        correction of that project."""
+        from dreamlib import guards, targets, extract
+        import copy
+        self.h = h = FakeHome("r22")
+        env = h.denv()
+        t0 = listed_tally(26, [3, 3] + [2] * 24)
+        old = rm_file(h, t0, 400, total=15990)
+        t1 = come_back(t0, "story-e-new-page", range(26))
+        t1 = come_back(t1, "story-f-new-menu", [22, 23, 24, 25])     # four entries now outrank the first two
+        rewrite = mistakes.normalize_text(old, t1)
+        raw = targets.FileDiff(PROJ_RM_COPY, "M", old, rewrite)
+        self.assertGreater(targets.FileDiff.nbytes(raw.added + raw.removed), 4000, "the fixture's rewrite passes the cap")
+        self.assertGreater(len(rewrite.encode()), 16000, "and crosses the budget")
+        n = [0]
+
+        def G(o, new, tally, orders=(), changes=()):
+            n[0] += 1
+            d = h.root / ("g%d" % n[0])
+            for root, text in (("snap", o), ("copy", new)):
+                f = d / root / PROJ_RM_COPY
+                f.parent.mkdir(parents=True, exist_ok=True)
+                f.write_text(text)
+            diffs, links = targets.diff_copy(d)
+            ch = {"changes": list(changes), "already_saved": [], "declined": []}
+            return guards.Input(env, d, {PROJ_RM_COPY: {"live": fh.PROJ_RM, "sha": "x"}}, diffs, links, [], list(orders),
+                                ch, tally, targets.load_rules(env))
+
+        self.assertEqual(guards.run_all(G(old, rewrite, t1)), [], "the script's rewrite alone goes live")
+        # the editor's own change is still judged: over the budget after the rewrite, an added entry is growth
+        t2 = copy.deepcopy(t1)
+        t2["kinds"]["kind-99-new-one"] = dict(t1["kinds"]["kind-00-guard-skipped"], listed_in=None, listed_since=None,
+                                              projects={"proj": {"stories": ["story-e-new-page", "story-f-new-menu"]}})
+        add = {"id": "add:kind-99-new-one", "action": "add", "kind": "kind-99-new-one", "file": fh.PROJ_RM, "area": "Guards",
+               "title": MIST, "count": 2, "stories": []}
+        grown = mistakes.normalize_text(old + rm_entry(t2, "kind-99-new-one", 300), t2)
+        self.assertTrue(any("over its budget" in x for x in guards.g_budgets(G(old, grown, t2, [add]))),
+                        "an editor's entry on top of a rewrite that is over the budget")
+        # the cap: ten listed entries all come back (2,800 bytes of rewrite); the editor adds three ordered entries
+        # (about 1,700 bytes): under the cap; eight (about 4,500 bytes): over it
+        t3 = listed_tally(10, [2] * 10)
+        small = rm_file(h, t3, 400)
+        t4 = come_back(t3, "story-e-new-page", range(10))
+        new_kinds = ["kind-%02d-new-one" % i for i in range(50, 58)]
+        for k in new_kinds:
+            t4["kinds"][k] = dict(t4["kinds"]["kind-00-guard-skipped"], listed_in=None, listed_since=None,
+                                  projects={"proj": {"stories": ["story-a-header-fit", "story-e-new-page"]}})
+        adds = [dict(add, id="add:" + k, kind=k) for k in new_kinds]
+        for k, want in ((3, False), (8, True)):
+            new = mistakes.normalize_text(small + "".join(rm_entry(t4, x, 400) for x in new_kinds[:k]), t4)
+            got = guards.g_caps(G(small, new, t4, adds[:k]))
+            self.assertEqual(any("bytes changed (cap 4000" in x for x in got), want, "%d entries added: %s" % (k, got))
+        # the orders keep room for the rewrite: a file at 14,300 bytes whose rewrite adds about 470 has no room for
+        # one more entry of about 550 bytes under 15,000; with no rewrite pending, it has
+        h.write(fh.PROJ_RM, rm_file(h, t0, 385, total=14300))
+        ready = lambda t: dict(t["kinds"]["kind-00-guard-skipped"], listed_in=None, listed_since=None,
+                               projects={"proj": {"stories": ["story-a-header-fit", "story-b-footer-fit"]}})
+        quiet = copy.deepcopy(t0)
+        quiet["kinds"]["kind-99-new-one"] = ready(quiet)
+        back = come_back(t0, "story-e-new-page", range(26))
+        back["kinds"]["kind-99-new-one"] = ready(back)
+        self.assertEqual([o["id"] for o in mistakes.orders(env, quiet)], ["add:kind-99-new-one"])
+        self.assertEqual([o["id"] for o in mistakes.orders(env, back)], [], "the pending rewrite takes the room")
+        # end to end (review-2 probe p04, qD1 and qE1): a file 10 bytes under its budget; two runs with review lines
+        # only bring listed mistakes back (the rewrite waits: no copy holds the file); then an ordinary correction
+        h.cleanup()
+        self.h = h = FakeHome("r22e", repo=True)
+        h.write(fh.PROJ_RM, rm_file(h, t0, 400, total=15990))
+        h.write(".claude/dream/state/tally.json", paths.dump_json(t0))
+        h.sync()
+        for story, kinds in (("story-e-new-page", [22, 23, 24, 25]), ("story-f-new-menu", [22, 23, 24, 25, 0, 1])):
+            claims = ["kind %02d came back" % i for i in kinds]
+            review(h, "proj", story, claims)
+            h.scenario({"review-helper": {"assignments": [
+                {"line_id": extract.line_id("proj", story, c), "kind": "kind-%02d-guard-skipped" % i, "new_kind": None,
+                 "enforce_proposal": ""} for i, c in zip(kinds, claims)]}})
+            self.assertEqual(h.run(), 0)
+        fh.standard(h)
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE), "the correction went live")
+        got = self.entries(fh.PROJ_RM)[0]
+        rank = [k for k, _, _ in got]
+        self.assertEqual({k: (c, s) for k, c, s in got}["kind-22-guard-skipped"],
+                         ("4", "story-a-header-fit, story-b-footer-fit, story-e-new-page, story-f-new-menu"),
+                         "the rewrite went live with it")
+        self.assertLess(rank.index("kind-22-guard-skipped"), rank.index("kind-02-guard-skipped"), "and moved it up")
+        self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
 
     def test_the_script_orders_only_the_entries_that_fit_a_repeat_mistakes_file_most_frequent_first(self):
         """R1-9 (DREAM.md section 7: about 15 KB per file, most frequent first): the script orders no more
