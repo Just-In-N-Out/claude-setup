@@ -62,6 +62,92 @@ you run verifier → auditor → `ac-check.sh` again on it
 forces another verifier → auditor round
 EOF
 }
+# where a pinned statement lives: the file of each key in prose() below
+file_of() {
+  case $1 in
+    claude) echo "$CLAUDE_MD" ;;          fd) echo "$FD/SKILL.md" ;;
+    mini) echo "$FD/references/mini-pipeline.md" ;;   loop) echo "$FD/references/review-loop.md" ;;
+    acv) echo "$FD/references/ac-verification.md" ;;  house) echo "$FD/references/main-chat-housekeeping.md" ;;
+    away) echo "$FD/references/away-and-recovery.md" ;;
+    leorna) echo "$SD/leorna/SKILL.md" ;;  rfc) echo "$SD/review-fix-cadence/SKILL.md" ;;
+    f2b) echo "$SD/figma-to-bricks/SKILL.md" ;;  header) echo ".claude/setup/codex/agents-header.md" ;;
+    *) return 1 ;;
+  esac
+}
+prose() { # <key>|<text>: every prose statement of a role's model or effort, and of the changed rules, outside the
+          # routing sentence and the role tables, word for word (a wrong model, effort or rule in any of them fails)
+  cat <<'EOF'
+claude|The pipeline main session itself runs on Opus 5.5 high (step 1 checks it).
+claude|past 300k with nothing running, asks once per quiet spell for a fresh session
+claude|when that isn't Opus 5.5 high, ask in the same question for `/model opus` and `/effort high` before anything is dispatched
+claude|report only; round 1 on Fable 5.2 high, every later round on Opus 5.5 high)
+claude|(to the round-3 question, "fix" → `"continue": true`; "follow-up" → `"accept"` with those ids, and their lines go to `<evidence>/follow-ups.md`)
+claude|so is, from round 3, a round with only P2 left (fix or follow-up?). No round cap, but the user is asked from round 3 before a P2-only round is fixed.
+claude|if HEAD now differs from the head `ac-check.sh` accepted and the rebase resolved no conflict, the finisher also reruns every agent-run AC's test on the new head into a rebase receipt
+claude|on a pure rebase of the accepted head it accepts the earlier reports, with no new verifier or auditor. Anything else (a rebase that resolved conflicts, a `REBASE  NOT ACCEPTED` line) takes the full path
+claude|with no cap, but from round 3 a round with only P2 left asks the user: fix or follow-up.
+claude|**After a pure rebase (user, 2026-11-10):** a rebase receipt, not a new verifier and auditor.
+fd|Mini (Fable plan, Opus build, one full fresh Fable review, then the same loop of reviews of the fixes)
+fd|The Fable planner does the architecture and design
+fd|no round cap (from round 3 a round with only P2 left asks Justin: fix or follow-up?), each role on the role table (round 1 reviewed on Fable 5.2 high, later rounds on Opus 5.5 high, fixes on Opus 5.5 high)
+fd|Fixers and the verifier run on Opus 5.5 high, the AC auditor on Opus 5.5 xhigh (Justin, 2026-11-10).
+fd|(xhigh for builder and AC auditor; high for planner, every reviewer, fixer, verifier and finisher)
+fd|  - model: Opus 5.5 high, a fresh agent. Board → `verifying`.
+fd|dispatch round 1 of the review loop, a fresh **Fable 5.2 high full review**
+fd|**REVIEW AGAIN** → an **Opus 5.5 high FIXER now**
+fd|then the next fresh review, on Opus 5.5 high (Full: round 2 is full;
+fd|to the round-3 question ("only P2 left from round 3 on") his "fix" is `"continue": true` and "follow-up" is `"accept"` with those ids
+fd|From round 3 a round with only P2 left is ASK JUSTIN (fix or follow-up?).
+fd|A pure rebase (the same patches in the same order, no merges: `ac-check.sh`'s test) needs no new verifier or auditor on any story since 2026-11-10
+mini|1. **Planner (Fable 5.2 high).**
+mini|2. **Builder (Opus 5.5 xhigh).**
+mini|3. **Reviewer (fresh Fable 5.2 high).** Round 1 of the review loop
+mini|**REVIEW AGAIN** → an Opus 5.5 high finisher fixes the listed P0–P2
+mini|a fresh Opus 5.5 high delta reviewer (review only
+mini|from round 3 (in Mini, the review of the second fix) a round with only P2 left asks too: his "fix" → `"continue": true`, "follow-up" → `"accept"`
+mini|a pure rebase gets a rebase receipt and `ac-check.sh --rebase-receipt` (`ac-verification.md`), not a new verifier and auditor; a rebase that resolved conflicts takes the full path
+mini|no round cap, but Justin is asked from round 3 when only P2 is left
+mini|(usually a Fable high re-plan or the Full review order)
+mini|each role runs on Full's model and effort
+loop|- Round 1 is reviewed by a fresh Fable 5.2 high agent; every later round (Full's whole-story round 2, the delta rounds, a full round the referee asks for) by a fresh Opus 5.5 high agent
+loop|"fix" → `{"words": "<his reply>", "continue": true}`, so REVIEW AGAIN
+loop|"follow-up" → `{"words": "<his reply>", "accept": ["R3-1", "R3-2"]}`, so those count as ACCEPTED
+loop|brake e (from round 3, only P2 left: the line ends `only P2 left from round 3 on (<ids>): fix or follow-up?`
+loop|A pure rebase (the finisher's, no conflict resolved) needs no new review (`--reviews` counts it as covered) and no new verifier or auditor
+acv|dispatch the **AC AUDITOR**: a fresh Opus 5.5 xhigh agent
+acv|Then the orchestrator reruns step 4's command with `--rebase-receipt <evidence>/rebase/receipt-<head7>.log` before the two reports.
+acv|so the two reports for the head they proved still count (2026-11-10): no new verifier or auditor.
+acv|needs a new rebase receipt (step 5), or, when it resolved conflicts, a new review, verifier and auditor
+acv|when the rebase resolved no conflict, the finisher writes a **rebase receipt**
+house|a pipeline main session runs on Opus 5.5 high. At step 1 it says which model and effort it is on and, when they differ, asks for `/model opus` and `/effort high`
+house|Past 300k tokens with no agent running, it asks once per quiet spell for a fresh session
+away|(Fable 5.2 high or Opus 5.5 xhigh/high, SKILL.md's role table)
+leorna|  - fresh Fable full review 1 → fresh Opus fixer → fresh Opus full review 2 → fresh Opus fixer → fresh Opus review of the fix commits → … until `review-check.sh` prints MOVE ON (`review-fix-cadence`; `feature-dispatch` references/review-loop.md) → fresh Opus verifier → blind Opus auditor → `ac-check.sh --reviews`;
+rfc|**Fable plan → user go → Opus build → fresh Fable full review 1 → fresh Opus fixer → fresh Opus full review 2 → fresh Opus fixer → fresh Opus review of the fix commits → … until a review is clean (`review-check.sh`: MOVE ON) → fresh Opus verifier → blind Opus auditor → `ac-check.sh --reviews`
+rfc|**Dispatch a scoped fresh Opus fix promptly
+rfc|Round 1 is a fresh Fable 5.2 high reviewer; every later round a fresh Opus 5.5 high reviewer.
+rfc|**Use a fresh Opus fixer for each `REVIEW AGAIN` list**
+rfc|Returned actionable blockers advance to a fresh Opus fixer
+rfc|  - (e) from round 3, a round with only P2 left (no P0 or P1) → ASK JUSTIN: fix (`"continue": true`) or follow-up (`"accept"`, and the lines go to `follow-ups.md`) (Justin, 2026-11-10).
+rfc|No fixed round cap, but from round 3 Justin is asked before a P2-only round is fixed (e).
+rfc|A pure rebase (no conflict) needs no new review and no new verifier: the finisher's rebase receipt and `ac-check.sh --rebase-receipt` carry the earlier reports
+f2b|(its role table names each round's model and effort) and any explicit user override; do not hard-code a model
+header|| The per-role Claude models and efforts, and the pipeline main session on Opus 5.5 high (`/model opus`, `/effort high`); "Sol 6.1 only as a substitute at a Claude limit" | Claude Code only.
+EOF
+}
+wrong_pairs() { # wrong_pairs <file>…: each clause that pairs a later round, a delta review, a fixer, the verifier or
+                # the main session with Fable or xhigh. Dated history is left out: *Why …* notes, *(Superseded …)*
+                # notes and "supersedes the <date> table (…)". Clauses end at ; , ( ) | → and ". ".
+  awk '{
+    l = $0
+    gsub(/\*Why[^*]*\*/, "", l); gsub(/\*\(Superseded[^)]*\)\*/, "", l)
+    gsub(/supersedes the [0-9-]+ table \([^)]*\)/, "", l)
+    n = split(l, c, /[;,()|]|→|\. /)
+    for (i = 1; i <= n; i++)
+      if (c[i] ~ /[Ll]ater[ -]rounds?|[Dd]elta|round 2|[Ff]ixe[rs]|[Vv]erifier|main session/ && c[i] ~ /Fable|xhigh/)
+        print FILENAME ":" FNR ": [" c[i] "]"
+  }' "$@"
+}
 
 fail() { echo "FAIL: $*"; return 1; }
 need() { [ -e "$1" ] || fail "missing $1 (not built yet)"; }
@@ -147,7 +233,20 @@ $(old_phrases)
 EOF
   [ $bad = 0 ] || return 1
   echo "# 5. none of the $(old_phrases | grep -c '^') old phrases is left in the $(printf '%s\n' "$RULE_FILES" | grep -c '^') rule files"
-  # 6. the Codex copy, built from this checkout's CLAUDE.md and header
+  # 6. every other prose statement of a role's model or effort, and of the changed rules, word for word
+  while IFS= read -r p; do
+    f=$(file_of "${p%%|*}") || { fail "prose(): no file for the key [${p%%|*}]"; bad=1; continue; }
+    holds "$f" "$(cat "$SRC/$f")" "${p#*|}" || bad=1
+  done <<EOF
+$(prose)
+EOF
+  [ $bad = 0 ] || return 1
+  echo "# 6. the $(prose | grep -c '^') prose statements of a role's model, effort or changed rule read as pinned"
+  # 7. no clause anywhere else pairs a later round, a fixer, the verifier or the main session with Fable or xhigh
+  p=$(cd "$SRC" && wrong_pairs $RULE_FILES)
+  [ -z "$p" ] || { fail "a role paired with the wrong model or effort: $p"; return 1; }
+  echo "# 7. no rule file pairs a later round, a fixer, the verifier or the main session with Fable or xhigh"
+  # 8. the Codex copy, built from this checkout's CLAUDE.md and header
   S=$(mktemp -d "${TMPDIR:-/tmp}/pipeline-rules-test.XXXXXX") || { fail "mktemp"; return 1; }
   CODEX_HOME="$S/codex" CODEX_BUILD_RULES="$SRC/$CLAUDE_MD" bash "$SRC/.claude/setup/codex/build-codex.sh" \
     || { fail "build-codex.sh failed (test folder $S kept)"; return 1; }
@@ -157,8 +256,13 @@ EOF
   done <<EOF
 $(old_phrases)
 EOF
+  while IFS= read -r p; do
+    case $p in claude\|*) holds "the built AGENTS.md" "$(cat "$S/codex/AGENTS.md")" "${p#*|}" || bad=1 ;; esac
+  done <<EOF
+$(prose)
+EOF
   [ $bad = 0 ] || { echo "# test folder $S kept"; return 1; }
-  echo "# 6. the Codex AGENTS.md built from this checkout has the routing sentence and none of the old phrases"
+  echo "# 8. the Codex AGENTS.md built from this checkout has the routing sentence, CLAUDE.md's pinned statements and none of the old phrases"
   rm -rf "$S"
 }
 
