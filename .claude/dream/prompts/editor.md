@@ -15,7 +15,10 @@ For every finding, in this order:
 2. Otherwise fold it into an existing line, replace the line it makes outdated, or delete the line it
    proves wrong; append a new line only when none of those fits. Use the narrowest target. To fold, keep
    the existing line whole, word for word, at the start (only its final full stop may go) and add the
-   finding's words after it; list those added words (or the whole new line) under `additions`.
+   finding's words after it, starting after a comma, semicolon, colon or full stop and a space, or after a
+   plain space when the line does not end in a number and the first added word is not "not", "no", "never",
+   "nor" or "neither", so the line's last word or number stays as it was; list those added words (or the
+   whole new line) under `additions`.
 3. Every line you add for a finding carries the finding's date (YYYY-MM-DD) and, where it helps, the quote.
 4. Never remove or replace a dated line, or change its words, unless the finding's `replaces` names that
    rule; folding into it as in step 2 keeps it and is allowed. When a finding seems to contradict a dated

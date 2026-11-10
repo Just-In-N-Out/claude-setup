@@ -398,15 +398,38 @@ def removal_ok(G, d, line, cs):
     return False
 
 
+# what may follow the old line in a fold (R3-3; Justin 2026-11-10): one of these marks and a space, or a plain
+# space; a plain space not after a number (3 to "3 000", "3 KB", "3 thousand") nor before a negation ("can" to
+# "can not", "can no longer"), and then a letter, a digit, an opening bracket or quote, a backtick or a dash
+FOLD_MARKS = (", ", "; ", ": ", ". ")
+FOLD_SPACE_START = "([`\"“—–"
+NEGATIONS = {"not", "no", "never", "nor", "neither"}
+
+
+def _negation(word):
+    w = word.strip(".,;:!?").lower()
+    return w in NEGATIONS or w.startswith(("n'", "n’"))   # "can n't" reads as "can't"
+
+
 def fold_rest(old_line, new_line):
     """The words a fold adds (R2-4), or None. A fold keeps the old line whole, word for word, at the start of the
-    new one (only its final full stop or semicolon may go) and goes on after it at a word boundary: nothing of
-    the old line is lost, and nothing is put in front of it that could turn it around."""
+    new one (only its final full stop or semicolon may go) and adds words only after it: nothing of the old line
+    is lost, nothing is put in front of it that could turn it around, and its last word or number stays the
+    word or number it was (R3-3: not "18" to "18.5", "3" to "3,000" or "3 thousand", "can" to "can't" or
+    "can not", a final full stop to "? No")."""
     o, n = norm(old_line), norm(new_line)
     core = o.rstrip(".;").rstrip()
-    if not core or len(n) <= len(core) or not n.startswith(core) or (n[len(core)].isalnum() or n[len(core)] == "_"):
+    if not core or not n.startswith(core):
         return None
-    return n[len(core):].strip(" .,;:") or None
+    tail = n[len(core):]
+    if tail[:2] in FOLD_MARKS:
+        rest = tail[2:]
+    elif tail[:1] == " " and len(tail) > 1 and not core[-1].isnumeric() and \
+            (tail[1].isalnum() or tail[1] in FOLD_SPACE_START) and not _negation(tail[1:].split(" ", 1)[0]):
+        rest = tail[1:]
+    else:
+        return None
+    return rest.strip(" .,;:") or None
 
 
 def folds(G, d):

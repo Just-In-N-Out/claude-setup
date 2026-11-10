@@ -453,6 +453,98 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(h.run(), 0, h.local("last-run.json"))
         self.assertIn(new_line, h.read(fh.MEM_LIVE))
 
+    def test_a_fold_keeps_the_old_lines_last_word_or_number_whole(self):
+        """R3-3 (Justin, 2026-11-10): a fold may not change the old line's last word or number ("can" to "can't",
+        "at most 3" to "3,000"); the old line stays whole and new words only follow it: after a comma, semicolon,
+        colon or full stop and a space, or after a plain space, but not when the line ends in a number or the
+        first new word is a negation (not, no, never, nor, neither). Each case is tried as an undated line and as
+        a dated one, with the whole new line listed as the finding's addition, so the fold rule alone decides."""
+        f1 = fnd("f1")
+        can = "- Push when Justin says you can."
+        node, most, note = "- Pin node 18.", "- Change at most 3", "- Keep each note at most 8"
+        refused = {
+            "a decimal after the number": (node, "- Pin node 18.5 on every runner"),
+            "a thousands comma": (most, "- Change at most 3,000 bytes per run"),
+            "a hyphen after the word": ("- Never force-push to main.", "- Never force-push to main-backup"),
+            "an apostrophe negation": (can, "- Push when Justin says you can't"),
+            "the full stop turned into a question": ("- Ask Justin before every push.",
+                                                     "- Ask Justin before every push? No, push freely"),
+            "the full stop turned into an exclamation": ("- Ask Justin before every push.",
+                                                         "- Ask Justin before every push! Unless CI is green"),
+            "a space and not": (can, "- Push when Justin says you can not, ever"),
+            "a space and no": (can, "- Push when Justin says you can no longer"),
+            "a space and never": (can, "- Push when Justin says you can never"),
+            "a space and nor": ("- Ask Justin or the reviewer.", "- Ask Justin or the reviewer nor anyone else"),
+            "a space and neither": ("- Ask the builder.", "- Ask the builder neither way"),
+            "a space and n't": (can, "- Push when Justin says you can n't"),
+            "a space and NOT in capitals": (can, "- Push when Justin says you can NOT"),
+            "a unit after the number": (note, "- Keep each note at most 8 KB"),
+            "a digit group after the number": (most, "- Change at most 3 000 bytes"),
+            "a multiplier after the number": (most, "- Change at most 3 thousand bytes"),
+            "a vulgar fraction after the number": (most, "- Change at most 3 ½ bytes"),
+            "a fraction glued to the number": (most, "- Change at most 3½ bytes"),
+            "a no-break space before a decimal": (node, "- Pin node 18 .5"),
+            "a no-break space before an apostrophe": (can, "- Push when Justin says you can 't"),
+            "a zero-width space before an apostrophe": (can, "- Push when Justin says you can​'t"),
+            "a combining accent on the last word": ("- Use the cafe", "- Use the café menu"),
+            "a path made longer": ("- Read ~/.claude/dream", "- Read ~/.claude/dream/DREAM.md first"),
+            "a port range": ("- Use port 8080", "- Use port 8080/8081"),
+            "a flag made longer": ("- Push with --force", "- Push with --force-with-lease"),
+            "a letter after the number": ("- Pin node 18", "- Pin node 18x"),
+            "a plural": ("- Wait 30 min", "- Wait 30 mins"),
+            "text glued after a backtick": ("- Run `npm test`", "- Run `npm test`.only first"),
+            "text glued after a quote": ("- Merge only into \"main\"", "- Merge only into \"main\"-backup"),
+            "text glued after a closing bracket": ("- Push only to main (the default)",
+                                                   "- Push only to main (the default)-ish"),
+            "a full stop with no space after it": ("- Ask before you merge.", "- Ask before you merge.Then push"),
+        }
+        kept = {
+            "a comma and a space after a number": (node, "- Pin node 18, and npm 10 on every runner"),
+            "the full stop kept and a new sentence": (node, "- Pin node 18. Also npm 10"),
+            "a semicolon and a space after a number": (most, "- Change at most 3; ask before more"),
+            "a colon and a space": ("- Read ~/.claude/dream", "- Read ~/.claude/dream: DREAM.md first"),
+            "a plain space after a word": ("- Never force-push to main.", "- Never force-push to main or a release branch"),
+            "a plain space after a backtick": ("- Run `npm test`", "- Run `npm test` before every push"),
+            "a plain space and a dash": ("- Push only to main (the default)",
+                                         "- Push only to main (the default) — never to a tag"),
+            "a comma before a negation": (can, "- Push when Justin says you can, not before CI is green"),
+            "a full stop and a space after a number": (note, "- Keep each note at most 8. Ask before more"),
+            "a plain space after a quote": ("- Merge only into \"main\"", "- Merge only into \"main\" after CI"),
+            "a plain space and a bracket": ("- Run the tests first", "- Run the tests first (and the linter)"),
+            "a plain space and a square bracket": ("- Run the tests first", "- Run the tests first [and the linter]"),
+            "a plain space and a backtick": ("- Run the tests first", "- Run the tests first `npm run lint` too"),
+            "a plain space and a quote": ("- Run the tests first", "- Run the tests first \"and the linter\""),
+            "a plain space and a curly quote": ("- Run the tests first", "- Run the tests first “and the linter”"),
+            "a plain space and an en dash": ("- Run the tests first", "- Run the tests first – and the linter"),
+        }
+        refused["a multiplier after a fraction"] = ("- Change at most 2½", "- Change at most 2½ thousand bytes")
+        refused["words in front of the old line and after it"] = ("Ask Justin before every push.",
+                                                                  "Do not Ask Justin before every push, then tag")
+
+        def run(old_line, new_line, dated):
+            if dated:
+                old_line, new_line = (x.replace("- ", "- 2026-10-02: ", 1) for x in (old_line, new_line))
+            new_line += " (2026-11-09)."
+            old = "# Build notes\n\n" + old_line + "\n- Keep the build green.\n"
+            new = "# Build notes\n\n" + new_line + "\n- Keep the build green.\n"
+            return guards.run_all(self.G({MEM: (old, new)}, [f1], {"changes": [change(MEM, adds=[new_line])]}))
+
+        wrong = []
+        for dated in (False, True):
+            for label, (o, n) in sorted(refused.items()):
+                if not run(o, n, dated):
+                    wrong.append("went live (%s): %s" % ("dated" if dated else "undated", label))
+            for label, (o, n) in sorted(kept.items()):
+                fails = run(o, n, dated)
+                if fails:
+                    wrong.append("refused (%s): %s: %s" % ("dated" if dated else "undated", label, fails))
+        self.assertEqual(wrong, [], "\n".join(wrong))
+        # the editor's prompt gives the same rule
+        prompt = " ".join((fh.DREAM_SRC / "prompts/editor.md").read_text().split())
+        self.assertIn("starting after a comma, semicolon, colon or full stop and a space, or after a plain space when "
+                      "the line does not end in a number and the first added word is not \"not\", \"no\", \"never\", "
+                      "\"nor\" or \"neither\"", prompt)
+
     def test_a_change_counts_only_in_a_file_its_basis_belongs_to(self):
         """R2-1 (R1-2 again): for every changes.json basis, a change that adds a line and removes a dated one in a
         file that basis does not belong to stops the run, even while a finding of that file also changes it. An
