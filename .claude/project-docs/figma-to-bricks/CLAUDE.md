@@ -5,10 +5,15 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-09)
+## Status (2026-11-10)
 
-- **Current build `2026-11-09.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-10.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-10.1 site-faq (website importer):** with `--elementor`, a pasted Elementor or ElementsKit FAQ opens at
+    load the answers the site opens at the design width (none, one or several; a narrower width that shows other
+    answers no longer stops it), and its open look (colour, arrow) follows whichever item Bricks has open, at every
+    width and above Bricks' own class controls; pastes without such a FAQ and Figma designs are byte for byte as
+    before. Paste check **3dp** (AC8, live: B-Dry's FAQ on staging /homev2/ after a re-capture).
   - **2026-11-09.4 staging-fit-capture (website importer):** a capture reads a width range again when it loaded
     without the site's stylesheets, and stops with one plain line (widths and stylesheet named, no file written) when
     they never arrive; `npm run site`, `site:check`, `capture:check` and the panel refuse a capture holding such a
