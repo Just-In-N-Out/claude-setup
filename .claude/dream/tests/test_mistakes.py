@@ -1085,9 +1085,12 @@ class OrderTests(unittest.TestCase):
         self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
 
     def test_a_story_counted_in_a_later_run_takes_its_place_by_its_date(self):
-        """R5-1's neighbour: a story whose lines are counted only in a later run (its project's backfill helper
-        failed, its first rounds had no P0-P2 finding, its lines waited for the 150-line limit) takes its place by
-        its date among the stories already counted, not at the end. A kind listed before it was counted counts it
+        """R5-1's neighbour, on record() alone: a story whose lines are counted only in a later run (here its
+        project's backfill helper failed and a story's first P0-P2 finding came only in a later round) takes its
+        place by its date among the stories already counted, not at the end. What a run orders while lines wait
+        uncounted (the 150-line limit, a failed helper, a file written during the run) is R6-1's three tests,
+        test_a_listed_mistake_seen_again_in_lines_past_the_150_a_run_reads_stays_listed and the two after it. A kind
+        listed before it was counted counts it
         as a story that began before the listing (no enforce line) when it began before a story counted then; a
         story that began after every one of them still gives the line."""
         import datetime
@@ -1156,6 +1159,175 @@ class OrderTests(unittest.TestCase):
         self.assertEqual({k: mistakes.retire_due(env, t, k, fh.PROJ_RM) for k in kinds},
                          {"again-guard": False, "once-guard": True, "listed-again-guard": False, "listed-once-guard": True})
         self.assertEqual(sorted(o["id"] for o in mistakes.orders(env, t)), ["add:again-guard", "remove:listed-once-guard"])
+
+    def _evidence(self, h, day):
+        """story(p, s, d, n, round=1): a review file of n P2 findings, each with its own text, dated d days after
+        `day`; returns the line ids in walk order. seen(ids, j, kid, new): one review-helper assignment."""
+        import os
+        from dreamlib import extract
+
+        def story(p, s, d, n, rnd=1):
+            rel = ".hermes/plans/%s/evidence/%s/review-%d/review.json" % (p, s, rnd)
+            claims = ["%s round %d, finding %d of %d: the %s check missed a case in %s" % (
+                s, rnd, j + 1, n, ("size", "link", "path")[j % 3], p) for j in range(n)]
+            review(h, p, s, claims, rnd)
+            os.utime(h.p(rel), (day + d * 86400, day + d * 86400))
+            return [extract.line_id(p, s, c) for c in claims]
+
+        def seen(ids, j, kid, new=True):
+            return {"line_id": ids[j], "kind": "new" if new else kid, "enforce_proposal": "a test that %s is refused" % kid,
+                    "new_kind": dict(KIND, id=kid) if new else None}
+        return story, seen
+
+    def _run(self, h, assigns, i, fail=False):
+        """Run i with an editor that does exactly what the orders say (obey.py); its review helper fails when fail."""
+        h.env["DREAM_NOW"] = "2026-11-%02dT05:00:00-05:00" % (10 + i)     # one run id per run
+        sc = {"review-helper": {"assignments": assigns}, "editor": {"obey_orders": True}}
+        if fail:
+            sc["fail"] = {"review-helper": {"exit": 1}}
+        h.scenario(sc)
+        self.assertEqual(h.run(), 0, "run %d: %s" % (i, h.local("last-run.json")))
+        return json.loads(h.read(".claude/dream/state/tally.json"))
+
+    def _settle(self, h, assigns, first, most=6):
+        """Runs first, first+1, ... until no review line on disk is uncounted and nothing is owed."""
+        from dreamlib import extract
+        for i in range(first, first + most):
+            t = self._run(h, assigns, i)
+            if not extract.review_lines(h.denv(), t["seen"]) and not mistakes.orders(h.denv(), t):
+                return t, i
+        self.fail("still owed after %d runs" % most)
+
+    def test_a_listed_mistake_seen_again_in_lines_past_the_150_a_run_reads_stays_listed(self):
+        """R6-1: after the backfill a run reads at most 150 review lines, the first 150 the evidence walk finds
+        (projects, then story folders, by name), not the oldest. While review lines on disk wait unread, any of them
+        may be a listed mistake's newest sighting, and a removal retires a kind for good: no repeat-mistakes order is
+        given until every line is counted. After a pause 156 lines wait; a mistake listed in the project's file and
+        one listed in the general file come back in the story whose folder name sorts last (all its lines wait past
+        the first 150; three stories began after it). Run after run with an editor that does exactly what the orders
+        say, one run failing at its review helper, until nothing is owed: both stay listed and each gives its
+        enforce line; a listed mistake that did not come back is removed and retired, as AC28 says."""
+        import datetime
+        from dreamlib import extract
+        self.h = h = FakeHome("r61", repo=True)
+        h.write(".claude/dream/state/tally.json", paths.dump_json(state.default_tally()))
+        h.sync()
+        story, seen = self._evidence(h, datetime.datetime(2026, 10, 20, 9, 0).timestamp())
+        # the backfill: four stories of proj, one of other; three kinds listed
+        a, b, c, d = (story("proj", s, i, 2) for i, s in enumerate(
+            ("after-hero-band", "banner-crop-fit", "button-states", "capture-retries")))
+        o = story("other", "86bq0d2ma", 2.5, 2)
+        assigns = [seen(a, 0, "back-gone-guard"), seen(b, 0, "back-gone-guard"), seen(c, 0, "back-again-guard"),
+                   seen(d, 0, "back-again-guard"), seen(d, 1, "two-again-guard"), seen(o, 0, "two-again-guard")]
+        t, last = self._settle(h, assigns, 1)
+        self.assertEqual({k: v["listed_in"] for k, v in t["kinds"].items()},
+                         {"back-gone-guard": fh.PROJ_RM, "back-again-guard": fh.PROJ_RM, "two-again-guard": fh.GENERAL_RM})
+        backlog = h.read(".hermes/plans/claude-setup/enforce-backlog.md")
+        # the pause: 11 stories of 150 lines in all, then the one whose name sorts last (6 lines), begun 4th newest
+        others = ["card-grid-gaps", "carousel-dots", "contact-form-map", "cookie-bar", "embed-code-panel", "faq-accordion",
+                  "footer-columns", "form-validation", "gallery-lightbox", "header-sticky", "hero-video-bg"]
+        for i, s in enumerate(others):
+            story("proj", s, 5 + (i * 7 % 11), 14 if i < 10 else 10)
+        w = story("proj", "web-tier-pages", 12.5, 6)
+        assigns += [seen(w, 1, "back-again-guard", False), seen(w, 4, "two-again-guard", False)]
+        self.assertEqual(len(extract.review_lines(h.denv(), t["seen"])), 156)
+        n_calls = len(h.calls_by_role())
+        self._run(h, assigns, last + 1)                 # reads the first 150
+        self._run(h, assigns, last + 2, fail=True)      # its review helper fails: it reads none
+        t, _ = self._settle(h, assigns, last + 3)
+        helper = [c["stdin"] for c in h.calls_by_role()[n_calls:] if c["role"] == "review-helper"]
+        self.assertEqual([len(re.findall(r"^LINE ", x, re.M)) for x in helper], [150, 6, 6], "150, then a failed call")
+        self.assertNotIn("story: web-tier-pages", helper[0], "control: its lines sort past the first 150")
+        self.assertIn("story: web-tier-pages", helper[-1])
+        self.assertEqual({k: (v["listed_in"], v["retired"]) for k, v in t["kinds"].items()},
+                         {"back-again-guard": (fh.PROJ_RM, False), "two-again-guard": (fh.GENERAL_RM, False),
+                          "back-gone-guard": (None, True)})
+        self.assert_consistent(h, t)
+        new = h.read(".hermes/plans/claude-setup/enforce-backlog.md")[len(backlog):].splitlines()
+        self.assertEqual(sorted(x.split(" | ")[2:4] for x in new),
+                         [["feature-dispatch", "a test that two-again-guard is refused"],
+                          ["proj-skill", "a test that back-again-guard is refused"]], "it came back while listed")
+
+    def test_no_repeat_mistakes_order_is_given_while_review_lines_on_disk_wait_unread(self):
+        """R6-1's class, the other ways a run's orders meet uncounted review lines. (1) The backfill's helper for one
+        project failed (R6-2): the other projects' stories alone would list a mistake of two projects that the
+        failed project's 11 later stories make due, and it would then be retired for good; no order is given until
+        those lines are counted, and then it is never listed. (2) A review file the run's evidence walk did not see
+        (a later round that finds a listed mistake the stories counted make due) holds its removal until its line is
+        counted, and then the mistake stays listed. A mistake whose lines are all counted is listed as before."""
+        import datetime
+        from dreamlib import extract
+        self.h = h = FakeHome("r61unread")
+        env = h.denv()
+        now = datetime.datetime(2026, 11, 10, 5, 0)
+        story, seen = self._evidence(h, datetime.datetime(2026, 10, 20, 9, 0).timestamp())
+        cs, ot = story("claude-setup", "hook-timeouts", 1, 2), story("other", "86bq4c2wy", 2, 2)
+        names = ["site-%02d-%s" % (i, ("hero", "menu", "cards")[i % 3]) for i in range(11)]
+        ps = [story("proj", s, 3 + i, 1) for i, s in enumerate(names)]
+        assigns = [seen(cs, 0, "stale-two-guard"), seen(ot, 0, "stale-two-guard"), seen(ps[9], 0, "fresh-guard"),
+                   seen(ps[10], 0, "fresh-guard"), seen(ps[0], 0, "early-guard"), seen(ps[1], 0, "early-guard")]
+        lines = extract.review_lines(env, [])
+        t = dict(state.default_tally())
+        part = [ln for ln in lines if ln["project"] != "proj"]          # proj's backfill helper failed
+        mistakes.record(env, t, part, assigns, now)
+        self.assertEqual(self.exact_runs(h, t), [], "nothing is ordered while proj's 11 lines wait")
+        mistakes.record(env, t, [ln for ln in lines if ln["project"] == "proj"], assigns, now)
+        t["backfill_done"] = True
+        log = self.exact_runs(h, t)
+        self.assertEqual([ids for ids, _ in log], [["add:early-guard", "add:fresh-guard"]])
+        self.assertEqual({k: (v["listed_in"], v["retired"]) for k, v in t["kinds"].items()},
+                         {"stale-two-guard": (None, False), "fresh-guard": (fh.PROJ_RM, False),
+                          "early-guard": (fh.PROJ_RM, False)}, "the stale kind is never listed, never retired")
+        # (2) one more story counted makes early-guard due (10 later); a later round of its story finds it again
+        story("proj", "site-11-hero", 14, 1)
+        mistakes.record(env, t, extract.review_lines(env, t["seen"]), [], now)
+        self.assertTrue(mistakes.retire_due(env, t, "early-guard"), "control: due by the stories counted")
+        late = story("proj", names[1], 14.5, 1, rnd=2)     # written after the walk: not counted yet
+        self.assertEqual(self.exact_runs(h, t), [], "its removal waits for the late round's line")
+        mistakes.record(env, t, extract.review_lines(env, t["seen"]), [seen(late, 0, "early-guard", False)], now)
+        self.assertEqual(self.exact_runs(h, t), [])
+        self.assertEqual((t["kinds"]["early-guard"]["listed_in"], t["kinds"]["early-guard"]["retired"]), (fh.PROJ_RM, False))
+        self.assert_consistent(h, t)
+
+    def test_a_mistake_removed_while_a_review_file_lands_during_the_run_is_not_retired_for_good(self):
+        """R6-1's class, the last place: a review file written while the run's editor works, after the run made its
+        orders, is read only by the next run. A removal that run ordered goes live, but no mistake is retired for good
+        while review lines wait uncounted as the run settles its tally: the next run reads the late round, which
+        finds the mistake again, and lists it again; a removed mistake that is still due is not listed again until it
+        comes back (option (b)), and every listed kind has its entry where the tally says."""
+        import datetime
+        from dreamlib import extract
+        self.h = h = FakeHome("r61late", repo=True)
+        h.write(".claude/dream/state/tally.json", paths.dump_json(state.default_tally()))
+        h.sync()
+        story, seen = self._evidence(h, datetime.datetime(2026, 10, 20, 9, 0).timestamp())
+        names = ["story-%02d-%s" % (i, ("header-fit", "footer-fit", "menu-fit")[i % 3]) for i in range(12)]
+        s0, s1 = story("proj", names[0], 0, 2), story("proj", names[1], 1, 2)
+        assigns = [seen(s0, 0, "window-guard"), seen(s1, 0, "window-guard"), seen(s0, 1, "gone-guard"),
+                   seen(s1, 1, "gone-guard")]
+        t, last = self._settle(h, assigns, 1)
+        self.assertEqual({k: v["listed_in"] for k, v in t["kinds"].items()},
+                         {"window-guard": fh.PROJ_RM, "gone-guard": fh.PROJ_RM})
+        for i in range(2, 12):                          # 10 later stories: both are due
+            story("proj", names[i], i, 1)
+        late_rel = ".hermes/plans/proj/evidence/%s/review-2/review.json" % names[1]
+        claim = "%s round 2: the window check missed a case again" % names[1]
+        late = json.dumps({"findings": [{"id": "F1", "severity": "P2", "claim": claim, "file_line": "a:9"}]})
+        assigns.append({"line_id": extract.line_id("proj", names[1], claim), "kind": "window-guard",
+                        "enforce_proposal": "", "new_kind": None})
+        h.env["DREAM_NOW"] = "2026-11-%02dT05:00:00-05:00" % (10 + last + 1)
+        h.scenario({"review-helper": {"assignments": assigns},
+                    "editor": {"obey_orders": True, "edits": [{"file": str(h.p(late_rel)), "write": late}]}})
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        t = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertTrue(h.p(late_rel).exists(), "control: the review file landed during the run")
+        self.assertEqual({k: (v["listed_in"], v["retired"]) for k, v in t["kinds"].items()},
+                         {"window-guard": (None, False), "gone-guard": (None, False)}, "removed, not retired for good")
+        self.assertEqual([k for k, _, _ in self.entries(fh.PROJ_RM)[0]], [])
+        t, _ = self._settle(h, assigns, last + 2)
+        self.assertEqual({k: (v["listed_in"], v["retired"]) for k, v in t["kinds"].items()},
+                         {"window-guard": (fh.PROJ_RM, False), "gone-guard": (None, False)})
+        self.assert_consistent(h, t)
 
     def test_a_tally_written_before_stories_had_dates_is_put_in_their_order_by_date(self):
         """R5-1: a tally written by the previous code holds its stories in the order the evidence walk found them

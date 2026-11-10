@@ -197,6 +197,13 @@ def has_entries(text):
     return "\n### " in "\n" + text
 
 
+def unread(env, tally):
+    """The review lines on disk the tally has not counted (R6-1): those past the 150 a run reads, those of a review
+    helper that failed (in the backfill, one project's), those written since the run's evidence walk."""
+    from . import extract
+    return extract.review_lines(env, tally.get("seen") or [])
+
+
 def _rewritten(env, rel, tally):
     """The file as the script's own rewrite will leave it (counts, stories, order from the tally): the room an
     order has is measured on that, so a rewrite that waited through review-only runs keeps its room (R2-2)."""
@@ -211,7 +218,12 @@ def orders(env, tally):
     ordered (R1-9): the most frequent kinds go first, and a kind left out is not parked, it waits for room.
     Every order carries the same fields (id, action, kind, title, description, area, count, stories, file,
     to, max_entry_bytes), so no reader of an order meets a missing one (R3-2); `to` is text in each (a move's
-    file, else empty)."""
+    file, else empty).
+    No order at all while review lines on disk wait uncounted (R6-1): any of them may be a listed mistake's newest
+    sighting, or stories that make a kind due before it is ever listed (R6-2), and a removal retires a kind for
+    good. The orders wait until a run has counted every line."""
+    if unread(env, tally):
+        return []
     size, texts = {}, {}
 
     def entries(f):
@@ -354,14 +366,17 @@ def order_list_item(o):
             "session": "", "why": "could not apply automatically after two tries"}
 
 
-def after_commit(tally, done, now):
-    """The tally once the orders are live."""
+def after_commit(tally, done, now, settled=True):
+    """The tally once the orders are live. A removed kind is retired for good only when settled: no review line
+    on disk waited uncounted as the run settled its tally (one written while the editor worked, after the orders
+    were made; R6-1). Otherwise it is only taken out, and a later run lists it again if those lines show it
+    came back, or not while it is due (option (b))."""
     for o in done:
         k = tally["kinds"].get(o["kind"])
         if not k:
             continue
         if o["action"] == "remove":
-            k["listed_in"], k["retired"] = None, True
+            k["listed_in"], k["retired"] = None, bool(settled)
         else:
             k["listed_in"] = o.get("to") or o["file"]
             k["listed_since"] = {"date": now.date().isoformat(), "seq": len(tally.get("story_seq") or [])}

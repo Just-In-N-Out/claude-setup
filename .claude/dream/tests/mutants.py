@@ -100,6 +100,10 @@ T = {
     "r51tie": "test_of_two_equally_frequent_mistakes_with_room_for_one_the_more_recent_is_listed",
     "safefold": "test_the_editors_prompt_gives_a_fold_the_script_always_accepts",
     "newnote": "test_the_editors_prompt_gives_the_name_rule_where_it_writes_a_new_memory_note",
+    # fixer 6: R6-1
+    "r61": "test_a_listed_mistake_seen_again_in_lines_past_the_150_a_run_reads_stays_listed",
+    "r61unread": "test_no_repeat_mistakes_order_is_given_while_review_lines_on_disk_wait_unread",
+    "r61late": "test_a_mistake_removed_while_a_review_file_lands_during_the_run_is_not_retired_for_good",
 }
 P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
@@ -634,6 +638,16 @@ MUTANTS = [
     ('R5r', 'a tally with nothing counted yet is migrated too, so a run with nothing new changes it', [('.claude/dream/lib/dreamlib/mistakes.py', '    if "story_time" in tally or not tally.get("story_seq"):\n', '    if "story_time" in tally:\n')], ['ac21']),
     ('E5a', 'the editor is not told the fold that is always accepted (R5-3 back)', [('.claude/dream/prompts/editor.md', '   The safe way, which the fold rule always accepts, is a comma or a full stop and a space before the added\n', '   \n')], ['safefold']),
     ('E5b', 'the editor is not told the name rule where it writes a new memory note (R5-4 back)', [('.claude/dream/prompts/editor.md', '   A new memory note you write for a finding goes straight in its memory folder, never in a subfolder, with a\n', '   \n')], ['newnote']),
+
+    # fixer 6: R6-1, no repeat-mistakes order and no retiring for good while review lines on disk wait uncounted
+    ('R6a', 'orders are made while review lines on disk wait uncounted (R6-1 back)', [('.claude/dream/lib/dreamlib/mistakes.py', '    if unread(env, tally):\n        return []\n', '')], ['r61', 'r61unread']),
+    ('R6b', 'only removals wait for uncounted lines; adds and moves are made (R6-2 back)', [('.claude/dream/lib/dreamlib/mistakes.py', '    if unread(env, tally):\n        return []\n', '    hold = unread(env, tally)\n'), ('.claude/dream/lib/dreamlib/mistakes.py', '        if o["action"] == "remove":\n            n, key = out_cost(', '        if o["action"] == "remove" and not hold:\n            n, key = out_cost(')], ['r61unread']),
+    ('R6c', 'only adds and moves wait for uncounted lines; removals are made (R6-1 back)', [('.claude/dream/lib/dreamlib/mistakes.py', '    if unread(env, tally):\n        return []\n', '    hold = unread(env, tally)\n'), ('.claude/dream/lib/dreamlib/mistakes.py', '    growing = sorted((o for o in cands if o["action"] != "remove"), ', '    growing = sorted((o for o in cands if o["action"] != "remove" and not hold), ')], ['r61', 'r61unread']),
+    ('R6d', 'a removal retires the kind for good even while lines wait uncounted', [('.claude/dream/lib/dreamlib/mistakes.py', '            k["listed_in"], k["retired"] = None, bool(settled)\n', '            k["listed_in"], k["retired"] = None, True\n')], ['r61late']),
+    ('R6e', 'the apply step settles the tally as if every line were counted (the call site)', [('.claude/dream/lib/dreamlib/apply.py', 'R.now, settled=not mistakes.unread(env, tally_after))', 'R.now, settled=True)')], ['r61late']),
+    ('R6f', 'a removal while lines wait keeps the kind listed in the tally, its entry gone', [('.claude/dream/lib/dreamlib/mistakes.py', '            k["listed_in"], k["retired"] = None, bool(settled)\n', '            k["listed_in"], k["retired"] = (None if settled else k["listed_in"]), bool(settled)\n')], ['r61late']),
+    ('R6g', "every review line on disk counts as uncounted (the tally's seen ignored)", [('.claude/dream/lib/dreamlib/mistakes.py', '    return extract.review_lines(env, tally.get("seen") or [])\n', '    return extract.review_lines(env, [])\n')], ['r61', 'ac28']),
+    ('R6h', 'the apply step settles the tally only while lines wait (inverted)', [('.claude/dream/lib/dreamlib/apply.py', 'R.now, settled=not mistakes.unread(env, tally_after))', 'R.now, settled=bool(mistakes.unread(env, tally_after)))')], ['r61late', 'ac28']),
 ]
 
 

@@ -190,7 +190,8 @@ def make_plan(R, unsettled, mapping, diffs, changes, tally, pending, cursors):
     P.orders_done = [o for o in unsettled.get("orders") or []]
     P.markers_after = dict(unsettled.get("markers_after") or {})
     tally_after = json.loads(json.dumps(tally))
-    mistakes.after_commit(tally_after, P.orders_done, R.now)
+    # a review file written while the editor worked is uncounted now: no kind is retired for good on it (R6-1)
+    mistakes.after_commit(tally_after, P.orders_done, R.now, settled=not mistakes.unread(env, tally_after))
     lg = unsettled.get("log") or {}
     projs = {}
     for p, n in (lg.get("typed") or {}).items():
