@@ -100,6 +100,9 @@ def g_allowlist(G):
                real in (G.orders[c["order_id"]].get("file"), G.orders[c["order_id"]].get("to")) for c in cs):
             ok_files.add(d.copy)
             continue
+        if G.is_rm(d) and d.status == "M" and mistakes.normalize_text(d.old, G.tally) == d.new:
+            ok_files.add(d.copy)  # only the script's own rewrite: counts, stories and order from the tally (R1-3)
+            continue
         if cs and all(c.get("basis") in ("duplicate", "move") for c in cs):
             b = budget_for(env, real)
             if b and len(d.old.encode()) > b[0]:

@@ -4,7 +4,7 @@ import re
 import unittest
 
 import fakehome as fh
-from fakehome import FakeHome
+from fakehome import FakeHome, typed
 from dreamlib import mistakes, state, paths
 
 KIND = {"id": "link-path-guard", "title": "a guard checks the link path, not the real path",
@@ -122,6 +122,53 @@ class MistakeTests(unittest.TestCase):
         t = json.loads(h.read(".claude/dream/state/tally.json"))
         self.assertTrue(t["kinds"]["link-path-guard"]["retired"])
         self.assertIsNone(t["kinds"]["link-path-guard"]["listed_in"])
+
+
+class ScriptRewriteTests(unittest.TestCase):
+    def tearDown(self):
+        self.h.cleanup()
+
+    def test_the_scripts_own_heading_rewrite_in_a_repeat_mistakes_file_goes_live(self):
+        """R1-3: a listed mistake seen in one more story raises the count the script writes into the entry's
+        heading; that rewrite needs no order and must not stop a run that holds the file for a finding."""
+        self.h = h = FakeHome("r13", repo=True)
+        h.write(fh.PROJ_RM, h.read(fh.PROJ_RM) + ENTRY.replace("(1×: x)", "(2×: story-a, story-b)"))
+        tally = dict(state.default_tally(), backfill_done=True)
+        tally["kinds"]["link-path-guard"] = dict(KIND, projects={"proj": {"stories": ["story-a", "story-b"], "findings": 2,
+                                                                         "last_story": "story-b"}},
+                                                 listed_in=fh.PROJ_RM, listed_since={"date": "2026-11-01", "seq": 2},
+                                                 repeats_while_listed=[], retired=False)
+        tally["stories"] = {"proj": ["story-a", "story-b"]}
+        tally["story_seq"] = ["proj/story-a", "proj/story-b"]
+        h.write(".claude/dream/state/tally.json", paths.dump_json(tally))
+        h.git("add", "--", ".claude/dream/state/tally.json", fh.PROJ_RM)
+        h.git("commit", "-qm", "seed")
+        review(h, "proj", "story-c", ["link path again"])
+        h.scenario({"review-helper": {"assign": "link-path-guard", "enforce_proposal": "a test"}})
+        self.assertEqual(h.run(), 0)
+        # an ordinary correction of that project: the project skill folder (and its repeat-mistakes file) is in the copy
+        fh.standard(h)
+        self.assertEqual(h.run(), 0)
+        self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+        self.assertEqual(self.entries(fh.PROJ_RM)[0], [("link-path-guard", "3", "story-a, story-b, story-c")],
+                         "the script wrote the new count")
+        self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
+        # the editor's own change to that file, with no order, is still refused
+        h.session(fh.PROJ, "s2", [typed("v1", "from now on always write the plan before the code")])
+        sc = json.loads(h.scenario_path.read_text())
+        sc["session-helper"]["s2"] = {"findings": [fh.finding("v1", "always write the plan before the code")]}
+        sc["editor"]["edits"] = [{"file": fh.MEM_COPY, "append": "- Write the plan first (2026-11-09).\n"},
+                                 {"file": PROJ_RM_COPY, "replace": ["resolve every link before the allowlist",
+                                                                    "resolve links when it is easy"]}]
+        sc["editor"]["changes"]["changes"][0]["additions"] = ["- Write the plan first (2026-11-09)."]
+        h.scenario(sc)
+        before = h.read(fh.PROJ_RM)
+        self.assertEqual(h.run(), 3)
+        self.assertEqual(h.read(fh.PROJ_RM), before)
+        self.assertIn("repeat-mistakes.md", h.local("last-run.json")["reason"])
+
+    def entries(self, rel):
+        return MistakeTests.entries(self, rel)
 
 
 if __name__ == "__main__":
