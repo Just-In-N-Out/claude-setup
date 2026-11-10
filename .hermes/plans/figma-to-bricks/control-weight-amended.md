@@ -37,6 +37,8 @@ none is live; every cited test name is unchanged and whole on one line (none was
   merge.
 - A7. Receipts that encode an old expectation, and how to tell them apart: "Receipts after the amendment" (end of
   "Tests and validation").
+- A8. Task 3's mutant list is re-wrapped (the break moved before "(AC1, AC2)"), so no line that isn't a criterion's
+  definition starts with an AC id; its words are unchanged.
 
 ## Questions (⭐ = recommended; under the repo's standing auto-go the builder takes ⭐ unless Justin answers otherwise)
 
@@ -579,8 +581,8 @@ test("a capture holding no element its parent reads inline pastes byte for byte 
    M1 drop `|| !p.node.shown.includes(r)` (AC3's `wrapper-hidden`; AC4 on the five hidden-menu fixtures);
    M2 `aligned` always true (AC3's `hidden`); M3 drop the own-child path check (keep a lifted child: write a unit case
    if no test kills it, through `buildTree`'s `lift` once site-native-structure merged, else record the survivor);
-   M4 keep moved keys in the parent (`filter` removed: AC2's "writes no rule"); M5 take `t.node.decls` again (AC1,
-   AC2); M6 `at.some(x shown)` removed (AC2's display rows on desktops); M7 `.filter((k) => k.site)` removed (AC2's
+   M4 keep moved keys in the parent (`filter` removed: AC2's "writes no rule"); M5 take `t.node.decls` again
+   (AC1, AC2); M6 `at.some(x shown)` removed [amended A8] (AC2's display rows on desktops); M7 `.filter((k) => k.site)` removed (AC2's
    `space` variant). Table in the ledger. As run: M6 was equivalent on the planned fixtures until the `alone` variant
    (AC3) killed it; M3 survives (equivalent while site-native-structure's `lift` isn't on main); fix pass 1 added
    Mleak, Mcount and N1–N9 (N5 survives, inside the Known limit on empty readings; ledger "Fix pass 1"). [amended A4, A5]
