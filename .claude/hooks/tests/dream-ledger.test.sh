@@ -10,8 +10,11 @@ trap 'rm -rf "$ROOT"' EXIT
 problem() { echo "#  FAIL: $*"; bad=1; }
 
 # fire <home> <json> -> hook stdout in $out, exit code in $rc
+# stdin from a file with the exact bytes, not a pipe: the hook can exit before reading it, and the
+# writer would die of SIGPIPE (rc=141 under load)
 fire() {
-  out=$(printf '%s' "$2" | HOME="$1" bash "$HOOK" 2>&1)
+  printf '%s' "$2" >"$ROOT/stdin"
+  out=$(HOME="$1" bash "$HOOK" 2>&1 <"$ROOT/stdin")
   rc=$?
 }
 

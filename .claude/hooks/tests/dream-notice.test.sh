@@ -8,7 +8,8 @@ ROOT=$(mktemp -d "${TMPDIR:-/tmp}/dream-notice-test.XXXX")
 trap 'rm -rf "$ROOT"' EXIT
 
 problem() { echo "#  FAIL: $*"; bad=1; }
-start() { out=$(printf '{"hook_event_name":"SessionStart","source":"startup","session_id":"s"}' | HOME="$1" bash "$HOOK" 2>&1); rc=$?; }
+# stdin from a here-string, not a pipe: the hook never reads it, and a writer it outlives dies of SIGPIPE (rc=141 under load)
+start() { out=$(HOME="$1" bash "$HOOK" 2>&1 <<<'{"hook_event_name":"SessionStart","source":"startup","session_id":"s"}'); rc=$?; }
 msg() { jq -r '.systemMessage // empty' <<<"$out" 2>/dev/null; }
 last_run() { printf '%s' "$2" >"$1/.claude/dream/local/last-run.json"; }
 
