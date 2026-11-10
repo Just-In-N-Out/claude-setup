@@ -223,3 +223,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-09 | staging-fit-cancels | figma-to-bricks | script: after npm run check in a gate driver (or in ac-check.sh), fail when git status --porcelain lists a modified tracked file | offered
 - 2026-11-09 | staging-fit-renderer | code-review-practice | test: a site:live web test whose published stand-in holds a looping Slider (Nestable), run in test:web | being built by fixer 4 of the story
 - 2026-11-10 | dream-trim builder | test-driven-development | lint (test): a check in harness-guards that greps ~/.claude/hooks, ~/.claude/setup/** and feature-dispatch/scripts for `| grep -q` (any flag set with q) in files that set pipefail, and fails on any hit | offered
+- 2026-11-10 | site-menu | figma-to-bricks | test: a capture-opens-guards case whose fixture page registers a navigation-answering service worker; in npm run test:web | being built by fixer 3 of the story
