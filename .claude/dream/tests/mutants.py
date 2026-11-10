@@ -101,6 +101,7 @@ T = {
     "safefold": "test_the_editors_prompt_gives_a_fold_the_script_always_accepts",
     "newnote": "test_the_editors_prompt_gives_the_name_rule_where_it_writes_a_new_memory_note",
     # fixer 6: R6-1
+    "ac28": "test_ac28_entry_retires_after_ten_stories_and_a_repeat_becomes_an_enforce_proposal",
     "r61": "test_a_listed_mistake_seen_again_in_lines_past_the_150_a_run_reads_stays_listed",
     "r61unread": "test_no_repeat_mistakes_order_is_given_while_review_lines_on_disk_wait_unread",
     "r61late": "test_a_mistake_removed_while_a_review_file_lands_during_the_run_is_not_retired_for_good",
