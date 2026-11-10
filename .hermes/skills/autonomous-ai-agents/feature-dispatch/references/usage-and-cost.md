@@ -11,6 +11,10 @@ Use SKILL.md for standing role routing, approval boundaries, quota thresholds an
 
 Use `hermes insights --days 1` for a requested cost breakdown, not every admission. Script-only status/reminder jobs do not require agent-generated replacements.
 
+## Measure Claude Code tokens per story from disk
+
+Subagent transcripts are `~/.claude/projects/<project>/<session>/subagents/agent-*.jsonl`, each with an `agent-*.meta.json` (model, effort, description, toolUseId); the main session is `<session>.jsonl`. Sum `message.usage` once per `message.id` (a response is written as one line per content block, each repeating the usage). Story and role come from the `briefs/<story>-<role>.md` path in the agent's first prompt. (Proven 2026-11-10, pipeline-token-diet: 971 of 979 agents mapped.)
+
 ## Redeem a banked Codex reset
 
 Use only when a live window is exhausted and approved Sol work is running or waiting, under SKILL.md's standing permission. Never force redemption or spend early. Run through `execute_code`, which has Hermes's dependencies:
