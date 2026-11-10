@@ -3,6 +3,7 @@ whatever the helpers, the editor and the checker said (DREAM.md sections 5 to 9)
 
 One function per guard, each returning a list of plain-word failures; run_all() runs them all.
 """
+import posixpath
 import re
 import subprocess
 from pathlib import Path
@@ -12,6 +13,11 @@ from . import extract, mistakes, paths, targets
 DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
 WORD = re.compile(r"[a-z0-9]+")
 TYPED_LABELS = ("TYPED", "QUEUED", "mid-turn", "ANSWER", "PASTE (whole message)")
+# the one shape of the line a move may leave behind (R2-9; Justin 2026-11-10; DREAM.md section 6)
+POINTER = "See `%s` for the section \"%s\" (moved there word for word)."
+POINTER_BARE = "See `%s` (moved there word for word)."   # for moved text that starts with no heading
+HEADING = re.compile(r"^#+\s+(\S.*?)\s*$")
+MEMORY_NOTE = re.compile(r"^(\.claude/projects/[^/]+/memory)/([^/]+\.md)$")
 
 
 def typed_label(label):
@@ -21,6 +27,45 @@ def typed_label(label):
 
 def norm(s):
     return " ".join((s or "").split())
+
+
+def pointer_places(src, dst):
+    """The files (live paths) a pointer for text moved from src to dst may sit in (R2-9): src itself when dst
+    is a file of src's skill's references/ folder; src or its folder's MEMORY.md when both are notes of one
+    memory folder (a new note must be named there). None for any other move: the index and the
+    repeat-mistakes files are never a side of one."""
+    s, t = Path(src), Path(dst)
+    if s.suffix != ".md" or t.suffix != ".md" or "MEMORY.md" in (s.name, t.name) or \
+            "repeat-mistakes.md" in (s.name, t.name):
+        return []
+    ms, mt = MEMORY_NOTE.match(src), MEMORY_NOTE.match(dst)
+    if ms and mt and ms.group(1) == mt.group(1):
+        return [src, ms.group(1) + "/MEMORY.md"]
+    if t.parent.name == "references" and s.parent in (t.parent, t.parent.parent):
+        return [src]
+    return []
+
+
+def pointer_lines(diffs, live):
+    """{(live path of the file a line may sit in, the exact line): (source copy, destination copy)} for every
+    move that may leave a pointer: the destination received exactly the lines the source lost to it, in order,
+    and nothing else; the line names the destination from the folder of the file it sits in, and the moved
+    text's first heading word for word when it starts with one."""
+    out = {}
+    for s in diffs:
+        if s.status != "M":
+            continue
+        for t in diffs:
+            places = pointer_places(live(s), live(t)) if t is not s and t.status != "D" else []
+            got = [ln for ln in t.added if ln.strip()]
+            block = [ln for ln in s.removed if ln.strip() and ln in set(got)]
+            if not places or not got or block != got:
+                continue
+            h = HEADING.match(block[0])
+            for p in places:
+                rel = posixpath.relpath(live(t), posixpath.dirname(p))
+                out[(p, POINTER % (rel, h.group(1)) if h else POINTER_BARE % rel)] = (s.copy, t.copy)
+    return out
 
 
 class Input:
@@ -63,6 +108,7 @@ class Input:
                 lines = {norm(ln) for ln in (self.copy_text(rel) or "").splitlines() if ln.strip()}
                 self.before_lines |= lines
                 self.after_lines |= lines
+        self.pointers = pointer_lines(diffs, self.live)
 
     def live(self, d):
         m = self.mapping.get(d.copy)
@@ -93,6 +139,7 @@ def g_allowlist(G):
     env = G.env
     ok_files = set()
     pending_moves = []
+    pointer_only = []
     over_budget_tidies = 0
     for d in G.diffs:
         live = G.live(d)
@@ -127,12 +174,20 @@ def g_allowlist(G):
         if G.moved_in.get(d.copy) and set(ln for ln in d.added if ln.strip()) <= G.moved_in[d.copy] | _heading_lines(d):
             pending_moves.append(d)
             continue
+        added = [ln for ln in d.added if ln.strip()]
+        if d.status == "M" and added and not any(ln.strip() for ln in d.removed) and \
+                all((real, ln) in G.pointers for ln in added):
+            pointer_only.append((d, {G.pointers[(real, ln)][0] for ln in added}))   # a MEMORY.md naming a moved note
+            continue
         out.append("%s: no finding or order allows this file (narrowest place first; the global CLAUDE.md and "
                    "general skills need a finding stated as general or seen in two projects)" % live)
     for d in pending_moves:  # a move's destination is fine when its text came from a file that is fine
         sources = {s for ln in G.moved_in[d.copy] for s in _sources(G, ln)}
         if not sources <= ok_files:
             out.append("%s: text moved here from a file no finding allows" % G.live(d))
+    for d, sources in pointer_only:  # and so is a file whose only change is the pointer to it (R2-9)
+        if not sources <= ok_files:
+            out.append("%s: a pointer to text moved from a file no finding allows" % G.live(d))
     if over_budget_tidies > 2:
         out.append("tidied %d files over budget with no finding; at most 2" % over_budget_tidies)
     return out
@@ -374,6 +429,7 @@ def folds(G, d):
 
 def g_accounting(G):
     out = []
+    used = set()  # one pointer per move (R2-9)
     for d in G.diffs:
         if G.is_rm(d):
             continue  # the repeat-mistakes files are checked entry by entry (mistakes.check_copy)
@@ -393,6 +449,10 @@ def g_accounting(G):
                 for a in (c.get("additions") or []) if isinstance(a, str)]
         for ln in d.added:
             if not ln.strip() or ln in mi or ln in fo:
+                continue
+            mv = G.pointers.get((G.live(d), ln)) if d.status == "M" else None
+            if mv and mv not in used:
+                used.add(mv)  # the line a move leaves behind, of the one shape the script builds (R2-9)
                 continue
             if not any(norm(ln) in a for a in adds):
                 out.append("%s: an added line is not listed against a finding or order: \"%s\"" % (G.live(d), ln.strip()[:80]))

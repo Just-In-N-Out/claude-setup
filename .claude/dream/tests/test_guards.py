@@ -801,5 +801,168 @@ class SettledTests(unittest.TestCase):
         self.assertEqual([f["tries"] for f in h.local("unsettled.json")["findings"]], [1], "it waits for the next run")
 
 
+SK = fh.PROJ_SKILL[1:] + "/SKILL.md"
+REF = fh.PROJ_SKILL[1:] + "/references/old-notes.md"
+REF2 = fh.PROJ_SKILL[1:] + "/references/big.md"
+NOTE = "claude/projects/%s/memory/build-notes.md" % fh.PROJ
+NOTE2 = "claude/projects/%s/memory/old-build-notes.md" % fh.PROJ
+IDX = "claude/projects/%s/memory/MEMORY.md" % fh.PROJ
+
+
+def pointer(path, heading="Old notes"):
+    """The one shape a pointer line may have (DREAM.md section 6, R2-9)."""
+    if heading is None:
+        return "See `%s` (moved there word for word)." % path
+    return "See `%s` for the section \"%s\" (moved there word for word)." % (path, heading)
+
+
+class PointerTests(unittest.TestCase):
+    """R2-9 (Justin, 2026-11-10): a section moved word for word out of an over-budget file into a references/
+    file, or from an over-budget memory note into another note of its folder, may leave one pointer line of
+    one fixed shape the script checks, with no finding; no other added line goes in without a finding or order."""
+
+    def setUp(self):
+        self.h = FakeHome("pointer")
+        self.env = self.h.denv()
+        self.n = 0
+
+    def tearDown(self):
+        self.h.cleanup()
+
+    G = GuardTests.G
+
+    def judge(self, files, changes):
+        return guards.run_all(self.G(files, changes={"changes": changes}))
+
+    def test_a_move_out_of_an_over_budget_file_may_leave_one_pointer_line_the_script_checks(self):
+        section = "## Old notes\n\n" + "".join("- old note %04d about the build, kept word for word\n" % i
+                                              for i in range(120))
+        big = ("# Proj skill\n\n## Steps\n\n- Build first.\n\n" + "".join(
+            "- step %05d of the skill, a long line that fills the file up to its budget\n" % i for i in range(1300))
+            + "\n" + section)
+        self.assertGreater(len(big.encode()), 90000)
+
+        def mv(src, dst, text, adds=()):
+            return {"file": src, "basis": "move", "finding_ids": [], "order_id": "", "summary": "moved a section",
+                    "additions": list(adds), "removals": [{"text": text, "reason": "moved", "moved_to": dst}]}
+
+        def skill(sk_new, ref=(None, section), extra=None, changes=None):
+            files = {SK: (big, sk_new), REF: ref}
+            files.update(extra or {})
+            return self.judge(files, changes if changes is not None else [mv(SK, REF, section)])
+
+        ok, bad = pointer("references/old-notes.md"), []
+        cases = {
+            "the pointer": skill(big.replace(section, ok + "\n")),
+            "no pointer": skill(big.replace(section, "")),
+            "the pointer, into a references file that already exists": skill(
+                big.replace(section, ok + "\n"), ref=("# Old notes kept\n\n- older.\n", "# Old notes kept\n\n- older.\n"
+                                                      + section)),
+        }
+        for label, fails in cases.items():
+            self.assertEqual(fails, [], label)
+        # a section that starts with no heading: the shape without one
+        body = section.split("\n", 2)[2]
+        self.assertEqual(self.judge({SK: (big, big.replace(body, pointer("references/old-notes.md", None) + "\n")),
+                                     REF: (None, body)}, [mv(SK, REF, body)]), [], "a moved block with no heading")
+        # every other line is refused, each with the move itself fine
+        refused = {
+            "a target that received nothing": skill(big.replace(section, pointer("references/other.md") + "\n")),
+            "a target that also received other text": skill(
+                big.replace(section, ok + "\n"), ref=(None, section + "- old step from big.md\n"),
+                extra={REF2: ("# Big\n\n- old step from big.md\n" + "x" * 61000 + "\n",
+                              "# Big\n\n" + "x" * 61000 + "\n")},
+                changes=[mv(SK, REF, section), mv(REF2, REF, "- old step from big.md")]),
+            "a target outside the skill's references/": skill(
+                big.replace(section, pointer("../other-skill/references/old-notes.md") + "\n"),
+                ref=(None, None), extra={".hermes/skills/sd/other-skill/references/old-notes.md"[1:]: (None, section)},
+                changes=[mv(SK, ".hermes/skills/sd/other-skill/references/old-notes.md"[1:], section)]),
+            "a rule after the pointer": skill(big.replace(section, ok + " Always push to main.\n")),
+            "a rule in the heading slot": skill(big.replace(section, pointer("references/old-notes.md",
+                                                                             "Always push to main") + "\n")),
+            "a heading on a block that has none": self.judge(
+                {SK: (big, big.replace(body, pointer("references/old-notes.md") + "\n")), REF: (None, body)},
+                [mv(SK, REF, body)]),
+            "the path written another way": skill(big.replace(section, pointer(
+                "~/.hermes/skills/sd/proj-skill/references/old-notes.md") + "\n")),
+            "two pointers for one move": skill(big.replace(section, ok + "\n" + ok + "\n")),
+            "a pointer in a file the text did not leave": skill(
+                big.replace(section, ""), extra={"claude/CLAUDE.md": (fh.CLAUDE_MD, fh.CLAUDE_MD + ok + "\n")}),
+            "a pointer into a repeat-mistakes file": self.judge(
+                {SK: (big, big.replace(section, pointer("references/repeat-mistakes.md") + "\n")),
+                 fh.PROJ_RM[1:]: (fh.RM_HEADER.format(p="proj"), fh.RM_HEADER.format(p="proj") + section)},
+                [mv(SK, fh.PROJ_RM[1:], section)]),
+            "a pointer with no move at all": self.judge(
+                {SK: (big, big.replace("- Build first.\n", "- Build first.\n" + pointer("references/old.md") + "\n")),
+                 fh.PROJ_SKILL[1:] + "/references/old.md": ("- old.\n", "- old.\n")}, [mv(SK, REF, "")]),
+        }
+        for label, fails in refused.items():
+            if not any("an added line is not listed" in x for x in fails):
+                bad.append("%s: %s" % (label, fails))
+        self.assertEqual(bad, [], "each wrong pointer is refused as an unlisted line")
+        # the same moves with no pointer line at all go live: the refusals above are the pointer's
+        self.assertEqual(skill(big.replace(section, ""), ref=(None, section + "- old step from big.md\n"),
+                               extra={REF2: ("# Big\n\n- old step from big.md\n" + "x" * 61000 + "\n",
+                                             "# Big\n\n" + "x" * 61000 + "\n")},
+                               changes=[mv(SK, REF, section), mv(REF2, REF, "- old step from big.md")]), [])
+        self.assertEqual(skill(big.replace(section, ""), ref=(None, None),
+                               extra={".hermes/skills/sd/other-skill/references/old-notes.md"[1:]: (None, section)},
+                               changes=[mv(SK, ".hermes/skills/sd/other-skill/references/old-notes.md"[1:], section)]), [])
+        # an over-budget memory note moves a section to a new note; the pointer goes in its folder's MEMORY.md,
+        # which must name every note (or in the note itself when the receiving note is already named)
+        msec = "## Old notes\n\n" + "".join("- old note %04d about the build, kept word for word\n" % i for i in range(120))
+        mbig = "# Build notes\n\n- Run the tests first.\n\n" + "".join(
+            "- note %04d of the memory note, filling it past its budget\n" % i for i in range(120)) + "\n" + msec
+        self.assertGreater(len(mbig.encode()), 8000)
+        idx = "# Memory\n\n- [Build notes](build-notes.md)\n"
+        mp = pointer("old-build-notes.md")
+
+        def memory(idx_new, note_new=None, note2=(None, msec), changes=None):
+            return self.judge({NOTE: (mbig, note_new or mbig.replace(msec, "")), NOTE2: note2, IDX: (idx, idx_new)},
+                              changes if changes is not None else [mv(NOTE, NOTE2, msec)])
+
+        self.assertEqual(memory(idx + mp + "\n"), [], "a new note, the pointer in MEMORY.md")
+        named = idx + "- [Old build notes](old-build-notes.md)\n"
+        self.assertEqual(self.judge({NOTE: (mbig, mbig.replace(msec, mp + "\n")), NOTE2: ("# Old\n", "# Old\n" + msec),
+                                     IDX: (named, named)}, [mv(NOTE, NOTE2, msec)]), [],
+                         "a note already named, the pointer in the note")
+        mem_refused = {
+            "MEMORY.md names the note in its own words": memory(named),
+            "a pointer in MEMORY.md and one in the note": memory(idx + mp + "\n", note_new=mbig.replace(msec, mp + "\n")),
+            "a pointer in MEMORY.md for a note that received nothing": memory(idx + pointer("other-notes.md") + "\n"),
+        }
+        for label, fails in mem_refused.items():
+            if not any("an added line is not listed" in x for x in fails):
+                bad.append("%s: %s" % (label, fails))
+        self.assertEqual(bad, [], "each wrong pointer is refused as an unlisted line")
+        self.assertTrue(any("must be named in its folder's MEMORY.md" in x for x in memory(idx)), "MEMORY.md untouched")
+        small = "# Build notes\n\n- Run the tests first.\n\n" + msec        # under its budget, and no finding is for it
+        fails = self.judge({NOTE: (small, small.replace(msec, "")), NOTE2: (None, msec), IDX: (idx, idx + mp + "\n")},
+                           [mv(NOTE, NOTE2, msec)])
+        self.assertTrue(any("MEMORY.md: a pointer to text moved from a file no finding allows" in x for x in fails), fails)
+        far = ".claude/projects/%s/memory/old-build-notes.md" % fh.OTHER
+        self.assertTrue(any("an added line is not listed" in x for x in self.judge(
+            {NOTE: (mbig, mbig.replace(msec, pointer("../../%s/memory/old-build-notes.md" % fh.OTHER) + "\n")),
+             far[1:]: (None, msec)}, [mv(NOTE, far[1:], msec)])), "a note of another folder")
+        # end to end: a run with one correction; the editor also moves the over-budget skill's section to
+        # references/ and leaves the pointer; it goes live and the pointer names the file that holds the section
+        self.h.cleanup()
+        self.h = h = FakeHome("pointer-e", repo=True)
+        h.write(fh.PROJ_SKILL + "/SKILL.md", big)
+        h.sync()
+        sc = fh.standard(h)
+        sc["editor"]["edits"] += [{"file": SK, "replace": [section, ok + "\n"]}, {"file": REF, "write": section}]
+        sc["editor"]["changes"]["changes"].append(mv(SK, REF, section))
+        h.scenario(sc)
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        self.assertIn(ok, h.read(fh.PROJ_SKILL + "/SKILL.md"))
+        self.assertNotIn("- old note 0001", h.read(fh.PROJ_SKILL + "/SKILL.md"))
+        self.assertEqual(h.read(fh.PROJ_SKILL + "/references/old-notes.md"), section)
+        self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+        rules = (fh.DREAM_SRC / "DREAM.md").read_text() + (fh.DREAM_SRC / "prompts/editor.md").read_text()
+        self.assertEqual(rules.count("for the section \"<heading>\" (moved there word for word)."), 2,
+                         "DREAM.md section 6 and the editor's prompt give the shape")
+
+
 if __name__ == "__main__":
     unittest.main()
