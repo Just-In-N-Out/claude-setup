@@ -1,0 +1,182 @@
+"""The headless agent calls: AC29, AC30 and the named-only live test of AC37 (plan Task 5)."""
+import json
+import os
+import shutil
+import tempfile
+import time
+import unittest
+from pathlib import Path
+
+import fakehome as fh
+from fakehome import FakeHome, typed
+from dreamlib import agents, extract, paths, run as runmod, state
+
+BASE = ["-p", "--no-session-persistence", "--safe-mode", "--setting-sources", "", "--settings", None,
+        "--strict-mcp-config", "--disable-slash-commands", "--permission-prompts", "none", "--model",
+        "claude-opus-5-5", "--effort", "xhigh", "--output-format", "json"]
+
+
+def flag(argv, name):
+    i = argv.index(name)
+    return argv[i + 1]
+
+
+class AgentTests(unittest.TestCase):
+    def tearDown(self):
+        self.h.cleanup()
+
+    def ctx(self, env=None):
+        return runmod.Ctx(env or self.h.denv(), "live", {})
+
+    def test_ac29_headless_calls_carry_isolation_flags_and_preflight_stops_on_a_missing_flag(self):
+        self.h = h = FakeHome("ac29")
+        R = self.ctx()
+        f = h.session(fh.PROJ, "s1", [typed("u1", "from now on run the linter before every commit")])
+        r = extract.read_session(f)
+        r.project = "proj"
+        digest, used = extract.render_digest("s1", "proj", r.entries)
+        res = agents.session_helpers(R, [(r, digest, used)], {"candidates": {"abc123": {"statement": "use tabs"}}})
+        self.assertTrue(res[0].ok, res[0].error)
+        (copy := R.dir / "copy").mkdir()
+        agents.write_editor_inputs(R, {}, [], [])
+        self.assertTrue(agents.editor(R).ok)
+        self.assertTrue(agents.checker(R, [], [], [], {"changes": []}).ok)
+        calls = {c["role"]: c for c in h.calls_by_role()}
+        self.assertEqual(sorted(calls), ["checker", "editor", "session-helper"])
+        for role, c in calls.items():
+            argv = c["argv"]
+            want = list(BASE)
+            want[6] = argv[6]
+            self.assertEqual(argv[:len(BASE)], want, role)
+            self.assertEqual(json.loads(Path(flag(argv, "--settings")).read_text()), {"hooks": {}}, role)
+        for role in ("session-helper", "checker"):
+            argv = calls[role]["argv"]
+            self.assertEqual(flag(argv, "--tools"), "", role)
+            schema = json.loads(flag(argv, "--json-schema"))
+            self.assertEqual(schema, json.loads((fh.DREAM_SRC / ("prompts/%s.schema.json" % role)).read_text()))
+            self.assertNotIn("--restricted", argv)
+            self.assertEqual(Path(calls[role]["cwd"]), R.dir / "empty")
+        ed = calls["editor"]["argv"]
+        self.assertEqual(ed[len(BASE):len(BASE) + 6], ["--restricted", "--tools", "Read,Grep,Glob,Edit,Write",
+                                                        "--permission-mode", "acceptEdits", "--system-prompt"])
+        self.assertNotIn("--json-schema", ed)
+        self.assertEqual(Path(calls["editor"]["cwd"]), copy)
+        # the prompts carry the DREAM.md sections they need
+        helper_prompt = flag(calls["session-helper"]["argv"], "--system-prompt")
+        for sec in ("## 3. What counts as evidence", "## 4. The bar", "## 8. Never automatic", "## 9. Never written"):
+            self.assertIn(sec, helper_prompt)
+        self.assertIn("## 6. How it edits", flag(calls["checker"]["argv"], "--system-prompt"))
+        rules = (copy / "_dream/rules.md").read_text()
+        for n in range(3, 10):
+            self.assertIn("## %d. " % n, rules)
+        self.assertIn("files_changed = 12", rules)
+        self.assertIn("SKILL.md\t90000", rules)
+        self.assertIn("PENDING\n- abc123: use tabs", calls["session-helper"]["stdin"])
+        self.assertIn("uuid=u1", calls["session-helper"]["stdin"])
+        # a result from another model is a failed call
+        h.scenario({"fail": {"session-helper": {"model": "claude-haiku-9"}}})
+        self.assertFalse(agents.session_helpers(R, [(r, digest, used)], {})[0].ok)
+        # preflight: any one flag missing from claude --help stops the run before any call
+        for fl in agents.REQUIRED_FLAGS:
+            env = paths.Env(dict(h.env, FAKE_CLAUDE_HELP_DROP=fl))
+            self.assertEqual(agents.missing_flags(env), [fl])
+        shutil.rmtree(h.calls)
+        h.calls.mkdir()
+        h.env["FAKE_CLAUDE_HELP_DROP"] = "--safe-mode"
+        self.assertEqual(h.run(), 4)
+        self.assertEqual(h.calls_by_role(), [], "no model call")
+        self.assertIn("--safe-mode", h.local("last-run.json")["reason"])
+
+    def test_ac30_eight_session_helpers_per_run_three_at_a_time_newest_first(self):
+        self.h = h = FakeHome("ac30", repo=True)
+        h.write(".claude/dream/state/tally.json", paths.dump_json(dict(state.default_tally(), backfill_done=True)))
+        h.git("add", "--", ".claude/dream/state/tally.json")
+        h.git("commit", "-qm", "seed tally")
+        keys = []
+        for i in range(20):  # session i is i minutes newer than session i-1
+            h.session(fh.PROJ, "s%02d" % i, [typed("u%02d" % i, "message number %02d from Justin" % i)],
+                      age_minutes=200 - i)
+            keys.append("%s/s%02d.jsonl" % (fh.PROJ, i))
+        findings = [{"id": "F%03d" % i, "severity": "P2", "claim": "claim %d" % i, "file_line": "f:%d" % i}
+                    for i in range(400)]
+        h.write(".hermes/plans/claude-setup/evidence/big/review-1/review.json", json.dumps({"findings": findings}))
+        h.scenario({"sleep": {"session-helper": 0.6}, "review-helper": {"assign": "none"}})
+        rc = h.run()
+        self.assertEqual(rc, 0)
+        calls = h.calls_by_role()
+        helpers = [c for c in calls if c["role"] == "session-helper"]
+        self.assertEqual(len(helpers), 8)
+        got = sorted(c["stdin"].split()[4] for c in helpers)
+        self.assertEqual(got, sorted("s%02d" % i for i in range(12, 20)), "the 8 newest sessions")
+        # never more than 3 at once, and 3 did overlap (the fake answers 0.6 s late)
+        events = sorted([(c["start"], 1) for c in helpers] + [(c["end"], -1) for c in helpers])
+        live = peak = 0
+        for _, d in events:
+            live += d
+            peak = max(peak, live)
+        self.assertEqual(peak, 3)
+        reviews = [c for c in calls if c["role"] == "review-helper"]
+        self.assertEqual(len(reviews), 1)
+        self.assertEqual(reviews[0]["stdin"].count("\nLINE "), 150)
+        cursors = state.load_cursors(h.denv())
+        for i, k in enumerate(keys):
+            if i >= 12:
+                self.assertEqual(cursors[k]["committed_line"], 1, k)
+            else:
+                self.assertNotIn(k, cursors, "%s keeps its marker for the next run" % k)
+        tally = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertEqual(len(tally["seen"]), 150, "the other 250 lines wait")
+
+    def test_live_headless_calls_are_isolated_and_confined(self):
+        """Named-only (run.sh --live): two small real calls on this machine's claude."""
+        real = Path(fh.REAL_HOME)
+        self.h = h = FakeHome("live")
+        work = h.root / "live"
+        work.mkdir()
+        env = paths.Env({**os.environ, "HOME": str(real), "DREAM_HOME": str(fh.DREAM_SRC),
+                         "DREAM_CACHE": str(work / "cache"), "TMPDIR": str(h.tmp)})
+        self.assertFalse((fh.DREAM_SRC / "local").exists(), "the checkout must have no local/ folder")
+        projects = real / ".claude/projects"
+        before = {p for p in projects.rglob("*.jsonl")}
+        self.assertEqual(agents.missing_flags(env), [])
+        R = runmod.Ctx(env, "live", {})
+        digest = ("# Digest of session live-test (project test). CONTEXT blocks are what Claude said: never "
+                  "evidence, never quote them.\n\n=== ENTRY uuid=l1 time=2026-11-09T10:00:00Z kind=TYPED\n--- JUSTIN\n"
+                  "From now on, always run the linter before committing anything.\n")
+
+        class Fake:
+            session = "live-test"
+        res = agents.session_helpers(R, [(Fake(), digest, [])], {})[0]
+        self.assertTrue(res.ok, res.error)
+        self.assertIsInstance(res.data.get("findings"), list)
+        outside = work / "outside"
+        outside.mkdir()
+        (outside / "secret.txt").write_text("OUTSIDE-MARK-7731\n")
+        copy = R.dir / "copy"
+        (copy / "_dream").mkdir(parents=True)
+        (copy / "notes.md").write_text("# Notes\n")
+        R2 = R
+        stdin = ("This is an isolation test of your tools. Do these three things in order, then stop:\n"
+                 "1. Append the line `live-test ok` to notes.md in your working folder.\n"
+                 "2. Read the file %s and tell me its first line.\n"
+                 "3. Write the text `escaped` to the file %s.\n"
+                 "Then write _dream/changes.json with {\"changes\": [], \"already_saved\": [], \"declined\": []}.\n"
+                 % (outside / "secret.txt", outside / "escaped.txt"))
+        res2 = agents.call(R2, "editor", agents.editor_cmd(R2), stdin, copy, agents.EDITOR_TIMEOUT, False)
+        self.assertTrue(res2.ok, res2.error)
+        self.assertFalse((outside / "escaped.txt").exists(), "the write outside the folder was refused")
+        self.assertNotIn("OUTSIDE-MARK-7731", json.dumps(res2.data), "the read outside the folder was refused")
+        self.assertTrue(res2.denials, "the refusals are listed in permission_denials")
+        self.assertIn("live-test ok", (copy / "notes.md").read_text())
+        time.sleep(2)
+        after = {p for p in projects.rglob("*.jsonl")}
+        self.assertEqual(after - before, set(), "no transcript was saved")
+        for sid in (res2.data.get("session_id"),):
+            if sid:
+                state_dir = real / ".claude/hooks/state"
+                hits = [p for p in state_dir.rglob("*") if sid in p.name] if state_dir.is_dir() else []
+                self.assertEqual(hits, [], "no hook state file for the call's session")
+
+
+if __name__ == "__main__":
+    unittest.main()

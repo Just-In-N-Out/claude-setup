@@ -56,6 +56,7 @@ class SessionRead:
         self.last_sha = None
         self.headless = False        # every line with an entrypoint is sdk-cli
         self.rewritten = False       # the marker no longer matched: read again from the top
+        self.line_meta = {}          # line index -> (uuid, sha256 of the line), for markers
 
 
 def _blocks(content):
@@ -181,6 +182,8 @@ def read_session(path, start_line=0, seen=(), expect=None):
             raise UnknownShape(r.session, idx + 1, "a line that is not a JSON object")
         if obj.get("entrypoint"):
             entrypoints.add(obj["entrypoint"])
+        if idx >= start_line - 1:
+            r.line_meta[idx] = (obj.get("uuid"), hashlib.sha256(ln.encode()).hexdigest())
         if idx < start_line:
             continue
         new = [e for e in _line_entries(r.session, idx, obj, ctx) if e["uuid"] not in seen]
@@ -334,14 +337,9 @@ def scrub_texts(texts, env):
     return out, n
 
 
-def gitleaks_hits(texts, env):
-    """How many texts gitleaks (or the regex pass) flags."""
-    flagged = 0
-    secrets = _gitleaks_secrets(texts, env)
-    for t, s in zip(texts, secrets):
-        if s or any(rx.search(t) for rx in TOKEN_RES):
-            flagged += 1
-    return flagged
+def secret_flags(texts, env):
+    """For each text: does gitleaks (or the regex pass) flag it?"""
+    return [bool(s) or any(rx.search(t) for rx in TOKEN_RES) for t, s in zip(texts, _gitleaks_secrets(texts, env))]
 
 
 SCRUB_FIELDS = ("text", "context", "own", "question")
