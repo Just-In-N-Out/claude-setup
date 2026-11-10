@@ -1,9 +1,7 @@
 # Role: fixer (round 4, narrow: review 4's R4-1 — a window a press opens loads through the site's service worker): site-menu
 
-**NOT DISPATCHED YET (2026-11-10).** Review 4 ended `ASK JUSTIN: review-4: 1 P0-P2, no fewer than review-3's 1`. This
-brief is ready for the moment Justin says "fix it"; if he says "ship it as a known limit", it is not used and R4-1 goes
-to `follow-ups.md` and HANDOFF "Deferred". His answer goes in `evidence/site-menu/review-4/justin.json`
-(`{"words": "…", "continue": true|false}`) before `review-check.sh` is run again.
+Review 4 ended `ASK JUSTIN: review-4: 1 P0-P2, no fewer than review-3's 1`. Justin answered on 2026-11-10: **"Fix the
+new window gap"** (recorded in `evidence/site-menu/review-4/justin.json`); `review-check.sh` now says REVIEW AGAIN.
 
 You are a fresh fixer for FigmaToBricksV2 (**Opus 5.5, high**). Fix review 4's one finding test-first, plus two small
 P3 steps named below, then stop at `ready-for-review`. Never edit the main folder
