@@ -90,6 +90,7 @@ T = {
     # fixer 4 (Justin's 2026-11-10 round)
     "checkerprompt": "test_the_checkers_prompt_names_the_four_changes_that_need_no_finding",
     "foldtoken": "test_a_fold_keeps_the_old_lines_last_word_or_number_whole",
+    "plainname": "test_a_pointer_names_only_a_plainly_named_file",
 }
 P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
@@ -471,8 +472,9 @@ MUTANTS = [
         "    return [src]\n")], ["pointer"]),
     ("P4b", "a repeat-mistakes file may be a side of a move with a pointer", [(L + "guards.py",
         ' or \\\n            "repeat-mistakes.md" in (s.name, t.name):\n', ":\n")], ["pointer"]),
-    ("P5", "the pointer for a new memory note may not sit in MEMORY.md (narrowing)", [(L + "guards.py",
-        '        return [src, ms.group(1) + "/MEMORY.md"]\n', "        return [src]\n")], ["pointer"]),
+    # P5 re-derived by fixer 4: pointer_places now gives MEMORY.md for a new note only (R4-8's smaller note)
+    ("P5-v2", "the pointer for a new memory note may not sit in MEMORY.md (narrowing)", [(L + "guards.py",
+        '        return [ms.group(1) + "/MEMORY.md"] if new else [src]\n', "        return [src]\n")], ["pointer", "plainname"]),
     ("P5b", "a memory note may point into another memory folder", [(L + "guards.py",
         "    if ms and mt and ms.group(1) == mt.group(1):\n", "    if ms and mt:\n")], ["pointer"]),
     ("P6", "any line that starts like a pointer is accepted (the heading slot and the rest unchecked)", [(L + "guards.py",
@@ -550,6 +552,34 @@ MUTANTS = [
         '    w = word.strip(".,;:!?").lower()\n', "    w = word.lower()\n")], ["foldtoken"]),
     ("K13", "the editor is not told the fold rule", [(P + "editor.md",
         " starting after a comma, semicolon, colon or full stop and a space, or after a\n", " \n")], ["foldtoken"]),
+    # fixer 4: R4-1, a pointer names only a plainly named file
+    ('N1', 'a pointer may name a file of any name (R4-1 back)', [(L + "guards.py", ' and nameable(live(t)) else []\n', ' else []\n')], ['plainname']),
+    ('N2', "a name's length is not bounded", [(L + "guards.py", '    return bool(PLAIN_NAME.fullmatch(name)) and len(name) - 3 <= PLAIN_MAX\n', '    return bool(PLAIN_NAME.fullmatch(name))\n')], ['plainname']),
+    ('N3a', '51 characters before .md pass (widening by one)', [(L + "guards.py", 'PLAIN_MAX = 50\n', 'PLAIN_MAX = 51\n')], ['plainname']),
+    ('N3b', '50 characters before .md are refused (narrowing by one)', [(L + "guards.py", 'PLAIN_MAX = 50\n', 'PLAIN_MAX = 49\n')], ['plainname']),
+    ('N4a', 'seven words pass', [(L + "guards.py", 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\\.md")', 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,6}\\.md")')], ['plainname']),
+    ('N4b', 'six words are refused (narrowing)', [(L + "guards.py", 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\\.md")', 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,4}\\.md")')], ['plainname']),
+    ('N5a', 'capitals pass', [(L + "guards.py", 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\\.md")', 'PLAIN_NAME = re.compile(r"[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+){0,5}\\.md")')], ['plainname']),
+    ('N5b', 'a dot may join words', [(L + "guards.py", 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\\.md")', 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_.][a-z0-9]+){0,5}\\.md")')], ['plainname']),
+    ('N5c', 'a space may join words', [(L + "guards.py", 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\\.md")', 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_ ][a-z0-9]+){0,5}\\.md")')], ['plainname']),
+    ('N5d', 'an underscore may not join words (narrowing)', [(L + "guards.py", 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\\.md")', 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-][a-z0-9]+){0,5}\\.md")')], ['plainname']),
+    ('N5e', 'a hyphen may not join words (narrowing)', [(L + "guards.py", 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\\.md")', 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[_][a-z0-9]+){0,5}\\.md")')], ['plainname']),
+    ('N5f', 'accented lower-case letters pass', [(L + "guards.py", 'PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\\.md")', 'PLAIN_NAME = re.compile(r"[a-z0-9à-ÿ]+(?:[-_][a-z0-9à-ÿ]+){0,5}\\.md")')], ['plainname']),
+    ('N6', 'a plain start is enough (match, not fullmatch)', [(L + "guards.py", 'PLAIN_NAME.fullmatch(name)', 'PLAIN_NAME.match(name)')], ['plainname']),
+    ('N7a', 'names that differ only in capitals are not looked for', [(L + "guards.py", ' and not self.case_twins(live)\n', '\n')], ['plainname']),
+    ('N7b', 'twins looked for only in the copy', [(L + "guards.py", '        for root in (self.env.home / folder, self.copy / targets.copy_rel(folder)):\n', '        for root in (self.copy / targets.copy_rel(folder),):\n')], ['plainname']),
+    ('N7c', 'twins looked for only in the live folder', [(L + "guards.py", '        for root in (self.env.home / folder, self.copy / targets.copy_rel(folder)):\n', '        for root in (self.env.home / folder,):\n')], ['plainname']),
+    ('N7d', 'a twin must be the same name exactly (no case folding)', [(L + "guards.py", 'x.casefold() == name.casefold()', 'x == name')], ['plainname']),
+    ('N8a', "a new memory note's name is not checked", [(L + "guards.py", '        if not G.nameable(live, m.group(2)):\n', '        if False:\n')], ['plainname']),
+    ('N8b', "only a new note's file name is checked, not the folders before it", [(L + "guards.py", 'G.nameable(live, m.group(2))', 'G.nameable(live)')], ['plainname']),
+    ('N9a', "MEMORY.md may hold the pointer for a note that exists (R4-8's smaller note back)", [(L + "guards.py", '        return [ms.group(1) + "/MEMORY.md"] if new else [src]\n', '        return [ms.group(1) + "/MEMORY.md"] if new else [src, ms.group(1) + "/MEMORY.md"]\n')], ['plainname']),
+    ('N9b', "a new note's pointer may sit in the note the text left", [(L + "guards.py", '        return [ms.group(1) + "/MEMORY.md"] if new else [src]\n', '        return [ms.group(1) + "/MEMORY.md", src] if new else [src]\n')], ['plainname']),
+    ('N10', 'every receiving note counts as new', [(L + "guards.py", 'pointer_places(live(s), live(t), t.status == "A")', 'pointer_places(live(s), live(t), True)')], ['pointer']),
+    ("N11", "DREAM.md section 6 does not give the name rule", [(".claude/dream/DREAM.md",
+        "The receiving file's name is plain: lower-case letters and digits, 1 to 6 words joined by single hyphens or underscores, at most 50 characters before `.md`, and no other file in its folder with the same name in other capitals. ", "")], ["plainname"]),
+    ("N12", "the editor is not told the name rule", [(P + "editor.md",
+        "Leave a pointer only\nto a file with a plain name: lower-case letters and digits, 1 to 6 words joined by single hyphens or\n",
+        "Leave a pointer only\nto a file with a plain name: lower-case letters and digits, or\n")], ["plainname"]),
     # fixer 4: R4-8, the checker's prompt
     ("C1", "the checker's prompt no longer names the changes that need no finding (R4-8 back)", [(P + "checker.md",
         "Four changes need no finding or order, because DREAM.md section 6 allows them and the script checks each:\n"

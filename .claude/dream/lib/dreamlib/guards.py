@@ -18,6 +18,18 @@ POINTER = "See `%s` for the section \"%s\" (moved there word for word)."
 POINTER_BARE = "See `%s` (moved there word for word)."   # for moved text that starts with no heading
 HEADING = re.compile(r"^#+\s+(\S.*?)\s*$")
 MEMORY_NOTE = re.compile(r"^(\.claude/projects/[^/]+/memory)/([^/]+\.md)$")
+# the names a pointer may give, and a new memory note may have (R4-1; Justin 2026-11-10; DREAM.md section 6):
+# the editor chooses them and MEMORY.md is read at every session start, so no sentence, capital, space,
+# punctuation or folder. The bound is the longest real name: of the 451 real references/ files and memory notes
+# on 2026-11-10 the longest has 6 words and 49 characters before .md.
+PLAIN_NAME = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+){0,5}\.md")
+PLAIN_MAX = 50
+PLAIN_RULE = ("lower-case letters and digits, 1 to 6 words joined by single hyphens or underscores, at most 50 "
+              "characters before .md, and no other file of its folder with the same name in other capitals")
+
+
+def plain_name(name):
+    return bool(PLAIN_NAME.fullmatch(name)) and len(name) - 3 <= PLAIN_MAX
 
 
 def typed_label(label):
@@ -29,34 +41,35 @@ def norm(s):
     return " ".join((s or "").split())
 
 
-def pointer_places(src, dst):
+def pointer_places(src, dst, new):
     """The files (live paths) a pointer for text moved from src to dst may sit in (R2-9): src itself when dst
-    is a file of src's skill's references/ folder; src or its folder's MEMORY.md when both are notes of one
-    memory folder (a new note must be named there). None for any other move: the index and the
-    repeat-mistakes files are never a side of one."""
+    is a file of src's skill's references/ folder; when both are notes of one memory folder, its MEMORY.md for
+    a new note (which MEMORY.md must name) and src for a note that exists (R4-8). None for any other move: the
+    index and the repeat-mistakes files are never a side of one."""
     s, t = Path(src), Path(dst)
     if s.suffix != ".md" or t.suffix != ".md" or "MEMORY.md" in (s.name, t.name) or \
             "repeat-mistakes.md" in (s.name, t.name):
         return []
     ms, mt = MEMORY_NOTE.match(src), MEMORY_NOTE.match(dst)
     if ms and mt and ms.group(1) == mt.group(1):
-        return [src, ms.group(1) + "/MEMORY.md"]
+        return [ms.group(1) + "/MEMORY.md"] if new else [src]
     if t.parent.name == "references" and s.parent in (t.parent, t.parent.parent):
         return [src]
     return []
 
 
-def pointer_lines(diffs, live):
+def pointer_lines(diffs, live, nameable):
     """{(live path of the file a line may sit in, the exact line): (source copy, destination copy)} for every
     move that may leave a pointer: the destination received exactly the lines the source lost to it, in order,
-    and nothing else; the line names the destination from the folder of the file it sits in, and the moved
-    text's first heading word for word when it starts with one."""
+    and nothing else, and has a plain name (nameable, R4-1); the line names the destination from the folder of
+    the file it sits in, and the moved text's first heading word for word when it starts with one."""
     out = {}
     for s in diffs:
         if s.status != "M":
             continue
         for t in diffs:
-            places = pointer_places(live(s), live(t)) if t is not s and t.status != "D" else []
+            places = pointer_places(live(s), live(t), t.status == "A") \
+                if t is not s and t.status != "D" and nameable(live(t)) else []
             got = [ln for ln in t.added if ln.strip()]
             block = [ln for ln in s.removed if ln.strip() and ln in set(got)]
             if not places or not got or block != got:
@@ -108,7 +121,23 @@ class Input:
                 lines = {norm(ln) for ln in (self.copy_text(rel) or "").splitlines() if ln.strip()}
                 self.before_lines |= lines
                 self.after_lines |= lines
-        self.pointers = pointer_lines(diffs, self.live)
+        self.pointers = pointer_lines(diffs, self.live, self.nameable)
+
+    def case_twins(self, live):
+        """The other files of live's folder, live or in the copy, whose names differ from its own only in
+        capitals: a Mac's file system takes them for one file (R4-1)."""
+        folder, name = posixpath.split(live)
+        names = set()
+        for root in (self.env.home / folder, self.copy / targets.copy_rel(folder)):
+            try:
+                names.update(p.name for p in root.iterdir())
+            except OSError:
+                pass
+        return sorted(x for x in names if x != name and x.casefold() == name.casefold())
+
+    def nameable(self, live, name=None):
+        """A file a pointer may name, or a new memory note's name (R4-1): plain (PLAIN_RULE) and no twin."""
+        return plain_name(posixpath.basename(live) if name is None else name) and not self.case_twins(live)
 
     def live(self, d):
         m = self.mapping.get(d.copy)
@@ -614,6 +643,9 @@ def g_memory_index(G):
         idx = G.copy_text(targets.copy_rel(m.group(1) + "/MEMORY.md"))
         if idx is None or Path(m.group(2)).name not in idx:
             out.append("%s: a new memory note must be named in its folder's MEMORY.md" % live)
+        # MEMORY.md names it and every session of the project reads MEMORY.md: its name is plain, with no folder (R4-1)
+        if not G.nameable(live, m.group(2)):
+            out.append("%s: a new memory note's name must be plain (%s)" % (live, PLAIN_RULE))
     return out
 
 

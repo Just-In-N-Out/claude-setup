@@ -41,9 +41,12 @@ another note of its folder, you may leave one line where it was, exactly
 See `<path>` for the section "<heading>" (moved there word for word).
 or, when the moved text starts with no heading, See `<path>` (moved there word for word).
 <path> is the receiving file seen from the folder of the file the line is in, <heading> the moved text's first
-heading word for word, and the receiving file holds exactly the moved lines and nothing else. One such line per
-move, nothing else on it, no finding needed. When the receiving memory note is new, put that line in the
-folder's MEMORY.md instead (it must name every note) and list MEMORY.md in changes.json with basis `move`.
+heading word for word, and the receiving file holds exactly the moved lines and nothing else. Leave a pointer only
+to a file with a plain name: lower-case letters and digits, 1 to 6 words joined by single hyphens or
+underscores, at most 50 characters before .md, and no other file in its folder with the same name in other
+capitals (for example `references/old-notes.md`). One such line per move, nothing else on it, no finding
+needed. When the receiving memory note is new, put that line in the folder's MEMORY.md instead (it must name
+every note) and list MEMORY.md in changes.json with basis `move`; name a new memory note the same plain way.
 Any other line you add needs a finding or an order.
 
 When done, write `_dream/changes.json` exactly in this shape:
