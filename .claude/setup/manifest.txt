@@ -11,6 +11,7 @@
 :(glob).claude/projects/*/memory/**
 :(glob).claude/project-docs/*/CLAUDE.md
 :(glob).claude/plans/*.md
+.claude/dream/DREAM.md
 :(glob).hermes/skills/**
 .hermes/skills-library-keep.txt
 .hermes/skills-library-claude.txt

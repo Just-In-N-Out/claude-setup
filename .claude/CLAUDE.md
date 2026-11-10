@@ -43,6 +43,10 @@ This setup lives on both machines through the private repo `Just-In-N-Out/claude
 - **Codex shares this setup:** `~/.codex/AGENTS.md` is generated from this file (edit this file, never that one), Codex's hooks pull at session start and push after its edits through the same `sync.sh` lock, and "switch the Codex pipeline model to X" means running `~/.claude/setup/codex/set-pipeline-model.sh X` (guides: `mac.md`/`desktop.md` "Codex").
 - **On the Windows desktop, every project lives inside Ubuntu under `/home/justin`, never under `/mnt/c` (Windows drives).** Clone or create new projects there (at the `desktop_path` in `projects.tsv` when it lists one, then `sync.sh links`). If asked to work in a folder under `/mnt/c`, say so and offer to clone it into `/home/justin` first. *Why: hooks, skill links and sync need Linux paths, and `/mnt/c` is slow with the wrong permissions (`desktop.md`).*
 
+## Dream Pass (planned 2026-11-09, not running yet)
+
+A scheduled job on the Windows desktop that will reread the user's recent Claude Code sessions and the pipeline's review findings twice a day and update the skills, `CLAUDE.md` files and memory notes (add lessons, replace outdated text, merge duplicates, cut old text), each run as one `dream(<time>): …` commit in the setup repo. Its rules are in `~/.claude/dream/DREAM.md`; read that before changing anything about the dream. Until it is built (plans: `~/.hermes/plans/claude-setup/dream-pass.md`, and the one-time trim `dream-trim.md`), nothing runs and no session should act as if it does. Backup tag before the first dream: `pre-dream-2026-11-09`.
+
 ## Windows Desktop: Runaway Memory (2026-11-02)
 
 The desktop froze 7 times in a week while agents ran. The memory logs proved the cause: one test process grew to 16–17 GB in about 12 s and filled Linux's memory (a mutation run whose failing assertion diffed huge page trees, FigmaToBricksV2 phone-menu). Now in place, desktop only:
