@@ -456,6 +456,31 @@ EOF
   echo "# control: an unsynced edit to the project file stops the landing (exit 1), main and the file unchanged"
   sed -i.bak '/^- \*\*Unsynced:\*\*/d' "$PROJ/CLAUDE.md" && rm -f "$PROJ/CLAUDE.md.bak"
   cmp -s "$PROJ/CLAUDE.md" "$COPY" || fail "could not undo the control edit" || return 1
+  # control: a sync holds the lock, so land.sh stops before merging and leaves that sync's lock alone
+  mkdir "$GD/setup-sync.lock"
+  out=$(cd "$H" && in_h bash "$T/land.sh" "$p1" --map .claude/setup/trim/maps/ac8.json --suites none 2>&1); rc=$?
+  printf '%s\n' "$out" | tail -n 1 | sed 's/^/#   /'
+  [ "$rc" = 1 ] && grep -qF 'another sync is running' <<<"$out" && [ "$(g rev-parse main)" = "$m0" ] && [ -d "$GD/setup-sync.lock" ] \
+    || fail "control: land.sh exit $rc while a sync held the lock, want 1 with main unchanged and the lock kept" || return 1
+  rmdir "$GD/setup-sync.lock"
+  echo "# control: while a sync holds the lock, land.sh stops (exit 1), main unchanged, that sync's lock kept"
+  # control, on a copy of this home: a session writes the project file while main is merged (a post-merge hook
+  # stands in for it); land.sh lands main but must not overwrite that edit
+  local H2="$S/home2"
+  cp -a "$H" "$H2" && sed -i.bak "s|$H/|$H2/|g" "$H2/.claude/setup/projects.tsv" && rm -f "$H2/.claude/setup/projects.tsv.bak"
+  mkdir -p "$S/race-hooks"
+  printf '#!/bin/sh\necho "- **Race:** a session wrote this during the merge." >>"%s/Documents/Proj/CLAUDE.md"\n' "$H2" \
+    >"$S/race-hooks/post-merge" && chmod +x "$S/race-hooks/post-merge"
+  in_h git --git-dir="$H2/.claude-setup.git" config core.hooksPath "$S/race-hooks"
+  out=$(cd "$H2" && env -u CODEX_HOME HOME="$H2" GIT_CONFIG_GLOBAL="$S/gitconfig" GIT_CONFIG_NOSYSTEM=1 TMPDIR="$S/tmp" \
+    SETUP_SYNC_PATH_COL=3 bash "$T/land.sh" "$p1" --map .claude/setup/trim/maps/ac8.json --suites none 2>&1); rc=$?
+  printf '%s\n' "$out" | tail -n 1 | cut -c1-160 | sed 's/^/#   /'
+  [ "$rc" = 1 ] && grep -qF 'changed while landing' <<<"$out" \
+    && grep -qxF -- '- **Race:** a session wrote this during the merge.' "$H2/Documents/Proj/CLAUDE.md" \
+    && [ "$(in_h git --git-dir="$H2/.claude-setup.git" log -1 --format=%s main)" = "$P1_SUBJECT" ] \
+    || fail "control: land.sh exit $rc over an edit made during the merge, want 1 with the edit kept" || return 1
+  [ ! -e "$H2/.claude-setup.git/setup-sync.lock" ] || fail "control: the lock was left behind" || return 1
+  echo "# control: an edit made to the project file during the merge is left as it is (exit 1, lock released)"
   # land
   out=$(cd "$H" && in_h bash "$T/land.sh" "$p1" --map .claude/setup/trim/maps/ac8.json --suites none 2>&1); rc=$?
   printf '%s\n' "$out" | sed 's/^/#   /'

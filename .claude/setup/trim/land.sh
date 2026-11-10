@@ -177,6 +177,10 @@ g merge -q --ff-only "$NEW" || stop "git merge --ff-only refused; nothing merged
 say "main fast-forwarded to $NEW"
 while IFS=$'\t' read -r name path; do
   [ -n "$name" ] && [ -d "$path" ] || continue
+  if [ -f "$path/CLAUDE.md" ]; then # a session may have written it during the merge: only overwrite main's old copy
+    g show "$MAIN:.claude/project-docs/$name/CLAUDE.md" >"$SCR/old-copy" 2>/dev/null && cmp -s "$SCR/old-copy" "$path/CLAUDE.md" \
+      || stop "main is landed, but $path/CLAUDE.md changed while landing, so it was left as it is: put the session's edit into ~/.claude/project-docs/$name/CLAUDE.md by hand, then copy that over it before the next sync"
+  fi
   cp "$HOME/.claude/project-docs/$name/CLAUDE.md" "$path/CLAUDE.md" \
     && cmp -s "$HOME/.claude/project-docs/$name/CLAUDE.md" "$path/CLAUDE.md" \
     || stop "main is landed but $path/CLAUDE.md could not be updated: copy ~/.claude/project-docs/$name/CLAUDE.md over it before the next sync"
