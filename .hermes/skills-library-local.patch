@@ -97,14 +97,14 @@ index d6a2493..49cbd6f 100644
  
  ## Output Format
 diff --git a/skills/engineering-best-practices/SKILL.md b/skills/engineering-best-practices/SKILL.md
-index 856df40..061b54b 100644
+index 856df40..233aa67 100644
 --- a/skills/engineering-best-practices/SKILL.md
 +++ b/skills/engineering-best-practices/SKILL.md
 @@ -420,12 +420,16 @@ enable monitoring, posts or runners; automation needs separate authority/setup.
  
  ## Pitfalls
  
-+- In bash, `jq … | @tsv` read with `IFS=$'\t' read -r a b c` merges empty fields (tab is IFS whitespace), so every later field shifts; use `join("\u001f")` in jq with `IFS=$'\x1f' read` (dream-pass builder: a null `commit` and an empty `agent_id` shifted fields in two hooks). In awk, reading `arr[k]` creates the key, so test `k in arr` before any read of `arr[k]` (dream-trim auditor).
++- In bash, `jq … | @tsv` read with `IFS=$'\t' read -r a b c` merges empty fields (tab is IFS whitespace), so every later field shifts; use `join("\u001f")` in jq with `IFS=$'\x1f' read` (dream-pass builder: a null `commit` and an empty `agent_id` shifted fields in two hooks). In awk, reading `arr[k]` creates the key, so test `k in arr` before any read of `arr[k]` (dream-trim auditor). A command chained with `;` after `cd <scratch folder>` runs in the session's folder, the user's repo, when the `cd` fails: use `git -C <absolute path>` for every scratch-repo command, above all rebase, reset, checkout and merge (footer-icon-list planner 2: two read-only git commands ran in the main repo).
  - Do not impose GitFlow, a new tracker, extra agents or deployment on a small task.
    The dev/stage/main branch model is a standing team default for Leorna product
    repos with real staging and production, not a universal law — a docs-only or
@@ -133,7 +133,7 @@ index 8d8968a..f0855d3 100644
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..70201e9 100644
+index c509c64..fc2a2f1 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,12 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -141,7 +141,7 @@ index c509c64..70201e9 100644
  
  - Write for an implementer with zero codebase context: exact paths, complete code for executable tasks, exact commands, expected outcomes and explicit stop conditions.
 +- Expect exit codes the wrapper can actually report. `make <target>; echo $?` gives 2 for any failed recipe, and `go run` turns any non-zero child exit into 1 (printing `exit status N`), so a command's own 0/1/2 contract is pinned by tests on the binary or `run()` function, not through make. (2026-10-23, 901u v2.)
-+- Put each cited test name whole on one plan line: `ac-check.sh` matches plan lines one by one, so a name wrapped across lines is never found. When amending, check every cited name in the approved copy, not only the changed AC (elementor-phone-fit: 2 of 3 names were wrapped). `ac-check.sh` also counts any line starting with a list marker, table pipe or heading followed by `AC<n>` as defining that AC: a task line like "6. AC8's byte receipt." is read as an AC line, so start non-definition lines with other words ("6. The byte receipt for AC8."; panel-embed-code planner).
++- Put each cited test name whole on one plan line: `ac-check.sh` matches plan lines one by one, so a name wrapped across lines is never found. When amending, check every cited name in the approved copy, not only the changed AC (elementor-phone-fit: 2 of 3 names were wrapped). When a re-plan moves a fix to another stage (from the conversion into the capture), run every existing AC test on the prototype before amending: a test that makes its input fresh passes for a new reason, and its precondition about that input can flip (footer-icon-list planner 2: AC2's "the capture holds both names"). `ac-check.sh` also counts any line starting with a list marker, table pipe or heading followed by `AC<n>` as defining that AC: a task line like "6. AC8's byte receipt." is read as an AC line, so start non-definition lines with other words ("6. The byte receipt for AC8."; panel-embed-code planner).
  - Use DRY, YAGNI, vertical TDD and frequent scoped commits; prefer improving existing owned components over parallel replacements.
  - Honor the current plan-only boundary even when the task also says to work on everything. Inspect read-only context and write only the designated plan artifact; do not implement, run application tests, publish tracker changes or start coding delegates.
  - Keep the chat response brief: saved path, coverage, genuine blockers and an offer to execute later. Put depth in the plan, not a pasted Discord implementation manual.
