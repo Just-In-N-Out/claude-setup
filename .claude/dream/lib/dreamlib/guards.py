@@ -176,8 +176,9 @@ def g_allowlist(G):
             continue
         added = [ln for ln in d.added if ln.strip()]
         if d.status == "M" and added and not any(ln.strip() for ln in d.removed) and \
-                all((real, ln) in G.pointers for ln in added):
-            pointer_only.append((d, {G.pointers[(real, ln)][0] for ln in added}))   # a MEMORY.md naming a moved note
+                all((real, ln) in G.pointers for ln in added) and cs and all(c.get("basis") == "move" for c in cs):
+            # a MEMORY.md naming a moved note, listed in changes.json as part of the move (the log names it, AC24)
+            pointer_only.append((d, {G.pointers[(real, ln)][0] for ln in added}))
             continue
         out.append("%s: no finding or order allows this file (narrowest place first; the global CLAUDE.md and "
                    "general skills need a finding stated as general or seen in two projects)" % live)

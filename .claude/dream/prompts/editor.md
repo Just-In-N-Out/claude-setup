@@ -40,7 +40,8 @@ or, when the moved text starts with no heading, See `<path>` (moved there word f
 <path> is the receiving file seen from the folder of the file the line is in, <heading> the moved text's first
 heading word for word, and the receiving file holds exactly the moved lines and nothing else. One such line per
 move, nothing else on it, no finding needed. When the receiving memory note is new, put that line in the
-folder's MEMORY.md instead (it must name every note). Any other line you add needs a finding or an order.
+folder's MEMORY.md instead (it must name every note) and list MEMORY.md in changes.json with basis `move`.
+Any other line you add needs a finding or an order.
 
 When done, write `_dream/changes.json` exactly in this shape:
 {"changes": [{"file": "<path in this folder>", "basis": "finding|order|duplicate|move", "finding_ids": [...],

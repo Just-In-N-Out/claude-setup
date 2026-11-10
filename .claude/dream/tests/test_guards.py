@@ -917,11 +917,18 @@ class PointerTests(unittest.TestCase):
         idx = "# Memory\n\n- [Build notes](build-notes.md)\n"
         mp = pointer("old-build-notes.md")
 
+        listed = {"file": IDX, "basis": "move", "finding_ids": [], "order_id": "", "summary": "names the moved note",
+                  "additions": [], "removals": []}
+
         def memory(idx_new, note_new=None, note2=(None, msec), changes=None):
             return self.judge({NOTE: (mbig, note_new or mbig.replace(msec, "")), NOTE2: note2, IDX: (idx, idx_new)},
-                              changes if changes is not None else [mv(NOTE, NOTE2, msec)])
+                              changes if changes is not None else [mv(NOTE, NOTE2, msec), listed])
 
         self.assertEqual(memory(idx + mp + "\n"), [], "a new note, the pointer in MEMORY.md")
+        # a file whose only change is the pointer is listed in changes.json like the move it belongs to, so the log
+        # names it (AC24)
+        self.assertTrue(any("MEMORY.md: no finding or order allows this file" in x
+                            for x in memory(idx + mp + "\n", changes=[mv(NOTE, NOTE2, msec)])), "MEMORY.md not listed")
         named = idx + "- [Old build notes](old-build-notes.md)\n"
         self.assertEqual(self.judge({NOTE: (mbig, mbig.replace(msec, mp + "\n")), NOTE2: ("# Old\n", "# Old\n" + msec),
                                      IDX: (named, named)}, [mv(NOTE, NOTE2, msec)]), [],
@@ -938,7 +945,7 @@ class PointerTests(unittest.TestCase):
         self.assertTrue(any("must be named in its folder's MEMORY.md" in x for x in memory(idx)), "MEMORY.md untouched")
         small = "# Build notes\n\n- Run the tests first.\n\n" + msec        # under its budget, and no finding is for it
         fails = self.judge({NOTE: (small, small.replace(msec, "")), NOTE2: (None, msec), IDX: (idx, idx + mp + "\n")},
-                           [mv(NOTE, NOTE2, msec)])
+                           [mv(NOTE, NOTE2, msec), listed])
         self.assertTrue(any("MEMORY.md: a pointer to text moved from a file no finding allows" in x for x in fails), fails)
         far = ".claude/projects/%s/memory/old-build-notes.md" % fh.OTHER
         self.assertTrue(any("an added line is not listed" in x for x in self.judge(
@@ -959,6 +966,21 @@ class PointerTests(unittest.TestCase):
         self.assertNotIn("- old note 0001", h.read(fh.PROJ_SKILL + "/SKILL.md"))
         self.assertEqual(h.read(fh.PROJ_SKILL + "/references/old-notes.md"), section)
         self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+        # and a memory note: the section goes to a new note, the pointer to MEMORY.md, and the log names both
+        big_note = "claude/projects/%s/memory/old-big.md" % fh.PROJ
+        h.write("." + big_note, mbig)
+        h.sync()
+        h.env["DREAM_NOW"] = "2026-11-11T05:00:00-05:00"
+        sc = fh.standard(h, sid="s2")
+        sc["editor"]["edits"] += [{"file": big_note, "replace": [msec, ""]}, {"file": NOTE2, "write": msec},
+                                  {"file": IDX, "append": mp + "\n"}]
+        sc["editor"]["changes"]["changes"] += [mv(big_note, NOTE2, msec), listed]
+        h.scenario(sc)
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        self.assertIn(mp, h.read("." + IDX))
+        self.assertEqual(h.read("." + NOTE2), msec)
+        entry = h.read(".claude/dream/dream-log.md").split("\n## ")[-1]
+        self.assertIn("/memory/MEMORY.md` (move): names the moved note", entry)
         rules = (fh.DREAM_SRC / "DREAM.md").read_text() + (fh.DREAM_SRC / "prompts/editor.md").read_text()
         self.assertEqual(rules.count("for the section \"<heading>\" (moved there word for word)."), 2,
                          "DREAM.md section 6 and the editor's prompt give the shape")

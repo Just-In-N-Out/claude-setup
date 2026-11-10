@@ -481,6 +481,8 @@ MUTANTS = [
     ("P11", "MEMORY.md may not gain a pointer line (R2-9's memory half back)", [(L + "guards.py",
         '        if d.status == "M" and added and not any(ln.strip() for ln in d.removed) and \\\n',
         "        if False and \\\n")], ["pointer"]),
+    ("P13", "a file whose only change is a pointer need not be listed in changes.json", [(L + "guards.py",
+        ' and cs and all(c.get("basis") == "move" for c in cs):\n', ":\n")], ["pointer"]),
     ("P12", "the shape the script builds is not the one DREAM.md and the prompt give", [(L + "guards.py",
         '(moved there word for word)."\nPOINTER_BARE', '(moved word for word)."\nPOINTER_BARE')], ["pointer"]),
 ]
