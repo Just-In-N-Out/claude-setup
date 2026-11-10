@@ -67,12 +67,12 @@ fixture() { # fixture <dir>: base/ and head/ trees and map.json under <dir>
   mkdir -p "$d/base/sk/references" "$d/head/sk/references"
   printf '%s\n' '# Tiny skill' '' '## Rules' '' '- keep one' '- **Move me one:** a long rule that moves whole.' \
     '  - its sub-bullet, also moving' '- keep two' '' '### Sub rules' '' '- **Move me two:** another rule.' \
-    '- keep three' '' '## Notes' '' '- **Note parent:** stays.' '  - a note that moves to the old reference' \
+    '- keep three (it stays, unlike - **Move me two:** above)' '' '## Notes' '' '- **Note parent:** stays.' '  - a note that moves to the old reference' \
     >"$d/base/sk/SKILL.md"
   printf '%s\n' '# Old reference' '' 'old line' >"$d/base/sk/references/old.md"
   printf '%s\n' '# Tiny skill' '' '## Rules' '' '- keep one' '- keep two' \
     '- **Moved rules** (move me one, move me two): load `references/tiny.md` → "Moved rules".' '' '### Sub rules' '' \
-    '- keep three' '' '## Notes' '' '- **Note parent:** stays.' \
+    '- keep three (it stays, unlike - **Move me two:** above)' '' '## Notes' '' '- **Note parent:** stays.' \
     '  - Old notes: load `references/old.md` → "Notes kept".' >"$d/head/sk/SKILL.md"
   printf '%s\n' '# Tiny skill: rules moved whole from SKILL.md' '' '## Moved rules' '' \
     '- **Move me one:** a long rule that moves whole.' '  - its sub-bullet, also moving' \
@@ -145,7 +145,31 @@ checker_catches_loss_on_fixture() {
   expect_loss "moved line dropped from an existing file" "$F/map.json" "$F/base" "$S/h8" '  - a note that moves to the old reference' || return 1
   cp -a "$F/head" "$S/h7"; printf '%s\n' '- a made-up rule nobody wrote' >>"$S/h7/sk/references/tiny.md"
   expect_loss "new prose in a references file" "$F/map.json" "$F/base" "$S/h7" '- a made-up rule nobody wrote' || return 1
+  cp -a "$F/head" "$S/h9"; sed -i.bak 's/^## Moved rules$/## Other rules/' "$S/h9/sk/references/tiny.md"
+  expect_loss "group under the wrong heading" "$F/map.json" "$F/base" "$S/h9" '- **Move me one:** a long rule' || return 1
+  cp -a "$F/head" "$S/h10"; printf '%s\n' '- **Move me two:** another rule.' >>"$S/h10/sk/SKILL.md"
+  expect_loss "moved line also left behind" "$F/map.json" "$F/base" "$S/h10" '- **Move me two:** another rule.' || return 1
+  cp -a "$F/head" "$S/h11"; rm "$S/h11/sk/references/tiny.md"
+  expect_loss "references file missing" "$F/map.json" "$F/base" "$S/h11" 'sk/references/tiny.md: missing' || return 1
+  cp -a "$F/head" "$S/h12"; sed -i.bak 's/^- \*\*Move me two:\*\* another rule\.$/& /' "$S/h12/sk/references/tiny.md"
+  expect_loss "trailing space added" "$F/map.json" "$F/base" "$S/h12" '- **Move me two:** another rule.' || return 1
+  # headings mode: the same fixture passes; a dropped heading, a pointer to a missing heading or file fails
+  out=$(py "$CHECK" headings --map "$F/map.json" --base "$F/base" --head "$F/head" 2>&1); rc=$?
+  [ "$rc" = 0 ] || { echo "#   $out"; fail "headings control: exit $rc"; return 1; }
+  cp -a "$F/head" "$S/k1"; plant "$S/k1/sk/SKILL.md" drop '### Sub rules' || return 1
+  expect_headings "heading dropped" "$F" "$S/k1" 'heading missing or changed: ### Sub rules' || return 1
+  cp -a "$F/head" "$S/k2"; sed -i.bak 's/^## Notes kept$/## Notes/' "$S/k2/sk/references/old.md"
+  expect_headings "pointer to a missing heading" "$F" "$S/k2" 'points at heading "Notes kept"' || return 1
+  cp -a "$F/head" "$S/k3"; rm "$S/k3/sk/references/tiny.md"
+  expect_headings "pointer to a missing file" "$F" "$S/k3" 'points at references/tiny.md, which does not exist' || return 1
   done_ok
+}
+expect_headings() { # expect_headings <label> <fixture dir> <head copy> <text the output must name>
+  local out rc
+  out=$(py "$CHECK" headings --map "$2/map.json" --base "$2/base" --head "$3" 2>&1); rc=$?
+  printf '%s\n' "$out" | head -n 3 | cut -c1-160 | sed 's/^/#     /'
+  [ "$rc" = 1 ] && grep -qF -- "$4" <<<"$out" || fail "headings $1: exit $rc, want 1 naming '$4'" || return 1
+  echo "# headings $1: exit 1, names it"
 }
 
 mover_builds_fixture_and_stops_on_bad_anchor() {

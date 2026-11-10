@@ -356,7 +356,7 @@ def check_protect(m, root, out_path, check):
 
 
 # ---------------------------------------------------------------- dupes
-OLD = re.compile(r'superseded|[Tt]his replaces the|\(replaces ')
+OLD = re.compile(r'[Ss]uperseded|[Tt]his replaces the')
 
 
 def passages(lines):
@@ -376,8 +376,10 @@ def passages(lines):
     return [(n, t) for n, t in out]
 
 
-def dupes(m, root, top):
+def dupes(m, root, top, minimum=70):
+    """Pass-2 candidates. A parent line pass 1 copied into a references/ file on purpose is not a duplicate."""
     shingles, info = {}, []
+    targets = set(scope_files(m)) - {e['path'] for e in m['files']}
     for f in scope_files(m):
         path = os.path.join(root, f)
         if not os.path.isfile(path):
@@ -405,12 +407,15 @@ def dupes(m, root, top):
         ta, sa = shingles[a]
         tb, sb = shingles[b]
         ov = common / min(len(sa), len(sb))
-        if ov >= 0.7:
+        if ta == tb and (a[0] in targets or b[0] in targets):
+            continue  # an exact copy in a references/ file: the parent copy of rule 4
+        if ov >= minimum / 100:
             small, big = (a, b) if len(ta) <= len(tb) else (b, a)
             info.append((min(len(ta), len(tb)), round(ov * 100), f"{small[0]}:{small[1]}",
                          f"{big[0]}:{big[1]}", shingles[small][0]))
     info.sort(key=lambda r: -r[0])
-    print(f"# {len(info)} pass-2 candidates in {root}, largest first (chars of the smaller copy, % overlap)")
+    print(f"# {len(info)} pass-2 candidates in {root} ({minimum}%+ overlap), largest first (chars of the smaller "
+          f"copy, % overlap)")
     for r in info[:top]:
         print(f"{r[0]}\t{r[1]}%\t{r[2]}\t{r[3]}\t{preview(r[4])}")
     return []
@@ -512,6 +517,7 @@ def main(argv):
     p.add_argument('--map', required=True)
     p.add_argument('--root', required=True)
     p.add_argument('--top', type=int, default=60)
+    p.add_argument('--min', type=int, default=70, help='overlap percent (default 70)')
     p = sub.add_parser('pass2')
     p.add_argument('--map', required=True)
     p.add_argument('--base', required=True)
@@ -528,7 +534,7 @@ def main(argv):
         if a.mode == 'protect':
             return report(check_protect(load_map(a.map), a.root, a.out, a.check))
         if a.mode == 'dupes':
-            return report(dupes(load_map(a.map), a.root, a.top))
+            return report(dupes(load_map(a.map), a.root, a.top, a.min))
         if a.mode == 'pass2':
             return report(check_pass2(load_map(a.map), a.base, a.head, a.ledger))
     except SetupError as e:
