@@ -4,8 +4,9 @@
 # <commit> is the branch tip to land. On a scratch worktree at main's tip, it replays the branch's commits in order:
 # the pass-1 commit (subject "trim: pass 1, move to references (lossless)") is never replayed but made again by the
 # mover from main's own files (skipped when main already has it); every other commit is cherry-picked (skipped when
-# main already has it). Then it checks the result: trim-check.py pass1 on the new pass-1 commit, size and headings,
-# protect and pass2 (with --ledger) when a "trim: pass 2, merge duplicates" commit is included, and the three suites
+# main already has it). Then it checks the result: trim-check.py pass1 and size (the map's targets) on the new pass-1
+# commit, headings, protect and pass2 (with --ledger) when a "trim: pass 2, merge duplicates" commit is included (it
+# has no size target, so landing it after pass 1 checks no size), and the three suites
 # (harness-guards, review-check, codex-parity: every test that passes on main must pass on the result; --suites none
 # skips them, for the scratch test only). Any failure stops it with nothing merged.
 # Only then does it take sync.sh's own lock ($GD/setup-sync.lock), so no sync commits and no copy_in runs while it
@@ -114,12 +115,16 @@ export_to "$MAIN" t-main && export_to "$NEW" t-new || stop "could not export the
 if [ -n "$P1NEW" ]; then
   export_to "$P1NEW^" t-p1base && export_to "$P1NEW" t-p1 || stop "could not export pass 1"
   run_check pass1 "lossless" python3 -B "$CK" pass1 --map "$W/$MAP" --base "$SCR/t-p1base" --head "$SCR/t-p1"
-fi
-sizes=$(python3 -B -c 'import json,sys
+  # the map's size targets are pass 1's (AC2): they bind the pass-1 commit made here, whatever a pass 2 in the same
+  # landing cuts; pass 2 has no size target, so a landing without pass 1 has no size check
+  sizes=$(python3 -B -c 'import json,sys
 for e in json.load(open(sys.argv[1], encoding="utf-8"))["files"]:
     print(e["path"] + "=" + str(e["max_chars"]) if "max_chars" in e else e["path"])' "$W/$MAP")
-IFS=$'\n' read -r -d '' -a SIZES <<<"$sizes"
-run_check size "every file under its target" python3 -B "$CK" size --root "$SCR/t-new" "${SIZES[@]}"
+  IFS=$'\n' read -r -d '' -a SIZES <<<"$sizes"
+  run_check size "every file under its target" python3 -B "$CK" size --root "$SCR/t-p1" "${SIZES[@]}"
+else
+  say "check size: skipped (main already has pass 1; the size targets are pass 1's, pass 2 has none)"
+fi
 run_check headings "every heading kept, every pointer resolves" \
   python3 -B "$CK" headings --map "$W/$MAP" --base "$SCR/t-main" --head "$SCR/t-new"
 if [ -n "$P2NEW" ]; then

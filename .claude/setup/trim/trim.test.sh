@@ -24,7 +24,7 @@ unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_AUTHOR_NAME GIT_AUTHOR_EMAIL GIT_
 OFFLINE="checker_catches_loss_on_fixture mover_builds_fixture_and_stops_on_bad_anchor ac1_pass1_is_lossless
 ac2_sizes_under_target ac3_headings_and_pointers_resolve ac4_existing_pins_still_pass ac5_checker_catches_loss
 ac6_protected_lines_intact ac7_pass2_removals_accounted ac8_land_survives_next_sync
-map_applies_after_status_build_number_changes"
+map_applies_after_status_build_number_changes land_pass2_lands_after_kept_lines_grow land_refuses_pass1_over_its_target"
 
 CHECK="$HERE/trim-check.py"
 MOVER="$HERE/move-to-references.py"
@@ -583,6 +583,131 @@ EOF
   out=$(py "$MOVER" --map "$S/old-anchor.json" --root "$S/moved-old" 2>&1); rc=$?
   [ "$rc" = 2 ] && grep -qF 'anchor missing' <<<"$out" || fail "control: an anchor with the old build number: exit $rc, want 2 'anchor missing'" || return 1
   echo "# control: an anchor that holds the build number is refused after the bump (exit 2, anchor missing)"
+  done_ok
+}
+
+# ---- land.sh on a scratch home: one skill, its map, and a trim branch of three commits (tools, pass 1, pass 2) ----
+# land_fixture <dir> sets LD (the folder), LH (its scratch home), LGD (the setup repo), LMAP (the map's path in the
+# repo), LP1 and LP2 (the branch's pass-1 and pass-2 commits), LLEDGER (pass 2's ledger), LMAX (the map's max_chars:
+# pass 1 leaves the skill 20 characters under it) and LP2SIZE (the skill's size after pass 2).
+lh() { env -u CODEX_HOME HOME="$LH" GIT_CONFIG_GLOBAL="$LD/gitconfig" GIT_CONFIG_NOSYSTEM=1 TMPDIR="$LD/tmp" \
+  SETUP_SYNC_URL="$LD/no-remote.git" SETUP_SYNC_PATH_COL=3 "$@"; }
+lg() { lh git -c core.quotePath=false --git-dir="$LGD" --work-tree="$LH" "$@"; }
+lland() { (cd "$LH" && lh bash "$SRC/.claude/setup/trim/land.sh" "$@" 2>&1); }  # TRIM_SRC's own land.sh
+chars() { py -c 'import sys; print(len(open(sys.argv[1], encoding="utf-8", newline="").read()))' "$1"; }
+grow() { # grow <file> <n>: a session adds n characters of lesson to the skill's "- **Lessons:**" line
+  py - "$1" "$2" <<'EOF'
+import sys
+p, n = sys.argv[1], int(sys.argv[2])
+t = open(p, encoding='utf-8', newline='').read().split('\n')
+i = next(k for k, l in enumerate(t) if l.startswith('- **Lessons:**'))
+t[i] += (' A lesson learned the hard way.' * (n // 30 + 1))[:n]
+open(p, 'w', encoding='utf-8', newline='').write('\n'.join(t))
+EOF
+}
+land_fixture() {
+  local T="$SRC/.claude/setup/trim" wt p1 sk=.hermes/skills/x/sk/SKILL.md out f
+  need "$T/land.sh" || return 1; need "$T/trim-check.py" || return 1; need "$T/move-to-references.py" || return 1
+  LD=$1 LH="$1/home" LGD="$1/home/.claude-setup.git" LMAP=.claude/setup/trim/maps/fx.json wt="$1/wt"
+  printf '[user]\n\tname = Test Personal\n\temail = test@example.test\n[init]\n\tdefaultBranch = main\n[core]\n\thooksPath = /dev/null\n[advice]\n\tdetachedHead = false\n' >"$LD/gitconfig"
+  mkdir -p "$LD/tmp" "$LH/.claude/setup" "$LH/.hermes/skills/x/sk"
+  for f in sync.sh manifest.txt exclude.txt gitleaks.toml; do cp "$SRC/.claude/setup/$f" "$LH/.claude/setup/" || return 1; done
+  printf '%s\n' '# Sk: a made-up skill' '' '## Rules' '' "- **Long rule:** $(printf 'a long rule that moves whole %.0s' 1 2 3 4 5 6 7 8 9 10)" \
+    '- **Twice A:** say one thing in one place.' '- **Twice B:** say one thing in one place, said a second time.' '' \
+    '## Notes' '' '- **Lessons:** sessions add lessons to this line.' >"$LH/$sk"
+  (cd "$LH" && lh bash .claude/setup/sync.sh init) >"$LD/init.log" 2>&1 || { cat "$LD/init.log"; fail "sync.sh init"; return 1; }
+  lg add -A -- .claude/setup .hermes && lg commit -q -m 'base' || fail "base commit" || return 1
+  lg worktree add -q -b trim-test "$wt" main >/dev/null 2>&1 || fail "branch worktree" || return 1
+  mkdir -p "$wt/.claude/setup/trim/maps"
+  cp "$T/trim-check.py" "$T/move-to-references.py" "$T/land.sh" "$wt/.claude/setup/trim/"
+  map_json() { printf '%s\n' '{"name": "fx", "files": [{"path": ".hermes/skills/x/sk/SKILL.md", "max_chars": '"$1"', "groups": [' \
+    '  {"target": ".hermes/skills/x/sk/references/long.md", "header": "# Sk: long rules (moved whole from SKILL.md)",' \
+    '   "heading": "## Long rules", "lines": [{"anchor": "- **Long rule:**"}],' \
+    '   "pointer": "- **Long rules:** load `references/long.md` → \"Long rules\"."}]}]}'; }
+  map_json 0 >"$LD/probe.json"
+  # the target leaves pass 1 20 characters of room: the mover's dry run gives pass 1's size
+  out=$(py "$T/move-to-references.py" --map "$LD/probe.json" --root "$wt" --dry-run) || fail "mover dry run" || return 1
+  p1=$(sed -n "s|^$sk: [0-9]* -> \([0-9]*\) chars$|\1|p" <<<"$out")
+  [ -n "$p1" ] || fail "no pass-1 size in: $out" || return 1
+  LMAX=$((p1 + 20))
+  map_json "$LMAX" >"$wt/$LMAP"
+  lh git -C "$wt" add -A .claude/setup/trim && lh git -C "$wt" commit -q -m 'trim: tools' || fail "tool commit" || return 1
+  py "$T/move-to-references.py" --map "$wt/$LMAP" --root "$wt" >/dev/null || fail "mover on the branch" || return 1
+  [ "$(chars "$wt/$sk")" = "$p1" ] || fail "pass 1 is $(chars "$wt/$sk") characters, the dry run said $p1" || return 1
+  lh git -C "$wt" add -A .hermes && lh git -C "$wt" commit -q -m "$P1_SUBJECT" || fail "pass-1 commit" || return 1
+  LP1=$(lh git -C "$wt" rev-parse HEAD)
+  # pass 2 cuts the duplicate line; its ledger row names the line that keeps the meaning
+  sed -i.bak '/^- \*\*Twice B:\*\*/d' "$wt/$sk" && rm -f "$wt/$sk.bak"
+  lh git -C "$wt" commit -q -am "$P2_SUBJECT" || fail "pass-2 commit" || return 1
+  LP2=$(lh git -C "$wt" rev-parse HEAD) LP2SIZE=$(chars "$wt/$sk")
+  LLEDGER="$LD/ledger.md"
+  { printf '%s\n' '| # | file | kind | old line | old sha1 | kept in | kept line | kept sha1 | why |' '|---|---|---|---|---|---|---|---|---|'
+    printf '| 1 | %s | duplicate-of | Twice B | %s | same | Twice A | %s | the same rule twice |\n' "$sk" \
+      "$(printf '%s' '- **Twice B:** say one thing in one place, said a second time.' | sha1sum | cut -c1-40)" \
+      "$(printf '%s' '- **Twice A:** say one thing in one place.' | sha1sum | cut -c1-40)"; } >"$LLEDGER"
+  echo "# scratch home $LH: branch tools → pass 1 ($p1 characters, target $LMAX) → pass 2 ($LP2SIZE characters)"
+}
+land_done() { lg worktree remove --force "$LD/wt" >/dev/null 2>&1; [ ! -e "$LGD/setup-sync.lock" ] || fail "the lock was left behind"; }
+
+land_pass2_lands_after_kept_lines_grow() {
+  # pass 2 has no size target (plan: "pass 1 alone meets the targets"): after pass 1 lands, sessions go on adding
+  # lessons to the trimmed files, and "land pass 2" must land once they are past pass 1's targets (review-1 R1-2)
+  newroot || return 1
+  land_fixture "$S" || return 1
+  local out rc m1 sk=.hermes/skills/x/sk/SKILL.md
+  out=$(lland "$LP1" --map "$LMAP" --suites none); rc=$?
+  printf '%s\n' "$out" | tail -n 2 | sed 's/^/#   /'
+  [ "$rc" = 0 ] && [ "$(lg log -1 --format=%s main)" = "$P1_SUBJECT" ] || fail "pass 1 did not land (exit $rc)" || return 1
+  grow "$LH/$sk" 100 && lg add -- "$sk" && lg commit -q -m 'sync(test): a session added a lesson' || fail "growing main" || return 1
+  m1=$(lg rev-parse main)
+  [ "$(( $(chars "$LH/$sk") - 63 ))" -gt "$LMAX" ] || fail "fixture: after the growth, pass 2 should still be over $LMAX" || return 1
+  echo "# a session grew a kept line: the skill is $(chars "$LH/$sk") characters, pass 1's target $LMAX"
+  # control: pass 2's own checks still bind it: a ledger without its row is refused and nothing merges
+  printf '%s\n' '| # | file | kind | old line | old sha1 | kept in | kept line | kept sha1 | why |' '|---|---|---|---|---|---|---|---|---|' >"$S/empty-ledger.md"
+  out=$(lland "$LP2" --map "$LMAP" --suites none --ledger "$S/empty-ledger.md"); rc=$?
+  [ "$rc" = 1 ] && grep -qF 'check pass2: FAILED' <<<"$out" && [ "$(lg rev-parse main)" = "$m1" ] \
+    || fail "control: pass 2 with a ledger missing its row: exit $rc, want 1 with 'check pass2: FAILED', main unchanged" || return 1
+  echo "# control: pass 2 with a ledger missing its row is refused (exit 1), main unchanged"
+  out=$(lland "$LP2" --map "$LMAP" --suites none --ledger "$LLEDGER"); rc=$?
+  printf '%s\n' "$out" | sed 's/^/#   /'
+  [ "$rc" = 0 ] || fail "land.sh refused pass 2 (exit $rc) once a kept line grew past pass 1's target" || return 1
+  [ "$(lg log -2 --format=%s main | tr '\n' '|')" = "$P2_SUBJECT|sync(test): a session added a lesson|" ] \
+    || fail "main is not growth → pass 2: $(lg log -2 --format=%s main | tr '\n' '|')" || return 1
+  lg show "main:$sk" >"$S/main-sk" || fail "no $sk on main" || return 1
+  ! grep -qF -- '- **Twice B:**' "$S/main-sk" && grep -qF -- 'A lesson learned the hard way.' "$S/main-sk" \
+    && cmp -s "$S/main-sk" "$LH/$sk" || fail "main's skill is not the grown file with pass 2's cut" || return 1
+  [ "$(lg worktree list | wc -l | tr -d ' ')" = 2 ] || fail "land.sh left a scratch worktree: $(lg worktree list)" || return 1
+  land_done || return 1
+  echo "# pass 2 landed on the grown main ($(chars "$LH/$sk") characters, over pass 1's $LMAX): pass 2 has no size target"
+  done_ok
+}
+
+land_refuses_pass1_over_its_target() {
+  # the size targets bind the pass-1 commit (AC2): a pass 1 made again on a main whose kept lines grew past them is
+  # refused, alone or with pass 2, even when pass 2's cut would bring the file back under (review-1 R1-2)
+  newroot || return 1
+  land_fixture "$S" || return 1
+  local out rc m0 sk=.hermes/skills/x/sk/SKILL.md
+  out=$(lland "$LP1" --map "$LMAP" --suites none --dry-run); rc=$?
+  [ "$rc" = 0 ] && grep -qF 'check size: every file under its target' <<<"$out" \
+    || fail "control: with room left, the dry run exit $rc, want 0 with the size check passed" || return 1
+  echo "# control: with 20 characters of room, pass 1 passes its size check (dry run)"
+  grow "$LH/$sk" 40 && lg add -- "$sk" && lg commit -q -m 'sync(test): a session added a lesson' || fail "growing main" || return 1
+  m0=$(lg rev-parse main)
+  [ "$((LP2SIZE + 40))" -le "$LMAX" ] || fail "fixture: pass 2's cut should bring the grown file under $LMAX" || return 1
+  out=$(lland "$LP1" --map "$LMAP" --suites none); rc=$?
+  printf '%s\n' "$out" | tail -n 4 | sed 's/^/#   /'
+  [ "$rc" = 1 ] && grep -qF "is over its target of $LMAX" <<<"$out" && grep -qF 'check size: FAILED' <<<"$out" \
+    && [ "$(lg rev-parse main)" = "$m0" ] \
+    || fail "pass 1 made again over its target: exit $rc, want 1 naming the target, main unchanged" || return 1
+  echo "# pass 1 made again 20 characters over its target is refused (exit 1), main unchanged"
+  out=$(lland "$LP2" --map "$LMAP" --suites none --ledger "$LLEDGER"); rc=$?
+  printf '%s\n' "$out" | tail -n 4 | sed 's/^/#   /'
+  [ "$rc" = 1 ] && grep -qF "is over its target of $LMAX" <<<"$out" && [ "$(lg rev-parse main)" = "$m0" ] \
+    || fail "pass 1 and pass 2 together: exit $rc, want 1 (the pass-1 commit would land over its target)" || return 1
+  echo "# with pass 2 in the same landing it is refused too: the pass-1 commit is over its target, whatever pass 2 cuts"
+  [ "$(lg worktree list | wc -l | tr -d ' ')" = 2 ] || fail "land.sh left a scratch worktree: $(lg worktree list)" || return 1
+  land_done || return 1
   done_ok
 }
 
