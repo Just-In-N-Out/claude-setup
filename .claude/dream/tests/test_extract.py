@@ -125,6 +125,24 @@ class ExtractTests(unittest.TestCase):
         self.assertIn("unknown transcript shape", out.stderr)
         self.assertNotIn("hello there", out.stderr)
         self.assertEqual(out.stdout, "", "no digest, not even an empty one")
+        # in a run: that session gets no digest and keeps no marker; the others go on; all bad: exit 4
+        h = FakeHome("ac3run", repo=True)
+        try:
+            h.session(fh.PROJ, "bad", [good, cases["no-source"]])
+            fh.standard(h, sid="good")
+            self.assertEqual(h.run(), 0)
+            run_dir = h.p(".cache/dream/20261110-050000")
+            self.assertTrue((run_dir / "digest-good.md").exists())
+            self.assertFalse((run_dir / "digest-bad.md").exists())
+            cur = json.loads(h.read(".claude/dream/local/cursors.json"))
+            self.assertIn("%s/good.jsonl" % fh.PROJ, cur)
+            self.assertNotIn("%s/bad.jsonl" % fh.PROJ, cur)
+            self.assertIn("bad, line 2", h.read(".claude/dream/dream-log.md"), "the run reports the format error")
+            h.session(fh.PROJ, "bad2", [cases["odd-source"]])
+            self.assertEqual(h.run(), 4, "every session with new lines is of an unknown shape")
+            self.assertIn("unknown transcript shape", h.local("last-run.json")["reason"])
+        finally:
+            h.cleanup()
 
     def test_ac42_mid_turn_prompts_and_slash_arguments_are_typed_and_nothing_is_counted_twice(self):
         lines = [

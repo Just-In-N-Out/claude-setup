@@ -72,6 +72,20 @@ class StateTests(unittest.TestCase):
         a.unlink()
         s4 = state.scan(env, cursors, env.now())
         self.assertIn("%s/a.jsonl" % fh.PROJ, s4.gone)
+        # dream init: a session with fewer than 3 typed messages starts at its end; one with 3 or more is read
+        h2 = FakeHome("ac5init")
+        try:
+            h2.session(fh.PROJ, "two", [typed("t1", "one message here"), typed("t2", "two messages here")])
+            h2.session(fh.PROJ, "three", [typed("r1", "first of three"), typed("r2", "second of three"),
+                                          typed("r3", "third of three")])
+            out = h2.dream("init")
+            self.assertEqual(out.returncode, 0, out.stderr)
+            c = state.load_cursors(h2.denv())
+            self.assertEqual(c["%s/two.jsonl" % fh.PROJ]["committed_line"], 2)
+            self.assertNotIn("%s/three.jsonl" % fh.PROJ, c)
+            self.assertEqual([r.key for r in state.scan(h2.denv(), c, h2.denv().now()).reads], ["%s/three.jsonl" % fh.PROJ])
+        finally:
+            h2.cleanup()
 
 
 if __name__ == "__main__":

@@ -26,6 +26,13 @@ if [[ -z $base ]]; then
   exit 0
 fi
 TEST=regression_existing_suites_match_the_base_tally
+if [[ $(git -C "$ROOT" rev-parse --is-inside-work-tree 2>/dev/null) != true ]]; then
+  # a git archive copy fails suites that check what git tracks (harness-guards, cortexos-memory, review-check)
+  echo "regression.sh: $ROOT is not a git checkout; use a clone or a worktree"
+  [[ $mode == record ]] && exit 2
+  echo "not ok 1 - $TEST"
+  exit 1
+fi
 SUITES=(.claude/setup/sync.test.sh)
 if [[ $mode == record ]]; then
   for s in "$ROOT"/.claude/hooks/tests/*.test.sh; do SUITES+=(".claude/hooks/tests/${s##*/}"); done

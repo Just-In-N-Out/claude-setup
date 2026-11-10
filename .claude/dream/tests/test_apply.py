@@ -72,8 +72,25 @@ class ApplyTests(unittest.TestCase):
         self.assertEqual(h.head(), head)
         self.assertIn("local commit", h.local("last-run.json")["reason"])
         # and the guard: more diff blocks against the library than before are refused
-        from dreamlib import guards
-        self.assertEqual(guards.hunks("a\n" * 20, "b\n" + "a\n" * 18 + "c\n"), 2)
+        from dreamlib import guards, targets
+        long = "".join("- rule %02d\n" % i for i in range(30))
+        h.sh("git", "-C", str(lib), "reset", "-q", "--hard", "origin/main")  # drop the local commit made above
+        (lib / "skills/lib-skill/SKILL.md").write_text(long)
+        h.sh("git", "-C", str(lib), "commit", "-qam", "longer skill")
+        h.sh("git", "-C", str(lib), "push", "-q", "origin", "HEAD:main")
+        rel = "hermes/skills-library/skills/lib-skill/SKILL.md"
+        d = h.root / "g-lib"
+        for root, text in (("snap", long), ("copy", long.replace("- rule 01\n", "- rule one\n").replace("- rule 28\n", "- rule 28b\n"))):
+            (d / root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (d / root / rel).write_text(text)
+        diffs, links = targets.diff_copy(d)
+        G = guards.Input(h.denv(), d, {rel: {"live": targets.live_rel(rel), "sha": "x"}}, diffs, links, [], [], {},
+                         {"kinds": {}}, targets.load_rules(h.denv()))
+        self.assertTrue(guards.g_library(G), "two blocks where there were none")
+        (d / "copy" / rel).write_text(long.replace("- rule 01\n", "- rule one\n"))
+        diffs, links = targets.diff_copy(d)
+        G.diffs = diffs
+        self.assertEqual(guards.g_library(G), [], "one block is fine")
 
     def test_ac21_one_dream_commit_holds_only_the_dreams_paths_and_is_pushed(self):
         self.h = h = FakeHome("ac21", repo=True)

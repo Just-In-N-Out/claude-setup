@@ -100,6 +100,31 @@ class StageTests(unittest.TestCase):
         self.assertEqual(h.calls_by_role(), [])
         self.assertIn("CONFLICT", h.local("last-run.json")["reason"])
 
+    def test_e2e_exit_4_a_login_failure_stops_with_nothing_live(self):
+        self.h = h = FakeHome("e4b", repo=True)
+        sc = fh.standard(h)
+        sc["fail"] = {"session-helper": {"api_error_status": 401}}
+        h.scenario(sc)
+        before, head = snapshot(h), h.head()
+        self.assertEqual(h.run(), 4)
+        self.assertEqual((snapshot(h), h.head()), (before, head))
+        self.assertIn("login", h.local("last-run.json")["reason"])
+        self.assertIsNone(h.local("unsettled.json"), "nothing saved: the next run reads the session again")
+
+    def test_e2e_review_backfill_sends_one_helper_per_project_once(self):
+        self.h = h = FakeHome("bf", repo=True)
+        for proj in ("leorna", "figma-to-bricks", "claude-setup"):
+            h.write(".hermes/plans/%s/evidence/st/review-1/review.json" % proj, json.dumps(
+                {"findings": [{"id": "F%d" % i, "severity": "P2", "claim": "%s claim %d" % (proj, i), "file_line": "a:1"}
+                              for i in range(80)]}))
+        h.scenario({"review-helper": {"assign": "none"}})
+        self.assertEqual(h.run(), 0)
+        rh = [c for c in h.calls_by_role() if c["role"] == "review-helper"]
+        self.assertEqual(sorted(c["stdin"].count("\nLINE ") for c in rh), [80, 80, 80], "no 150-line limit, one per project")
+        t = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertTrue(t["backfill_done"])
+        self.assertEqual(len(t["seen"]), 240)
+
 
 if __name__ == "__main__":
     unittest.main()

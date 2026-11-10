@@ -61,6 +61,19 @@ class BarTests(unittest.TestCase):
                              ["keep the header fixed on every page", "the footer stays dark on every page"], name)
             self.assertTrue(any("quote not found" in d for d in b1.dropped), name)
         self.assertTrue(bar.quote_ok(other.entries, "o1", "a message typed in another session"))
+        # end to end: none reaches the editor, and the session is read again next run
+        self.h.cleanup()
+        self.h = h = FakeHome("ac7run", repo=True)
+        h.session(fh.PROJ, "s7", lines)
+        h.scenario({"session-helper": {"s7": {"findings": [good] + list(bad.values())}}})
+        self.assertEqual(h.run(), 0)
+        self.assertEqual([c["role"] for c in h.calls_by_role()], ["session-helper"], "no editor call")
+        self.assertNotIn("%s/s7.jsonl" % fh.PROJ, json.loads(h.read(".claude/dream/local/cursors.json") if
+                         h.p(".claude/dream/local/cursors.json").exists() else "{}"))
+        for c in h.calls.glob("call-*"):
+            c.unlink()
+        self.assertEqual(h.run(), 0)
+        self.assertEqual([c["role"] for c in h.calls_by_role()], ["session-helper"], "read again")
 
     def test_ac8_explicit_passes_at_once_and_single_sightings_wait_across_runs(self):
         r1 = self.read("s8a", [typed("u1", "No, always write the plan before the code, that is how we work"),

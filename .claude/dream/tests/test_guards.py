@@ -230,6 +230,16 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(guards.g_allowlist(self.G({om: ("# M\n", "# M\n- x\n")}, [fnd()], {"changes": [change(om, adds=["- x"])]})),
                         "another project's memory")
         self.assertEqual(guards.g_allowlist(self.G({MEM: ("# M\n", "# M\n- x\n")}, [fnd()], {"changes": [change(MEM, adds=["- x"])]})), [])
+        # a new memory note must be named in its folder's MEMORY.md; no link anywhere in the copy
+        idx = "claude/projects/%s/memory/MEMORY.md" % fh.PROJ
+        note = "claude/projects/%s/memory/lint.md" % fh.PROJ
+        self.assertTrue(guards.g_memory_index(self.G({note: (None, "# Lint\n")})))
+        self.assertEqual(guards.g_memory_index(self.G({note: (None, "# Lint\n"), idx: ("# Memory\n", "# Memory\n- [Lint](lint.md)\n")})), [])
+        G = self.G({MEM: ("# M\n", "# M\n- x\n")})
+        os.symlink("/etc/hostname", G.copy / "claude/escape.md")
+        from dreamlib import targets as t2
+        G.diffs, G.links = t2.diff_copy(G.dir)
+        self.assertTrue(guards.g_links(G))
         # every allowed seed is synced: it matches a manifest line and not sync.sh's never-list
         self.assertEqual(seed_problems(), [])
 

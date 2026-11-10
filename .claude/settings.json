@@ -21,9 +21,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/cortexos-memory.sh reconcile",
-            "timeout": 600,
-            "async": true
+            "command": "~/.claude/hooks/dream-notice.sh",
+            "timeout": 5
           }
         ]
       },
@@ -32,8 +31,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/dream-notice.sh",
-            "timeout": 5
+            "command": "~/.claude/hooks/cortexos-memory.sh reconcile",
+            "timeout": 600,
+            "async": true
           }
         ]
       }
@@ -49,6 +49,16 @@
         ]
       },
       {
+        "matcher": "^(Write|Edit|NotebookEdit)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/dream-ledger.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
         "matcher": "^(Write|Edit)$",
         "hooks": [
           {
@@ -56,16 +66,6 @@
             "command": "~/.claude/hooks/cortexos-memory.sh save",
             "timeout": 30,
             "async": true
-          }
-        ]
-      },
-      {
-        "matcher": "^(Write|Edit|NotebookEdit)$",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/dream-ledger.sh",
-            "timeout": 5
           }
         ]
       }
