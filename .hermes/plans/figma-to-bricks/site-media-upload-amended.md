@@ -39,8 +39,8 @@ report's cited test; the cited test still covers every clause of its AC's own se
   stays up and "the upload never asked the old site" is proven by its request log (the AC14 sentence, Task 8); the alt
   rule as Bricks prints it (Q7, the AC2 sentence, the `kinds.ts` line of Interfaces).
 - A6, the paste check id and its steps (3ds went to staging-fit-renderer; review 1's R1-4): "the next free id at the
-  merge", and the live check starts with a re-capture (the tool refuses the 2026-11-09 capture). Lines: the AC15 and
-  AC16 sentences and Test lines (their quoted step names unchanged), Task 10, "Justin's check".
+  merge", and the live check starts with a re-capture (the tool refuses the 2026-11-09 capture). Lines: the sentences
+  and Test lines of AC15 and AC16 (their quoted step names unchanged), Task 10, "Justin's check".
 - A7, other lines the head made false or stale: the Tests section's timings line (the CLI tests also use per-upload
   delays and poll the stand-in); Overlaps (staging-fit-renderer merged into main as Build 2026-11-10.4 at `7eeca437`);
   Risks gain review 2's deferred P3s (R2-1, R2-2) and fixer 1's found_else (a refused SVG shows WordPress's words).
