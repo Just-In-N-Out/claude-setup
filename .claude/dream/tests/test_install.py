@@ -78,6 +78,55 @@ class InstallTests(unittest.TestCase):
         r = h.dream("undo", "HEAD")
         self.assertNotEqual(r.returncode, 0)
 
+    def test_undo_refuses_while_the_library_clone_or_a_project_file_holds_unsynced_edits(self):
+        """R1-7: dream undo resets the library clone and copies project CLAUDE.md files, so it first checks
+        what the apply step checks: the clone equals the patch file and each project's file equals its synced
+        copy. Otherwise it changes nothing and says why."""
+        self.h = h = FakeHome("r17", repo=True, library=True)
+        lib = h.p(".hermes/skills-library")
+        lib_copy = "hermes/skills-library/skills/lib-skill/SKILL.md"
+        doc = ".claude/project-docs/proj/CLAUDE.md"
+        line, pline = "- Review twice, once for the tests (2026-11-09).", "- Lint before every commit (2026-11-09)."
+        fh.standard(h, edits=[{"file": lib_copy, "replace": ["- Review twice.", line]}, {"file": doc[1:], "append": pline + "\n"}],
+                    changes={"changes": [{"file": lib_copy, "basis": "finding", "finding_ids": "ALL", "additions": [line],
+                                          "removals": [{"text": "- Review twice.", "reason": "outdated"}]},
+                                         {"file": doc[1:], "basis": "finding", "finding_ids": "ALL", "additions": [pline],
+                                          "removals": []}]})
+        sc = json.loads(h.scenario_path.read_text())
+        sc["session-helper"]["s1"]["findings"][0]["general"] = True
+        h.scenario(sc)
+        self.assertEqual(h.run(), 0)
+        sha = h.git("log", "-1", "--format=%H", "--grep", "^dream(").stdout.strip()
+        head = h.head()
+        sk = lib / "skills/lib-skill/SKILL.md"
+        dreamed = sk.read_text()
+        # a session saves a lesson into the library skill and has not synced yet
+        sk.write_text(dreamed + "- A lesson a session just saved, not synced yet.\n")
+        r = h.dream("undo", sha)
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("skills-library-local.patch", r.stderr)
+        self.assertEqual(h.head(), head, "nothing reverted")
+        self.assertIn("A lesson a session just saved", sk.read_text(), "the unsynced lesson survives")
+        self.assertIn(line, sk.read_text())
+        # without the lesson; then Justin edits the project's own CLAUDE.md and has not synced yet
+        sk.write_text(dreamed)
+        pj = h.project_dir / "CLAUDE.md"
+        project = pj.read_text()
+        pj.write_text(project + "- Justin's own new rule, not synced yet.\n")
+        head = h.head()
+        r = h.dream("undo", sha)
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn(str(pj), r.stderr)
+        self.assertEqual(h.head(), head, "nothing reverted")
+        self.assertIn("Justin's own new rule", pj.read_text(), "Justin's unsynced rule survives")
+        # neither: the undo goes through
+        pj.write_text(project)
+        r = h.dream("undo", sha)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertNotIn(line, sk.read_text())
+        self.assertEqual(h.sh("git", "-C", str(lib), "diff").stdout, h.read(".hermes/skills-library-local.patch"))
+        self.assertNotIn(pline, pj.read_text())
+
 
 if __name__ == "__main__":
     unittest.main()

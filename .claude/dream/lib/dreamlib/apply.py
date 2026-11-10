@@ -498,6 +498,43 @@ def recover(R):
 
 # ---------- dream undo ----------
 
+def undo_blockers(env, sha, changed, lib_too, projects):
+    """What would make `dream undo` destroy an edit that is not synced yet (R1-7): the same checks the apply
+    step makes before it writes. None when the undo may go ahead."""
+    if lib_too:
+        if library_local_commits(env):
+            return "the library clone %s has a local commit" % env.lib
+        staged = subprocess.run(["git", "-C", str(env.lib), "diff", "--cached", "--name-only"], capture_output=True,
+                                text=True, env=env.environ).stdout
+        if staged.strip():
+            return "the library clone %s has staged changes" % env.lib
+        try:
+            patch = env.patch.read_text()
+        except OSError:
+            patch = ""
+        if library_diff(env) != patch:
+            return ("the library clone %s holds edits that are not in %s yet (a lesson saved since the last sync); "
+                    "run sync.sh first" % (env.lib, env.patch))
+        rel = env.rel(env.patch)
+        if g(env, "show", "HEAD:" + rel).stdout != g(env, "show", sha + ":" + rel).stdout:
+            return "a later commit changed %s; undo this dream by hand (DREAM.md section 14)" % rel
+        old = g(env, "show", sha + "^:" + rel).stdout
+        if old:
+            chk = subprocess.run(["git", "-C", str(env.lib), "apply", "--check", "--cached", "--whitespace=nowarn", "-"],
+                                 input=old, capture_output=True, text=True, env=env.environ)
+            if chk.returncode != 0:
+                return "the library clone cannot take the reverted %s (%s)" % (rel, chk.stderr.strip()[:200])
+    for rel in changed:
+        if rel.startswith(".claude/project-docs/") and rel.endswith("/CLAUDE.md"):
+            pdir = projects.get(rel.split("/")[2])
+            own = pdir / "CLAUDE.md" if pdir else None
+            if own and pdir.is_dir() and own.exists() and (env.home / rel).exists() \
+                    and own.read_bytes() != (env.home / rel).read_bytes():
+                return ("the project's own %s differs from its synced copy %s (an edit not synced yet); run sync.sh "
+                        "first" % (own, rel))
+    return None
+
+
 def undo(env, commit):
     sha = g(env, "rev-parse", "--verify", "-q", commit + "^{commit}").stdout.strip()
     if not sha:
@@ -508,21 +545,31 @@ def undo(env, commit):
         print("dream undo: %s is not a dream commit (%s)" % (sha[:8], subject), file=sys.stderr)
         return 2
     changed = [x for x in g(env, "show", "--name-only", "--format=", sha).stdout.splitlines() if x]
+    lib_too = env.rel(env.patch) in changed and (env.lib / ".git").exists()
+    projects = project_paths(env)
     lock = None
     try:
         lock = take_lock(env, float(env.environ.get("DREAM_LOCK_WAIT", "15")))
+        why = undo_blockers(env, sha, changed, lib_too, projects)
+        if why:
+            print("dream undo: %s; nothing changed" % why, file=sys.stderr)
+            return 1
         r = g(env, "revert", "--no-edit", sha)
         if r.returncode != 0:
             g(env, "revert", "--abort")
             print("dream undo: the revert did not apply cleanly; nothing changed:\n%s" % (r.stderr or r.stdout),
                   file=sys.stderr)
             return 1
-        if env.rel(env.patch) in changed and (env.lib / ".git").exists():
+        if lib_too:
             subprocess.run(["git", "-C", str(env.lib), "checkout", "-q", "--", "."], env=env.environ)
             if env.patch.exists() and env.patch.stat().st_size:
-                subprocess.run(["git", "-C", str(env.lib), "apply", "--whitespace=nowarn", str(env.patch)],
-                               env=env.environ)
-        projects = project_paths(env)
+                a = subprocess.run(["git", "-C", str(env.lib), "apply", "--whitespace=nowarn", str(env.patch)],
+                                   capture_output=True, text=True, env=env.environ)
+                if a.returncode != 0:
+                    print("dream undo: the revert is committed, but the library clone did not take the reverted %s "
+                          "(%s); apply it by hand before the next sync" % (env.patch, (a.stderr or a.stdout).strip()),
+                          file=sys.stderr)
+                    return 1
         for rel in changed:
             if rel.startswith(".claude/project-docs/") and rel.endswith("/CLAUDE.md"):
                 pdir = projects.get(rel.split("/")[2])

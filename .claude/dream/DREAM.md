@@ -119,4 +119,4 @@ A pull conflict, GitHub unreachable, a failed login, a CLI flag is missing, ever
 
 ## 14. Undoing a dream
 
-`~/.claude/dream/bin/dream undo <commit>`, not a bare revert: it reverts that dream's commit and also puts the library clone back to the reverted `skills-library-local.patch` and copies each reverted project `CLAUDE.md` back into its project (a bare revert leaves both, and the next sync brings the edit back). Then it syncs. The state before the first dream is the tag `pre-dream-2026-11-09`.
+`~/.claude/dream/bin/dream undo <commit>`, not a bare revert: it reverts that dream's commit and also puts the library clone back to the reverted `skills-library-local.patch` and copies each reverted project `CLAUDE.md` back into its project (a bare revert leaves both, and the next sync brings the edit back). Then it syncs. It changes nothing while the clone or a project's own `CLAUDE.md` holds an edit that is not synced yet. The state before the first dream is the tag `pre-dream-2026-11-09`.
