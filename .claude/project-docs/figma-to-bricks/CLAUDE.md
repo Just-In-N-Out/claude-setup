@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-10)
 
-- **Current build `2026-11-10.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-10.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-10.6 staging-fit-cancels (website importer):** a website paste no longer cancels a declaration at a
+    width range with `revert` (it rolled back the whole author origin, so a wrapper's rule at a narrower range turned a
+    painted button into a plain underlined link with square corners): a value a range drops is written as bounded media
+    runs; classes change only where main wrote such a `revert` (B-Dry's saved home stand-in: 0 left, 18 before); two
+    uses stay, named: an Elementor accordion's open look and a slider's `<button>` arrows and dots; the live widget's
+    inner box prints as a bounded block too; other pastes and Figma designs are byte for byte as before. Q1 A (only
+    classes where a range drops a value change) and Q2 A not yet confirmed. Known limit: a link its wrapper reads as an
+    inline word at some widths paints `inline-block` there (control-weight). Paste check **3du** (B-Dry's hero buttons
+    on phones, after a re-capture).
   - **2026-11-10.5 site-media-upload (website importer):** `npm run site:upload -- <capture> <outDir> <https://site>`
     (`--dry-run`, `--svg`, `--elementor`, `--part`, `--basic-text`, `--user`, `--record`) uploads a scanned page's own
     pictures to that WordPress site's media library with the panel's uploader (each file once, as served, the old
@@ -366,6 +375,12 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   (`style/tracking.ts`).
 - **Bricks wraps every Section, Container and Block from 767px down** (its front-end CSS): a row the layout plan keeps
   on one line there writes `_flexWrap: "nowrap"` (`row.reflow`); the renderer copies the wrap.
+- **A website paste never cancels a declaration at a width range with `revert`** (staging-fit-cancels): `revert` rolls
+  back the whole author origin, so it also beats the element's own class and controls. A value a range drops is
+  written as bounded runs (`src/core/site/blocks.ts`); the only `revert`s left are the site-reset class's own, an
+  accordion's open look and a slider's button parts (`test/fixtures/site-drops.ts` `excepted`;
+  `test/unit/site-no-revert.test.ts` fails on any other). A job that changes what a site paste writes on purpose makes
+  `test/fixtures/site-no-revert-main.json` again on its own tree (`node tools/site-no-revert-golden.ts .`).
 - **Bricks writes text controls as given:** Flex basis numbers go out in px (`flex-basis: 323` is CSS the browser
   drops); `payloadProblems` refuses a bare one (`reference/bricks/README.md` "Text controls").
 - **An empty global class is `settings: []`,** as Bricks keeps it; `{}` makes Bricks ask "Import classes" on every
