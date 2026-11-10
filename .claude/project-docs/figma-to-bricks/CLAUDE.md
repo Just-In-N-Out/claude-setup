@@ -7,8 +7,14 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-09)
 
-- **Current build `2026-11-09.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-09.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-09.4 staging-fit-capture (website importer):** a capture reads a width range again when it loaded
+    without the site's stylesheets, and stops with one plain line (widths and stylesheet named, no file written) when
+    they never arrive; `npm run site`, `site:check`, `capture:check` and the panel refuse a capture holding such a
+    range (Justin's 2026-11-09 bdryswi.com capture: 768–991) with "capture the page again"; clean captures and Figma
+    designs convert byte for byte as before. Paste check **3do** (AC6, live: re-capture bdryswi.com, re-paste on
+    staging, tablets).
   - **2026-11-09.3 elementor-footer-fit (website importer):** with `--elementor`, a widget whose measured box is
     stretched past its body plus inner margins at a captured width keeps its own elements, named (fold rule 9), so
     B-Dry's whole page (header, page, footer) is within 2 px at every width (footer 51.89 px at 1025 before); the plain

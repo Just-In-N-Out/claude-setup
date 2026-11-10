@@ -16,7 +16,7 @@ Nothing may hide that the importer's Chrome is automated.
 - Approved plan (read-only): `/home/justin/.hermes/plans/figma-to-bricks/evidence/staging-fit-cancels/plan-approved.md`.
   Take every ⭐ answer (Justin: "whatever the plan agent recommends just go with that"). The planner's evidence:
   `~/.hermes/plans/figma-to-bricks/evidence/staging-fit/planner/` (index in its `README.md`).
-- Your own worktree (you start in it): `git checkout -B staging-fit-cancels-build __CAPTURE_HEAD__` — the accepted head
+- Your own worktree (you start in it): `git checkout -B staging-fit-cancels-build 3cfc54acdc3326b4c0e8f1439aee6921d3e35fc1` — the accepted head
   of `staging-fit-capture` (on local `main` `fd1986dcdbc8cf35f114b80be456e94279346743`, Build 2026-11-09.3, or `main`
   itself once that job has merged: check `git rev-parse main` and say which you built on). Your review base is that
   commit. Report your branch.
