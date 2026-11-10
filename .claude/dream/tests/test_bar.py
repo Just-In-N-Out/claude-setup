@@ -165,6 +165,44 @@ class BarTests(unittest.TestCase):
         self.assertTrue(guards.g_secrets(guards_input_with_added(self.env, h, fh.fake_secret())))
         self.assertEqual(guards.g_secrets(guards_input_with_added(self.env, h, "a harmless line")), [])
 
+    def test_a_lesson_dropped_for_a_code_like_token_is_named_on_justins_list_without_its_text(self):
+        """R2-6 (AC12 kept): a lesson whose wording holds a code-like token Justin's message does not hold (the
+        busiest project's name, FigmaToBricksV2, or a card id the context is full of) is still dropped before the
+        editor, its text in no log; but the loss is not silent: Justin's list names the session, the date and the
+        message, with no text of the finding, and the helper is told to word lessons without such tokens."""
+        tok = "FigmaToBricksV2"
+        r = self.read("s26", [assistant("Built in /home/x/Documents/%s, card 86bcm901b." % tok),
+                              typed("u1", "no, always rebuild the plugin after every merge")])
+        b, _ = self.check(r, [F("u1", "always rebuild the plugin after every merge",
+                                statement="In %s, rebuild the plugin after every merge (card 86bcm901b)." % tok)])
+        self.assertEqual(b.passed, [])
+        self.assertEqual(len(b.dropped), 1)
+        self.assertEqual([(i["kind"], i["quote"], i["date"], i["session"]) for i in b.list_items],
+                         [("dropped", "", "2026-11-09", "s26")])
+        self.assertIn("u1", b.list_items[0]["why"], "the message is named, so Justin can find it")
+        joined = json.dumps(b.dropped) + json.dumps(b.list_items)
+        for text in (tok, "86bcm901b", "rebuild the plugin"):
+            self.assertNotIn(text, joined, "no text of the dropped finding")
+        # the other drops stay silent: a personal detail or a secret is not pointed at
+        r2 = self.read("s26b", [typed("v1", "Anna from work is pregnant so keep meetings short for her")])
+        b2, _ = self.check(r2, [F("v1", "Anna from work is pregnant", personal=True, statement="Short meetings.")])
+        self.assertEqual((len(b2.dropped), b2.list_items), (1, []))
+        prompt = " ".join((fh.DREAM_SRC / "prompts/session-helper.md").read_text().split())
+        self.assertIn("never a name, id or code his message does not hold", prompt)
+        # end to end (review-2 probe p07, qL): no editor call, one item on the list, the token nowhere
+        self.h.cleanup()
+        self.h = h = FakeHome("r26", repo=True)
+        h.session(fh.PROJ, "s1", [assistant("Built in /home/x/Documents/%s." % tok),
+                                  typed("u1", "No, " + fh.LINT_Q + ", please.")])
+        h.scenario({"session-helper": {"s1": {"findings": [fh.finding("u1", fh.LINT_Q,
+                                                                      statement="In %s, lint before commits." % tok)]}}})
+        self.assertEqual(h.run(), 0)
+        self.assertEqual([c["role"] for c in h.calls_by_role()], ["session-helper"])
+        lst = h.read(".claude/dream/justin-list.md")
+        self.assertRegex(lst, r"(?m)^- \[ \] 2026-11-09 dropped: .*\(session s1\)")
+        for f in (".claude/dream/justin-list.md", ".claude/dream/dream-log.md"):
+            self.assertNotIn(tok, h.read(f), f)
+
     def test_ac45_an_ambiguous_message_never_replaces_a_dated_rule(self):
         r = self.read("s45", [typed("u1", "jsut for this one use the old header, or always, not sure"),
                               typed("u2", "for this task use the old header please"),

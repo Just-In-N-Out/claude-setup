@@ -22,7 +22,10 @@ For each finding:
   never from the context, an omitted paste or another entry. Keep his voice-note slips as typed
   ("Nonstick to Opus" stays as it is) and put the corrected reading in `statement`.
 - `kind`: `correction`, `decision`, `preference`, `fact` (all stated outright) or `implied`.
-- `statement`: the lesson as one plain sentence a future agent can follow.
+- `statement`: the lesson as one plain sentence a future agent can follow, holding never a name, id or code his
+  message does not hold (no folder, repo or card id from the context; say "this project" or use the project
+  name the digest's first line gives): a statement with a code-like token (8 or more characters mixing letters
+  and digits, or 6 or more digits) that his message lacks is dropped.
 - `general`: true only when he says it applies everywhere (every project, every repo).
 - `replaces`: when he replaces an earlier rule, the words of the rule it replaces; else "".
 - `matches_pending`: the id of a pending candidate below that says the same thing; else "".

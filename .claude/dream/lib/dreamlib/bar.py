@@ -128,6 +128,14 @@ def check(env, read, used, findings, pending, applied, now):
         if code_like(rec["statement"], source):
             res.dropped.append("1 finding dropped: its lesson holds a code-like token its message does not "
                                "(session %s)" % session[:8])
+            # not silent (R2-6): Justin's list names the message, with no text of the finding (AC12: its words
+            # may hold a code from Claude's text, so they go nowhere)
+            res.list_items.append({"id": fid, "date": rec["date"], "kind": "dropped", "quote": "",
+                                   "statement": "a lesson from your message was not saved", "session": session,
+                                   "why": "its wording held a code-like token your message does not hold (a name or id "
+                                          "from Claude's text, such as a folder or card id), so it was dropped (DREAM.md "
+                                          "section 9); say it again in your own words if it should stand. Message %s"
+                                          % uuid})
             continue
         if f.get("loosens_safety") or f.get("weakens_check"):
             why = "loosens a safety rule" if f.get("loosens_safety") else "a fix that weakens a check"

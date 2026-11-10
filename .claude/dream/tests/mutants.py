@@ -80,6 +80,7 @@ T = {
     "allowance": "test_an_ordered_entry_is_held_to_the_allowance_the_editor_is_given",
     "fold": "test_a_lesson_folded_into_a_line_keeps_that_line_whole_and_needs_no_replaces",
     "memkey": "test_a_finding_of_a_worktree_session_targets_the_memory_folder_of_its_repository",
+    "codedrop": "test_a_lesson_dropped_for_a_code_like_token_is_named_on_justins_list_without_its_text",
 }
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
               "g_dated_lines,\n       g_dates_on_additions, g_secrets, g_repeat_mistakes, g_memory_index, g_library]")
@@ -384,6 +385,16 @@ MUTANTS = [
      ["memkey"]),
     ("G5g", "the session read keeps no working folder", [(L + "extract.py",
         '            r.cwd = obj["cwd"]\n', "            pass\n")], ["memkey"]),
+    ("G6a", "a lesson dropped for a code-like token is silent again (R2-6 back)", [(L + "bar.py",
+        '            res.list_items.append({"id": fid, "date": rec["date"], "kind": "dropped"',
+        '            (lambda *a: None)({"id": fid, "date": rec["date"], "kind": "dropped"')], ["codedrop"]),
+    ("G6b", "the list item carries the dropped finding's quote (widening what is written)", [(L + "bar.py",
+        '"kind": "dropped", "quote": "",', '"kind": "dropped", "quote": quote,')], ["codedrop"]),
+    ("G6c", "the list item carries the dropped lesson's wording, token and all", [(L + "bar.py",
+        '"statement": "a lesson from your message was not saved"', '"statement": rec["statement"]')], ["codedrop"]),
+    ("G6d", "the list item does not name the message", [(L + "bar.py",
+        "                                          % uuid})\n", "                                          % \"\"})\n")],
+     ["codedrop"]),
     ("G3e", "a listed entry is held to the bytes of an add order for its kind too (widening the check's reach)", [
         (L + "mistakes.py", '                if kind not in before and o["action"] == "add" and o["kind"] == kind:\n',
          '                if o["action"] == "add" and o["kind"] == kind:\n')], ["allowance"]),
