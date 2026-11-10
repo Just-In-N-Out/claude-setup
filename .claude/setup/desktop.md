@@ -197,7 +197,7 @@ Typing `dream run` directly works too, but without the memory cap.
 
 **Where things are:** the log `~/.claude/dream/dream-log.md` and Justin's list `~/.claude/dream/justin-list.md` (synced); the pending list and the tally in `~/.claude/dream/state/` (synced); this machine's markers `local/cursors.json`, the write ledger `local/ledger.jsonl`, findings waiting `local/unsettled.json`, the mode and `local/last-run.json` (never synced); working files (digests, the editor's copy, `would-apply.diff`) under `~/.cache/dream/<run>/`, kept 14 days. The session-start line reports the last run.
 
-**Undo a run:** `~/.claude/dream/bin/dream undo <commit>` (it also resets the library clone and project `CLAUDE.md` files; a bare `git revert` does not). Everything before the first dream: the tag `pre-dream-2026-11-09`.
+**Undo a run:** `~/.claude/dream/bin/dream undo <commit>` (it also resets the library clone and project `CLAUDE.md` files; a bare `git revert` does not). It changes nothing, and says why, while the clone or a project's own `CLAUDE.md` holds an edit not synced yet: run `sync.sh` first. Everything before the first dream: the tag `pre-dream-2026-11-09`.
 
 **Off switches:** `dream mode off`, or `systemctl --user disable --now dream.timer`, or `dream uninstall` (timer off, units removed, `local/` kept).
 
@@ -206,7 +206,7 @@ Typing `dream run` directly works too, but without the memory cap.
 **Troubleshooting** (the reason is in the session-start line, `dream status` and `last-run.json`):
 - *login or limits (HTTP 401, 403, 429):* open `claude` once, or set up the token above; the run changed nothing and the next one retries.
 - *a CLI flag is missing:* Claude Code updated itself and dropped a flag the dream's isolation needs. Nothing ran. Check `claude --help`, then fix `lib/dreamlib/agents.py` in a story and re-run the live test (`bash ~/.claude/dream/tests/run.sh --live`).
-- *unknown transcript shape:* a session has a line the extractor does not know (a new Claude Code format, or a line cut off mid-write). That session is not read and its marker stays; the others go on. Extend `lib/dreamlib/extract.py` in a story.
+- *unknown transcript shape:* a session has a line the extractor does not know (a new Claude Code format, or a line cut off mid-write). That session is not read and its marker stays; the others, review findings and waiting findings go on, and the session-start line counts the sessions it could not read. A line of NUL bytes a freeze left is not an unknown shape: it is skipped and noted in the log. Extend `lib/dreamlib/extract.py` in a story.
 - *another sync kept the setup repo locked, CONFLICT, GitHub unreachable:* the same as for `sync.sh` (`~/.github/README.md`, Troubleshooting).
 
 ## Desktop notes

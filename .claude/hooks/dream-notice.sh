@@ -3,7 +3,8 @@
 # reads ~/.claude/dream/local/last-run.json and prints one systemMessage: what the last dream changed,
 # its commit and how many items wait on Justin's list. A finished run (or a dry run) is shown once (its
 # id goes in local/last-run.shown); a failed or stopped run is shown at every start until a run succeeds
-# (a run that finds nothing new writes result nothing-new, which shows nothing) or the mode is off.
+# (a run that finds nothing new writes result nothing-new, which shows nothing); while the mode is off
+# it says so instead of promising a next run.
 # A missing or broken file, or a machine without ~/.claude/dream/local/ (the Mac): nothing, exit 0.
 # Tests: tests/dream-notice.test.sh
 LOCAL="$HOME/.claude/dream/local"
@@ -28,9 +29,10 @@ case "$result" in
   dry-run)
     m="Dream $when (dry run): would change $(plural "$files" file) from $(plural "$findings" finding); nothing went live. Diff: $diff. To go live: ~/.claude/dream/bin/dream mode live" ;;
   failed | stopped)
-    # switched off (dream mode off): no run is coming to try again, so the old failure is not shown (R1-12)
-    [ "$(cat "$LOCAL/mode" 2>/dev/null)" = off ] && exit 0
-    m="Dream $when FAILED: ${reason%.}. Nothing went live; the next run tries again. Log: ~/.claude/dream/dream-log.md; status: ~/.claude/dream/bin/dream status" ;;
+    next="the next run tries again"
+    # switched off (dream mode off): no run is coming, so the line does not promise one (R1-12)
+    [ "$(cat "$LOCAL/mode" 2>/dev/null)" = off ] && next="the dream is off, so no run tries again (~/.claude/dream/bin/dream mode live turns it on)"
+    m="Dream $when FAILED: ${reason%.}. Nothing went live; $next. Log: ~/.claude/dream/dream-log.md; status: ~/.claude/dream/bin/dream status" ;;
   *) exit 0 ;;
 esac
 [ "$push" = true ] && m="$m The push is pending: the next sync.sh pushes it."

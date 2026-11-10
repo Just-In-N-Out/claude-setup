@@ -80,8 +80,8 @@ dream_unreadable_sessions_show_in_the_session_start_line() {
   return "$bad"
 }
 
-# ruling R1-12: a failure is not shown while the dream is off, nor after a run that found nothing new
-dream_a_failed_run_is_not_shown_when_off_or_after_a_nothing_new_run() {
+# R1-12: while the dream is off a failure does not promise a next run; after a run that found nothing new it is gone
+dream_a_failed_run_says_the_dream_is_off_and_clears_after_a_nothing_new_run() {
   bad=0
   local H="$ROOT/home-off"
   mkdir -p "$H/.claude/dream/local"
@@ -90,10 +90,11 @@ dream_a_failed_run_is_not_shown_when_off_or_after_a_nothing_new_run() {
   case "$(msg)" in *"FAILED: GitHub unreachable."*) ;; *) problem "failed: [$out]" ;; esac
   printf 'off\n' >"$H/.claude/dream/local/mode"
   start "$H"
-  [ "$rc" = 0 ] && [ -z "$out" ] || problem "mode off: rc=$rc out=$out"
+  case "$(msg)" in *"next run tries again"*) problem "mode off promises a run: [$out]" ;;
+    *"FAILED: GitHub unreachable. Nothing went live; the dream is off, so no run tries again"*) ;; *) problem "mode off: [$out]" ;; esac
   printf 'live\n' >"$H/.claude/dream/local/mode"
   start "$H"
-  case "$(msg)" in *"FAILED"*) ;; *) problem "live again: [$out]" ;; esac
+  case "$(msg)" in *"FAILED: GitHub unreachable. Nothing went live; the next run tries again."*) ;; *) problem "live again: [$out]" ;; esac
   last_run "$H" '{"run":"n1","time":"2026-11-10T17:00-05:00","mode":"live","result":"nothing-new","cleared":"f1","commit":null,"files":0,"findings":0,"list_open":0,"push_pending":false,"reason":""}'
   start "$H"
   [ "$rc" = 0 ] && [ -z "$out" ] || problem "nothing new: rc=$rc out=$out"
@@ -101,7 +102,7 @@ dream_a_failed_run_is_not_shown_when_off_or_after_a_nothing_new_run() {
 }
 
 TESTS=(ac31_session_start_line_reports_the_last_dream dream_unreadable_sessions_show_in_the_session_start_line
-  dream_a_failed_run_is_not_shown_when_off_or_after_a_nothing_new_run)
+  dream_a_failed_run_says_the_dream_is_off_and_clears_after_a_nothing_new_run)
 sel=("$@")
 [ ${#sel[@]} -gt 0 ] || sel=("${TESTS[@]}")
 for t in "${sel[@]}"; do

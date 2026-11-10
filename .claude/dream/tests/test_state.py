@@ -98,10 +98,10 @@ class NoticeTests(unittest.TestCase):
                              capture_output=True, text=True).stdout.strip()
         return json.loads(out)["systemMessage"] if out else ""
 
-    def test_a_later_run_with_nothing_new_or_dream_mode_off_clears_a_failed_run_from_the_session_start_line(self):
-        """R1-12 (AC31: a failed run shows until a run succeeds): a run that finds nothing new succeeds, and
-        with the dream switched off no run is coming to try again. A home with no failed run still gets no
-        last-run.json from a nothing-new run (AC4)."""
+    def test_a_nothing_new_run_clears_a_failed_run_and_mode_off_stops_promising_a_run(self):
+        """R1-12 (AC31: a failed run shows until a run succeeds): a run that finds nothing new succeeds and
+        clears it; with the dream switched off the line says so instead of promising a next run. A home with
+        no failed run still gets no last-run.json from a nothing-new run (AC4)."""
         self.h = h = FakeHome("r112", repo=True)
         fh.standard(h)
         h.on_pull('[ "$N" = 1 ] || exit 0\necho "setup-sync: CONFLICT: both changed the same file" >&2\n')
@@ -121,10 +121,13 @@ class NoticeTests(unittest.TestCase):
         h.write(".claude/dream/local/last-run.json", json.dumps({
             "run": "r9", "time": "2026-11-10T17:00-05:00", "mode": "live", "result": "failed", "reason": "GitHub unreachable",
             "commit": None, "files": 0, "findings": 0, "list_open": 0, "push_pending": False}))
-        self.assertIn("FAILED", self.notice())
+        self.assertIn("the next run tries again", self.notice())
         out = h.dream("mode", "off")
         self.assertEqual(out.returncode, 0, out.stderr)
-        self.assertEqual(self.notice(), "")
+        msg = self.notice()
+        self.assertIn("FAILED: GitHub unreachable", msg, "AC31: shown until a run succeeds")
+        self.assertIn("the dream is off", msg)
+        self.assertNotIn("the next run tries again", msg)
 
 
 class ContextTests(unittest.TestCase):
