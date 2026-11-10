@@ -233,3 +233,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-10 | site-media-upload | figma-to-bricks | test: a unit test that imports every test/fixtures/*.ts, calls each zero-argument export under a 5 s timeout and fails when the process still has active handles afterwards | offered
 - 2026-11-10 | panel-embed-code | memory/testing-pitfalls | Claude Code hook: a PreToolUse warning on Bash commands containing `pkill -f` (the pattern matches the tool's own shell) | offered
 - 2026-11-10 | site-native-structure | figma-to-bricks | test: site:check --part footer on a fixture whose footer root is a #part layer must pass (site-check-lifted covers lifted parts only) | offered
+- 2026-11-10 | footer-icon-list | figma-to-bricks | lint: a payload check that flags any class whose settings hold _margin/_padding top or bottom while its _cssCustom holds the matching -block- name (AC3's unit test pins statesOf) | offered
