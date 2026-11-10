@@ -57,3 +57,13 @@ From finisher round 2 (2026-10-29 ~11:45):
 
 From review 8 (clean at 25c2f3c):
 - **R8-1 (P3, repeats R7-1):** patch 9's Report-bullet clause "(without `--reviews`: …)" in `ac-verification.md` is pinned by no test (mutant M8d survives). Pin it in ac12 together with R7-1.
+
+From pipeline-token-diet (2026-11-10, the builder, plan task 5: outside notes and the cuts left out):
+- **FigmaToBricksV2's `CLAUDE.md` size:** every Figma agent loads it (56.7 KB today, 82 KB median over the measured window); each 10 KB cut is about 0.7% of a Figma story's tokens.
+- **The Adobe plugin's skill listing:** 11.3 KB of the 30 KB skill listing, about 0.7% of every agent; Justin can switch it off with `/plugin` if he doesn't use it in Claude Code (it is not in `settings.json`'s `enabledPlugins`).
+- **L1 (left out 2026-11-10):** a slim agent type for pipeline roles (no `Artifact` or `Agent` tool, no MCP or agent lists): up to about 4% of agent tokens, to confirm with a probe.
+- **L2 (left out 2026-11-10):** skill loads by role (`engineering-best-practices` only for planner, builder and fixer; `mutation-testing-discipline` only when the plan tags a guard AC): about 1.5%.
+- **L3 (left out 2026-11-10):** a brief rule that output over about 60 lines goes to a log file in the evidence folder and the agent prints the tail and the pass/fail counts: about 3%.
+- **L4 (left out 2026-11-10):** a brief rule that a command expected to run over 4 minutes runs in the background and is checked before 5 minutes pass: about 2%.
+- **L5 (left out 2026-11-10):** a hand-back cap of 40 lines, details in the evidence files it names: about 1 to 2% (part of the main session's 10.1%).
+- **Q8 (b) (not chosen; one line to ask for):** also set `settings.json`'s `"model": "opus"` and `"effortLevel": "high"`, so every new session starts on Opus 5.5 high and `/model fable` picks Fable.

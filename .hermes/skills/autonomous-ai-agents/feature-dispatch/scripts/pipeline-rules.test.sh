@@ -5,7 +5,10 @@
 #   bash pipeline-rules.test.sh <test> [<test>…]   just those, numbered TAP: "ok 1 - <test>"
 # existing_suites_pass (the regression run of the other suites) runs only when named, with
 # PIPELINE_RULES_BASE=<folder of base tallies> (one <suite>.ok per suite: the names of the tests that passed
-# on the base, in either of two runs; ~/.hermes/plans/claude-setup/pipeline-token-diet.md task 0).
+# on the base, in either of two runs; ~/.hermes/plans/claude-setup/pipeline-token-diet.md task 0). It runs
+# ac-check.test.sh, review-check.test.sh, codex-parity.test.sh, sync.test.sh and every hooks suite from this
+# checkout (each suite keeps its own scratch rules: HARNESS_GUARDS_TEST_ROOT and the like), so give it the
+# memory cap: systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 bash pipeline-rules.test.sh existing_suites_pass
 # Everything under test comes from this file's own checkout (the story worktree, or $HOME once merged),
 # never from the live ~/.claude, ~/.hermes or ~/.codex. The Codex copy is built into a fresh mktemp -d
 # folder (under $TMPDIR).
@@ -156,6 +159,51 @@ $(old_phrases)
 EOF
   [ $bad = 0 ] || { echo "# test folder $S kept"; return 1; }
   echo "# 6. the Codex AGENTS.md built from this checkout has the routing sentence and none of the old phrases"
+  rm -rf "$S"
+}
+
+# ---- the regression run: every existing suite passes on head as it did on the base, test by test ----
+oknames() { sed -nE 's/^ok( [0-9]+)? +- (.*)$/\2/p' "$@" | LC_ALL=C sort -u; }   # the tests a log shows passing
+last_of() { awk 'NF { l = $0 } END { print l }' "$1"; }
+as_on_base() { # as_on_base <suite> <path>: every test in the base's <suite>.ok is ok on head; a suite that misses
+               # one is run once more alone, and a test counts when either run passes it (the base took two runs too)
+  local name=$1 path=$2 base="$PIPELINE_RULES_BASE/$1.ok" miss
+  need "$base" || return 1
+  bash "$SRC/$path" >"$S/$name.1.log" 2>&1
+  miss=$(LC_ALL=C comm -23 "$base" <(oknames "$S/$name.1.log"))
+  if [ -n "$miss" ]; then
+    echo "# $name: $(printf '%s\n' "$miss" | grep -c '^') base test(s) not ok on the first run; running it once more alone"
+    bash "$SRC/$path" >"$S/$name.2.log" 2>&1
+    miss=$(LC_ALL=C comm -23 "$base" <(oknames "$S/$name.1.log" "$S/$name.2.log"))
+  fi
+  [ -z "$miss" ] || { fail "$name: tests that pass on the base fail on head: $(printf '%s\n' "$miss" | tr '\n' ';') (logs in $S)"; return 1; }
+  echo "# $name: all $(grep -c '^' "$base") tests that pass on the base pass on head ($(last_of "$S/$name.1.log"))"
+}
+
+existing_suites_pass() {
+  local f name
+  [ -n "${PIPELINE_RULES_BASE:-}" ] && [ -d "$PIPELINE_RULES_BASE" ] \
+    || { fail "set PIPELINE_RULES_BASE to the folder of base tallies (<suite>.ok files; the plan's task 0)"; return 1; }
+  S=$(mktemp -d "${TMPDIR:-/tmp}/pipeline-rules-test.XXXXXX") || { fail "mktemp"; return 1; }
+  # the gate scripts' own suites: all passed, 17 tests, and the 15 tests of the base's OFFLINE list among them
+  bash "$SRC/$FD/scripts/ac-check.test.sh" >"$S/ac-check.log" 2>&1
+  [ "$(last_of "$S/ac-check.log")" = "all passed" ] || { fail "ac-check.test.sh: $(last_of "$S/ac-check.log") (log $S/ac-check.log)"; return 1; }
+  as_on_base ac-check "$FD/scripts/ac-check.test.sh" || return 1
+  bash "$SRC/$FD/scripts/review-check.test.sh" >"$S/review-check.log" 2>&1
+  [ "$(last_of "$S/review-check.log")" = "# passed 17, failed 0" ] \
+    || { fail "review-check.test.sh: want [# passed 17, failed 0], got [$(last_of "$S/review-check.log")] (log $S/review-check.log)"; return 1; }
+  need "$PIPELINE_RULES_BASE/review-check.ok" || return 1
+  [ "$(grep -c '^' "$PIPELINE_RULES_BASE/review-check.ok")" = 15 ] || { fail "the base's review-check.ok should name its 15 tests"; return 1; }
+  f=$(LC_ALL=C comm -23 "$PIPELINE_RULES_BASE/review-check.ok" <(oknames "$S/review-check.log"))
+  [ -z "$f" ] || { fail "review-check.test.sh: base tests missing or failing on head: $(printf '%s\n' "$f" | tr '\n' ';')"; return 1; }
+  echo "# review-check.test.sh: # passed 17, failed 0, the base's 15 tests among them"
+  # the other suites, test by test against the base (some fail on the base too: those are not counted)
+  as_on_base codex-parity .claude/setup/codex/codex-parity.test.sh || return 1
+  as_on_base sync .claude/setup/sync.test.sh || return 1
+  for f in "$SRC"/.claude/hooks/tests/*.test.sh; do
+    name=$(basename "$f" .test.sh)
+    as_on_base "$name" ".claude/hooks/tests/$name.test.sh" || return 1
+  done
   rm -rf "$S"
 }
 
