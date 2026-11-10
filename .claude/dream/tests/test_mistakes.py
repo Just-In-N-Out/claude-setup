@@ -4,6 +4,7 @@ import re
 import unittest
 
 import fakehome as fh
+import obey
 from fakehome import FakeHome, typed
 from dreamlib import mistakes, state, paths
 
@@ -528,6 +529,167 @@ class ScriptRewriteTests(unittest.TestCase):
                                                         "order_id": "add:link-path-guard", "additions": [], "removals": []}]}}})
         self.assertEqual(h.run(), 3)
         self.assertEqual(h.read(fh.PROJ_RM), before)
+
+
+def correction(h, i, obey_orders=True):
+    """Session s<i> with one new correction of the project; the editor adds its dated line to the project's
+    memory note and, with obey_orders, does exactly what _dream/orders.json says (obey.py)."""
+    h.env["DREAM_NOW"] = "2026-11-%02dT05:00:00-05:00" % (10 + i)     # one run id per run
+    q = "from now on always do thing number %d before every commit" % i
+    line = "- Do thing number %d before every commit (2026-11-09)." % i
+    h.session(fh.PROJ, "s%d" % i, [fh.assistant("ok"), typed("u%d" % i, "No, " + q + ", please.")])
+    sc = json.loads(h.scenario_path.read_text() or "{}")
+    helpers = dict(sc.get("session-helper") or {})
+    helpers["s%d" % i] = {"findings": [fh.finding("u%d" % i, q)]}
+    h.scenario({"session-helper": helpers,
+                "editor": {"obey_orders": obey_orders, "edits": [{"file": fh.MEM_COPY, "append": line + "\n"}],
+                           "changes": {"changes": [{"file": fh.MEM_COPY, "basis": "finding", "finding_ids": "ALL",
+                                                    "order_id": "", "summary": "lesson", "additions": [line],
+                                                    "removals": []}], "already_saved": [], "declined": []}},
+                "checker": {"verdict": "yes", "lost_facts": [], "untraced": [], "notes": ""}})
+    return line
+
+
+def kind_row(stories_by_project, listed_in=None, title=MIST, area="Guards"):
+    return {"title": title, "description": "d", "area": area, "listed_in": listed_in,
+            "listed_since": {"date": "2026-11-01", "seq": 1} if listed_in else None, "repeats_while_listed": [],
+            "retired": False, "projects": {p: {"stories": list(st), "findings": len(st), "last_story": st[-1]}
+                                           for p, st in stories_by_project.items()}}
+
+
+class OrderTests(unittest.TestCase):
+    def tearDown(self):
+        self.h.cleanup()
+
+    def entries(self, rel):
+        return MistakeTests.entries(self, rel)
+
+    def test_a_move_order_whose_entry_is_missing_from_its_file_is_an_add_where_it_now_belongs(self):
+        """R3-2: a kind listed in the project's file and now seen in a second project moves to the general file.
+        When its entry is not in the project's file (deleted by hand), there is nothing to move: the script
+        orders it added to the general file with the bytes its entry may take (max_entry_bytes), check_copy
+        holds the entry to them, and no run crashes."""
+        from dreamlib import guards, targets
+        self.h = h = FakeHome("r32", repo=True)
+        env = h.denv()
+        tally = dict(state.default_tally(), backfill_done=True)
+        tally["stories"] = {"proj": ["story-a", "story-b"], "other": ["story-z"]}
+        tally["story_seq"] = ["proj/story-a", "proj/story-b", "other/story-z"]
+        tally["kinds"]["link-path-guard"] = kind_row({"proj": ["story-a", "story-b"], "other": ["story-z"]},
+                                                     listed_in=fh.PROJ_RM, title=KIND["title"])
+        listed = ENTRY.replace("(1×: x)", "(2×: story-a, story-b)")
+        h.write(fh.PROJ_RM, h.read(fh.PROJ_RM) + listed)
+        got = mistakes.orders(env, tally)
+        self.assertEqual([(o["id"], o["file"], o.get("to")) for o in got],
+                         [("move:link-path-guard", fh.PROJ_RM, fh.GENERAL_RM)], "control: the entry is there to move")
+        h.write(fh.PROJ_RM, fh.RM_HEADER.format(p="proj"))       # deleted by hand
+        got = mistakes.orders(env, tally)
+        most = len(mistakes.heading_for("link-path-guard", KIND["title"], tally).encode()) + mistakes.ENTRY_ALLOWANCE
+        self.assertEqual([(o["id"], o["action"], o["file"], o.get("to"), o.get("max_entry_bytes")) for o in got],
+                         [("add:link-path-guard", "add", fh.GENERAL_RM, None, most)])
+        # check_copy holds the entry the editor writes to those bytes
+        n = [0]
+
+        def check(extra):
+            n[0] += 1
+            d = h.root / ("g%d" % n[0])
+            old = h.read(fh.GENERAL_RM)
+            o = dict(got[0], max_entry_bytes=got[0]["max_entry_bytes"] + extra)   # the entry obey writes: this size
+            ent = "".join(obey.largest_entry(o))
+            for root, text in (("snap", old), ("copy", mistakes.normalize_text(old + "\n## Guards\n" + ent, tally))):
+                f = d / root / GEN_RM_COPY
+                f.parent.mkdir(parents=True, exist_ok=True)
+                f.write_text(text)
+            diffs, links = targets.diff_copy(d)
+            ch = {"changes": [{"file": GEN_RM_COPY, "basis": "order", "finding_ids": [], "order_id": got[0]["id"],
+                               "additions": [], "removals": []}], "already_saved": [], "declined": []}
+            G = guards.Input(env, d, {GEN_RM_COPY: {"live": fh.GENERAL_RM, "sha": "x"}}, diffs, links, [], got, ch,
+                             tally, targets.load_rules(env))
+            return guards.run_all(G)
+
+        self.assertEqual(check(0), [], "an entry of exactly max_entry_bytes")
+        self.assertTrue(any("its order holds it to at most %d" % most in x for x in check(1)), "one byte over")
+        # end to end (review 3's pM1b): four runs, each with one new correction; an editor that does what the
+        # orders say. The first run writes the entry in the general file; none crashes; every correction goes live
+        h.write(".claude/dream/state/tally.json", paths.dump_json(tally))
+        h.sync()
+        for i in range(1, 5):
+            line = correction(h, i)
+            self.assertEqual(h.run(), 0, h.local("last-run.json"))
+            self.assertIn(line, h.read(fh.MEM_LIVE))
+            self.assertEqual(self.entries(fh.GENERAL_RM)[0], [("link-path-guard", "3", "story-a, story-b, story-z")])
+        t = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertEqual(t["kinds"]["link-path-guard"]["listed_in"], fh.GENERAL_RM)
+        self.assertEqual(self.entries(fh.PROJ_RM)[0], [])
+        self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
+        self.assertEqual(len([c for c in h.calls_by_role() if c["role"] == "session-helper"]), 4, "each helper paid once")
+
+    def test_every_kind_of_order_goes_through_every_reader_of_its_fields(self):
+        """R3-2's class: one run's orders hold every kind the script gives (an add, a move, an add for a move whose
+        entry is gone, a remove, a remove whose entry is gone). Each carries the same fields, survives the trip
+        through unsettled.json, and goes through every reader of an order: the editor's inputs, the copy, the
+        guards, the log, the tally after the commit, and, after two stops, Justin's list."""
+        def state_of(h):
+            ps = ["p-%02d" % i for i in range(13)]
+            t = dict(state.default_tally(), backfill_done=True)
+            t["stories"] = {"proj": ps, "other": ["o-01"]}
+            t["story_seq"] = ["proj/" + s for s in ps] + ["other/o-01"]
+            t["kinds"] = {"k-add": kind_row({"proj": ps[11:13]}),
+                          "k-move": kind_row({"proj": ps[11:13], "other": ["o-01"]}, listed_in=fh.PROJ_RM),
+                          "k-gone": kind_row({"proj": ps[11:13], "other": ["o-01"]}, listed_in=fh.PROJ_RM),
+                          "k-old": kind_row({"proj": ps[0:2]}, listed_in=fh.PROJ_RM),
+                          "k-lost": kind_row({"proj": ps[0:2]}, listed_in=fh.PROJ_RM)}
+            body = "- **Build it this way:** resolve every link first (2026-11-01).\n- **Check for it:** a link test.\n"
+            h.write(fh.PROJ_RM, mistakes.normalize_text(fh.RM_HEADER.format(p="proj") + "\n## Guards\n" + "".join(
+                mistakes.heading_for(k, MIST, t) + body for k in ("k-move", "k-old")), t))
+            h.write(".claude/dream/state/tally.json", paths.dump_json(t))
+            return t
+
+        self.h = h = FakeHome("ordk", repo=True)
+        t = state_of(h)
+        got = mistakes.orders(h.denv(), t)
+        want = {"add:k-add": ("add", fh.PROJ_RM, None), "move:k-move": ("move", fh.PROJ_RM, fh.GENERAL_RM),
+                "add:k-gone": ("add", fh.GENERAL_RM, None), "remove:k-old": ("remove", fh.PROJ_RM, None),
+                "remove:k-lost": ("remove", fh.PROJ_RM, None)}
+        self.assertEqual({o["id"]: (o["action"], o["file"], o["to"]) for o in got}, want)
+        fields = {"id", "action", "kind", "title", "description", "area", "count", "stories", "file", "to",
+                  "max_entry_bytes"}
+        self.assertEqual([sorted(set(o) ^ fields) for o in got], [[]] * 5, "every order carries every field")
+        self.assertEqual([o["id"] for o in got if o["max_entry_bytes"] is not None], ["add:k-add", "add:k-gone"])
+        kept = mistakes.merge_orders(json.loads(json.dumps([dict(o, tries=1) for o in got])), got)
+        self.assertEqual([dict(o, tries=0) for o in kept], [dict(o, tries=0) for o in got])
+        self.assertEqual({o["tries"] for o in kept}, {1})
+        # one live run: the editor does exactly what the orders say
+        h.sync()
+        correction(h, 1)
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        given = json.loads((sorted(p for p in h.denv().cache.iterdir() if p.is_dir())[-1] / "copy/_dream/orders.json")
+                           .read_text())
+        self.assertEqual(sorted(o["id"] for o in given), sorted(want), "orders.json holds every order")
+        self.assertEqual([k for k, _, _ in self.entries(fh.PROJ_RM)[0]], ["k-add"])
+        self.assertEqual(sorted(k for k, _, _ in self.entries(fh.GENERAL_RM)[0]), ["k-gone", "k-move"])
+        t2 = json.loads(h.read(".claude/dream/state/tally.json"))["kinds"]
+        self.assertEqual({k: (v["listed_in"], v["retired"]) for k, v in t2.items()},
+                         {"k-add": (fh.PROJ_RM, False), "k-move": (fh.GENERAL_RM, False), "k-gone": (fh.GENERAL_RM, False),
+                          "k-old": (None, True), "k-lost": (None, True)})
+        log_text = h.read(".claude/dream/dream-log.md")
+        self.assertTrue(all(i in log_text for i in want), "the log names every order")
+        self.assertEqual(mistakes.orders(h.denv(), json.loads(h.read(".claude/dream/state/tally.json"))), [])
+        # the same orders stopped twice: each goes on Justin's list by name, with no crash
+        h.cleanup()
+        self.h = h = FakeHome("ordp", repo=True)
+        state_of(h)
+        h.sync()
+        for i, rc in ((1, 3), (2, 3), (3, 0)):
+            correction(h, i)
+            sc = json.loads(h.scenario_path.read_text())
+            sc["checker"]["verdict"] = "no" if rc == 3 else "yes"
+            h.scenario(sc)
+            self.assertEqual(h.run(), rc, h.local("last-run.json"))
+        lst = h.read(".claude/dream/justin-list.md")
+        for i, (a, f, to) in want.items():
+            self.assertIn("repeat-mistakes order: %s %s in %s" % (a, i.split(":")[1], to or f), lst)
+        self.assertTrue(all(v.get("parked") for v in json.loads(h.read(".claude/dream/state/tally.json"))["kinds"].values()))
 
 
 if __name__ == "__main__":

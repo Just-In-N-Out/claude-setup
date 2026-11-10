@@ -124,7 +124,22 @@ def _rewritten(env, rel, tally):
 
 def orders(env, tally):
     """Remove, move and add orders for the editor. Entries that would take a file past about 15 KB are not
-    ordered (R1-9): the most frequent kinds go first, and a kind left out is not parked, it waits for room."""
+    ordered (R1-9): the most frequent kinds go first, and a kind left out is not parked, it waits for room.
+    Every order carries the same fields (id, action, kind, title, description, area, count, stories, file,
+    to, max_entry_bytes), so no reader of an order meets a missing one (R3-2)."""
+    size, texts = {}, {}
+
+    def entries(f):
+        if f not in texts:
+            texts[f] = entries_of(_rewritten(env, f, tally))
+        return texts[f]
+
+    def order(info, action, file, to=None):
+        # an add order carries the bytes its entry may take, heading included: what the room below is sized
+        # by, what the editor is told (orders.json) and what check_copy holds the added entry to (R2-3)
+        most = len(heading_for(info["kind"], info["title"], tally).encode()) + ENTRY_ALLOWANCE if action == "add" else None
+        return dict(info, id="%s:%s" % (action, info["kind"]), action=action, file=file, to=to, max_entry_bytes=most)
+
     cands = []
     for kid in sorted((tally.get("kinds") or {})):
         k = tally["kinds"][kid]
@@ -136,15 +151,16 @@ def orders(env, tally):
                 "stories": [x.split("/", 1)[1] for x in all_stories(k, tally)]}
         if k.get("listed_in"):
             if retire_due(env, tally, kid):
-                cands.append(dict(info, id="remove:" + kid, action="remove", file=k["listed_in"]))
+                cands.append(order(info, "remove", k["listed_in"]))
             elif want and want != k["listed_in"]:
-                cands.append(dict(info, id="move:" + kid, action="move", file=k["listed_in"], to=want))
+                if kid in entries(k["listed_in"]):
+                    cands.append(order(info, "move", k["listed_in"], want))
+                else:
+                    # its entry is not in the file the tally lists it in (deleted by hand): there is nothing to
+                    # move, so the editor writes it where it now belongs, as for any add (R3-2)
+                    cands.append(order(info, "add", want))
         elif want:
-            # the bytes its entry may take, heading included: what the room below is sized by, what the editor
-            # is told (orders.json) and what check_copy holds the added entry to (R2-3)
-            cands.append(dict(info, id="add:" + kid, action="add", file=want,
-                              max_entry_bytes=len(heading_for(kid, info["title"], tally).encode()) + ENTRY_ALLOWANCE))
-    size, texts = {}, {}
+            cands.append(order(info, "add", want))
 
     def size_of(f):
         if f not in size:
@@ -152,9 +168,7 @@ def orders(env, tally):
         return size[f]
 
     def entry_bytes(f, kind):
-        if f not in texts:
-            texts[f] = entries_of(_rewritten(env, f, tally))
-        e = texts[f].get(kind)
+        e = entries(f).get(kind)
         return len((e[1] + e[2]).encode()) if e else 0
 
     out = []
@@ -167,8 +181,7 @@ def orders(env, tally):
     for o in growing:
         dest = o.get("to") or o["file"]
         size_of(dest)
-        est = entry_bytes(o["file"], o["kind"]) if o["action"] == "move" else 0
-        est = est or o["max_entry_bytes"]
+        est = entry_bytes(o["file"], o["kind"]) if o["action"] == "move" else o["max_entry_bytes"]
         if dest in full or size[dest] + est > FILE_TARGET:
             full.add(dest)  # not owed, and nothing less frequent jumps ahead: they wait until the file has room
             continue

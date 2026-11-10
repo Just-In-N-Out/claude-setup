@@ -12,6 +12,7 @@ answers from the scenario in $FAKE_CLAUDE_SCENARIO (JSON). The role comes from t
                      "changes": {...changes.json...}, "permission_denials": [...]}
                     In "changes", "finding_ids": "ALL" becomes every id in _dream/findings.json;
                     "changes_raw": "<text>" writes that text as changes.json instead.
+                    "obey_orders": true also does what _dream/orders.json says (obey.py) and lists it.
   "sleep": {"<role>": seconds}, "fail": {"<role>": {"exit": n} | {"api_error_status": 401} | {"model": "x"}}
 --help lists the real CLI's flags, minus the ones in $FAKE_CLAUDE_HELP_DROP (space-separated).
 """
@@ -106,6 +107,11 @@ def main():
         except (OSError, ValueError, KeyError, TypeError):
             ids = []
         changes = json.loads(json.dumps(ed.get("changes", {"changes": [], "already_saved": [], "declined": []})))
+        if ed.get("obey_orders"):  # do exactly what _dream/orders.json says, at the largest size it allows (obey.py)
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            import obey
+            with open(os.path.join(cwd, "_dream/orders.json")) as f:
+                changes.setdefault("changes", []).extend(obey.obey(cwd, json.load(f)))
         for c in changes.get("changes", []):
             if isinstance(c, dict) and c.get("finding_ids") == "ALL":
                 c["finding_ids"] = ids
