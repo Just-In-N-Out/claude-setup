@@ -1,7 +1,7 @@
 {
  "name": "dream-trim",
  "plan": "~/.hermes/plans/claude-setup/dream-trim.md",
- "base": "setup-repo main 131f9b0a (2026-11-09); anchors are each line's first 60 characters",
+ "base": "setup-repo main 131f9b0a (2026-11-09); anchors are each line's first 60 characters, cut before text that changes on its own (the Status line's build number)",
  "pass1_subject": "trim: pass 1, move to references (lossless)",
  "files": [
   {
@@ -374,7 +374,7 @@
      "heading": "## Older builds",
      "parent": [
       {
-       "anchor": "- **Current build `2026-11-09.4`** (read `src/shared/build.t",
+       "anchor": "- **Current build `",
        "count": 2
       }
      ],

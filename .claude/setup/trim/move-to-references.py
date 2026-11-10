@@ -12,8 +12,8 @@ else where its last moved line was. Headings never move.
 
 A line spec is {anchor, offset=0} plus count (default 1), through (the last line's anchor) or until_outdent (the
 indented lines from there up to the next line at column 0: a bullet's nested lines). An anchor is the start of a
-line (the line's first 60 characters) and must match exactly one line, or the mover stops with exit 2 and writes
-nothing. So
+line (its first 60 characters, cut before text that changes on its own, like a build number) and must match exactly
+one line, or the mover stops with exit 2 and writes nothing. So
 a rerun on a tree it already moved stops at the first missing anchor, and a rerun on a newer base moves the same
 lines wherever they now are. Proof that nothing was lost: trim-check.py pass1.
 """
