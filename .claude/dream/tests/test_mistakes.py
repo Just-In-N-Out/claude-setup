@@ -330,12 +330,13 @@ class ScriptRewriteTests(unittest.TestCase):
         env = h.denv()
         t = listed_tally(1, [2])
         ready = ["kind-6%d-ready-one" % i for i in range(6)]
+        pool = ["ready-story-%d" % j for j in range(7)]     # the newest stories: none is due to retire (option (b))
+        t["stories"]["proj"] += pool
+        t["story_seq"] += ["proj/" + s for s in pool]
         for i, k in enumerate(ready):                       # 7, 6, 5, 4, 3, 2 stories: the most frequent first
-            st = ["%s-story-%d" % (k[5:7], j) for j in range(7 - i)]
+            st = pool[i:]
             t["kinds"][k] = dict(t["kinds"]["kind-00-guard-skipped"], listed_in=None, listed_since=None,
                                  projects={"proj": {"stories": st, "findings": len(st), "last_story": st[-1]}})
-            t["stories"]["proj"] += st
-            t["story_seq"] += ["proj/" + s for s in st]
         t["kinds"]["kind-00-guard-skipped"]["projects"]["proj"]["stories"].append(st[-1])  # listed and not due to retire
         est = [len(mistakes.heading_for(k, MIST, t).encode()) + 400 for k in ready]
         # a live file with room for three and a half entries under the 15,000 bytes the script fills to
