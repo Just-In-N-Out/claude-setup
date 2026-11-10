@@ -96,9 +96,12 @@ def target_file(env, tally, kid):
     return None
 
 
-def retire_due(env, tally, kid):
+def retire_due(env, tally, kid, f=None):
+    """True when kind kid has not come back in RETIRE_AFTER later stories of file f: of its project for a
+    project's file, of any project for the general file. f is the file it is listed in, unless given: the file
+    it would be added or moved to, where a kind already due is not listed (Justin 2026-11-10, option (b))."""
     k = tally["kinds"][kid]
-    f = k.get("listed_in")
+    f = f or k.get("listed_in")
     if not f:
         return False
     if f == targets.general_rm(env):
@@ -163,6 +166,10 @@ def orders(env, tally):
         info = {"kind": kid, "title": k.get("title", ""), "description": k.get("description", ""),
                 "area": k.get("area", "General"), "count": len(all_stories(k, tally)),
                 "stories": [x.split("/", 1)[1] for x in all_stories(k, tally)]}
+        # a kind already due to retire where it would be listed is not added or moved there: it would be removed
+        # the next run and then retired for good; it is listed once it comes back in a newer story (option (b))
+        if want and retire_due(env, tally, kid, want):
+            want = None
         if k.get("listed_in"):
             if retire_due(env, tally, kid):
                 cands.append(order(info, "remove", k["listed_in"]))

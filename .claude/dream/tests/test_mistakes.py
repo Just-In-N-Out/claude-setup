@@ -422,16 +422,17 @@ class ScriptRewriteTests(unittest.TestCase):
         self.h = h = FakeHome("r19")
         env = h.denv()
         tally = dict(state.default_tally(), backfill_done=True)
-        tally["stories"] = {"proj": []}
+        # every kind seen in the newest stories (none is due to retire, which is never listed: option (b))
+        pool = ["story-%02d-header-fit" % j for j in range(10)]
+        tally["stories"] = {"proj": list(pool)}
+        tally["story_seq"] = ["proj/" + s for s in pool]
         for i in range(45):
             n = 2 + (i * 7) % 4  # 2 to 5 stories each
-            st = ["story-%02d-%d-header-fit" % (i, j) for j in range(n)]
+            st = pool[10 - n:]
             tally["kinds"]["kind-%02d-guard-skipped" % i] = {
                 "title": "the guard is skipped when the input comes through a link", "description": "d", "area": "Guards",
                 "listed_in": None, "listed_since": None, "repeats_while_listed": [], "retired": False,
                 "projects": {"proj": {"stories": st, "findings": n, "last_story": st[-1]}}}
-            tally["stories"]["proj"] += st
-            tally["story_seq"] += ["proj/" + s for s in st]
         orders = mistakes.orders(env, tally)
         counts = {k: len(v["projects"]["proj"]["stories"]) for k, v in tally["kinds"].items()}
         got = {o["kind"] for o in orders}
@@ -743,16 +744,22 @@ class OrderTests(unittest.TestCase):
         self.h = h = FakeHome("r31")
         names = ["story-%02d-%s" % (i, ("header-fit", "footer-fit", "menu-fit")[i % 3]) for i in range(40)]
 
-        def backfill(n_stale, n_recent):
+        def backfill(n_stale, n_recent, upto=40):
             t = dict(state.default_tally(), backfill_done=True)
-            t["stories"] = {"proj": list(names)}
-            t["story_seq"] = ["proj/" + s for s in names]
-            for i in range(n_stale):             # seen twice early on, in none of the newest 10 stories
-                t["kinds"]["old-%02d-guard" % i] = kind_row({"proj": [names[i], names[i + 9]]})
-            for i in range(n_recent):            # seen lately; every third in an area of its own
+            t["stories"] = {"proj": names[:upto]}
+            t["story_seq"] = ["proj/" + s for s in names[:upto]]
+            for i in range(n_stale):             # seen twice early on: in none of the newest 10 of all 40 stories
+                t["kinds"]["old-%02d-guard" % i] = kind_row({"proj": [names[i % 3], names[3 + i % 3]]})
+            later(t, n_recent, upto)
+            return t
+
+        def later(t, n_recent, upto=40):
+            """The project's stories up to `upto`, and n_recent kinds seen lately; every third in an area of its own."""
+            t["stories"]["proj"] = names[:upto]
+            t["story_seq"] = ["proj/" + s for s in names[:upto]]
+            for i in range(n_recent if upto == 40 else 0):
                 t["kinds"]["new-%02d-guard" % i] = kind_row({"proj": [names[28 + i % 6], names[34 + i % 6]]},
                                                             area="Builds" if i % 3 == 0 else "Guards")
-            return t
 
         def fresh():
             for live, p in ((fh.PROJ_RM, "proj"), (fh.GENERAL_RM, "general"), (fh.OTHER_RM, "other")):
@@ -763,13 +770,20 @@ class OrderTests(unittest.TestCase):
                 self.assertEqual(fails, [], "%s, run %d (%d orders: %s)" % (label, i + 1, len(ids), ids))
             self.assertGreaterEqual(len(log), at_least, label)
 
-        # (a) the backfill fills the empty file (no change cap yet); the stale entries retire over the next runs
+        # (a) the first run fills the empty file (no change cap yet) with the kinds of the first 12 stories; 28 stories
+        # later they are due to retire, and over the next runs their removals and the adds of 12 kinds seen lately
+        # share the cap. (A backfill never lists a kind already due to retire: option (b), Justin 2026-11-10.)
         for n_stale in (8, 11, 14):
             fresh()
-            t = backfill(n_stale, 12)
+            t = backfill(n_stale, 0, upto=12)
+            empty = len(h.read(fh.PROJ_RM).encode())
             log = self.exact_runs(h, t)
-            runs_ok("backfill with %d stale kinds" % n_stale, log, 2)
-            self.assertGreater(len(log[0][0]), 8, "the first run fills the empty file past 4,000 bytes (no cap yet)")
+            runs_ok("%d kinds of the first 12 stories" % n_stale, log)
+            self.assertEqual(len(log[0][0]), n_stale, "the first run lists them all")
+            self.assertGreater(len(h.read(fh.PROJ_RM).encode()) - empty, 4000, "past 4,000 bytes in one run (no cap yet)")
+            later(t, 12)
+            log = self.exact_runs(h, t)
+            runs_ok("%d entries due to retire and 12 adds" % n_stale, log, 2)
             self.assertEqual(mistakes.orders(h.denv(), t), [], "nothing left owed")
             self.assertEqual(sorted(k for k, v in t["kinds"].items() if v.get("retired")),
                              ["old-%02d-guard" % i for i in range(n_stale)], "every stale entry retired")
@@ -787,10 +801,11 @@ class OrderTests(unittest.TestCase):
         log = self.exact_runs(h, t)
         runs_ok("nine adds into a file with entries", log, 2)
         self.assert_consistent(h, t)
-        # (f) removals and adds in one run share one cap: four listed entries due to retire, six kinds waiting
+        # (f) removals and adds in one run share one cap: four listed entries due to retire, seven kinds waiting
         fresh()
-        t = backfill(4, 1)
-        runs_ok("five listed", self.exact_runs(h, t, runs=1))
+        t = backfill(4, 0, upto=12)
+        runs_ok("four listed", self.exact_runs(h, t, runs=1))
+        later(t, 1)
         for i in range(6):
             t["kinds"]["wait-%02d-guard" % i] = kind_row({"proj": [names[38], names[39]]})
         log = self.exact_runs(h, t)
@@ -860,6 +875,100 @@ class OrderTests(unittest.TestCase):
         self.assertEqual(sorted(k for k, _, _ in self.entries(fh.PROJ_RM)[0]), ["new-%02d-guard" % i for i in range(4)])
         self.assertFalse(any(v.get("parked") for v in t["kinds"].values()))
         self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
+
+    def test_a_kind_already_due_to_retire_is_not_listed_until_it_comes_back(self):
+        """Fixer 3's question, option (b) (Justin, 2026-11-10): the script never orders a kind added or moved when it
+        is already due to retire where it would be listed (its last story 10 or more stories back there: of its
+        project for a project file, of any project for the general file); it is listed once it comes back in a newer
+        story. Such a kind was never listed, so it is never marked retired, and its return is ordered like any add."""
+        self.h = h = FakeHome("ret-b")
+        env = h.denv()
+        ps = ["s%02d" % i for i in range(12)]
+
+        def proj_tally(kinds):
+            t = dict(state.default_tally(), backfill_done=True)
+            t["stories"] = {"proj": list(ps)}
+            t["story_seq"] = ["proj/" + s for s in ps]
+            t["kinds"] = kinds
+            return t
+
+        def ids(t):
+            return sorted(o["id"] for o in mistakes.orders(env, t))
+
+        # a project file: the last story 10 back is due, 9 back is not
+        t = proj_tally({"stale-guard": kind_row({"proj": ps[0:2]}), "edge-guard": kind_row({"proj": ps[1:3]}),
+                        "fresh-guard": kind_row({"proj": ps[10:12]})})
+        self.assertEqual(ids(t), ["add:edge-guard", "add:fresh-guard"], "a project file")
+        # the general file: counted over every project's stories
+        g = dict(state.default_tally(), backfill_done=True)
+        g["stories"] = {"proj": ["p%02d" % i for i in range(6)], "other": ["o%02d" % i for i in range(6)]}
+        g["story_seq"] = [x for i in range(6) for x in ("proj/p%02d" % i, "other/o%02d" % i)]
+        g["kinds"] = {"gen-stale": kind_row({"proj": ["p00"], "other": ["o00"]}),     # last at 1 of 12: 10 back
+                      "gen-edge": kind_row({"proj": ["p01"], "other": ["o00"]}),      # last at 2: 9 back
+                      "gen-fresh": kind_row({"proj": ["p05"], "other": ["o05"]})}
+        self.assertEqual(ids(g), ["add:gen-edge", "add:gen-fresh"], "the general file")
+        # a project's own stories decide its file, not the other projects': 10 later stories elsewhere are not 10 there
+        g["kinds"] = {"proj-only": kind_row({"proj": ["p00", "p01"]})}
+        g["stories"]["proj"] = ["p00", "p01"]
+        g["story_seq"] = ["proj/p00", "proj/p01"] + ["other/o%02d" % i for i in range(10)]
+        self.assertEqual(ids(g), ["add:proj-only"], "ten later stories of another project")
+        # a move: listed in the project file and now seen in a second project, but already due to retire in the
+        # general file; it is not moved, and its entry stays where it is (it retires there by its own rule)
+        m = dict(state.default_tally(), backfill_done=True)
+        m["stories"] = {"proj": ["p00", "p01"], "other": ["o00"], "third": ["t%02d" % i for i in range(10)]}
+        m["story_seq"] = ["other/o00", "proj/p00", "proj/p01"] + ["third/t%02d" % i for i in range(10)]
+        m["kinds"] = {"move-stale": kind_row({"proj": ["p00", "p01"], "other": ["o00"]}, listed_in=fh.PROJ_RM),
+                      "move-fresh": kind_row({"proj": ["p00", "p01"], "third": ["t09"]}, listed_in=fh.PROJ_RM)}
+        body = "- **Build it this way:** resolve every link first (2026-11-01).\n- **Check for it:** a link test.\n"
+        h.write(fh.PROJ_RM, mistakes.normalize_text(fh.RM_HEADER.format(p="proj") + "\n## Guards\n" + "".join(
+            mistakes.heading_for(k, MIST, m) + body.replace("link", "link %s" % k) for k in ("move-fresh", "move-stale")), m))
+        self.assertEqual(ids(m), ["move:move-fresh"], "a move into a file where it is already due to retire")
+        kept = h.read(fh.PROJ_RM)
+        h.write(fh.PROJ_RM, fh.RM_HEADER.format(p="proj"))     # both entries deleted by hand: a move becomes an add (R3-2)
+        self.assertEqual(ids(m), ["add:move-fresh"], "the add for a gone entry, where it is already due to retire")
+        h.write(fh.PROJ_RM, kept)
+        del m["kinds"]["move-fresh"]
+        log = self.exact_runs(h, m)
+        self.assertEqual(log, [], "nothing is owed")
+        self.assertIn("move-stale", mistakes.entries_of(h.read(fh.PROJ_RM)))
+        # end to end: a project of 30 stories, 11 kinds last seen 13 or more stories back and 4 seen lately; the
+        # editor does exactly what the orders say. The stale kinds are never listed and never marked retired
+        h.cleanup()
+        self.h = h = FakeHome("ret-be", repo=True)
+        names = ["story-%02d-%s" % (i, ("header-fit", "footer-fit", "menu-fit")[i % 3]) for i in range(30)]
+        t = dict(state.default_tally(), backfill_done=True)
+        t["stories"] = {"proj": list(names)}
+        t["story_seq"] = ["proj/" + s for s in names]
+        for i in range(11):
+            t["kinds"]["old-%02d-guard" % i] = kind_row({"proj": [names[i], names[i + 6]]})
+        for i in range(4):
+            t["kinds"]["new-%02d-guard" % i] = kind_row({"proj": [names[20 + i], names[26 + i]]})
+        h.write(".claude/dream/state/tally.json", paths.dump_json(t))
+        h.sync()
+        backlog = h.read(".hermes/plans/claude-setup/enforce-backlog.md")
+        for i in range(1, 4):
+            correction(h, i)
+            self.assertEqual(h.run(), 0, "run %d: %s" % (i, h.local("last-run.json")))
+        t = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertEqual(sorted(k for k, _, _ in self.entries(fh.PROJ_RM)[0]), ["new-%02d-guard" % i for i in range(4)])
+        self.assertEqual({k: (v["listed_in"], v["retired"]) for k, v in t["kinds"].items() if k.startswith("old-")},
+                         {"old-%02d-guard" % i: (None, False) for i in range(11)}, "never listed, never retired")
+        # old-03-guard comes back in a newer story: that run orders it added, and it is listed like any other
+        review(h, "proj", "story-30-hero-fit", ["the guard took the link path again"])
+        correction(h, 4)
+        sc = json.loads(h.scenario_path.read_text())
+        sc["review-helper"] = {"assign": "old-03-guard", "enforce_proposal": "a test of the second path"}
+        h.scenario(sc)
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        t = json.loads(h.read(".claude/dream/state/tally.json"))
+        self.assertEqual((t["kinds"]["old-03-guard"]["listed_in"], t["kinds"]["old-03-guard"]["retired"]), (fh.PROJ_RM, False))
+        self.assertEqual([(k, n, s) for k, n, s in self.entries(fh.PROJ_RM)[0] if k == "old-03-guard"],
+                         [("old-03-guard", "3", "story-03-header-fit, story-09-header-fit, story-30-hero-fit")])
+        self.assertEqual(h.read(".hermes/plans/claude-setup/enforce-backlog.md"), backlog,
+                         "it was not listed when it came back, so its return is no enforce proposal")
+        # DREAM.md section 7 says the rule
+        self.assertIn("A mistake already due to retire where it would be listed is not added or moved there; it is "
+                      "listed once it comes back in a newer story.", (fh.DREAM_SRC / "DREAM.md").read_text())
 
     def test_at_the_change_caps_edge_blank_lines_and_area_headings_count_too(self):
         """R3-1's charges at the edge of the 4,000-byte cap: seven entries that fit to the byte do not fit once

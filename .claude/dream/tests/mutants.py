@@ -91,6 +91,7 @@ T = {
     "checkerprompt": "test_the_checkers_prompt_names_the_four_changes_that_need_no_finding",
     "foldtoken": "test_a_fold_keeps_the_old_lines_last_word_or_number_whole",
     "plainname": "test_a_pointer_names_only_a_plainly_named_file",
+    "retireb": "test_a_kind_already_due_to_retire_is_not_listed_until_it_comes_back",
 }
 P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
@@ -580,6 +581,15 @@ MUTANTS = [
     ("N12", "the editor is not told the name rule", [(P + "editor.md",
         "Leave a pointer only\nto a file with a plain name: lower-case letters and digits, 1 to 6 words joined by single hyphens or\n",
         "Leave a pointer only\nto a file with a plain name: lower-case letters and digits, or\n")], ["plainname"]),
+    # fixer 4: option (b), a kind already due to retire where it would be listed is not listed
+    ('B1', 'a kind already due to retire where it would be listed is added or moved all the same (option (a) back)', [('.claude/dream/lib/dreamlib/mistakes.py', '        if want and retire_due(env, tally, kid, want):\n            want = None\n', '')], ['retireb']),
+    ('B2', 'due is judged where the kind is listed, not where it would be listed', [('.claude/dream/lib/dreamlib/mistakes.py', '        if want and retire_due(env, tally, kid, want):\n', '        if want and retire_due(env, tally, kid):\n')], ['retireb']),
+    ('B3', 'retire_due ignores the file it is given', [('.claude/dream/lib/dreamlib/mistakes.py', '    f = f or k.get("listed_in")\n', '    f = k.get("listed_in")\n')], ['retireb']),
+    ('B4a', "a project's kind is due one story early (9 later stories)", [('.claude/dream/lib/dreamlib/mistakes.py', '        if mine and len(lst) - 1 - max(mine) >= RETIRE_AFTER:\n', '        if mine and len(lst) - 1 - max(mine) >= RETIRE_AFTER - 1:\n')], ['retireb']),
+    ('B4b', 'a general kind is due one story early (9 later stories)', [('.claude/dream/lib/dreamlib/mistakes.py', '        return bool(mine) and len(seq) - 1 - max(mine) >= RETIRE_AFTER\n', '        return bool(mine) and len(seq) - 1 - max(mine) >= RETIRE_AFTER - 1\n')], ['retireb']),
+    ('B4c', "a general kind is judged by its project's stories (another project's 10 stories make it due)", [('.claude/dream/lib/dreamlib/mistakes.py', '    if f == targets.general_rm(env):\n', '    if f == targets.general_rm(env) or True:\n')], ['retireb']),
+    ('B5', 'only an add is held back; a move into a file where the kind is due goes ahead', [('.claude/dream/lib/dreamlib/mistakes.py', '        if want and retire_due(env, tally, kid, want):\n', '        if want and not k.get("listed_in") and retire_due(env, tally, kid, want):\n')], ['retireb']),
+    ('B6', 'DREAM.md section 7 does not say the rule', [('.claude/dream/DREAM.md', '- A mistake already due to retire where it would be listed is not added or moved there; it is listed once it comes back in a newer story.\n', '')], ['retireb']),
     # fixer 4: R4-8, the checker's prompt
     ("C1", "the checker's prompt no longer names the changes that need no finding (R4-8 back)", [(P + "checker.md",
         "Four changes need no finding or order, because DREAM.md section 6 allows them and the script checks each:\n"

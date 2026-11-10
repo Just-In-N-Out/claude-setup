@@ -79,6 +79,7 @@ The script writes the count and the stories and decides which entries exist and 
 
 - A mistake starts in the project file once it was seen in two stories there. Seen in two projects, it moves to the general file and is nowhere else.
 - An entry retires when the mistake has not come back in 10 later stories (of its project; of any project for the general file).
+- A mistake already due to retire where it would be listed is not added or moved there; it is listed once it comes back in a newer story.
 - A mistake that repeats while it is listed means the text is not working: propose a test or hook in `~/.hermes/plans/claude-setup/enforce-backlog.md` and change no wording.
 
 ## 8. Never automatic: a list for Justin instead
