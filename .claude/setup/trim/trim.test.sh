@@ -351,6 +351,12 @@ ac6_protected_lines_intact() {
            '## Working in this repo'; do
     cut -f4 "$S/protected.tsv" | grep -qF -- "$h" || fail "the protected list lacks '$h'" || return 1
   done
+  # lines outside those sections that only a rule word plus a safety word protects ("never", "don't", "refuses")
+  for h in '- Never use bare `git stash`: every copy shares the stash list.' \
+           '- **goal:** `PLANNER for <project> feature "<name>". Write a plan Justin will approve;' \
+           '  - `git branch -d` refuses a branch that has an `origin/` upstream'; do
+    cut -f4 "$S/protected.tsv" | grep -qF -- "${h:0:80}" || fail "the protected list lacks '$h'" || return 1
+  done
   py "$CHECK" protect --map "$MAP" --root "$P1" --check "$P2" 2>&1 | head -n 20 | cut -c1-200
   [ "${PIPESTATUS[0]}" = 0 ] || fail "a protected line is missing or changed after pass 2" || return 1
   echo "# all $n protected lines of pass 1 are in the same file after pass 2, byte for byte"
@@ -383,6 +389,19 @@ ac7_pass2_removals_accounted() {
     && fail "control: a ledger missing a row passed" && return 1
   grep -q '^FAIL .*no ledger row' "$S/short.out" || fail "control: the refusal does not say which line has no row" || return 1
   echo "# control: the ledger without its first row is refused: $(grep -m1 '^FAIL' "$S/short.out" | cut -c1-120)"
+  # control: a row whose kept line is not in the pass-2 tree must fail
+  py - "$LEDGER" "$S/bad-kept.md" <<'EOF2'
+import re, sys
+t = open(sys.argv[1], encoding='utf-8').read().split('\n')
+i = next(k for k, l in enumerate(t) if l.startswith('|') and re.search(r'[0-9a-f]{40}', l))
+shas = re.findall(r'[0-9a-f]{40}', t[i])
+t[i] = t[i].replace(shas[-1], '0' * 40)  # the kept sha1 (the last one on the row)
+open(sys.argv[2], 'w', encoding='utf-8').write('\n'.join(t))
+EOF2
+  py "$CHECK" pass2 --map "$MAP" --base "$P1" --head "$P2" --ledger "$S/bad-kept.md" >"$S/bad-kept.out" 2>&1 \
+    && fail "control: a ledger row naming a missing kept line passed" && return 1
+  grep -q '^FAIL .*names a kept line' "$S/bad-kept.out" || fail "control: the refusal does not name the missing kept line" || return 1
+  echo "# control: a row whose kept line is not after pass 2 is refused"
   done_ok
 }
 
