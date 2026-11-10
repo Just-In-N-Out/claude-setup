@@ -71,9 +71,10 @@ def git_info(env, rel):
         return "unknown (git failed)"
 
 
-def check(env, now, write=True):
+def check(env, now, write=True, record_unattributed=True):
     """Targets whose sha256 differs from their last ledger row: each is reported once (a new row is
-    written); a target never seen before only gets a baseline row."""
+    written); a target never seen before only gets a baseline row. A run passes record_unattributed=False
+    and writes those rows only once its log entry naming them is committed (unattributed_rows, R1-11)."""
     rules = targets.load_rules(env)
     last = last_rows(env)
     rows, changed = [], []
@@ -83,11 +84,19 @@ def check(env, now, write=True):
         if prev is None:
             rows.append(row(rel, sha, "baseline", now))
         elif prev.get("sha256") != sha:
-            changed.append({"path": rel, "git": git_info(env, rel)})
-            rows.append(row(rel, sha, "unattributed", now))
+            changed.append({"path": rel, "git": git_info(env, rel), "sha": sha})
+            if record_unattributed:
+                rows.append(row(rel, sha, "unattributed", now))
     if write:
         append(env, rows)
     return changed
+
+
+def unattributed_rows(changed, now, written=()):
+    """The rows that mark changes as reported, once a committed log entry names them; a path the dream
+    itself wrote in that run already has its newer row."""
+    return [row(u["path"], u["sha"], "unattributed", now) for u in changed or []
+            if u.get("sha") and u["path"] not in set(written)]
 
 
 def baseline(env, now):

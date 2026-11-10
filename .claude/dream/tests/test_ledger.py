@@ -59,5 +59,39 @@ class LedgerTests(unittest.TestCase):
                          "the dream's own edit is not unattributed")
 
 
+class LaterRunTests(unittest.TestCase):
+    def tearDown(self):
+        self.h.cleanup()
+
+    def test_an_unattributed_change_seen_by_a_run_that_commits_nothing_is_logged_by_a_later_run(self):
+        """R1-11 (AC26): a change counts as reported only once a committed log entry names it; a run with
+        nothing new, a stopped run or a failed run leaves it for the next run."""
+        self.h = h = FakeHome("r111", repo=True)
+        env = h.denv()
+        ledger.baseline(env, env.now())
+        skill = ".hermes/skills/sd/general-skill/SKILL.md"
+        h.write(skill, h.read(skill) + "- edited by Codex, no hook\n")
+        self.assertEqual(h.run(), 0, "nothing new to read")
+        fh.standard(h, checker={"verdict": "no", "lost_facts": [], "untraced": [], "notes": "no"})
+        self.assertEqual(h.run(), 3, "a stopped run")
+        sc = json.loads(h.scenario_path.read_text())
+        sc["checker"] = {"verdict": "yes", "lost_facts": [], "untraced": [], "notes": ""}
+        h.scenario(sc)
+        self.assertEqual(h.run(), 0)
+        entries = h.read(".claude/dream/dream-log.md").split("\n## Dream ")[1:]
+        live = [e for e in entries if "stopped, nothing went live" not in e.split("\n")[0]]
+        self.assertEqual(len(live), 1)
+        self.assertIn("`%s` (" % skill, live[0].split("Unattributed changes:")[1].split("\n")[0])
+        # once logged, it is not reported again
+        h.session(fh.PROJ, "s2", [typed("v1", "from now on always write the plan before the code")])
+        sc["session-helper"]["s2"] = {"findings": [fh.finding("v1", "always write the plan before the code")]}
+        sc["editor"]["edits"] = [{"file": fh.MEM_COPY, "append": "- Write the plan first (2026-11-09).\n"}]
+        sc["editor"]["changes"]["changes"][0]["additions"] = ["- Write the plan first (2026-11-09)."]
+        h.scenario(sc)
+        self.assertEqual(h.run(), 0)
+        last = h.read(".claude/dream/dream-log.md").split("\n## Dream ")[-1]
+        self.assertNotIn(skill, last)
+
+
 if __name__ == "__main__":
     unittest.main()

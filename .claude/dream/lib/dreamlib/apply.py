@@ -350,7 +350,8 @@ def apply(R, P):
                 (before / "patch").write_bytes(env.patch.read_bytes())
         J = {"run": R.id, "stage": "applying", "files": files, "before_dir": str(before),
              "markers_after": P.markers_after, "settled": P.settled, "git_paths": git_paths(env, P),
-             "commit_msg": P.commit_msg, "last_run": _last_run(R, P)}
+             "commit_msg": P.commit_msg, "last_run": _last_run(R, P),
+             "unattributed": [{"path": u["path"], "sha": u.get("sha")} for u in R.facts.get("unattributed") or []]}
         paths.save_json(journal_path(env), J)
         for w in P.writes:
             write_live(w["path"], w["data"])
@@ -429,6 +430,9 @@ def after_commit(R, J, lock):
     for k, cur in (J.get("markers_after") or {}).items():
         cursors[k] = state.commit_cursor(cur)
     state.save_cursors(env, cursors)
+    # the committed log entry names the unattributed changes: now they count as reported (R1-11)
+    ledger.append(env, ledger.unattributed_rows(J.get("unattributed"), R.now,
+                                                [f["rel"] for f in J["files"] if f.get("kind") in ("target", "library")]))
     u = state.load_unsettled(env)
     settled = set(J.get("settled") or [])
     left = [f for f in u.get("findings", []) if f["id"] not in settled]

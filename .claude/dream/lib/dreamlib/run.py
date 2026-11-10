@@ -112,7 +112,7 @@ def _run(env, mode, hooks):
             return rc
 
     # step 2: extract, no model
-    R.facts["unattributed"] = ledger.check(env, R.now, write=(mode == "live"))
+    R.facts["unattributed"] = ledger.check(env, R.now, write=(mode == "live"), record_unattributed=False)
     cursors = state.load_cursors(env)
     unsettled = state.load_unsettled(env)
     # lines whose findings already wait in unsettled.json are not read again (their helpers ran)
