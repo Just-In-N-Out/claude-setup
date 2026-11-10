@@ -97,10 +97,17 @@ index d6a2493..10edcc9 100644
  
  ## Output Format
 diff --git a/skills/engineering-best-practices/SKILL.md b/skills/engineering-best-practices/SKILL.md
-index 856df40..4872c39 100644
+index 856df40..b5016b4 100644
 --- a/skills/engineering-best-practices/SKILL.md
 +++ b/skills/engineering-best-practices/SKILL.md
-@@ -426,6 +426,9 @@ enable monitoring, posts or runners; automation needs separate authority/setup.
+@@ -420,12 +420,16 @@ enable monitoring, posts or runners; automation needs separate authority/setup.
+ 
+ ## Pitfalls
+ 
++- In bash, `jq … | @tsv` read with `IFS=$'\t' read -r a b c` merges empty fields (tab is IFS whitespace), so every later field shifts; use `join("\u001f")` in jq with `IFS=$'\x1f' read` (dream-pass builder: a null `commit` and an empty `agent_id` shifted fields in two hooks).
+ - Do not impose GitFlow, a new tracker, extra agents or deployment on a small task.
+   The dev/stage/main branch model is a standing team default for Leorna product
+   repos with real staging and production, not a universal law — a docs-only or
    single-developer repo keeps plain topic→main flow (see
    [branch model](references/branch-model.md) "When to adopt").
  - A fresh agent lacks your chat: pass the task, baseline, owned files and checks.
@@ -208,7 +215,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..184c037 100644
+index f2d882d..527f13d 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,60 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -463,7 +470,7 @@ index f2d882d..184c037 100644
  6. **A redundant fallback masked the primary path.** Two mechanisms resolved
     the same input, so either could be deleted invisibly. Test each path with a
 -   payload that exercises *only* that path.
-+   payload that exercises *only* that path. A rule that swaps in a trusted value
++   payload that exercises *only* that path. A secret guard that ORs gitleaks with its own regex needs a fixture only gitleaks flags (a Stripe-shaped `sk_live_…` key built from pieces), or the "gitleaks result ignored" mutant survives (dream-pass M6). A rule that swaps in a trusted value
 +   whenever the measure looks safe (the browser's own size while a box sits
 +   inside its limit) masks every error that shrinks the measure: kill those
 +   mutants with a case past the limit whose wrong measure looks inside it
