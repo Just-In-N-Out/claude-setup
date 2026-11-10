@@ -1,0 +1,43 @@
+# Where dream-pass and dream-trim stand (resume note for the main session)
+
+Updated 2026-11-10 about 18:30 EST by the main session that ran both jobs from the start (session `e126e11b-3efb-4c0a-ba28-710cd6032a81`, 747k tokens of context, on Fable 5.2: over the 300k rule of 2026-11-10 and not on Opus 5.5 high, so a fresh session should take over). Everything below is on disk; nothing depends on that chat.
+
+## What the two jobs are
+- **dream-pass** (claude-setup, Full): a twice-daily job that rereads Justin's Claude Code sessions and the pipeline's review findings and updates his skills, `CLAUDE.md` files and memory notes. Rules: `~/.claude/dream/DREAM.md`. Plan: `~/.hermes/plans/claude-setup/dream-pass.md`; approved copy `evidence/dream-pass/plan-approved.md` (its "Justin's answers" section holds every decision he made, in order).
+- **dream-trim** (claude-setup, Mini): the one-time trim of four oversized files. Plan: `dream-trim.md`; approved copy `evidence/dream-trim/plan-approved.md`.
+- Briefs for every agent that ran: `briefs/dream-pass-*.md`, `briefs/dream-trim-*.md`. Evidence: `evidence/dream-pass/`, `evidence/dream-trim/`.
+
+## dream-trim: pass 1 landed, pass 2 waits for Justin
+- Pass 1 is on `main` and on GitHub since 2026-11-10 (landing commit `312a6f82`, by `~/.claude/setup/trim/land.sh`). The four files are under their targets.
+- **Pass 2** (6 small edits, about 850 characters) is commit `2bc4495d` on branch `dream-trim` (worktree `~/.claude-setup-wt/dream-trim`). It is AC9 (live): Justin reads `evidence/dream-trim/pass2-summary.md` and `pass2.diff` and says **"land pass 2"**, or names edits to drop. He has been reminded several times and has not answered; don't land it without those words.
+- To land it then: `bash .claude/setup/trim/land.sh 2bc4495d --map .claude/setup/trim/maps/dream-trim.json --ledger ~/.hermes/plans/claude-setup/evidence/dream-trim/pass2-ledger.md` from that worktree (a finisher; `sync.sh pull` first, rerun on exit 3, then one `sync.sh`). `ac-check` said `READY FOR THE USER: 8 of 9` on `2bc4495`.
+- Follow-ups: `evidence/dream-trim/follow-ups.md`.
+
+## dream-pass: accepted, but the landing stopped on a conflict
+- Branch `dream-pass`, worktree `~/.claude-setup-wt/dream-pass`, head **`99bb2f31f8d18ca5dfe18d4d59de61925a64b7b2`**, base `63f09cb6` (51 commits). The worktree is clean.
+- Review loop: reviews 1 to 9 (`evidence/dream-pass/review-<n>/review.json`); the referee's last line is `MOVE ON: review-9 at 99bb2f3 is clean`. `review-6/justin.json` holds his "Fix it, review again". Fixers 1 to 7, finisher 1 (the first rebase, one conflict in `CLAUDE.md`, reviewed clean as review 8).
+- Verifier (second pass) and blind auditor: both clean on `99bb2f3`. `ac-check.sh … --reviews` printed **`READY FOR THE USER: 42 of 45 ACs proven on 99bb2f3; live ACs owed to the user: AC39 AC40 AC41`**.
+- **Finisher 2 (the landing) stopped** (`evidence/dream-pass/finisher-2/stop.txt`, `conflict-CLAUDE.md.diff`): rebasing onto `main` `6aa2c634` conflicts in `.claude/CLAUDE.md` while applying story commit `12f5792e`. `main`'s commit `1cc9837d` (Justin's new model routing of 2026-11-10) rewrote the "Agent models" line; the story adds one sentence to the "Subagents report skill lessons" line beside it ("The dream reads the same skills and never duplicates a saved lesson."). The finisher aborted the rebase and resolved nothing, as briefed. Nothing was merged or installed.
+- **A second blocker found right after:** live `~/.claude/CLAUDE.md` is now 31,572 bytes (it was 29,594 before `1cc9837d`). The story's own docs test fails when `CLAUDE.md` is 30,000 bytes or more (`.claude/dream/tests/test_docs.py:91`; the dream's budget row is `.claude/CLAUDE.md 30000` in `.claude/dream/conf/budgets.tsv`, Justin's Q2 (a)). After a rebase the file would be about 31,915 bytes, so the dream suite would fail and the landing cannot pass until the budget, the test or the file changes. **This needs Justin's decision** (asked 2026-11-10 about 18:30; his answer, if given, is the last paragraph of "Justin's answers" in the plan).
+
+## What to do next for dream-pass
+1. Get Justin's answer on the `CLAUDE.md` budget if the plan does not hold it yet. Options put to him: raise the budget (the main session recommended 36,000); or keep 30,000 and trim `CLAUDE.md` first; or keep 30,000, drop the test's size line and let the dream be shrink-only on that file.
+2. Dispatch a **fixer** (Opus 5.5 high under the 2026-11-10 routing; brief it from `briefs/dream-pass-fixer-7.md` for the rules and from this note for the job): rebase the branch onto the newest `main`, resolve the `CLAUDE.md` conflict by keeping `main`'s "Agent models" line exactly and adding the story's one sentence to the lessons line, apply Justin's budget answer test-first (`budgets.tsv`, `test_docs.py`, and any doc line that states the number), run the dream suite, both hook suites and the regression gate with a fresh baseline on the new base. It stops at `ready-for-next-review`.
+3. Then the full path, as `CLAUDE.md` step 7 says for a rebase that resolved a conflict: a fresh **review** of the resolution and the budget change (later-round reviewer: Opus 5.5 high; review it as `git range-diff 63f09cb6..99bb2f31 <new base>..HEAD` plus the new commit, `from` = `99bb2f31`), `review-check.sh`, then a fresh **verifier** (Opus 5.5 high; brief from `briefs/dream-pass-verifier-1.md`), a fresh blind **auditor** (Opus 5.5 xhigh; `briefs/dream-pass-auditor-1.md`), then `ac-check.sh … --reviews`.
+4. Then the landing (brief from `briefs/dream-pass-finisher-2.md`, updated for the new rule): finisher rebases onto the newest `main`; on a pure rebase it writes a **rebase receipt** (`ac-verification.md`) and the main session reruns `ac-check.sh` with `--rebase-receipt <evidence>/rebase/receipt-<head7>.log`, with no new verifier or auditor (this replaces Justin's one-off "Yes, if the rebase is pure" allowance, which says the same thing). Then `git merge --ff-only dream-pass` on `main` under the sync lock, the plan's after-merge step (`dream install` without `--enable`, `dream init`, `dream status`), one `sync.sh`, and the final check. `main` moves 4 to 16 times an hour, and commits touching the rules lines of `CLAUDE.md` will conflict again, so land promptly once accepted.
+5. Hand Justin his three live steps (AC40 dry run and read the diff, AC41 `dream mode live` and one run by hand, AC39 linger and the timer), as exact commands for the Ubuntu window.
+
+## Things Justin was told and should not be surprised by
+- Global `CLAUDE.md` has little or no room under its dream budget; the dream is shrink-only on an over-budget file.
+- First live run: figma-to-bricks's 272 review lines go to one helper call; if it fails the log shows about 75 review lines read, not about 347, and the repeat-mistakes files wait.
+- When the dream holds repeat-mistakes updates (unread review lines, or a failing review helper) nothing tells him yet (review 7's R7-1, a P3): the main session recommended it as the first follow-up story.
+- A mistake retired by its rule is never listed again (R5-7, a P3): his call, not asked for.
+- The weekly usage limit stopped one Fable agent on 2026-11-10 (reset Nov 13, 6pm New York). The dream's own agents run on Opus.
+- The desktop restarted twice on 2026-11-10 (07:07 to 08:17 and 17:10 to 17:12), neither a Linux memory kill.
+
+## Records kept elsewhere
+- Follow-ups (P3s): `evidence/dream-pass/follow-ups.md` (reviews 1 to 8; add the verifier's and auditor's notes: the auditor's A1, AC17 and AC27's named tests do not themselves exercise the 2026-11-10 rulings, supporting tests do).
+- Check proposals offered: `enforce-backlog.md`, the lines dated 2026-11-09 and 2026-11-10 that name dream-pass or dream-trim.
+- Lessons saved from these two jobs are already in the skills and memory (synced); nothing is pending.
+- The hand trial of 2026-11-09 (three sessions, scratch only) is not kept; its findings are in the plan.
+- Backup tag before the first dream: `pre-dream-2026-11-09` (`fafe0ac3`) on `Just-In-N-Out/claude-setup`.
