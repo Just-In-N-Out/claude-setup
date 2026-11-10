@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Acceptance tests for story review-loop (~/.hermes/plans/claude-setup/review-loop.md): the round referee
 # review-check.sh, ac-check.sh --reviews, and the rule text that names them.
-#   bash review-check.test.sh                    every offline test (ac1-ac10, ac12-ac16)
+#   bash review-check.test.sh                    every offline test (ac1-ac10, ac12-ac16, p2_only_from_round_3_asks_justin)
 #   bash review-check.test.sh <test> [<test>…]   just those, numbered TAP: "ok 1 - <test>"
 # ac11 and ac17 (regression runs of the existing suites) and the live ac18 (the Mac) run only when named.
 # Everything under test comes from this file's own checkout (the review-loop worktree, or $HOME once
@@ -20,7 +20,7 @@ unset GIT_CONFIG_GLOBAL GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_AUTHOR_NAME GIT
 OFFLINE="ac1_referee_moves_on_when_clean ac2_referee_reviews_again_on_p0_to_p2
 ac3_referee_counts_p2_without_scenario_as_p3 ac4_referee_asks_when_no_progress
 ac5_referee_asks_on_repeat_without_new_fact ac6_referee_records_justins_answers ac7_referee_checks_head_coverage
-ac8_referee_rejects_bad_records ac9_ac_check_refuses_unreviewed_head ac10_ac_check_accepts_reviewed_head
+ac8_referee_rejects_bad_records p2_only_from_round_3_asks_justin ac9_ac_check_refuses_unreviewed_head ac10_ac_check_accepts_reviewed_head
 ac12_docs_name_the_review_loop ac13_codex_roles_name_the_review_loop ac14_feature_dispatch_under_limit
 ac15_memory_note_retired ac16_scripts_portable_to_macos"
 
@@ -237,11 +237,11 @@ ac4_referee_asks_when_no_progress() {
   C3=$(cm d.txt three three)
   fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)" "$(finding R1-3 P2)"
   rev 2 full "$BASE" "$C2" "$(finding R2-1 P2)"; rev 3 delta "$C2" "$C3" "$(finding R3-1 P2)"; judge
-  want 3 "ASK JUSTIN: review-3: 1 P0-P2, no fewer than review-2's 1" "3, 1, then 1" || return 1
+  want 3 "ASK JUSTIN: review-3: 1 P0-P2, no fewer than review-2's 1; only P2 left from round 3 on (R3-1): fix or follow-up?" "3, 1, then 1" || return 1
   fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)"
   rev 2 full "$BASE" "$C2" "$(finding R2-1 P2)" "$(finding R2-2 P2)" "$(finding R2-3 P2)"
   rev 3 delta "$C2" "$C3" "$(finding R3-1 P2)" "$(finding R3-2 P2)"; judge
-  want 1 "REVIEW AGAIN: 2 P0-P2 finding(s) in review-3 at ${C3:0:7}: fix them, then review the fix commits" "1, 3, then 2" || return 1
+  want 3 "ASK JUSTIN: review-3: only P2 left from round 3 on (R3-1, R3-2): fix or follow-up?" "1, 3, then 2: fewer, but only P2 left in round 3" || return 1
   done_ok
 }
 
@@ -280,7 +280,7 @@ ac5_referee_asks_on_repeat_without_new_fact() {
   fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)" "$(finding R1-3 P2)"
   rev 2 full "$BASE" "$C2" "$(finding R2-1 P2)" "$(finding R2-2 P2)"
   rev 3 delta "$C2" "$C3" "$(finding R3-1 P2 "$SC" R1-1)"; judge
-  want 3 "ASK JUSTIN: review-3: repeats with no new fact: R3-1 repeats R1-1" "review-3 repeats review-1" || return 1
+  want 3 "ASK JUSTIN: review-3: repeats with no new fact: R3-1 repeats R1-1; only P2 left from round 3 on (R3-1): fix or follow-up?" "review-3 repeats review-1" || return 1
   # two stalls, and both brakes at once
   fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)" "$(finding R1-3 P2)"
   rev 2 full "$BASE" "$C2" "$(finding R2-1 P2 "$SC" R1-1)" "$(finding R2-2 P1 "$SC" R1-2)"; judge
@@ -639,6 +639,67 @@ ac8_referee_rejects_bad_records() {
   # control: an earlier round's head and from may be gone (garbage-collected after a rebase)
   fresh; rev 1 full "$G" "$G"; edit 1 ".from = \"$(printf '%040d' 0 | tr 0 e)\""; rev 2 full "$BASE" "$C3"; judge
   want 0 "MOVE ON: review-2 at ${C3:0:7} is clean" "an earlier round's commits are gone" || return 1
+  done_ok
+}
+
+p2_only_from_round_3_asks_justin() {
+  local C3 C4 W='"words": "R3-2 is a follow-up"'
+  need "$RC" || return 1
+  newroot; mkrepo || fail "fixture repo" || return 1
+  C3=$(cm d.txt three three) && C4=$(cm d.txt four four) || fail "fixture commits" || return 1
+  Q() { echo "ASK JUSTIN: review-$1: only P2 left from round 3 on ($2): fix or follow-up?"; }   # Q <round> <ids>
+  r12() { fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)" "$(finding R1-3 P2)" "$(finding R1-4 P2)"
+          rev 2 full "$BASE" "$C2" "$(finding R2-1 P2)" "$(finding R2-2 P2)" "$(finding R2-3 P2)"; }   # rounds 1 and 2: 4 P2s, then 3
+  # round 3, fewer P2s than round 2 and no repeat: brakes c and d are silent, the late-round brake asks
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P2)"; judge
+  want 3 "$(Q 3 R3-1)" "one P2 left in round 3" || return 1
+  has "R3-1  P2  lib/x.sh:R3-1  claim of R3-1" "the finding line before ASK JUSTIN" || return 1
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P2)" "$(finding R3-2 P2)" "$(finding R3-3 P3)"; judge
+  want 3 "$(Q 3 "R3-1, R3-2")" "two P2s and a P3 in round 3: the line names the P2s only" || return 1
+  r12; rev 3 full "$BASE" "$C3" "$(finding R3-1 P2)"; judge
+  want 3 "$(Q 3 R3-1)" "a full round 3 asks too" || return 1
+  # later rounds too
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P2)" "$(finding R3-2 P2)"; justin 3 '{"words": "fix them", "continue": true}'
+  rev 4 delta "$C3" "$C4" "$(finding R4-1 P2)"; judge
+  want 3 "$(Q 4 R4-1)" "one P2 left in round 4 (round 3's continue doesn't answer it)" || return 1
+  # Justin's answers: fix = continue, follow-up = accept, or both
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P2)" "$(finding R3-2 P2)"; justin 3 '{"words": "fix them", "continue": true}'; judge
+  want 1 "REVIEW AGAIN: 2 P0-P2 finding(s) in review-3 at ${C3:0:7}: fix them, then review the fix commits" "fix: continue on round 3" || return 1
+  justin 3 "{$W, \"accept\": [\"R3-1\", \"R3-2\"]}"; judge "$BASE"
+  want 1 "REVIEW AGAIN: 1 commit(s) after review-3's head ${C3:0:7} are unreviewed: review ${C3:0:7}..${C4:0:7}" "follow-up: both accepted, the round is clean (HEAD is one commit on)" || return 1
+  has "R3-1  ACCEPTED  lib/x.sh:R3-1  claim of R3-1" "an accepted P2's line" || return 1
+  ing git -C "$R" checkout -q -B at3 "$C3" || fail "checkout" || return 1
+  judge; want 0 "MOVE ON: review-3 at ${C3:0:7} is clean" "follow-up: both accepted, at the reviewed head" || return 1
+  justin 3 "{$W, \"accept\": [\"R3-2\"]}"; judge
+  want 3 "$(Q 3 R3-1)" "one accepted, no continue: asks again for the one left" || return 1
+  justin 3 "{$W, \"accept\": [\"R3-2\"], \"continue\": true}"; judge
+  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-3 at ${C3:0:7}: fix them, then review the fix commits" "one accepted, the other fixed" || return 1
+  rm "$E/review-3/justin.json"; justin 2 '{"words": "go on", "continue": true}'; judge
+  want 3 "$(Q 3 "R3-1, R3-2")" "continue on round 2 doesn't answer round 3" || return 1
+  # a P0 or P1 in the round: REVIEW AGAIN as before
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P1)" "$(finding R3-2 P2)"; judge
+  want 1 "REVIEW AGAIN: 2 P0-P2 finding(s) in review-3 at ${C3:0:7}: fix them, then review the fix commits" "a P1 and a P2 in round 3" || return 1
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P0)"; judge
+  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-3 at ${C3:0:7}: fix them, then review the fix commits" "a P0 in round 3" || return 1
+  # effective severities: a P1 with no scenario counts as P3, an accepted P1 doesn't count, a no-scenario P2 leaves nothing
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P1 "edge case")" "$(finding R3-2 P2)"; judge
+  want 3 "$(Q 3 R3-2)" "a no-scenario P1 and a P2" || return 1
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P1)" "$(finding R3-2 P2)"; justin 3 "{$W, \"accept\": [\"R3-1\"]}"; judge
+  want 3 "$(Q 3 R3-2)" "an accepted P1 and a P2" || return 1
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P2 "edge case")"; judge
+  want 0 "MOVE ON: review-3 at ${C3:0:7} is clean" "only a no-scenario P2 in round 3: clean, nothing to ask" || return 1
+  # rounds 1 and 2: P2-only findings are REVIEW AGAIN as before
+  fresh; rev 1 full "$BASE" "$C3" "$(finding R1-1 P2)"; judge
+  want 1 "$(fix1 1 "$C3")" "P2 only in round 1" || return 1
+  fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)"; rev 2 delta "$C1" "$C3" "$(finding R2-1 P2)"; judge
+  want 1 "REVIEW AGAIN: 1 P0-P2 finding(s) in review-2 at ${C3:0:7}: fix them, then review the fix commits" "P2 only in round 2" || return 1
+  # with another brake: every reason is named
+  fresh; rev 1 full "$BASE" "$C1" "$(finding R1-1 P2)" "$(finding R1-2 P2)"; rev 2 full "$BASE" "$C2" "$(finding R2-1 P2)"
+  rev 3 delta "$C2" "$C3" "$(finding R3-1 P2 "$SC" R1-1)"; judge
+  want 3 "ASK JUSTIN: review-3: repeats with no new fact: R3-1 repeats R1-1; 1 P0-P2, no fewer than review-2's 1; only P2 left from round 3 on (R3-1): fix or follow-up?" "all three brakes" || return 1
+  # ac-check.sh --reviews refuses the head while the question is open
+  r12; rev 3 delta "$C2" "$C3" "$(finding R3-1 P2)"; acfix "$C3" "$BASE" AC1; accheck "$BASE" --reviews "$E"
+  want 1 "NOT ACCEPTED: the head ${C3:0:7} isn't covered by a clean review ($(Q 3 R3-1))" "ac-check.sh --reviews while the question is open" || return 1
   done_ok
 }
 

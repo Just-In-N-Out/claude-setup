@@ -9,8 +9,11 @@
 #   - a P0-P2 whose scenario has fewer than 5 words counts as P3 (brake a);
 #   - a finding Justin accepted, or one that repeats it, counts as ACCEPTED (it isn't fixed);
 #   - P0-P2 left → REVIEW AGAIN, unless brake c (no fewer P0-P2 than the round before, when that
-#     round had any) or brake d (a P0-P2 that repeats an earlier P0-P2 with no new_fact of 5+ words)
-#     trips → ASK JUSTIN; justin.json "continue": true answers that round's ASK with REVIEW AGAIN;
+#     round had any), brake d (a P0-P2 that repeats an earlier P0-P2 with no new_fact of 5+ words) or
+#     brake e (round 3 or later, and every P0-P2 left is a P2: "only P2 left from round 3 on (<ids>):
+#     fix or follow-up?") trips → ASK JUSTIN, the reasons joined by "; "; justin.json "continue": true
+#     answers that round's ASK with REVIEW AGAIN (Justin's "fix"), and its accept list takes findings
+#     out of the count (his "follow-up");
 #   - none left → MOVE ON when the round's head is HEAD, or HEAD is a pure rebase of it (the same
 #     patches in the same order, no merges); otherwise REVIEW AGAIN for the unreviewed commits;
 #   - after round 1, a REVIEW AGAIN names both next rounds: Full's round 2 reviews the whole story from
@@ -106,11 +109,12 @@ def oneline: tostring | gsub("[[:cntrl:]]+"; " ");
 | [ $now[] | . as $f | select((.repeats // "") != "")
     | select(any($e[0:$L][][]; .id == $f.repeats and (.eff | serious)))
     | select(((.new_fact // "") | words) < 5) | "\(.id) repeats \(.repeats)" ] as $stalled
-| { round: ($L + 1), now: ($now | length), prev: $prev, stalled: $stalled,
+| (if $L >= 2 and ($now | length) > 0 and all($now[]; .eff == "P2") then [ $now[] | .id | oneline ] else [] end) as $late
+| { round: ($L + 1), now: ($now | length), prev: $prev, stalled: $stalled, late: $late,
     lines: [ $e[$L][] | "\(.id | oneline)  \(.eff)  \(.file_line | oneline)  \(.claim | oneline)\(if (.repeats // "") != "" then "  (repeats \(.repeats | oneline))" else "" end)" ],
     outcome: (if ($now | length) == 0 then "clean"
               elif $j[$L].continue == true then "again"
-              elif ($stalled | length) > 0 or ($prev > 0 and ($now | length) >= $prev) then "ask"
+              elif ($stalled | length) > 0 or ($prev > 0 and ($now | length) >= $prev) or ($late | length) > 0 then "ask"
               else "again" end) }
 JQ
 
@@ -210,7 +214,8 @@ case $outcome in
     echo "REVIEW AGAIN: $now P0-P2 finding(s) in review-$n at ${RH:0:7}: fix them, then $(next "review the fix commits")"; exit 1 ;;
   ask)
     why=$(jq -r '[ (if (.stalled | length) > 0 then "repeats with no new fact: \(.stalled | join(", "))" else empty end),
-                   (if .prev > 0 and .now >= .prev then "\(.now) P0-P2, no fewer than review-\(.round - 1)'"'"'s \(.prev)" else empty end) ]
+                   (if .prev > 0 and .now >= .prev then "\(.now) P0-P2, no fewer than review-\(.round - 1)'"'"'s \(.prev)" else empty end),
+                   (if (.late | length) > 0 then "only P2 left from round 3 on (\(.late | join(", "))): fix or follow-up?" else empty end) ]
                  | join("; ")' <<<"$v")
     echo "ASK JUSTIN: review-$n: $why"; exit 3 ;;
 esac
