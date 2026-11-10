@@ -59,6 +59,57 @@ class ApplyTests(unittest.TestCase):
         self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
         self.assertNotIn("could not apply automatically", h.read(".claude/dream/justin-list.md"))
 
+    def test_an_edit_the_second_pull_brings_to_the_dreams_own_files_is_kept(self):
+        """R1-6: the log, Justin's list, the state and enforce-backlog lines are built on the files as they are
+        after the apply step's pull, under the lock; a pending or tally file changed by the other machine in
+        between stops the run with nothing written (no try), and the next run starts from that file."""
+        self.h = h = FakeHome("r16", repo=True)
+        lst = ".claude/dream/justin-list.md"
+        bl = ".hermes/plans/claude-setup/enforce-backlog.md"
+        h.write(lst, h.read(lst) + '- [ ] 2026-11-01 question: "old item one" x. Why: y\n'
+                '- [ ] 2026-11-02 question: "old item two" x. Why: y\n')
+        h.write(bl, "# Enforce backlog\n\n- 2026-11-01 | s | k | first proposal | offered\n")
+        h.sync()
+        fh.standard(h, extra_findings=[fh.finding("u1", "always run the linter before every", ambiguous=True)])
+        mac = h.root / "mac"
+
+        def mac_edit(script):  # after the run's first pull: the Mac edits, commits and pushes
+            h.on_pull('[ "$N" = 1 ] || exit 0\nrm -rf "%s" && git clone -q "%s" "%s" && cd "%s" && %s && '
+                      'git -c core.hooksPath=/dev/null commit -qam "sync(mac): edit" && git push -q origin HEAD:main\n'
+                      % (mac, h.remote, mac, mac, script))
+
+        mac_edit('grep -v "old item one" %s > l.tmp && mv l.tmp %s && '
+                 'echo "- 2026-11-10 | mac-story | k | a proposal saved on the Mac | offered" >> %s' % (lst, lst, bl))
+        self.assertEqual(h.run(), 0)
+        text = h.read(lst)
+        self.assertNotIn("old item one", text, "the item Justin deleted on the Mac stays deleted")
+        self.assertIn("old item two", text)
+        self.assertIn("always run the linter before every", text, "the run's own new item is there")
+        self.assertIn("saved on the Mac", h.read(bl))
+        self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+        self.assertEqual(h.remote_head(), h.head())
+        self.assertNotIn("old item one", h.sh("git", "--git-dir=%s" % h.remote, "show", "main:" + lst).stdout)
+        # a tally changed by the other machine while the dream ran: nothing written, no try, then a clean retry
+        h.session(fh.PROJ, "s2", [typed("v1", "from now on always write the plan before the code")])
+        sc = json.loads(h.scenario_path.read_text())
+        sc["session-helper"]["s2"] = {"findings": [fh.finding("v1", "always write the plan before the code")]}
+        sc["editor"]["edits"] = [{"file": fh.MEM_COPY, "append": "- Write the plan first (2026-11-09).\n"}]
+        sc["editor"]["changes"]["changes"][0]["additions"] = ["- Write the plan first (2026-11-09)."]
+        h.scenario(sc)
+        tl = ".claude/dream/state/tally.json"
+        mac_edit("python3 -c 'import json,sys; p=sys.argv[1]; t=json.load(open(p)); t[\"mac_note\"]=\"kept\"; "
+                 "open(p,\"w\").write(json.dumps(t, indent=1, sort_keys=True)+\"\\n\")' %s" % tl)
+        before = h.read(fh.MEM_LIVE)
+        self.assertEqual(h.run(), 3)
+        self.assertIn("tally.json", h.local("last-run.json")["reason"])
+        self.assertEqual(h.read(fh.MEM_LIVE), before, "nothing written")
+        self.assertEqual(json.loads(h.read(tl)).get("mac_note"), "kept")
+        self.assertEqual([f["tries"] for f in h.local("unsettled.json")["findings"]], [0])
+        (h.root / "on-pull.sh").write_text("exit 0\n")
+        self.assertEqual(h.run(), 0)
+        self.assertIn("- Write the plan first (2026-11-09).", h.read(fh.MEM_LIVE))
+        self.assertEqual(json.loads(h.read(tl)).get("mac_note"), "kept", "the next run starts from the file")
+
     def test_ac20_library_edit_travels_only_in_the_patch_file(self):
         self.h = h = FakeHome("ac20", repo=True, library=True)
         lib = h.p(".hermes/skills-library")

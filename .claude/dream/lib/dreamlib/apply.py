@@ -191,36 +191,18 @@ def make_plan(R, unsettled, mapping, diffs, changes, tally, pending, cursors):
     P.markers_after = dict(unsettled.get("markers_after") or {})
     tally_after = json.loads(json.dumps(tally))
     mistakes.after_commit(tally_after, P.orders_done, R.now)
-    applied = state.load_state(env, "applied", {"ids": []})
-    applied["ids"] = sorted(set(applied.get("ids", [])) | set(P.settled) | set(unsettled.get("parked_ids") or []))
-    trend = state.load_state(env, "trend", {"runs": []})
     lg = unsettled.get("log") or {}
     projs = {}
     for p, n in (lg.get("typed") or {}).items():
         projs[p] = {"typed": n, "corrections": (lg.get("corrections") or {}).get(p, 0)}
-    if projs:
-        trend.setdefault("runs", []).append({"run": R.id, "time": R.now.isoformat(timespec="minutes"), "projects": projs})
-    dream = env.dream
     P.log_text = log.entry(R, unsettled, P, changes, list_items, lg, cursors)
-    main_log, archives = log.rotate(log.read(env), R.now)
-    for name, text in archives.items():
-        P.writes.append(_dream_write(env, dream / name, text.encode()))
-    P.writes.append(_dream_write(env, dream / "dream-log.md", (main_log + P.log_text).encode()))
-    for name, obj in (("pending", pending), ("tally", tally_after), ("applied", applied), ("trend", trend)):
-        P.writes.append(_dream_write(env, dream / "state" / (name + ".json"), paths.dump_json(obj).encode()))
-    if list_items:
-        P.writes.append(_dream_write(env, dream / "justin-list.md", (log.read_list(env) + log.list_lines(list_items)).encode()))
-    lines = [ln for ln in unsettled.get("enforce_lines") or []]
-    if lines:
-        try:
-            cur = env.enforce_backlog.read_text()
-        except OSError:
-            cur = "# Enforce backlog\n\n"
-        if cur and not cur.endswith("\n"):
-            cur += "\n"
-        w = _dream_write(env, env.enforce_backlog, (cur + "\n".join(lines) + "\n").encode())
-        w["kind"] = "backlog"
-        P.writes.append(w)
+    # what the dream adds to its own files; own_writes() puts it on their current text (R1-6)
+    P.own = {"now": R.now, "list_items": list_items, "enforce_lines": list(unsettled.get("enforce_lines") or []),
+             "applied_ids": sorted(set(P.settled) | set(unsettled.get("parked_ids") or [])),
+             "trend_run": {"run": R.id, "time": R.now.isoformat(timespec="minutes"), "projects": projs} if projs else None,
+             "whole": {"pending": pending, "tally": tally_after},
+             "base": {n: paths.sha256_file(env.state / (n + ".json")) for n in ("pending", "tally")}}
+    P.writes += own_writes(env, P)
     n_files = len(P.target_files())
     P.commit_msg = "dream(%s): %d file(s), %d finding(s) [run %s]\n\n%s\n" % (
         R.now.strftime("%Y-%m-%d %H:%M"), n_files, len(P.settled), R.id,
@@ -231,6 +213,47 @@ def make_plan(R, unsettled, mapping, diffs, changes, tally, pending, cursors):
 
 def _dream_write(env, path, data):
     return {"path": str(path), "rel": env.rel(path), "data": data, "kind": "dream", "copy_sha": None}
+
+
+def own_writes(env, P):
+    """The dream's own files, each built on its text as it is now: the log entry and the list items appended,
+    the enforce-backlog lines appended, applied ids and the trend row merged in. apply() builds them again
+    under the lock, after its pull, so an edit that pull brings in (Justin's handled list items, another
+    machine's enforce lines) is kept (R1-6). pending.json and tally.json are the dream's own working copies,
+    written whole; own_changed() stops the run when one of them changed since the plan was made."""
+    o, dream, out = P.own, env.dream, []
+    main_log, archives = log.rotate(log.read(env), o["now"])
+    for name, text in archives.items():
+        out.append(_dream_write(env, dream / name, text.encode()))
+    out.append(_dream_write(env, dream / "dream-log.md", (main_log + P.log_text).encode()))
+    applied = state.load_state(env, "applied", {"ids": []})
+    applied["ids"] = sorted(set(applied.get("ids", [])) | set(o["applied_ids"]))
+    trend = state.load_state(env, "trend", {"runs": []})
+    if o["trend_run"]:
+        trend.setdefault("runs", []).append(o["trend_run"])
+    for name, obj in (("pending", o["whole"]["pending"]), ("tally", o["whole"]["tally"]), ("applied", applied),
+                      ("trend", trend)):
+        out.append(_dream_write(env, dream / "state" / (name + ".json"), paths.dump_json(obj).encode()))
+    if o["list_items"]:
+        out.append(_dream_write(env, dream / "justin-list.md",
+                                (log.read_list(env) + log.list_lines(o["list_items"])).encode()))
+    if o["enforce_lines"]:
+        try:
+            cur = env.enforce_backlog.read_text()
+        except OSError:
+            cur = "# Enforce backlog\n\n"
+        if cur and not cur.endswith("\n"):
+            cur += "\n"
+        w = _dream_write(env, env.enforce_backlog, (cur + "\n".join(o["enforce_lines"]) + "\n").encode())
+        w["kind"] = "backlog"
+        out.append(w)
+    return out
+
+
+def own_changed(env, P):
+    """pending.json and tally.json changed since the plan was made (another machine's edit, a dream undo)."""
+    return [n + ".json" for n, sha in sorted(P.own["base"].items())
+            if paths.sha256_file(env.state / (n + ".json")) != sha]
 
 
 # ---------- apply ----------
@@ -299,6 +322,17 @@ def apply(R, P):
     try:
         lock = take_lock(env, R.lock_wait())
         preconditions(R, P)
+        moved = own_changed(env, P)
+        if moved:
+            # the next run starts from those files, not from this run's copies of them
+            u = state.load_unsettled(env)
+            for k in ("tally", "pending"):
+                u.pop(k, None)
+            state.save_unsettled(env, u)
+            raise Stop("the dream's %s changed while it ran (pulled from the other machine, or a dream undo); "
+                       "nothing was written" % ", ".join("state/" + n for n in moved))
+        # the dream's own files again, on what the pull brought in (R1-6)
+        P.writes = [w for w in P.writes if w["kind"] not in ("dream", "backlog")] + own_writes(env, P)
         before = R.dir / "before"
         before.mkdir(parents=True, exist_ok=True)
         files = []
