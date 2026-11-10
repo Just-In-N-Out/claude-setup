@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: feedback
   originSessionId: 8e80bfe0-369d-4e32-84a6-8d63e5215658
-  modified: 2026-11-03T00:52:13.087Z
+  modified: 2026-11-10T02:41:37.631Z
 ---
 
 On 2026-10-07, after M3a, the user said: "just continue building we will check everything at the end. Do the rest of
@@ -36,3 +36,4 @@ Later on 2026-11-09 he changed the global rule too: "the first full recheck is o
 
 **2026-11-09 ~18:58 EST: the Claude weekly limit was hit** (five Fable 5.2 agents stopped with HTTP 429 "You've hit your weekly limit · resets Nov 13, 6pm (America/New_York)"). Justin said "continue"; the agents were resumed with SendMessage (work saved, they keep their context). If they stop on the limit again: tell him plainly, and ask before any substitute (his rule: Sol 6.1 only with his approval at a Claude limit; Fable and Opus share the subscription) — never switch models silently.
 He then used a limit reset (2026-11-09 ~19:10: "I used a reset, keep them going") and went to sleep: keep every job moving unattended, Fable 5.2 high, recommended answers, merge as each is accepted.
+**2026-11-09 ~21:40, model changed again:** Justin: "from now on move everything to opus 5.5 high" → every agent dispatched from then on in this wave, whatever its role, is `model: "opus"`, `effort: "high"` (briefs say "Opus 5.5, high"). This replaces the Fable lines above for new dispatches. Agents already running on Fable were left to finish (a resumed agent keeps its model). My reading: it covers this wave's dispatches; I asked him once whether the global role table in `~/.claude/CLAUDE.md` should change too — don't edit it until he says.
