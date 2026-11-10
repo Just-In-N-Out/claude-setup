@@ -204,3 +204,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-09 | site-menu | figma-to-bricks | test: a named-only web test opens every pasted details on the B-Dry stand-in capture and asserts its links are drawn | offered
 - 2026-11-09 | 86bctmuwy | leorna | Claude Code hook (git-guard.sh): deny git commit/merge/rebase when the same Bash command sets HOME= or sources a file exporting HOME, since the Leorna identity and git hooks would not load | offered
 - 2026-11-09 | site-slider | figma-to-bricks | script: the gate driver's start script runs npm run check in the worktree and refuses to archive HEAD on a non-zero exit | offered
+- 2026-11-09 | site-faq | mutation-testing-discipline | script: the mutation harness (mutate.ts) exits non-zero when the selected mutant list is empty | offered
