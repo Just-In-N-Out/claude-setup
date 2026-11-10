@@ -3,7 +3,7 @@
 # criterion (AC) is really accepted, before a story's finish step.
 #
 #   ac-check.sh --repo <worktree> --base <base commit> --plan <approved plan> \
-#     [--reviews <evidence folder>] <verifier report> <auditor report>
+#     [--reviews <evidence folder>] [--rebase-receipt <log>] <verifier report> <auditor report>
 #
 # --base is the commit the branch started from (git merge-base HEAD <integration
 # branch>). The verifier and the blind AC auditor each write a report in their
@@ -16,6 +16,7 @@
 #      "base_log": "<the same check on the base commit, head's test files copied in>",
 #        or "base_exempt": "<why it rightly passes on base too, in 3+ words>",
 #      "screenshot": "<a PNG/JPEG/GIF/WebP; a terminal capture for a non-visual AC>",
+#      "command": "<optional, not read here: the exact command the log came from>",
 #      "evidence": "<one line>"},
 #     {"ac": "AC2", "accepted": false, "not_run": "live: <why only the user can run it>"}]}
 # Logs come from the run recipe in references/ac-verification.md: first line
@@ -45,6 +46,14 @@
 # After the AC lines a "REVIEWS  CLEAN: …" or "REVIEWS  NOT ACCEPTED: <its last line>" line; a
 # head no clean review covers is NOT ACCEPTED (exit 1); bad review records exit 2. Without
 # --reviews nothing about reviews is checked or printed.
+# --rebase-receipt <log> (after the finisher's rebase; references/ac-verification.md): the reports prove an
+# earlier head RH (the verifier's head). They count for HEAD when HEAD is a pure rebase of RH (the patch-ids
+# of RH's own commits equal those of --base..HEAD, in order, and --base..HEAD has no merge) and the receipt,
+# outside both report folders, ran on HEAD (first line HEAD=<sha>), ends EXIT=0 and skips no test: then a
+# "REBASE  ACCEPTED: …" line, and each AC is judged for RH (logs on RH, base logs on the base RH grew from)
+# with its test also passing, and never failing, in the receipt. Otherwise "REBASE  NOT ACCEPTED: <why>" and
+# the reports are judged against HEAD as without the option; "REBASE  NOT NEEDED" when they are for HEAD.
+# The REBASE line comes after the AC lines. Without the option the output is the same bytes as before it.
 # Exit 0: ALL ACCEPTED, or READY FOR THE USER (all proven except owed live ACs).
 # Exit 1: NOT ACCEPTED (one line per AC says why). Exit 2: bad usage or input.
 # Runs on macOS bash 3.2. Tests: ac-check.test.sh
@@ -52,13 +61,14 @@ set -uo pipefail
 
 usage() { echo "usage: ac-check.sh --repo <worktree> --base <base commit> --plan <approved plan> <verifier report> <auditor report>" >&2; exit 2; }
 die() { echo "error: $*" >&2; exit 2; }
-repo="" base="" plan="" reviews="" withrev=0
+repo="" base="" plan="" reviews="" withrev=0 receipt="" withrec=0
 while (($#)); do
   case $1 in
     --repo) (($# >= 2)) || usage; repo=$2; shift 2 ;;
     --base) (($# >= 2)) || usage; base=$2; shift 2 ;;
     --plan) (($# >= 2)) || usage; plan=$2; shift 2 ;;
     --reviews) (($# >= 2)) || usage; reviews=$2; withrev=1; shift 2 ;;
+    --rebase-receipt) (($# >= 2)) || usage; receipt=$2; withrec=1; shift 2 ;;
     -*) usage ;;
     *) break ;;
   esac
@@ -143,6 +153,51 @@ is_image() { # PNG, JPEG, GIF or WebP by its first bytes
   return 1
 }
 
+# --rebase-receipt: the reports prove an earlier head RH. They count for HEAD only when HEAD is a pure
+# rebase of RH (review-check.sh's rule: the same patches in the same order, no merges) and the receipt
+# is a run on HEAD that ends EXIT=0 with no skipped test; judge then wants each AC's test passing in it.
+# OB is the base RH grew from: the reports' base logs ran there, not on --base.
+pids() { # pids <from> <to>: a patch-id per non-merge commit, oldest first (as in review-check.sh)
+  local c p
+  git -C "$repo" rev-list --reverse --topo-order --no-merges "$1..$2" | while IFS= read -r c; do
+    p=$(git -C "$repo" diff-tree -p --no-commit-id --full-index "$c" \
+        | git -C "$repo" patch-id --verbatim | cut -d' ' -f1) || exit 1
+    echo "${p:-empty:$(git -C "$repo" log -1 --format=%s "$c")}"
+  done
+}
+RH="" OB="" rline=""
+if ((withrec)); then
+  [[ -f $receipt ]] || die "--rebase-receipt: no file at $receipt"
+  rreal=$(realpath "$receipt" 2>/dev/null) || die "--rebase-receipt: can't read $receipt"
+  for i in 0 1; do
+    case $rreal in "${dirs[$i]}"/*) die "--rebase-receipt: the receipt must sit outside the two report folders" ;; esac
+  done
+  h0=$(jq -r '.head' "${files[0]}") c0="" rwhy=""
+  ((${#h0} >= 7)) && c0=$(commit "$h0")
+  if [[ -z $c0 ]]; then rwhy="the verifier's head ${h0:0:7} is not a commit in the worktree"
+  elif [[ $c0 == "$HEADSHA" ]]; then rline="REBASE  NOT NEEDED: the verifier's report is for HEAD ${HEADSHA:0:7}"
+  else
+    mb=$(git -C "$repo" merge-base "$c0" "$HEADSHA" 2>/dev/null) || mb=""
+    pa="" pb=""
+    if [[ -n $mb ]]; then
+      pa=$(pids "$mb" "$c0" 2>/dev/null) && pb=$(pids "$BASESHA" "$HEADSHA" 2>/dev/null) \
+        || die "--rebase-receipt: can't compute the patch-ids that compare HEAD ${HEADSHA:0:7} with the reports' head ${c0:0:7} (git diff-tree | git patch-id --verbatim failed)"
+    fi
+    x=$(ran_on "$receipt") l=$(last_line "$receipt")
+    if [[ -z $pa || $pa != "$pb" || $(git -C "$repo" rev-list --count --merges "$BASESHA..$HEADSHA") != 0 ]]; then
+      rwhy="HEAD ${HEADSHA:0:7} is not a pure rebase of the reports' head ${c0:0:7}"
+    elif [[ $x != "$HEADSHA" ]]; then y=${x:0:7}; rwhy="the receipt ran on ${y:-unknown}, not HEAD ${HEADSHA:0:7}"
+    elif [[ $l != EXIT=0 ]]; then rwhy="the receipt's last line is not EXIT=0"
+    elif grep -qE -- "$skip_any_re" "$receipt"; then rwhy="the receipt shows skipped tests (run only the ACs' tests)"
+    else
+      RH=$c0 OB=$mb
+      rline="REBASE  ACCEPTED: HEAD ${HEADSHA:0:7} is a pure rebase of ${RH:0:7}, and the receipt ran on it"
+    fi
+  fi
+  [[ -z $rwhy ]] || rline="REBASE  NOT ACCEPTED: $rwhy"
+fi
+WANT=${RH:-$HEADSHA} WBASE=${OB:-$BASESHA}   # the head the reports and their logs are for, and its base
+
 # inodes of every receipt each report cites: a hard link across reports is a shared receipt
 receipt_inodes() { # receipt_inodes <report index>
   local f=${files[$1]} dir=${dirs[$1]} p
@@ -168,7 +223,11 @@ judge() {
   fi
 
   h=$(jq -r '.head' "$f")
-  ((${#h} >= 7)) && [[ $HEADSHA == "$h"* ]] || { echo "$who checked ${h:0:7}, the worktree is at ${HEADSHA:0:7}"; bad=1; }
+  if [[ -n $RH ]]; then
+    ((${#h} >= 7)) && [[ $RH == "$h"* ]] || { echo "$who checked ${h:0:7}, not ${RH:0:7}, the head the rebase receipt carries"; bad=1; }
+  else
+    ((${#h} >= 7)) && [[ $HEADSHA == "$h"* ]] || { echo "$who checked ${h:0:7}, the worktree is at ${HEADSHA:0:7}"; bad=1; }
+  fi
   t=$(get test)
   if [[ -z ${t// /} ]]; then echo "$who gives no test name"; bad=1
   elif [[ $t == *[[:cntrl:]]* ]]; then echo "$who gives a test name with control characters"; bad=1; t=""
@@ -182,7 +241,7 @@ judge() {
   elif ! inside "$p" "$dir"; then echo "$who uses a receipt outside its own folder"; bad=1
   else
     x=$(ran_on "$p"); x=${x:0:7}
-    [[ $(ran_on "$p") == "$HEADSHA" ]] || { echo "$who log ran on ${x:-unknown}, not ${HEADSHA:0:7}"; bad=1; }
+    [[ $(ran_on "$p") == "$WANT" ]] || { echo "$who log ran on ${x:-unknown}, not ${WANT:0:7}"; bad=1; }
     l=$(last_line "$p")
     if [[ ! $l =~ $exit_re ]]; then echo "$who log's last line is not EXIT="; bad=1
     elif [[ ${l#EXIT=} != 0 ]]; then echo "$who log exits ${l#EXIT=}"; bad=1; fi
@@ -192,6 +251,10 @@ judge() {
       elif ! grep -qE -- "$(pass_re "$t")" "$p"; then echo "$who log shows no pass line for $t"; bad=1; fi
     fi
   fi
+  if [[ -n $RH && -n ${t// /} ]]; then   # the same test, run again on HEAD after the rebase
+    if grep -qE -- "$(fail_re "$t")" "$receipt"; then echo "$who: the rebase receipt shows $t failing"; bad=1
+    elif ! grep -qE -- "$(pass_re "$t")" "$receipt"; then echo "$who: the rebase receipt shows no pass line for $t"; bad=1; fi
+  fi
 
   p=$(get base_log)
   if [[ -n $p ]]; then
@@ -200,7 +263,7 @@ judge() {
     elif ! inside "$p" "$dir"; then echo "$who uses a receipt outside its own folder"; bad=1
     else
       x=$(ran_on "$p")
-      [[ -n $x && $(commit "$x") == "$BASESHA" ]] || { echo "$who base_log didn't run on the base commit ${BASESHA:0:7}"; bad=1; }
+      [[ -n $x && $(commit "$x") == "$WBASE" ]] || { echo "$who base_log didn't run on the base commit ${WBASE:0:7}"; bad=1; }
       l=$(last_line "$p")
       if [[ ! $l =~ $exit_re ]]; then echo "$who base_log's last line is not EXIT="; bad=1
       elif [[ -n ${t// /} ]] && grep -qE -- "$(pass_re "$t")" "$p"; then echo "$who: the test passes on the old code"; bad=1
@@ -256,6 +319,7 @@ while IFS= read -r ac; do
   fi
 done <<<"$acs"
 
+[[ -z $rline ]] || echo "$rline"
 if ((withrev)); then
   if ((covered)); then echo "REVIEWS  CLEAN: ${rlast#MOVE ON: }"; else echo "REVIEWS  NOT ACCEPTED: $rlast"; fi
 fi

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Acceptance tests for story review-loop (~/.hermes/plans/claude-setup/review-loop.md): the round referee
 # review-check.sh, ac-check.sh --reviews, and the rule text that names them.
-#   bash review-check.test.sh                    every offline test (ac1-ac10, ac12-ac16, p2_only_from_round_3_asks_justin)
+#   bash review-check.test.sh                    every offline test (ac1-ac10, ac12-ac16, p2_only_from_round_3_asks_justin,
+#                                                pure_rebase_receipt_accepts_earlier_reports)
 #   bash review-check.test.sh <test> [<test>…]   just those, numbered TAP: "ok 1 - <test>"
 # ac11 and ac17 (regression runs of the existing suites) and the live ac18 (the Mac) run only when named.
 # Everything under test comes from this file's own checkout (the review-loop worktree, or $HOME once
@@ -20,7 +21,7 @@ unset GIT_CONFIG_GLOBAL GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_AUTHOR_NAME GIT
 OFFLINE="ac1_referee_moves_on_when_clean ac2_referee_reviews_again_on_p0_to_p2
 ac3_referee_counts_p2_without_scenario_as_p3 ac4_referee_asks_when_no_progress
 ac5_referee_asks_on_repeat_without_new_fact ac6_referee_records_justins_answers ac7_referee_checks_head_coverage
-ac8_referee_rejects_bad_records p2_only_from_round_3_asks_justin ac9_ac_check_refuses_unreviewed_head ac10_ac_check_accepts_reviewed_head
+ac8_referee_rejects_bad_records p2_only_from_round_3_asks_justin ac9_ac_check_refuses_unreviewed_head ac10_ac_check_accepts_reviewed_head pure_rebase_receipt_accepts_earlier_reports
 ac12_docs_name_the_review_loop ac13_codex_roles_name_the_review_loop ac14_feature_dispatch_under_limit
 ac15_memory_note_retired ac16_scripts_portable_to_macos"
 
@@ -774,6 +775,107 @@ ac10_ac_check_accepts_reviewed_head() {
   accheck "$M1"
   want 0 "ALL ACCEPTED: 1 of 1 ACs on ${NH:0:7}" "the same reports without --reviews" || return 1
   if printf '%s\n' "$out" | grep -q '^REVIEWS'; then fail "a REVIEWS line without --reviews: $out"; return 1; fi
+  done_ok
+}
+
+pure_rebase_receipt_accepts_earlier_reports() {
+  local M1 M2 NH NB X RC1 G=$(printf '%040d' 0 | tr 0 f)
+  need "$RC" && need "$ACC" || return 1
+  newroot; mkrepo || fail "fixture repo" || return 1
+  # the story (C1, C2 on BASE) is reviewed and proven at C2; then main moves on and the story is rebased onto it
+  ing git -C "$R" checkout -q main && M1=$(cm m.txt m1 m1) && ing git -C "$R" checkout -q story \
+    && ing git -C "$R" rebase -q main >/dev/null 2>&1 && NH=$(head_) || fail "rebase" || return 1
+  RC1="$E/rebase/receipt.log"
+  receipt() { mkdir -p "$E/rebase" && printf '%s\n' "$@" >"$RC1"; }   # receipt <line>…: the finisher's rebase receipt
+  proven() { fresh; rev 1 full "$BASE" "$C2"; acfix "$C2" "$BASE" "$@"; }   # proven <AC>…: a clean review and both reports at the old head C2
+  refused() { # refused <what> <REBASE line's reason> [<text in AC1's line>]: exit 1, every AC not accepted, and the reason named
+    want 1 "NOT ACCEPTED: 2 of 2 ACs on ${NH:0:7}" "$1" && has "REBASE  NOT ACCEPTED: $2" "$1" || return 1
+    printf '%s\n' "$out" | grep -qF -- "AC1  NOT ACCEPTED: ${3:-verifier checked ${C2:0:7}, the worktree is at ${NH:0:7}}" || fail "$1: AC1's line lacks its reason: $out"
+  }
+  good() { receipt "HEAD=$NH" "ok 1 - test_AC1" "ok 2 - test_AC2" "EXIT=0"; }
+  go() { accheck "$M1" --reviews "$E" --rebase-receipt "$RC1"; }
+  proven AC1 AC2; good; go
+  want 0 "ALL ACCEPTED: 2 of 2 ACs on ${NH:0:7}" "a pure rebase with a receipt" || return 1
+  [ "$out" = "$(printf 'AC1  ACCEPTED\nAC2  ACCEPTED\nREBASE  ACCEPTED: HEAD %s is a pure rebase of %s, and the receipt ran on it\nREVIEWS  CLEAN: review-1 at %s is clean, and HEAD %s is a pure rebase of it\nALL ACCEPTED: 2 of 2 ACs on %s' \
+      "${NH:0:7}" "${C2:0:7}" "${C2:0:7}" "${NH:0:7}" "${NH:0:7}")" ] || fail "want the AC lines, the REBASE line, the REVIEWS line, then the last line: $out" || return 1
+  proven AC1 AC2:live; receipt "HEAD=$NH" "ok 1 - test_AC1" "EXIT=0"; go
+  want 0 "READY FOR THE USER: 1 of 2 ACs proven on ${NH:0:7}; live ACs owed to the user: AC2" "a live AC stays owed" || return 1
+  # without the receipt: as before the option existed
+  proven AC1 AC2; accheck "$M1" --reviews "$E"
+  want 1 "NOT ACCEPTED: 2 of 2 ACs on ${NH:0:7}" "no receipt" || return 1
+  has "AC1  NOT ACCEPTED: verifier checked ${C2:0:7}, the worktree is at ${NH:0:7}; verifier log ran on ${C2:0:7}, not ${NH:0:7}; verifier base_log didn't run on the base commit ${M1:0:7}; auditor checked ${C2:0:7}, the worktree is at ${NH:0:7}; auditor log ran on ${C2:0:7}, not ${NH:0:7}; auditor base_log didn't run on the base commit ${M1:0:7}" "no receipt: AC1's line" || return 1
+  if printf '%s\n' "$out" | grep -q '^REBASE'; then fail "a REBASE line without --rebase-receipt: $out"; return 1; fi
+  # the receipt itself: run on HEAD, EXIT=0 last, no skipped test, every AC's test passing and none failing
+  receipt "HEAD=$C2" "ok 1 - test_AC1" "ok 2 - test_AC2" "EXIT=0"; go
+  refused "a receipt from the old head" "the receipt ran on ${C2:0:7}, not HEAD ${NH:0:7}" || return 1
+  receipt "ok 1 - test_AC1" "ok 2 - test_AC2" "EXIT=0"; go
+  refused "a receipt without HEAD=" "the receipt ran on unknown, not HEAD ${NH:0:7}" || return 1
+  receipt "HEAD=$NH" "ok 1 - test_AC1" "ok 2 - test_AC2" "EXIT=1"; go
+  refused "a receipt that exits 1" "the receipt's last line is not EXIT=0" || return 1
+  receipt "HEAD=$NH" "EXIT=0" "ok 1 - test_AC1" "ok 2 - test_AC2"; go
+  refused "EXIT=0 not on the last line" "the receipt's last line is not EXIT=0" || return 1
+  receipt "HEAD=$NH" "ok 1 - test_AC1" "ok 2 - test_AC2" "ok 3 - other # SKIP no server" "EXIT=0"; go
+  refused "a receipt with a skipped test" "the receipt shows skipped tests (run only the ACs' tests)" || return 1
+  receipt "HEAD=$NH" "ok 1 - test_AC1" "EXIT=0"; go
+  want 1 "NOT ACCEPTED: 1 of 2 ACs on ${NH:0:7}" "a receipt without AC2's test" || return 1
+  has "AC1  ACCEPTED" "the AC the receipt shows" || return 1
+  has "AC2  NOT ACCEPTED: verifier: the rebase receipt shows no pass line for test_AC2; auditor: the rebase receipt shows no pass line for test_AC2" "the AC it lacks" || return 1
+  receipt "HEAD=$NH" "ok 1 - test_AC1" "not ok 2 - test_AC2" "ok 3 - test_AC2" "EXIT=0"; go
+  want 1 "NOT ACCEPTED: 1 of 2 ACs on ${NH:0:7}" "a receipt where AC2's test fails once and passes once" || return 1
+  has "AC2  NOT ACCEPTED: verifier: the rebase receipt shows test_AC2 failing; auditor: the rebase receipt shows test_AC2 failing" "the failing test" || return 1
+  # the reports: both for the one earlier head, logs from it, base logs from the base it grew from
+  good; jq --arg h "$C1" '.head = $h' "$E/auditor/ac.json" >"$S/a.json" && mv "$S/a.json" "$E/auditor/ac.json"; go
+  want 1 "NOT ACCEPTED: 2 of 2 ACs on ${NH:0:7}" "the auditor's report for another head" || return 1
+  has "AC1  NOT ACCEPTED: auditor checked ${C1:0:7}, not ${C2:0:7}, the head the rebase receipt carries" "the auditor's head" || return 1
+  proven AC1 AC2; good; jq --arg h "$G" '.head = $h' "$E/verifier/ac.json" >"$S/a.json" && mv "$S/a.json" "$E/verifier/ac.json"; go
+  refused "the verifier's head is no commit" "the verifier's head fffffff is not a commit in the worktree" "verifier checked fffffff, the worktree is at ${NH:0:7}" || return 1
+  proven AC1 AC2; good; printf 'HEAD=%s\nnot ok 1 - test_AC1\nEXIT=1\n' "$M1" >"$E/verifier/AC1-base.log"; go
+  want 1 "NOT ACCEPTED: 1 of 2 ACs on ${NH:0:7}" "a base log from the new base" || return 1
+  has "AC1  NOT ACCEPTED: verifier base_log didn't run on the base commit ${BASE:0:7}" "base logs belong to the old base" || return 1
+  proven AC1 AC2; good; printf 'HEAD=%s\nok 1 - test_AC1\nEXIT=0\n' "$NH" >"$E/verifier/AC1.log"; go
+  want 1 "NOT ACCEPTED: 1 of 2 ACs on ${NH:0:7}" "a head log from the new head under a report for the old one" || return 1
+  has "AC1  NOT ACCEPTED: verifier log ran on ${NH:0:7}, not ${C2:0:7}" "logs belong to the reports' head" || return 1
+  # the reviews still gate: a P2 open at the old head
+  proven AC1 AC2; good; rev 1 full "$BASE" "$C2" "$(finding R1-1 P2)"; go
+  want 1 "NOT ACCEPTED: the head ${NH:0:7} isn't covered by a clean review ($(fix1 1 "$C2" "$M1"))" "an open P2 in the review" || return 1
+  has "REBASE  ACCEPTED: HEAD ${NH:0:7} is a pure rebase of ${C2:0:7}, and the receipt ran on it" "the REBASE line" || return 1
+  # reports already for HEAD: the receipt isn't needed, the usual checks apply
+  fresh; rev 1 full "$BASE" "$C2"; acfix "$NH" "$M1" AC1 AC2; good; go
+  want 0 "ALL ACCEPTED: 2 of 2 ACs on ${NH:0:7}" "reports for HEAD, with a receipt" || return 1
+  has "REBASE  NOT NEEDED: the verifier's report is for HEAD ${NH:0:7}" "the REBASE line" || return 1
+  # bad usage: exit 2
+  proven AC1 AC2; good
+  accheck "$M1" --rebase-receipt "$E/rebase/none.log"; bad2 '^error: --rebase-receipt: no file at ' "a receipt that doesn't exist" || return 1
+  cp "$RC1" "$E/verifier/receipt.log"; accheck "$M1" --rebase-receipt "$E/verifier/receipt.log"
+  bad2 '^error: --rebase-receipt: the receipt must sit outside the two report folders' "a receipt inside the verifier's folder" || return 1
+  out=$(ing bash "$ACC" --repo "$R" --base "$M1" --plan "$E/plan.md" "$E/verifier/ac.json" "$E/auditor/ac.json" --rebase-receipt 2>"$S/err"); rc=$?; err=$(cat "$S/err")
+  [ "$rc" = 2 ] || fail "--rebase-receipt with no value: want exit 2, got $rc: $out $err" || return 1
+  # git can't compute the patch-ids: an error, never "equal"
+  mkdir -p "$S/fakegit" && printf '%s\n' '#!/bin/sh' 'case " $* " in *" patch-id "*) echo "error: unknown option verbatim" >&2; exit 129 ;; esac' 'exec "$REAL_GIT" "$@"' >"$S/fakegit/git" \
+    && chmod +x "$S/fakegit/git" || fail "fake git" || return 1
+  X=$(command -v git); PATH="$S/fakegit:$PATH" REAL_GIT=$X accheck "$M1" --rebase-receipt "$RC1"
+  bad2 "^error: --rebase-receipt: can't compute the patch-ids" "git patch-id fails" || return 1
+  # not a pure rebase: each of these refuses, receipt and all
+  notpure() { # notpure <what>: HEAD has moved; a receipt for it, then the check
+    X=$(head_); receipt "HEAD=$X" "ok 1 - test_AC1" "ok 2 - test_AC2" "EXIT=0"
+    accheck "$(ing git -C "$R" merge-base HEAD main)" --rebase-receipt "$RC1"
+    want 1 "NOT ACCEPTED: 2 of 2 ACs on ${X:0:7}" "$1" && has "REBASE  NOT ACCEPTED: HEAD ${X:0:7} is not a pure rebase of the reports' head ${C2:0:7}" "$1"
+  }
+  cm e.txt extra extra >/dev/null; notpure "a commit added after the rebase" || return 1
+  ing git -C "$R" reset -q --hard "$NH" && printf 'two resolved\n' >>"$R/c.txt" && ing git -C "$R" commit -q -a --amend -m two || fail "amend" || return 1
+  notpure "a patch changed (a resolved conflict)" || return 1
+  ing git -C "$R" reset -q --hard "$NH~1"; notpure "a commit dropped" || return 1
+  ing git -C "$R" checkout -q -B story main && ing git -C "$R" cherry-pick "$C2" "$C1" >/dev/null 2>&1 || fail "swap" || return 1
+  notpure "two commits swapped" || return 1
+  ing git -C "$R" checkout -q -B story "$C2"; X=$(head_); receipt "HEAD=$X" "ok 1 - test_AC1" "ok 2 - test_AC2" "EXIT=0"
+  jq --arg h "$C1" '.head = $h' "$E/verifier/ac.json" >"$S/a.json" && mv "$S/a.json" "$E/verifier/ac.json"
+  accheck "$BASE" --rebase-receipt "$RC1"
+  want 1 "NOT ACCEPTED: 2 of 2 ACs on ${C2:0:7}" "no rebase: a commit after the reports' head" || return 1
+  has "REBASE  NOT ACCEPTED: HEAD ${C2:0:7} is not a pure rebase of the reports' head ${C1:0:7}" "no rebase" || return 1
+  # main merged into the rebased story instead of a second rebase: the same patches, but a merge no review saw
+  proven AC1 AC2; ing git -C "$R" checkout -q -B story "$NH" && ing git -C "$R" checkout -q main && M2=$(cm m.txt m2 m2) \
+    && ing git -C "$R" checkout -q story && ing git -C "$R" merge -q --no-ff -m merge main >/dev/null 2>&1 || fail "merge" || return 1
+  notpure "a merge of main" || return 1
   done_ok
 }
 
