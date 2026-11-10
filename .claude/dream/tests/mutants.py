@@ -78,6 +78,7 @@ T = {
     "basis": "test_a_change_counts_only_in_a_file_its_basis_belongs_to",
     "rmcharge": "test_the_scripts_own_rewrite_of_a_repeat_mistakes_file_is_not_charged_to_its_cap_or_budget",
     "allowance": "test_an_ordered_entry_is_held_to_the_allowance_the_editor_is_given",
+    "fold": "test_a_lesson_folded_into_a_line_keeps_that_line_whole_and_needs_no_replaces",
 }
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
               "g_dated_lines,\n       g_dates_on_additions, g_secrets, g_repeat_mistakes, g_memory_index, g_library]")
@@ -348,6 +349,22 @@ MUTANTS = [
         "            size = len(head.encode()) + sum(len(ln.encode()) + 1 for ln in lines)\n",
         "            size = len((heading_for(kind, (G.orders.get(\"add:\" + kind) or {}).get(\"title\", \"\"), G.tally) or \"\")"
         ".encode()) + sum(len(ln.encode()) + 1 for ln in lines)\n")], ["allowance"]),
+    ("G4a", "a fold may put the old line anywhere in the new one (words in front of it)", [(L + "guards.py",
+        '    if not core or len(n) <= len(core) or not n.startswith(core) or (n[len(core)].isalnum() or n[len(core)] == "_"):\n'
+        '        return None\n    return n[len(core):].strip(" .,;:") or None\n',
+        '    if not core or len(n) <= len(core) or core not in n:\n        return None\n'
+        '    return n.replace(core, " ", 1).strip(" .,;:") or None\n')], ["fold"]),
+    ("G4b", "a fold need not end the old line at a word boundary", [(L + "guards.py",
+        ' or (n[len(core)].isalnum() or n[len(core)] == "_"):\n', ":\n")], ["fold"]),
+    ("G4c", "a fold's added words need not be listed", [(L + "guards.py",
+        "            if rest and any(rest in x for x in adds):\n", "            if rest:\n")], ["fold"]),
+    ("G4d", "a fold's added words may be listed by a change of another place", [(L + "guards.py",
+        '    adds = [norm(a) for c in _valid_changes(G, d) if c.get("basis") == "finding"\n',
+        '    adds = [norm(a) for c in G.by_file.get(d.copy, []) if c.get("basis") == "finding"\n')], ["fold"]),
+    ("G4e", "the dated-line guard ignores folds (R2-4 back)", [(L + "guards.py",
+        "        kept = set(folds(G, d).values())  # a dated line", "        kept = set()  # a dated line")], ["fold"]),
+    ("G4f", "the line accounting ignores folds (R2-4 back)", [(L + "guards.py",
+        "        kept = set(fo.values())\n", "        kept, fo = set(), {}\n")], ["fold"]),
     ("G3e", "a listed entry is held to the bytes of an add order for its kind too (widening the check's reach)", [
         (L + "mistakes.py", '                if kind not in before and o["action"] == "add" and o["kind"] == kind:\n',
          '                if o["action"] == "add" and o["kind"] == kind:\n')], ["allowance"]),

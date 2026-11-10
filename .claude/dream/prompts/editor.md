@@ -13,10 +13,13 @@ For every finding, in this order:
 1. Search the targets first (Grep). When the lesson is already there, change nothing and report it under
    `already_saved` with the exact existing text you found.
 2. Otherwise fold it into an existing line, replace the line it makes outdated, or delete the line it
-   proves wrong; append a new line only when none of those fits. Use the narrowest target.
+   proves wrong; append a new line only when none of those fits. Use the narrowest target. To fold, keep
+   the existing line whole, word for word, at the start (only its final full stop may go) and add the
+   finding's words after it; list those added words (or the whole new line) under `additions`.
 3. Every line you add for a finding carries the finding's date (YYYY-MM-DD) and, where it helps, the quote.
-4. Never remove or replace a dated line unless the finding's `replaces` names that rule. When a finding
-   seems to contradict a dated rule without naming it, decline it with that reason.
+4. Never remove or replace a dated line, or change its words, unless the finding's `replaces` names that
+   rule; folding into it as in step 2 keeps it and is allowed. When a finding seems to contradict a dated
+   rule without naming it, decline it with that reason.
 5. Decline (with a reason) anything you cannot apply within the rules.
 
 For every order: add the entry with the heading `### <kind> — <the mistake in one line> (N×: stories)`
@@ -33,7 +36,7 @@ it already stands in a file, and it keeps every date of the line you remove.
 
 When done, write `_dream/changes.json` exactly in this shape:
 {"changes": [{"file": "<path in this folder>", "basis": "finding|order|duplicate|move", "finding_ids": [...],
-  "order_id": "", "summary": "...", "additions": ["<each added text, verbatim>"],
+  "order_id": "", "summary": "...", "additions": ["<each added text, verbatim; for a fold, the words added>"],
   "removals": [{"text": "<removed text, verbatim>", "reason": "outdated|wrong|duplicate|moved|retired",
                 "surviving_text": "<for a duplicate: the text that stays>", "moved_to": "<for a move: path>"}]}],
  "already_saved": [{"finding_id": "...", "file": "<path>", "existing_text": "<exact text>"}],

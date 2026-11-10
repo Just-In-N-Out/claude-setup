@@ -342,6 +342,36 @@ def removal_ok(G, d, line, cs):
     return False
 
 
+def fold_rest(old_line, new_line):
+    """The words a fold adds (R2-4), or None. A fold keeps the old line whole, word for word, at the start of the
+    new one (only its final full stop or semicolon may go) and goes on after it at a word boundary: nothing of
+    the old line is lost, and nothing is put in front of it that could turn it around."""
+    o, n = norm(old_line), norm(new_line)
+    core = o.rstrip(".;").rstrip()
+    if not core or len(n) <= len(core) or not n.startswith(core) or (n[len(core)].isalnum() or n[len(core)] == "_"):
+        return None
+    return n[len(core):].strip(" .,;:") or None
+
+
+def folds(G, d):
+    """{added line: the removed line it folds}: an added line that starts with a removed line of the same file
+    whole and whose added words are a listed addition of a finding change that may change this file (DREAM.md
+    section 6: fold a lesson into an existing line first; dated entries keep their date and their why)."""
+    adds = [norm(a) for c in _valid_changes(G, d) if c.get("basis") == "finding"
+            for a in (c.get("additions") or []) if isinstance(a, str)]
+    mi = G.moved_in.get(d.copy, set())
+    out = {}
+    for a in d.added:
+        if not a.strip() or a in mi:
+            continue
+        for r in d.removed:
+            rest = fold_rest(r, a) if r.strip() else None
+            if rest and any(rest in x for x in adds):
+                out[a] = r
+                break
+    return out
+
+
 def g_accounting(G):
     out = []
     for d in G.diffs:
@@ -349,8 +379,10 @@ def g_accounting(G):
             continue  # the repeat-mistakes files are checked entry by entry (mistakes.check_copy)
         cs = _valid_changes(G, d)
         mo, mi = G.moved_out.get(d.copy, set()), G.moved_in.get(d.copy, set())
+        fo = folds(G, d)  # a line folded into stays whole in its new line: no removal, and its new line is listed
+        kept = set(fo.values())
         for ln in d.removed:
-            if not ln.strip() or ln in mo:
+            if not ln.strip() or ln in mo or ln in kept:
                 continue
             if not removal_ok(G, d, ln, cs):
                 out.append("%s: a removed line is not accounted for: \"%s\"" % (G.live(d), ln.strip()[:80]))
@@ -360,7 +392,7 @@ def g_accounting(G):
         adds = [norm(a) for c in cs if c.get("basis") == "finding"
                 for a in (c.get("additions") or []) if isinstance(a, str)]
         for ln in d.added:
-            if not ln.strip() or ln in mi:
+            if not ln.strip() or ln in mi or ln in fo:
                 continue
             if not any(norm(ln) in a for a in adds):
                 out.append("%s: an added line is not listed against a finding or order: \"%s\"" % (G.live(d), ln.strip()[:80]))
@@ -421,9 +453,10 @@ def g_dated_lines(G):
             continue
         mo = G.moved_out.get(d.copy, set())
         cs = G.by_file.get(d.copy, [])  # an order replaces no dated line: it adds only to its repeat-mistakes file (R2-1)
+        kept = set(folds(G, d).values())  # a dated line folded into stays whole, date and why included (R2-4)
         for ln in d.removed:
             dates = DATE.findall(ln)
-            if not dates or ln in mo:
+            if not dates or ln in mo or ln in kept:
                 continue
             ok = False
             n = norm(ln)

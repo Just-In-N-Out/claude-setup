@@ -230,12 +230,13 @@ class GuardTests(unittest.TestCase):
             {"text": "- Run the tests first, always.", "reason": "duplicate", "surviving_text": "- Run the tests first."},
             {"text": "- Run the tests first.", "reason": "duplicate", "surviving_text": "- Run the tests first, always."}])]),
             "both copies removed, each naming the other: nothing stays")
-        # a surviving line written in this same run is not text that stays
-        swapped = old.replace("- Run the tests first, always.\n", "- Run the tests first, always, twice.\n")
-        self.assertTrue(acc(swapped, [change(MEM, adds=["- Run the tests first, always, twice."]),
+        # a surviving line written in this same run is not text that stays (a rewrite, not a fold: the old line is
+        # not whole at the start of the new one, R2-4)
+        swapped = old.replace("- Run the tests first, always.\n", "- Always run the tests first, twice.\n")
+        self.assertTrue(acc(swapped, [change(MEM, adds=["- Always run the tests first, twice."]),
                                       change(MEM, ids=[], basis="duplicate", rems=[
                                           {"text": "- Run the tests first, always.", "reason": "duplicate",
-                                           "surviving_text": "- Run the tests first, always, twice."}])]))
+                                           "surviving_text": "- Always run the tests first, twice."}])]))
         # a dated line: the surviving line must say the same and keep every date (AC45)
         dated = "# Notes\n\n- never deploy on a Friday without asking Justin (2026-10-28)\n- unrelated rule kept (2026-10-28)\n" \
                 "- Never deploy on a Friday without asking Justin first (2026-10-28).\n"
@@ -317,6 +318,64 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(guards.g_links(G))
         # every allowed seed is synced: it matches a manifest line and not sync.sh's never-list
         self.assertEqual(seed_problems(), [])
+
+    def test_a_lesson_folded_into_a_line_keeps_that_line_whole_and_needs_no_replaces(self):
+        """R2-4: DREAM.md section 6 and the editor's step 2 say to fold a lesson into an existing line first. A fold
+        keeps the old line whole, word for word, at the start of the new one (only its final full stop may go) and
+        adds the finding's words after it: nothing of the old line is lost, so it is no removal to list and, for a
+        dated line, no dated rule replaced (AC45 stays: changing the dated line's own words still needs a finding
+        that names what it replaces)."""
+        und = "- Run the tests first."
+        dat = "- Run the tests first (2026-10-02)."
+        more = ", and the linter before every commit (2026-11-09)."
+        f1 = fnd("f1")
+        f2 = fnd("f2", folder=fh.OTHER, project="other")
+
+        lint = "- Lint (2026-11-09)."
+
+        def fails(old_line, new_line, adds, rems=(), ids=("f1",)):
+            # when another finding makes the change, f1 also adds a line, so the file is one the run may change
+            # and only the fold itself is judged
+            old = "# Build notes\n\n" + old_line + "\n- Keep the build green.\n"
+            new = "# Build notes\n\n" + new_line + "\n- Keep the build green.\n" + ("" if "f1" in ids else lint + "\n")
+            chs = [change(MEM, ids=ids, adds=adds, rems=rems)] + ([] if "f1" in ids else [change(MEM, adds=[lint])])
+            return guards.run_all(self.G({MEM: (old, new)}, [f1, f2], {"changes": chs, "declined": [
+                {"finding_id": "f2", "reason": "x"}] if "f2" not in ids else []}))
+
+        ok = {
+            "an undated line, the added words listed (probe qF1)": (und, und[:-1] + more, [more[:-1]]),
+            "a dated line, the added words listed": (dat, dat[:-1] + more, [more[:-1]]),
+            "a dated line, the whole new line listed with the old one as a removal (probe qF3)":
+                (dat, dat[:-1] + more, [dat[:-1] + more], [{"text": dat, "reason": "outdated"}]),
+            "a dated line kept with its full stop, a sentence after it": (dat, dat + " Also the linter (2026-11-09).",
+                                                                         ["Also the linter (2026-11-09)."]),
+        }
+        wrong = ["%s: %s" % (k, v) for k, v in ((k, fails(*a)) for k, a in sorted(ok.items())) if v]
+        self.assertEqual(wrong, [])
+        refused = {
+            "the dated line's own words changed": (dat, "- Run the unit tests first (2026-10-02)" + more, [more[:-1]]),
+            "the dated line's date dropped": (dat, "- Run the tests first" + more, [more[:-1]]),
+            "words put in front of the dated line": ("Run the tests first (2026-10-02).",
+                                                     "Do not Run the tests first (2026-10-02).", ["Do not"]),
+            "the added words not listed": (dat, dat[:-1] + more, []),
+            "a finding of another project": (dat, dat[:-1] + more, [more[:-1]], (), ("f2",)),
+            "the added words carry no date of the finding": (dat, dat[:-1] + ", and the linter.", [", and the linter"]),
+            "the old line's last word changed (no word boundary)": ("- Run the test.", "- Run the tests twice (2026-11-09).",
+                                                                    ["- Run the tests twice (2026-11-09)."]),
+        }
+        missed = [k for k, a in sorted(refused.items()) if not fails(*a)]
+        self.assertEqual(missed, [], "each of these must stop the run")
+        # end to end (review-2 probe p03, qF): Justin's correction folded into the note's dated line goes live
+        self.h.cleanup()
+        self.h = h = FakeHome("r24", repo=True)
+        h.write(fh.MEM_LIVE, "# Build notes\n\n" + dat + "\n")
+        h.sync()
+        new_line = dat[:-1] + more
+        fh.standard(h, edits=[{"file": fh.MEM_COPY, "replace": [dat, new_line]}], changes={"changes": [
+            {"file": fh.MEM_COPY, "basis": "finding", "finding_ids": "ALL", "order_id": "", "summary": "folded",
+             "additions": [more[:-1]], "removals": []}], "already_saved": [], "declined": []})
+        self.assertEqual(h.run(), 0, h.local("last-run.json"))
+        self.assertIn(new_line, h.read(fh.MEM_LIVE))
 
     def test_a_change_counts_only_in_a_file_its_basis_belongs_to(self):
         """R2-1 (R1-2 again): for every changes.json basis, a change that adds a line and removes a dated one in a
