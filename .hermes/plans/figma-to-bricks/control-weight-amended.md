@@ -224,10 +224,10 @@ The ⭐ rule, exactly (all conditions must hold, else the paste is as before):
 
 - AC1 (proposed): Given the generic fixture `range-cancels` (a link that is a word in its wrapper's line at 768–991, the fixture's range, and its own painted button at every other width; the rule itself reads no width), when it is captured and pasted (the whole page and the hero alone, Rich Text and Basic Text), then, each paste drawn as Bricks 2.3.9 and 2.4.2 print it under the hostile theme, at 850 (inside the fixture's range) the link is `inline` with the site's look and every listed element's look equals the site's, and at 1200, 600, 390 and 20 px under the capture's narrowest width every listed element's look equals the site's (the painted button as before); and the whole page (Rich Text, drawn as Bricks 2.4.2 prints it) is within 2 px of the site at every width the capture read (at least one inside 768–991: 768, 880 and 991 on the receipts) and 20 px under its narrowest. Test: `test/web/site-range-cancels.test.ts` "inside 768–991 the link is a word in its line, as on the site" (no longer `todo`), with "a narrower range never reverts another rule" still passing. [amended A2]
   Also (supporting, never the cited test): `test/web/site-inline-nested.test.ts`, its two tests, on the fixture sites `test/fixtures/web/sites/inline-nested` (the link holds an icon and a label, the label smaller at 768–991; rule 4) and `test/fixtures/web/sites/inline-overlap` (the same link a block of words on phones, the label and a bold word inside it read by the wrapper on tablets and by the link on phones; rule 5): four pastes each on both Bricks samples under the hostile theme, the listed looks as the site's at 767, 768, 769, 880, 991, 992, 1200, 600 and 390 (inline-overlap: every element's display, font size and weight, padding and colours, at 479 too), the page within 2 px at those widths and every width the capture read. Other ranges (600–899, 479 and below) are the verifier's probes, not this criterion's. [amended A2, A3, A4, A12]
-- AC2 (proposed): Given a hand-made capture whose wrapper reads its link as an inline element on tablets (768–1024) and the link as its own element elsewhere (also with a space drawn before the link), when the section is pasted (Rich and Basic Text), then the wrapper's class writes no `> :nth-child` rule, the link's own class writes `display` inline-block / inline from 1024 down / inline-block from 767 down, writes no Display control, and keeps its background control. Test: `test/unit/site-inline-own.test.ts` "an element its parent reads inline at some widths carries those widths in its own class, and the parent writes no rule for it"
-  Also (supporting, never the cited test): in `test/unit/site-inline-own.test.ts`, fixer 1's tests on the variants `nested` and `deeper` of `test/fixtures/site-inline-own.ts` (rule 4: the link holds an icon and a label, or the label inside a span of the link; no class writes a `> :nth-child` rule, the label's own class says 14 px and 2 px on tablets with no control for either, the link inline on tablets in its own class) and `leak` (the link's own left padding and shadow reach desktops and phones only, never the tablets). [amended A3, A4]
-- AC3 (proposed): Given the same capture with a child before the link hidden on tablets (the reader skips it, so the count can't prove which pasted child is which), or with the wrapper itself hidden on tablets, or with the link standing alone on tablets too (the wrapper's reading there isn't its only one), when pasted, then the wrapper keeps its `> :nth-child(1)` rule and the link's class is as before. Test: `test/unit/site-inline-own.test.ts` "where the paste's children can't be proved the capture's inline elements, or the parent is hidden there, the parent's rule stays as before" [amended A4]
-  Also (supporting, never the cited test): in `test/unit/site-inline-own.test.ts`, fixer 1's tests on the variants `nested-hidden` (the icon inside the link hidden on tablets: the wrapper keeps its `> :nth-child(1) > :nth-child(1)` rule, 0,3,0, as before, and only the link's own reading moves) and `extra` (the capture reads an inline element the paste doesn't hold: both wrapper rules stay, the link's class takes nothing). [amended A3, A4]
+- AC2 (proposed): Given a hand-made capture whose wrapper reads its link as an inline element on tablets (768–1024) and the link as its own element elsewhere (also with a space drawn before the link), when the section is pasted (Rich and Basic Text), then the wrapper's class writes no `> :nth-child` rule, the link's own class writes `display` inline-block / inline from 1024 down / inline-block from 767 down, writes no Display control, and keeps its background control; and where the link holds an icon and a label (rule 4: `nested`; the label inside a span of the link: `deeper`), or the link is also a block of words on phones reading its icon and label as its own inline elements there (rule 5: `overlap`, `overlap-deeper`, and `overlap-words` with a bold word inside the label), each pasted with Rich and Basic Text, no box (the wrapper, the link, the span) writes a `> :nth-child` rule, the label's own class writes its font size and left padding as its desktop look, the wrapper's tablets reading from 1024 down and its phones look (in the overlap variants the link's phones reading) from 767 down, with no font size control, the link's own class writes `display` inline-flex / inline from 1024 down / inline-flex from 767 down (block in the overlap variants), and in `overlap-words` the label's own class colours the bold word with the wrapper's tablets colour from 1024 down and the link's phones colour from 767 down. Test: `test/unit/site-inline-own.test.ts` "an element its parent reads inline at some widths carries those widths in its own class, and the parent writes no rule for it" [amended A10]
+  Also (supporting, never the cited test): in `test/unit/site-inline-own.test.ts`, fixer 1's tests on `nested` and `deeper` (also: no left padding control on the label) and on `leak` (the link's own left padding and shadow reach desktops and phones only, never the tablets) of `test/fixtures/site-inline-own.ts`. [amended A3, A4, A10]
+- AC3 (proposed): Given the same capture with a child before the link hidden on tablets (the reader skips it, so the count can't prove which pasted child is which), or with the wrapper itself hidden on tablets, or with the link standing alone on tablets too (the wrapper's reading there isn't its only one), when pasted, then the wrapper keeps its `> :nth-child(1)` rule and the link's class is as before; and where the link holds an icon and a label and the icon is hidden on tablets (`nested-hidden`: the reader reads the label as the link's first element there, so the paste can't prove which element inside the link is which), pasted with Rich and Basic Text, the wrapper keeps its rule for the element inside the link, `> :nth-child(1) > :nth-child(1)` (0,3,0), with the tablets' font size and left padding bounded to 768–1024, and the label's class is as before (its font size and left padding controls). Test: `test/unit/site-inline-own.test.ts` "where the paste's children can't be proved the capture's inline elements, or the parent is hidden there, the parent's rule stays as before" [amended A4, A11]
+  Also (supporting, never the cited test): in `test/unit/site-inline-own.test.ts`, fixer 1's tests on the variants `nested-hidden` (beyond the cited test: the wrapper writes no rule for the link itself, the link's class writes no `> :nth-child` rule, and the link's own reading moves, inline on tablets in its own class) and `extra` (the capture reads an inline element the paste doesn't hold: both wrapper rules stay, the link's class takes nothing). [amended A3, A4, A11]
 - AC4 (proposed): Given every saved real capture (B-Dry's stand-in `standin-capture-0581852c.json`, `bdryswi-com-home-2026-11-04-code.f2b-capture.json`) and every test fixture site's capture except `range-cancels`, each holding no element of the shape, when the whole page is pasted (code and `--elementor` routes, both picture modes, both text modes), then every paste is byte for byte the base tree's (a `git archive` of `main` `56a9379f`, whose pastes of these captures equal staging-fit-cancels' `ce5b38ac`'s), so every merged job's check that reads those pastes (site-elementor-page-bdry, site-faq, site-slider, site-reviews, staging-fit-renderer's) reads the same paste. Test: `test/unit/site-inline-own-bytes.test.ts` "a capture holding no element its parent reads inline pastes byte for byte as the base tree's" (named only: `F2B_BASE_TREE`, `F2B_INLINE_OWN_CAPTURES`) [amended A1]
 - AC5 (proposed): Given staging-fit-cancels' hand-made captures and its golden of main's pastes (`test/fixtures/site-no-revert-main.json`, on main since Build 2026-11-10.6), when the unit suite runs, then every class without a dropped declaration still prints byte for byte as there (no hand-made capture there holds the shape). Test: `test/unit/site-no-revert.test.ts` "classes without a dropped declaration print byte for byte as on main" (unchanged, golden file unchanged) [amended A1]
 - AC6 (proposed): Given the Figma route, when the source is scanned, then no file under `src/plugin` or `src/core` outside `src/core/site` imports `src/core/site`, so every Figma design converts as before (with `npm run corpus` unchanged at the close). Test: `test/unit/site-inline-own.test.ts` "no Figma stage imports the website importer's converter"
@@ -271,11 +271,13 @@ earlyoom (`journalctl -u earlyoom --since "-30 min" -o short-iso | grep sending`
 
 ### Task 1: the rule (AC1, AC2, AC3, AC6), test first
 
-(Built. The code blocks below are the approved prototype, kept as written. As built on `271e7815`: the fixture's
-`Variant` also has `alone` (Task 3), `nested`, `nested-hidden`, `deeper`, `leak` and `extra` (fix pass 1); the unit
-file has seven tests, the three below unchanged but for `alone` in the second's loop, plus fixer 1's four (the "Also"
-lines under AC2 and AC3); `inline-own.ts` is the recursive `place` of rule 4; and `convert.ts` carries the same four
-lines on main's class loop. Read them with `git show 271e7815:<path>`.) [amended A1, A3, A4]
+(Built. The code blocks below are the approved prototype, kept as written. As built on `8ec7d0ee`: the fixture's
+`Variant` also has `alone` (Task 3), `nested`, `nested-hidden`, `deeper`, `leak` and `extra` (fix pass 1) and
+`overlap`, `overlap-deeper`, `overlap-words` (fix pass 2); the unit file has seven tests, the three below under their
+names, the first also looping over `nested`, `deeper` and the overlap variants and the second over `alone` and
+`nested-hidden` (fix pass 2), plus fixer 1's four (the "Also" lines under AC2 and AC3); `inline-own.ts` is the
+recursive `place` of rules 4 and 5; and `convert.ts` carries the same four lines on main's class loop. Read them with
+`git show 8ec7d0ee:<path>`.) [amended A1, A3, A4, A9, A10, A11]
 
 1. **Tests first.** Write `test/fixtures/site-inline-own.ts` and `test/unit/site-inline-own.test.ts` exactly as below,
    and in `test/web/site-range-cancels.test.ts` remove the `todo` option from the last test (its line becomes
@@ -610,7 +612,9 @@ test("a capture holding no element its parent reads inline pastes byte for byte 
    (AC1, AC2); M6 `at.some(x shown)` removed [amended A8] (AC2's display rows on desktops); M7 `.filter((k) => k.site)` removed (AC2's
    `space` variant). Table in the ledger. As run: M6 was equivalent on the planned fixtures until the `alone` variant
    (AC3) killed it; M3 survives (equivalent while site-native-structure's `lift` isn't on main); fix pass 1 added
-   Mleak, Mcount and N1–N9 (N5 survives, inside the Known limit on empty readings; ledger "Fix pass 1"). [amended A4, A5]
+   Mleak, Mcount and N1–N9 (N5 survives, inside the Known limit on empty readings; ledger "Fix pass 1"); fix pass 2
+   added R1 and R2 (each restored read removed again) and review 2's MA and MB, all killed by the cited tests of the
+   class and no-move criteria (ledger "Fix pass 2"). [amended A4, A5, A14]
 2. HANDOFF: a section "An element its parent reads as a word carries those widths in its own class (control-weight,
    website importer; build set at the merge; no paste check owed)" (no live criterion; were one owed, its id is the
    next free id at the merge) [amended A6] with the plain-words change, the Q answers
@@ -648,34 +652,53 @@ test("a capture holding no element its parent reads inline pastes byte for byte 
   `inline-block`, the page 28 px off at 991, 880, 768; AC2 `not ok 1`) and pass on head; AC4 named against main passes
   (47 captures; the 376 pastes equal on `ce5b38ac` and `56a9379f`); head vs main over 50 captures: 384 equal, 16
   differ, exactly `range-cancels`' and `inline-nested`'s 8 each; AC5 2 of 2, golden untouched.
+- Fix pass 2 (`8ec7d0ee`; `evidence/control-weight/fixer-2/`, ledger "Fix pass 2"): [amended A9] the class
+  criterion's cited test RED on `271e7815` (`not ok 1`, "overlap rich: the label's own class carries the wrapper's
+  tablets font size and its phones one") and GREEN on the fix; unit 3601 tests, 0 fail; AC4 named against main passes
+  (`inline-nested` and `inline-overlap`, captured afresh, refused by its scan like `range-cancels`); AC5 2 of 2.
 
-### Receipts after the amendment [amended A7]
+### Receipts after the amendment [amended A7, A14]
 
-These are byte-identical on `a442672e`, `c1874614` and `271e7815` (`git rev-parse <head>:<path>`):
-`test/web/site-range-cancels.test.ts`, `test/unit/site-inline-own-bytes.test.ts`, `test/unit/site-no-revert.test.ts`,
-`test/fixtures/site-no-revert-main.json`, `test/web/lib`, `test/browser`, `test/fixtures/web/sites/range-cancels`,
+These are byte-identical on `a442672e`, `c1874614`, `271e7815` and `8ec7d0ee` (`git rev-parse <head>:<path>`):
+`test/unit/site-inline-own-bytes.test.ts`, `test/unit/site-no-revert.test.ts`,
+`test/fixtures/site-no-revert-main.json`, `test/browser`, `test/fixtures/web/sites/range-cancels`,
 `test/fixtures/web/capture.ts`, `test/fixtures/web/serve.ts`, `test/fixtures/site-code.ts`,
-`test/fixtures/site-css-text.ts`, `src/web`. `test/unit/site-inline-own.test.ts` and `test/fixtures/site-inline-own.ts`
-changed between `a442672e` and `c1874614` (fixer 1's tests and variants; equal on `c1874614` and `271e7815`), and the
-source under every test moved (fix pass 1, then main's code under stack 12), so every AC is proved again on the
-current head. Receipts that still encode an old expectation:
+`test/fixtures/site-css-text.ts`, `src/web`. `test/web/site-range-cancels.test.ts` and `test/web/lib` (its
+`site-page-check.ts`) are equal on the first three and changed on `8ec7d0ee` in header comments only (fix pass 2's
+`20376b52`). `test/unit/site-inline-own.test.ts` and `test/fixtures/site-inline-own.ts` changed between `a442672e` and
+`c1874614` (fixer 1's tests and variants; equal on `c1874614` and `271e7815`) and again on `8ec7d0ee` (the cited
+tests' new loops, the overlap variants), and the source under every test moved (fix pass 1, main's code under stack
+12, fix pass 2), so every AC is proved again on the current head. Receipts that still encode an old expectation:
 - The byte criterion's receipts made against `ce5b38ac` (`builder/logs/ac4-bytes.log`, `builder/logs/final/ac4-bytes.log`,
   `fixer-1/ac4-bytes.log`): their base tree is staging-fit-cancels' head, not main. Sort by the receipt's first line,
   `F2B_BASE_TREE=… (ce5b38ac…)` against `(56a9379f…)` (`stack-12/logs/ac4-bytes.log` is the first on main); the test
   file is constant, so a grep on it can't sort them.
 - The no-move criterion's receipts without `alone`: `git show <head>:test/unit/site-inline-own.test.ts | grep -c
   '"wrapper-hidden", "alone"'` gives 0 on `631e748c` and `1ffc421b` (Tasks 1 and 2, and the planner's prototype) and 1
-  on `37250f54`, `a442672e`, `c1874614` and `271e7815`.
+  on `37250f54`, `a442672e`, `c1874614`, `271e7815` and `8ec7d0ee`. [amended A14]
 - Receipts made before the nested rule (rule 4): `git show <head>:src/core/site/inline-own.ts | grep -c 'const place = '`
-  gives 0 on `a442672e` (review 1's head: the label 18 px / 12 px at 768–991 there) and 1 on `c1874614` and `271e7815`;
-  the supporting tests sort the same way (`grep -c 'at every depth", () =>'` on the unit file: 0, 1, 1;
-  `test/web/site-inline-nested.test.ts` absent on `a442672e`). On main itself the nested fixture fails by the link
+  gives 0 on `a442672e` (review 1's head: the label 18 px / 12 px at 768–991 there) and 1 on `c1874614`, `271e7815`
+  and `8ec7d0ee`; the supporting tests sort the same way (`grep -c 'at every depth", () =>'` on the unit file: 0, 1, 1,
+  1; `test/web/site-inline-nested.test.ts` absent on `a442672e`). On main itself the nested fixture fails by the link
   (`inline-flex` where the site's is `inline`), not the label: review 1's label RED belonged to review 1's head only.
+  This grep is constant from `c1874614` on, so it can't sort fix pass 2: use the next two. [amended A14]
+- Receipts made before rule 5 (an element moved twice keeps both readings): `git show <head>:src/core/site/inline-own.ts
+  | grep -c 'take(out.decls.get(x.path) ?? x.node.decls'` and `| grep -c 'take(words\[rest\]'` give 0 on `a442672e`,
+  `c1874614` and `271e7815` and 1 on `8ec7d0ee` (`271e7815` drops the wrapper's tablets reading of the label: review
+  2's R2-1). [amended A14]
+- The class and no-move criteria's receipts from before their cited tests asserted the nested rule (every receipt of
+  those two tests before `8ec7d0ee` ran the weaker test under the same name): `git show
+  <head>:test/unit/site-inline-own.test.ts | grep -c '"nested", "deeper", "overlap", "overlap-deeper", "overlap-words"'`
+  gives 0, 0, 0, 1 and `| grep -c 'inlineAtSome("nested-hidden")'` gives 0, 1, 1, 2 on `a442672e`, `c1874614`,
+  `271e7815`, `8ec7d0ee`. [amended A14]
+- The fixture criterion's receipts: its cited file differs on `8ec7d0ee` only in its header comment, and the
+  `range-cancels` fixture is unchanged, so a receipt is sorted by its `HEAD=` line (the source under it moved), not by
+  a grep on the test. [amended A14]
 
 ## Risks and follow-ups
 
-Known limits as review 1, fix pass 1 and stack 12 left them (HANDOFF control-weight "Known limits";
-`evidence/control-weight/follow-ups.md`). [amended A5]
+Known limits as review 1, fix pass 1, stack 12, review 2 and fix pass 2 left them (HANDOFF control-weight "Known
+limits"; `evidence/control-weight/follow-ups.md`). [amended A5, A13]
 
 - Other ranges: the rule reads no width, but the cited tests read only the fixtures' ranges (768–991, 768–1024).
   staging-fit-cancels' blind auditor saw the limit at 600–899 and at 479 and below; those pages are the verifier's
@@ -697,6 +720,14 @@ Known limits as review 1, fix pass 1 and stack 12 left them (HANDOFF control-wei
 - Nested keys that can't be proved (rule 4 fails under the child: an element inside it hidden where it is read) stay
   in the top parent's 0,3,0 rule, addressed by `:nth-child`, so they can land on the wrong element, as before.
   [amended A3]
+- R2-2, a hidden element inside an inline parent (the same on main): a link holding two labels, the first hidden
+  (`display: none`) on small tablets where the link is a word of its line, pastes the hidden label visible at
+  768–991, and the unproved 0,3,0 rule lands on it, so the shown label keeps its desktop size and colour (probe
+  `cw2-shapes` `#l2a`/`#l2b`). The capture's `shown` can't tell "read inline" from "hidden" for an element inside an
+  inline parent. A follow-up beside the one above. [amended A13]
+- Overlapping ranges in rule 5 can't come from a real capture: where the wrapper reads the link, the link isn't shown,
+  so the link's own move skips those widths and the two moves of one element never write the same range. No case or
+  test covers two moves meeting at one range. [amended A13]
 - A capture of a parent that reads an inline element with **no declarations at all** at a range counts as not reading
   it there; rule 2 then fails and the paste stays as before (safe, never a wrong move).
 - The reverse shape (a box read as words at its widest range whose child stands alone at narrower ones, 1 in the
