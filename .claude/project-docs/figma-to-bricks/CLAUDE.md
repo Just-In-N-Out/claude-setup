@@ -7,8 +7,16 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-10)
 
-- **Current build `2026-11-10.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-10.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-10.2 site-reviews (website importer):** a captured page's third-party widget whose loader draws it (a
+    reviews carousel) pastes as one live Code element at its own place, holding only the slot's own served markup or
+    the loader's own tag (never the page's other scripts), so its arrows and swipes work in Bricks once code signatures
+    are regenerated; a tag alone counts only where the capture proves it draws the widget by itself, else the still
+    copy stays, named; `site:check` stands in for a live widget; the capture hears the page as the server sent it;
+    pastes without such a widget and Figma designs are byte for byte as before. The panel's website route still pastes
+    the whole collected snippet (its own job). Paste check **3dq** (AC9, live: B-Dry's reviews on staging /homev2/
+    after a re-capture).
   - **2026-11-10.1 site-faq (website importer):** with `--elementor`, a pasted Elementor or ElementsKit FAQ opens at
     load the answers the site opens at the design width (none, one or several; a narrower width that shows other
     answers no longer stops it), and its open look (colour, arrow) follows whichever item Bricks has open, at every
