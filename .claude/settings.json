@@ -26,6 +26,16 @@
             "async": true
           }
         ]
+      },
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/dream-notice.sh",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -46,6 +56,16 @@
             "command": "~/.claude/hooks/cortexos-memory.sh save",
             "timeout": 30,
             "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "^(Write|Edit|NotebookEdit)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/dream-ledger.sh",
+            "timeout": 5
           }
         ]
       }
