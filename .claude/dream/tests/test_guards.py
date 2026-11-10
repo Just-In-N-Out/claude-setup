@@ -1222,6 +1222,49 @@ class PointerTests(unittest.TestCase):
         texts = [" ".join((fh.DREAM_SRC / f).read_text().split()) for f in ("DREAM.md", "prompts/editor.md")]
         self.assertEqual([t.count(rule) for t in texts], [1, 1])
 
+    SAFE_FOLD = ("The safe way, which the fold rule always accepts, is a comma or a full stop and a space before the added "
+                 "words: after a plain space the script also refuses a line that ends in any digit (a name such as `WSL2` "
+                 "or `AC27`, an id) and added words that begin with anything but a letter, a digit, an opening bracket, a "
+                 "double quote, a backtick or a long dash.")
+    NEW_NOTE = ("A new memory note you write for a finding goes straight in its memory folder, never in a subfolder, with a "
+                "plain name like a pointer's file below (lower-case, at most 6 words and 50 characters before .md), and the "
+                "folder's MEMORY.md names it; any other new note stops the run.")
+
+    def test_the_editors_prompt_gives_a_fold_the_script_always_accepts(self):
+        """R5-3: after a plain space the fold rule also wants a letter, a digit or an opening bracket, double quote,
+        backtick or long dash, and takes nothing after a line whose last character is a digit (`WSL2`, `AC27`, an id).
+        The prompt gives the way that is always accepted, a comma or a full stop and a space; every hard case is
+        accepted that way and refused after a plain space, so an editor that follows its prompt is never refused."""
+        prompt = " ".join((fh.DREAM_SRC / "prompts/editor.md").read_text().split())
+        self.assertIn(self.SAFE_FOLD, prompt)
+        self.assertLess(prompt.index(self.SAFE_FOLD), prompt.index("For every order"))
+        olds = ["- Run the WSL2 checks before the desktop build (2026-11-09).", "- AC27 is proven by its own test AC27",
+                "- Publish through FigmaToBricksV2", "- the card is 86bq4c2wy (2026-11-02);", "- Lint before a commit."]
+        adds = ["- also on macOS (2026-11-10)", "*Why: the build broke twice* (2026-11-10)", "**Also:** the Mac (2026-11-10)",
+                "→ the same on the Mac (2026-11-10)", "'quoted' wording kept (2026-11-10)", "~/bin/check first (2026-11-10)",
+                "/review it after (2026-11-10)", "and on the Mac too (2026-11-10)", "not on Fridays (2026-11-10)"]
+        wrong = []
+        for o in olds:
+            core = o.rstrip(".;")
+            for a in adds:
+                for sep in (", ", ". "):
+                    if guards.fold_rest(o, core + sep + a) is None:
+                        wrong.append("refused: %r" % (core + sep + a))
+                if guards.fold_rest(o, core + " " + a) is not None and (core[-1].isdigit() or a[0] in "-*→'~/n"):
+                    wrong.append("the plain space took it, so the sentence would not be needed: %r" % (core + " " + a))
+        self.assertEqual(wrong, [], "\n".join(wrong))
+
+    def test_the_editors_prompt_gives_the_name_rule_where_it_writes_a_new_memory_note(self):
+        """R5-4: the plain-name rule holds every new memory note the editor writes for a finding, with no move and
+        no pointer. The prompt says so where it tells how to apply a finding (name, length, no subfolder, named in
+        MEMORY.md), and what it says is the script's rule."""
+        prompt = " ".join((fh.DREAM_SRC / "prompts/editor.md").read_text().split())
+        self.assertIn(self.NEW_NOTE, prompt)
+        self.assertLess(prompt.index(self.NEW_NOTE), prompt.index("For every order"), "said with the steps for a finding")
+        names = {"build-and-test-notes-for-desktop.md": True, "build-and-test-notes-for-the-desktop.md": False,
+                 "a" * 50 + ".md": True, "a" * 51 + ".md": False, "notes/build-notes.md": False, "Build-notes.md": False}
+        self.assertEqual({n: guards.plain_name(n) for n in names}, names)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -19,6 +19,13 @@ For every finding, in this order:
    plain space when the line does not end in a number and the first added word is not "not", "no", "never",
    "nor" or "neither", so the line's last word or number stays as it was; list those added words (or the
    whole new line) under `additions`.
+   The safe way, which the fold rule always accepts, is a comma or a full stop and a space before the added
+   words: after a plain space the script also refuses a line that ends in any digit (a name such as `WSL2` or
+   `AC27`, an id) and added words that begin with anything but a letter, a digit, an opening bracket, a double
+   quote, a backtick or a long dash.
+   A new memory note you write for a finding goes straight in its memory folder, never in a subfolder, with a
+   plain name like a pointer's file below (lower-case, at most 6 words and 50 characters before .md), and the
+   folder's MEMORY.md names it; any other new note stops the run.
 3. Every line you add for a finding carries the finding's date (YYYY-MM-DD) and, where it helps, the quote.
 4. Never remove or replace a dated line, or change its words, unless the finding's `replaces` names that
    rule; folding into it as in step 2 keeps it and is allowed. When a finding seems to contradict a dated

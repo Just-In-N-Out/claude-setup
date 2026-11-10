@@ -92,12 +92,14 @@ T = {
     "foldtoken": "test_a_fold_keeps_the_old_lines_last_word_or_number_whole",
     "plainname": "test_a_pointer_names_only_a_plainly_named_file",
     "retireb": "test_a_kind_already_due_to_retire_is_not_listed_until_it_comes_back",
-    # fixer 5: R5-1 (stories counted by date)
+    # fixer 5: R5-1 (stories counted by date), R5-3 and R5-4 (the editor's prompt)
     "r51first": "test_the_first_run_counts_stories_by_their_dates_not_their_folder_names",
     "r51late": "test_a_story_counted_in_a_later_run_takes_its_place_by_its_date",
     "r51round": "test_a_mistake_seen_again_in_a_later_round_of_an_older_story_is_not_stale",
     "r51mig": "test_a_tally_written_before_stories_had_dates_is_put_in_their_order_by_date",
     "r51tie": "test_of_two_equally_frequent_mistakes_with_room_for_one_the_more_recent_is_listed",
+    "safefold": "test_the_editors_prompt_gives_a_fold_the_script_always_accepts",
+    "newnote": "test_the_editors_prompt_gives_the_name_rule_where_it_writes_a_new_memory_note",
 }
 P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
@@ -611,7 +613,7 @@ MUTANTS = [
         "``See `<path>` (moved there word for word).``;", "``See `<path>` (moved word for word).``;")], ["checkerprompt"]),
     ("C4", "the checker is not told a duplicate removed needs no finding", [(P + "checker.md",
         " a line removed as a duplicate of a whole line that stays;\n", "\n")], ["checkerprompt"]),
-    # fixer 5: R5-1, stories counted by date
+    # fixer 5: R5-1, stories counted by date; R5-3 and R5-4, the editor's prompt
     ('R5a', 'a new story goes at the end, not at its date (R5-1 back)', [('.claude/dream/lib/dreamlib/mistakes.py', '    return next((i for i, x in enumerate(keys) if times.get(x, float("-inf")) > t), len(keys))\n', '    return len(keys)\n')], ['r51first', 'r51late']),
     ('R5b', "a story placed before a listing's boundary does not move it", [('.claude/dream/lib/dreamlib/mistakes.py', '                k["listed_since"]["seq"] += 1\n', '                pass\n')], ['r51late']),
     ('R5c', "a story placed right at a listing's boundary moves it too", [('.claude/dream/lib/dreamlib/mistakes.py', '            if (k.get("listed_since") or {}).get("seq", 0) > i:\n', '            if (k.get("listed_since") or {}).get("seq", 0) >= i:\n')], ['r51late']),
@@ -630,6 +632,8 @@ MUTANTS = [
     ('R5p', 'equally frequent kinds go by name again', [('.claude/dream/lib/dreamlib/mistakes.py', 'key=lambda o: (-o["count"], -recency(o), o["kind"]))\n', 'key=lambda o: (-o["count"], o["kind"]))\n')], ['r51tie']),
     ('R5q', 'equally frequent kinds go oldest first', [('.claude/dream/lib/dreamlib/mistakes.py', 'key=lambda o: (-o["count"], -recency(o), o["kind"]))\n', 'key=lambda o: (-o["count"], recency(o), o["kind"]))\n')], ['r51tie']),
     ('R5r', 'a tally with nothing counted yet is migrated too, so a run with nothing new changes it', [('.claude/dream/lib/dreamlib/mistakes.py', '    if "story_time" in tally or not tally.get("story_seq"):\n', '    if "story_time" in tally:\n')], ['ac21']),
+    ('P5a', 'the editor is not told the fold that is always accepted (R5-3 back)', [('.claude/dream/prompts/editor.md', '   The safe way, which the fold rule always accepts, is a comma or a full stop and a space before the added\n', '   \n')], ['safefold']),
+    ('P5b', 'the editor is not told the name rule where it writes a new memory note (R5-4 back)', [('.claude/dream/prompts/editor.md', '   A new memory note you write for a finding goes straight in its memory folder, never in a subfolder, with a\n', '   \n')], ['newnote']),
 ]
 
 
