@@ -340,7 +340,8 @@ def apply(R, P):
 def _last_run(R, P):
     return {"run": R.id, "time": R.now.isoformat(timespec="minutes"), "mode": "live",
             "result": "changed" if P.target_files() else "nothing-changed", "reason": "",
-            "files": len(P.target_files()), "findings": len(P.settled), "push_pending": False}
+            "files": len(P.target_files()), "findings": len(P.settled), "push_pending": False,
+            "unreadable": R.facts["unreadable"]}
 
 
 def restore(J, which):

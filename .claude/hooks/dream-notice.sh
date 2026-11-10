@@ -11,10 +11,11 @@ F="$LOCAL/last-run.json"
 command -v jq >/dev/null 2>&1 || exit 0
 fields=$(jq -r 'if type == "object" then [(.run // "" | tostring), (.time // "" | tostring), (.result // "" | tostring),
   (.commit // "" | tostring), (.files // 0 | tostring), (.findings // 0 | tostring), (.list_open // 0 | tostring),
-  (.push_pending // false | tostring), (.reason // "" | tostring | gsub("[\u001f\n]"; " ")), (.diff // "" | tostring)]
+  (.push_pending // false | tostring), (.reason // "" | tostring | gsub("[\u001f\n]"; " ")), (.diff // "" | tostring),
+  (.unreadable // [] | if type == "array" then length else 0 end | tostring)]
   | join("\u001f") else empty end' "$F" 2>/dev/null) || exit 0
 [ -n "$fields" ] || exit 0
-IFS=$'\x1f' read -r run time result commit files findings list push reason diff <<<"$fields"
+IFS=$'\x1f' read -r run time result commit files findings list push reason diff unreadable <<<"$fields"
 [ -n "$run" ] || exit 0
 when="${time:0:10} ${time:11:5}"
 plural() { if [ "$1" = 1 ]; then printf '%s %s' "$1" "$2"; else printf '%s %ss' "$1" "$2"; fi; }
@@ -30,6 +31,12 @@ case "$result" in
   *) exit 0 ;;
 esac
 [ "$push" = true ] && m="$m The push is pending: the next sync.sh pushes it."
+# sessions of an unknown transcript shape were not read (the reason already says so when they stopped the run)
+case "$unreadable:$reason" in
+  0:* | *"unknown transcript shape"*) ;;
+  1:*) m="$m 1 session could not be read (unknown transcript shape); see the log and desktop.md." ;;
+  *) m="$m $unreadable sessions could not be read (unknown transcript shape); see the log and desktop.md." ;;
+esac
 case "$result" in
   failed | stopped) ;;
   *)

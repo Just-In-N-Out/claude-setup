@@ -57,6 +57,14 @@ class SessionRead:
         self.headless = False        # every line with an entrypoint is sdk-cli
         self.rewritten = False       # the marker no longer matched: read again from the top
         self.line_meta = {}          # line index -> (uuid, sha256 of the line), for markers
+        self.freeze_lines = []       # 1-based numbers of NUL-only lines after the marker, skipped
+
+
+def freeze_artefact(line):
+    """A line of NUL bytes only: what a freeze leaves where a write was cut off (the two real cases are each
+    followed by a last-prompt line). It holds nothing to read, so it is skipped and noted, not an unknown
+    shape; a line broken in any other way still is one (ruling R1-1)."""
+    return "\x00" in line and not line.strip("\x00 \t\r")
 
 
 def _blocks(content):
@@ -169,6 +177,12 @@ def read_session(path, start_line=0, seen=(), expect=None):
     for idx in range(len(lines)):
         ln = lines[idx]
         if not ln.strip():
+            continue
+        if freeze_artefact(ln):
+            if idx >= start_line - 1:
+                r.line_meta[idx] = (None, hashlib.sha256(ln.encode()).hexdigest())
+            if idx >= start_line:
+                r.freeze_lines.append(idx + 1)
             continue
         try:
             obj = json.loads(ln)

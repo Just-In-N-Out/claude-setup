@@ -1,5 +1,6 @@
 """Transcript extractor: AC1, AC2, AC3, AC42, AC43 (plan Task 2)."""
 import json
+import subprocess
 import unittest
 
 import fakehome as fh
@@ -192,6 +193,88 @@ class ExtractTests(unittest.TestCase):
         self.assertTrue(ok("never ask for a card here"))
         self.assertFalse(ok("Mini pipeline, one review"), "an option he did not choose")
         self.assertFalse(ok("Which pipeline should this story use?"), "the question is not his text")
+
+
+def freeze_session(h, sid, key=fh.PROJ):
+    """A session as a freeze leaves it: a line of NUL bytes where a write was cut off, then a last-prompt line,
+    then more typed text (the shape of the two real cases, review-1 probe p02)."""
+    f = h.session(key, sid, [typed("u0", "hello there, please start the build")])
+    with open(f, "a") as fp:
+        fp.write("\x00" * 300 + "\n")
+        fp.write(json.dumps({"type": "last-prompt", "lastPrompt": "x", "leafUuid": "u0", "sessionId": "s"}) + "\n")
+        fp.write(json.dumps(typed("u1", "No, " + fh.LINT_Q + ", please.", minute=5)) + "\n")
+    h.age(f, 120)
+    return f
+
+
+class UnreadableTests(unittest.TestCase):
+    """Ruling R1-1 (b): a line a freeze left is skipped and noted; a session of an unknown shape still stops
+    loudly, but it does not stop the run from handling review lines and waiting findings, and it shows in
+    the session-start line."""
+
+    def tearDown(self):
+        self.h.cleanup()
+
+    def test_a_nul_line_left_by_a_freeze_is_skipped_and_noted(self):
+        self.h = h = FakeHome("freeze", repo=True)
+        f = freeze_session(h, "sF")
+        r = extract.read_session(f)
+        self.assertEqual([e["uuid"] for e in r.entries], ["u0", "u1"])
+        self.assertEqual(r.freeze_lines, [2])
+        # a line that is broken in any other way is still an unknown shape (AC3)
+        bad = h.session(fh.PROJ, "bad-json", [typed("g1", "a normal typed message")],
+                        raw_tail='{"type": "user", "uuid"\n' + json.dumps(typed("g2", "after it")) + "\n")
+        with self.assertRaises(extract.UnknownShape):
+            extract.read_session(bad)
+        bad.unlink()
+        # in a run: the session is read, its correction goes live, the log notes the skipped line
+        h.scenario({"session-helper": {"sF": {"findings": [fh.finding("u1", fh.LINT_Q)]}},
+                    "editor": {"edits": [{"file": fh.MEM_COPY, "append": fh.LINT_LINE + "\n"}],
+                               "changes": {"changes": [{"file": fh.MEM_COPY, "basis": "finding", "finding_ids": "ALL",
+                                                        "summary": "lint", "additions": [fh.LINT_LINE], "removals": []}]}}})
+        self.assertEqual(h.run(), 0)
+        self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+        log = h.read(".claude/dream/dream-log.md")
+        self.assertIn("line 2", log.split("Skipped lines:")[1].split("\n")[0], "the log notes the skipped line")
+        self.assertNotIn("Format errors", log)
+
+    def test_an_unreadable_session_does_not_stop_review_lines_or_waiting_findings(self):
+        self.h = h = FakeHome("unread", repo=True)
+        bad = [typed("g1", "a normal typed message here"), dict(typed("x1", "hello there, plain text"), promptSource=None)]
+        h.session(fh.PROJ, "bad", bad)
+        h.write(".hermes/plans/proj/evidence/st/review-1/review.json", json.dumps(
+            {"findings": [{"id": "F1", "severity": "P2", "claim": "a guard was skipped", "file_line": "a:1"}]}))
+        h.scenario({"review-helper": {"assign": "none"}})
+        self.assertEqual(h.run(), 0, "the review line is handled though the only session is unreadable")
+        self.assertEqual([c["role"] for c in h.calls_by_role()], ["review-helper"])
+        self.assertEqual(len(json.loads(h.read(".claude/dream/state/tally.json"))["seen"]), 1)
+        self.assertIn("bad, line 2", h.read(".claude/dream/dream-log.md"))
+        self.assertEqual(h.local("last-run.json")["unreadable"], ["bad"], "for the session-start line")
+        # findings that wait from a stopped run are tried again, though the only new lines are unreadable
+        fh.standard(h, sid="good", checker={"verdict": "no", "lost_facts": [], "untraced": [], "notes": "no"})
+        self.assertEqual(h.run(), 3)
+        sc = json.loads(h.scenario_path.read_text())
+        sc["checker"] = {"verdict": "yes", "lost_facts": [], "untraced": [], "notes": ""}
+        h.scenario(sc)
+        h.session(fh.PROJ, "bad2", bad)
+        self.assertEqual(h.run(), 0)
+        self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+        self.assertEqual(sorted(h.local("last-run.json")["unreadable"]), ["bad", "bad2"])
+        # nothing but unreadable sessions, nothing waiting: still the loud stop (AC3)
+        h.session(fh.PROJ, "bad3", bad)
+        self.assertEqual(h.run(), 4)
+
+    def test_unreadable_sessions_show_in_the_session_start_line(self):
+        self.h = h = FakeHome("unread-line", repo=True)
+        h.session(fh.PROJ, "bad", [typed("g1", "a normal typed message here"),
+                                    dict(typed("x1", "hello there, plain text"), promptSource=None)])
+        fh.standard(h, sid="good")
+        self.assertEqual(h.run(), 0)
+        out = subprocess.run(["bash", str(fh.REPO / ".claude/hooks/dream-notice.sh")], env=h.env, input="{}",
+                             capture_output=True, text=True).stdout
+        msg = json.loads(out)["systemMessage"]
+        self.assertIn("changed 1 file", msg)
+        self.assertIn("1 session could not be read", msg)
 
 
 if __name__ == "__main__":

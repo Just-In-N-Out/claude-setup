@@ -125,6 +125,8 @@ def entry(R, unsettled, P, changes, list_items, lg, cursors):
     out.append("- Unattributed changes: %s\n" % ("; ".join("`%s` (%s)" % (u["path"], u["git"]) for u in un) if un else "none"))
     if R.facts.get("format_errors"):
         out.append("- Format errors (sessions not read): %s\n" % "; ".join(R.facts["format_errors"]))
+    if R.facts.get("skipped_lines"):
+        out.append("- Skipped lines: %s\n" % "; ".join(R.facts["skipped_lines"]))
     corr = []
     for p, n in sorted((lg.get("typed") or {}).items()):
         c = (lg.get("corrections") or {}).get(p, 0)

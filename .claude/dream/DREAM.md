@@ -115,7 +115,7 @@ One entry per run that read something in `dream-log.md`: when, which sessions an
 
 ## 13. When a run stops without changing anything
 
-A pull conflict, GitHub unreachable, a failed login, a CLI flag is missing, every new session of an unknown transcript shape, a "no" from the checking agent, the editor tried to leave its folder, any failed check in step 7, or a live file that changed since the copy. The reason goes in the log and in the session-start line, and the next run starts from the same markers.
+A pull conflict, GitHub unreachable, a failed login, a CLI flag is missing, every new session of an unknown transcript shape when nothing else waits (a line of NUL bytes a freeze left is skipped and noted, not an unknown shape; a session that cannot be read is named in the session-start line), a "no" from the checking agent, the editor tried to leave its folder, any failed check in step 7, or a live file that changed since the copy. The reason goes in the log and in the session-start line, and the next run starts from the same markers.
 
 ## 14. Undoing a dream
 

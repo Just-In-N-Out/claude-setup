@@ -32,7 +32,7 @@ class Ctx:
         self.calls = []
         self.facts = {"sessions": [], "dropped": [], "list": [], "unattributed": [], "format_errors": [],
                       "typed": {}, "corrections": {}, "already_saved": 0, "masked": 0, "review_lines": 0,
-                      "pending_expired": [], "notes": []}
+                      "pending_expired": [], "notes": [], "unreadable": [], "skipped_lines": []}
 
     def lock_wait(self):
         return float(self.env.environ.get("DREAM_LOCK_WAIT", "15"))
@@ -45,7 +45,8 @@ def write_last_run(env, d):
 def fail(R, reason, rc=4):
     write_last_run(R.env, {"run": R.id, "time": R.now.isoformat(timespec="minutes"), "mode": R.mode,
                            "result": "failed", "reason": reason, "commit": None, "files": 0, "findings": 0,
-                           "list_open": log.list_open(R.env), "push_pending": False})
+                           "list_open": log.list_open(R.env), "push_pending": False,
+                           "unreadable": R.facts["unreadable"]})
     print("dream: %s" % reason, file=sys.stderr)
     return rc
 
@@ -119,9 +120,12 @@ def _run(env, mode, hooks):
     eff.update(unsettled.get("markers_after") or {})
     sc = state.scan(env, eff, R.now)
     R.facts["format_errors"] = [str(e) for e in sc.errors]
+    R.facts["unreadable"] = [e.session for e in sc.errors]
     tally = unsettled.get("tally") or state.load_state(env, "tally", state.default_tally())
     lines = extract.review_lines(env, tally.get("seen", []))
-    if sc.errors and not sc.reads:
+    # an unreadable session stops only a run that has nothing else to do (ruling R1-1): new review lines
+    # and findings waiting from an earlier run go on, and the session shows in the session-start line
+    if sc.errors and not sc.reads and not lines and not state.has_work(unsettled):
         return fail(R, "every session with new lines has an unknown transcript shape: " + "; ".join(
             R.facts["format_errors"][:3]))
     if not sc.reads and not lines and not state.has_work(unsettled):
@@ -133,6 +137,8 @@ def _run(env, mode, hooks):
     applied = set(state.load_state(env, "applied", {"ids": []}).get("ids", []))
     jobs = []
     for r in sc.reads[:MAX_HELPERS]:
+        R.facts["skipped_lines"] += ["session %s, line %d (NUL bytes a freeze left)" % (r.session, n)
+                                     for n in r.freeze_lines]
         R.facts["masked"] += extract.scrub_entries(r.entries, env)
         digest, used = extract.render_digest(r.session, r.project, r.entries)
         jobs.append((r, digest, used))
@@ -245,7 +251,7 @@ def stop(R, unsettled, reason):
     write_last_run(R.env, {"run": R.id, "time": R.now.isoformat(timespec="minutes"), "mode": R.mode,
                            "result": "stopped", "reason": reason, "commit": None, "files": 0,
                            "findings": len(unsettled.get("findings", [])), "list_open": log.list_open(R.env),
-                           "push_pending": False})
+                           "push_pending": False, "unreadable": R.facts["unreadable"]})
     print("dream: stopped, nothing went live: %s" % reason, file=sys.stderr)
     return 3
 
@@ -257,7 +263,7 @@ def dry_run(R, plan):
     write_last_run(R.env, {"run": R.id, "time": R.now.isoformat(timespec="minutes"), "mode": "dry-run",
                            "result": "dry-run", "reason": "", "commit": None, "files": len(plan.target_files()),
                            "findings": len(plan.settled), "list_open": log.list_open(R.env), "push_pending": False,
-                           "diff": str(R.dir / "would-apply.diff")})
+                           "diff": str(R.dir / "would-apply.diff"), "unreadable": R.facts["unreadable"]})
     return 0
 
 

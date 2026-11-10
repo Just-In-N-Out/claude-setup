@@ -60,7 +60,27 @@ ac31_session_start_line_reports_the_last_dream() {
   return "$bad"
 }
 
-TESTS=(ac31_session_start_line_reports_the_last_dream)
+# ruling R1-1: sessions the run could not read are named in its line (and a stop they caused is not doubled)
+dream_unreadable_sessions_show_in_the_session_start_line() {
+  bad=0
+  local H="$ROOT/home-unread"
+  mkdir -p "$H/.claude/dream/local"
+  last_run "$H" '{"run":"u1","time":"2026-11-10T05:00-05:00","mode":"live","result":"changed","commit":"a1b2c3d","files":1,"findings":1,"list_open":0,"push_pending":false,"reason":"","unreadable":["s-bad"]}'
+  start "$H"
+  case "$(msg)" in "Dream 2026-11-10 05:00: changed 1 file from 1 finding (a1b2c3d)"*" 1 session could not be read (unknown transcript shape)"*) ;; *) problem "one unreadable: [$out]" ;; esac
+  last_run "$H" '{"run":"u2","time":"2026-11-10T17:00-05:00","mode":"live","result":"stopped","commit":null,"files":0,"findings":1,"list_open":0,"push_pending":false,"reason":"the checking agent said no","unreadable":["a","b"]}'
+  start "$H"
+  case "$(msg)" in *"FAILED: the checking agent said no."*" 2 sessions could not be read"*) ;; *) problem "two unreadable: [$out]" ;; esac
+  last_run "$H" '{"run":"u3","time":"2026-11-11T05:00-05:00","mode":"live","result":"failed","commit":null,"files":0,"findings":0,"list_open":0,"push_pending":false,"reason":"every session with new lines has an unknown transcript shape: x","unreadable":["a"]}'
+  start "$H"
+  case "$(msg)" in *"could not be read"*) problem "said twice: [$out]" ;; *"FAILED: every session with new lines has an unknown transcript shape"*) ;; *) problem "all unreadable: [$out]" ;; esac
+  last_run "$H" '{"run":"u4","time":"2026-11-11T17:00-05:00","mode":"live","result":"changed","commit":"c","files":1,"findings":1,"list_open":0,"push_pending":false,"reason":""}'
+  start "$H"
+  case "$(msg)" in *"could not be read"*) problem "none unreadable: [$out]" ;; "Dream 2026-11-11 17:00: changed"*) ;; *) problem "old record: [$out]" ;; esac
+  return "$bad"
+}
+
+TESTS=(ac31_session_start_line_reports_the_last_dream dream_unreadable_sessions_show_in_the_session_start_line)
 sel=("$@")
 [ ${#sel[@]} -gt 0 ] || sel=("${TESTS[@]}")
 for t in "${sel[@]}"; do
