@@ -471,6 +471,8 @@ def review_lines(env, seen):
             data = json.loads(f.read_text())
         except (OSError, ValueError):
             continue
+        if not isinstance(data, dict):
+            continue  # not the shape of a review or an ac.json (R1-13)
         rows = []
         if f.name == "review.json":
             for x in data.get("findings") or []:

@@ -111,6 +111,75 @@ class StageTests(unittest.TestCase):
         self.assertIn("login", h.local("last-run.json")["reason"])
         self.assertIsNone(h.local("unsettled.json"), "nothing saved: the next run reads the session again")
 
+    def test_a_changes_json_of_the_wrong_shape_stops_the_run_and_counts_a_try(self):
+        """R1-13 (and the stop the plan names in step 5): a changes.json that is unreadable, or whose items are
+        not of the shape the editor's prompt gives, stops the run like any editor failure: one try, a reason
+        in last-run.json, and after two tries the findings go on Justin's list. No traceback, no unpaid loop."""
+        shapes = {"declined items as strings": {"changes": [], "already_saved": [], "declined": ["f1: it contradicts a rule"]},
+                  "already_saved items as strings": {"changes": [], "already_saved": ["the lesson is there"], "declined": []},
+                  "a change that is a string": {"changes": ["edited build-notes.md"], "already_saved": [], "declined": []},
+                  "a change with additions that are not text": {"changes": [{"file": fh.MEM_COPY, "basis": "finding",
+                      "finding_ids": "ALL", "additions": [{"text": "x"}], "removals": []}], "already_saved": [], "declined": []}}
+        for label, changes in shapes.items():
+            self.h = h = FakeHome("r113", repo=True)
+            fh.standard(h, changes=changes)
+            self.assertEqual(h.run(), 3, label)
+            self.assertIn("changes.json", h.local("last-run.json")["reason"], label)
+            self.assertEqual([f["tries"] for f in h.local("unsettled.json")["findings"]], [1], label)
+            h.cleanup()
+        self.h = h = FakeHome("r113b", repo=True)
+        fh.standard(h, changes={})
+        sc = json.loads(h.scenario_path.read_text())
+        sc["editor"]["changes_raw"] = "{not json"
+        h.scenario(sc)
+        before = snapshot(h)
+        self.assertEqual(h.run(), 3)
+        self.assertIn("no readable _dream/changes.json", h.local("last-run.json")["reason"])
+        self.assertEqual(h.run(), 3)
+        self.assertEqual(h.run(), 0)
+        self.assertIn("could not apply automatically", h.read(".claude/dream/justin-list.md"))
+        self.assertEqual(snapshot(h), before)
+
+    def test_the_editor_leaving_its_folder_stops_the_run(self):
+        """The stop the plan names in step 5: a non-empty .permission_denials means the editor tried to read or
+        write outside its copy; nothing goes live, whatever it changed in the copy."""
+        self.h = h = FakeHome("denied", repo=True)
+        sc = fh.standard(h)
+        sc["editor"]["permission_denials"] = [{"tool_name": "Write", "tool_input": {"file_path": "/home/x/.ssh/config"}}]
+        h.scenario(sc)
+        before = snapshot(h)
+        self.assertEqual(h.run(), 3)
+        self.assertEqual(snapshot(h), before)
+        self.assertIn("tried to leave its folder", h.local("last-run.json")["reason"])
+        self.assertEqual([f["tries"] for f in h.local("unsettled.json")["findings"]], [1])
+
+    def test_an_evidence_file_that_is_not_a_json_object_is_skipped(self):
+        """R1-13: a review.json or ac.json holding a JSON list (or anything but an object) is skipped, not a crash."""
+        self.h = h = FakeHome("r113c", repo=True)
+        h.write(".hermes/plans/leorna/evidence/st/verifier/ac.json", "[]")
+        h.write(".hermes/plans/leorna/evidence/st/review-1/review.json", "[1, 2]")
+        h.write(".hermes/plans/leorna/evidence/st2/review-1/review.json", json.dumps({"findings": "not a list"}))
+        fh.standard(h)
+        self.assertEqual(h.run(), 0)
+        self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+
+    def test_a_crash_shows_in_the_session_start_line(self):
+        """R1-13: anything that escapes run() is written to last-run.json as a failed run before it is raised,
+        so the session-start line says so instead of nothing."""
+        from dreamlib import guards
+        self.h = h = FakeHome("crash", repo=True)
+        fh.standard(h)
+        real = guards.run_all
+        guards.run_all = lambda G: (_ for _ in ()).throw(TypeError("a test crash"))
+        try:
+            with self.assertRaises(TypeError):
+                h.run()
+        finally:
+            guards.run_all = real
+        lr = h.local("last-run.json")
+        self.assertEqual(lr["result"], "failed")
+        self.assertIn("TypeError: a test crash", lr["reason"])
+
     def test_e2e_review_backfill_sends_one_helper_per_project_once(self):
         self.h = h = FakeHome("bf", repo=True)
         for proj in ("leorna", "figma-to-bricks", "claude-setup"):

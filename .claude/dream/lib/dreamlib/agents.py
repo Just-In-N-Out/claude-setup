@@ -245,18 +245,62 @@ def editor(R):
     return call(R, "editor", editor_cmd(R), stdin, R.dir / "copy", EDITOR_TIMEOUT, False)
 
 
-def read_changes(R):
-    try:
-        c = json.loads((R.dir / "copy/_dream/changes.json").read_text())
-    except (OSError, ValueError):
-        return None
+BASES = ("finding", "order", "duplicate", "move")
+
+
+def _strs(v):
+    return isinstance(v, list) and all(isinstance(x, str) for x in v)
+
+
+def _opt_str(x, k):
+    return x.get(k) is None or isinstance(x.get(k), str)
+
+
+def changes_problem(c):
+    """What is wrong with the shape of changes.json (the shape the editor's prompt gives), or None. Every
+    later step reads it, so an item of another shape stops the run here, as an editor failure (R1-13)."""
     if not isinstance(c, dict):
-        return None
+        return "it is not a JSON object"
     for k in ("changes", "already_saved", "declined"):
         if not isinstance(c.get(k, []), list):
-            return None
+            return "%s is not a list" % k
+    for x in c.get("changes", []):
+        if not isinstance(x, dict):
+            return "a change is not an object"
+        if not isinstance(x.get("file"), str) or not x["file"]:
+            return "a change names no file"
+        if x.get("basis") not in BASES:
+            return "a change has the basis %r" % (x.get("basis"),)
+        for k in ("finding_ids", "additions"):
+            if not _strs(x.get(k, [])):
+                return "a change's %s is not a list of text" % k
+        if not all(_opt_str(x, k) for k in ("order_id", "summary")):
+            return "a change's order_id or summary is not text"
+        rems = x.get("removals", [])
+        if not isinstance(rems, list) or not all(isinstance(r, dict) and isinstance(r.get("text"), str)
+                                                 and all(_opt_str(r, k) for k in ("reason", "surviving_text", "moved_to"))
+                                                 for r in rems):
+            return "a change's removals are not objects with a text"
+    for k, fields in (("already_saved", ("finding_id", "file", "existing_text")), ("declined", ("finding_id", "reason"))):
+        for x in c.get(k, []):
+            if not isinstance(x, dict) or not all(isinstance(x.get(f), str) for f in fields):
+                return "an item of %s is not an object with %s" % (k, ", ".join(fields))
+    return None
+
+
+def read_changes(R):
+    """(changes, None), or (None, what is wrong) when _dream/changes.json is missing, not JSON or of
+    another shape."""
+    try:
+        c = json.loads((R.dir / "copy/_dream/changes.json").read_text())
+    except (OSError, ValueError) as e:
+        return None, "missing or not JSON: %s" % type(e).__name__
+    why = changes_problem(c)
+    if why:
+        return None, why
+    for k in ("changes", "already_saved", "declined"):
         c.setdefault(k, [])
-    return c
+    return c, None
 
 
 def checker(R, diffs, findings, orders, changes):

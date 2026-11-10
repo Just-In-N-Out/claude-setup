@@ -217,9 +217,9 @@ def _run(env, mode, hooks):
             return stop(R, unsettled, "the editor call failed: %s" % res.error)
         if res.denials:
             return stop(R, unsettled, "the editor tried to leave its folder (%d permission denial(s))" % len(res.denials))
-        changes = agents.read_changes(R)
+        changes, problem = agents.read_changes(R)
         if changes is None:
-            return stop(R, unsettled, "the editor wrote no readable _dream/changes.json")
+            return stop(R, unsettled, "the editor wrote no readable _dream/changes.json (%s)" % problem)
         mistakes.normalize_copy(env, R.dir, mapping, tally, orders)
         diffs, links = targets.diff_copy(R.dir)
         if diffs:
@@ -302,7 +302,17 @@ def run(env, mode=None, hooks=None):
         except OSError:
             print("dream: another run is going; this one exits", file=sys.stderr)
             return 0
-        return _run(env, mode or env.mode(), hooks or {})
+        try:
+            return _run(env, mode or env.mode(), hooks or {})
+        except Exception as e:
+            # anything unexpected still reaches the session-start line, then the traceback goes to the log
+            now = env.now()
+            write_last_run(env, {"run": now.strftime("%Y%m%d-%H%M%S"), "time": now.isoformat(timespec="minutes"),
+                                 "mode": mode or env.mode(), "result": "failed", "commit": None, "files": 0,
+                                 "findings": 0, "list_open": log.list_open(env), "push_pending": False,
+                                 "reason": "the dream crashed (%s: %s); see journalctl --user -u dream"
+                                           % (type(e).__name__, str(e)[:200])})
+            raise
     finally:
         lockf.close()
 

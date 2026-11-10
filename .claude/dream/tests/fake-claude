@@ -10,7 +10,8 @@ answers from the scenario in $FAKE_CLAUDE_SCENARIO (JSON). The role comes from t
   "editor":         {"edits": [{"file": <copy path>, "append"|"write"|"prepend": text} or
                                {"file": ..., "replace": [old, new]} or {"file": ..., "delete": true}],
                      "changes": {...changes.json...}, "permission_denials": [...]}
-                    In "changes", "finding_ids": "ALL" becomes every id in _dream/findings.json.
+                    In "changes", "finding_ids": "ALL" becomes every id in _dream/findings.json;
+                    "changes_raw": "<text>" writes that text as changes.json instead.
   "sleep": {"<role>": seconds}, "fail": {"<role>": {"exit": n} | {"api_error_status": 401} | {"model": "x"}}
 --help lists the real CLI's flags, minus the ones in $FAKE_CLAUDE_HELP_DROP (space-separated).
 """
@@ -106,15 +107,18 @@ def main():
             ids = []
         changes = json.loads(json.dumps(ed.get("changes", {"changes": [], "already_saved": [], "declined": []})))
         for c in changes.get("changes", []):
-            if c.get("finding_ids") == "ALL":
+            if isinstance(c, dict) and c.get("finding_ids") == "ALL":
                 c["finding_ids"] = ids
         for k in ("already_saved", "declined"):
             for c in changes.get(k, []):
-                if c.get("finding_id") == "FIRST" and ids:
+                if isinstance(c, dict) and c.get("finding_id") == "FIRST" and ids:
                     c["finding_id"] = ids[0]
         os.makedirs(os.path.join(cwd, "_dream"), exist_ok=True)
         with open(os.path.join(cwd, "_dream/changes.json"), "w") as f:
-            json.dump(changes, f)
+            if "changes_raw" in ed:
+                f.write(ed["changes_raw"])
+            else:
+                json.dump(changes, f)
         denials = ed.get("permission_denials", [])
     out = {"type": "result", "subtype": "success", "is_error": False,
            "result": json.dumps(structured) if structured is not None else "done",
