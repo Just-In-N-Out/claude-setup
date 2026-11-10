@@ -5,10 +5,12 @@ metadata:
   node_type: memory
   type: project
   originSessionId: a492f614-99ad-4c9d-89a6-3356eed047b1
-  modified: 2026-11-10T10:07:38.373Z
+  modified: 2026-11-10T22:50:48.734Z
 ---
 
 Justin, 2026-11-10, after asking how alt text is handled for a scanned page (on `npm run site` pictures stay on the old site's addresses, the old site's alt text in each Image's Custom alt text): "Can we make them upload to my Wordpress media library like how it is in the plugin?" Asked where, he chose **"From the command line"** over "In the Figma panel" (my recommendation) and "Both", and the **Full** pipeline. Job name: `site-media-upload` (plan: `~/.hermes/plans/figma-to-bricks/site-media-upload.md`).
+
+**One flow, WordPress first (Justin, 2026-11-10, after his first real scan of bdryswi.com with Build 2026-11-10.7):** the scan asked no password and he wrote "it did nto ask … i expected it to ask me for the applicaiton password to check for media". He pictures the importer like the plugin's panel: connect WordPress first (site, username, Application Password), then scan, media check, upload and paste in one go. Asked, he chose "One command, Mini" (job `site-one-command`; the two separate commands stay). My reading: when a tool has several steps for him, default to one command that asks everything up front, and say before he runs anything which step asks what.
 
 **Why:** he pastes scanned pages from `npm run site`, and wants the pictures and their alt text in his own Media library as with Figma designs, not hotlinked from the old site.
 
