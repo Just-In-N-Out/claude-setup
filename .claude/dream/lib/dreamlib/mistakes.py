@@ -140,7 +140,10 @@ def orders(env, tally):
             elif want and want != k["listed_in"]:
                 cands.append(dict(info, id="move:" + kid, action="move", file=k["listed_in"], to=want))
         elif want:
-            cands.append(dict(info, id="add:" + kid, action="add", file=want))
+            # the bytes its entry may take, heading included: what the room below is sized by, what the editor
+            # is told (orders.json) and what check_copy holds the added entry to (R2-3)
+            cands.append(dict(info, id="add:" + kid, action="add", file=want,
+                              max_entry_bytes=len(heading_for(kid, info["title"], tally).encode()) + ENTRY_ALLOWANCE))
     size, texts = {}, {}
 
     def size_of(f):
@@ -165,7 +168,7 @@ def orders(env, tally):
         dest = o.get("to") or o["file"]
         size_of(dest)
         est = entry_bytes(o["file"], o["kind"]) if o["action"] == "move" else 0
-        est = est or len(heading_for(o["kind"], o["title"], tally).encode()) + ENTRY_ALLOWANCE
+        est = est or o["max_entry_bytes"]
         if dest in full or size[dest] + est > FILE_TARGET:
             full.add(dest)  # not owed, and nothing less frequent jumps ahead: they wait until the file has room
             continue
@@ -345,6 +348,14 @@ def check_copy(G):
             if len(lines) != 2 or not lines[0].startswith(BUILD) or not lines[1].startswith(CHECK):
                 out.append("%s: entry %s must be its heading, one \"Build it this way\" line and one \"Check for it\" "
                            "line" % (live, kind))
+            # an added entry, heading included, holds to the bytes its order was sized by and the editor was told
+            # (max_entry_bytes in orders.json), so an editor that keeps to them stays inside the budget (R2-3)
+            size = len(head.encode()) + sum(len(ln.encode()) + 1 for ln in lines)
+            for o in G.orders.values():
+                if kind not in before and o["action"] == "add" and o["kind"] == kind:
+                    if size > o["max_entry_bytes"]:
+                        out.append("%s: entry %s is %d bytes, heading included; its order holds it to at most %d "
+                                   "(max_entry_bytes in orders.json)" % (live, kind, size, o["max_entry_bytes"]))
             m = HEAD.match(head.rstrip("\n"))
             if not m or m.group("n") is None or head != heading_for(kind, m.group("mistake"), G.tally):
                 out.append("%s: entry %s has a heading the tally does not give" % (live, kind))

@@ -20,8 +20,11 @@ For every finding, in this order:
 5. Decline (with a reason) anything you cannot apply within the rules.
 
 For every order: add the entry with the heading `### <kind> — <the mistake in one line> (N×: stories)`
-under `## <Area>`, then a `- **Build it this way:** …` line and a `- **Check for it:** …` line; move an
-entry word for word; remove an entry whole. Write the count and stories as given; the script rewrites them.
+under `## <Area>`, then a `- **Build it this way:** …` line and a `- **Check for it:** …` line. The
+entry, its heading with the count and stories as given and its two lines, newlines included, holds at
+most the order's `max_entry_bytes` bytes: the script checks every added entry, and a longer one stops
+the run. Move an entry word for word; remove an entry whole. Write the count and stories as given; the
+script rewrites them.
 You may tidy (merge duplicates, move a whole section to `references/`) only in a file you are already
 editing for a finding, or in at most 2 files over their budget. A tidy adds no new text: a change with
 basis `duplicate` or `move` only removes lines or moves them word for word, and any new wording belongs

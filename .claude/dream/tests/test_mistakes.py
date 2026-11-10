@@ -319,6 +319,100 @@ class ScriptRewriteTests(unittest.TestCase):
         self.assertLess(rank.index("kind-22-guard-skipped"), rank.index("kind-02-guard-skipped"), "and moved it up")
         self.assertNotIn("could not apply", h.read(".claude/dream/justin-list.md"))
 
+    def test_an_ordered_entry_is_held_to_the_allowance_the_editor_is_given(self):
+        """R2-3 (R1-9 again): the room the script orders by (an entry's heading plus 400 bytes) is the limit the
+        editor is given for each added entry in orders.json (max_entry_bytes) and the limit check_copy holds
+        each added entry to, heading included, so an editor that keeps to it never takes the file past its
+        budget."""
+        from dreamlib import guards, targets
+        self.h = h = FakeHome("r23")
+        env = h.denv()
+        t = listed_tally(1, [2])
+        ready = ["kind-6%d-ready-one" % i for i in range(6)]
+        for i, k in enumerate(ready):                       # 7, 6, 5, 4, 3, 2 stories: the most frequent first
+            st = ["%s-story-%d" % (k[5:7], j) for j in range(7 - i)]
+            t["kinds"][k] = dict(t["kinds"]["kind-00-guard-skipped"], listed_in=None, listed_since=None,
+                                 projects={"proj": {"stories": st, "findings": len(st), "last_story": st[-1]}})
+            t["stories"]["proj"] += st
+            t["story_seq"] += ["proj/" + s for s in st]
+        t["kinds"]["kind-00-guard-skipped"]["projects"]["proj"]["stories"].append(st[-1])  # listed and not due to retire
+        est = [len(mistakes.heading_for(k, MIST, t).encode()) + 400 for k in ready]
+        # a live file with room for three and a half entries under the 15,000 bytes the script fills to
+        size = mistakes.FILE_TARGET - sum(est[:3]) - est[3] // 2
+        h.write(fh.PROJ_RM, rm_file(h, t, 400, total=size))
+        self.assertEqual(mistakes.normalize_text(h.read(fh.PROJ_RM), t), h.read(fh.PROJ_RM), "no rewrite pending")
+        orders = mistakes.orders(env, t)
+        self.assertEqual([o["id"] for o in orders], ["add:" + k for k in ready[:3]], "exactly the three that fit")
+        # each added entry is held to 400 bytes for its Build and Check lines
+        self.assertEqual([o.get("max_entry_bytes") for o in orders], est[:3], "each order carries the bytes it was sized by")
+        n = [0]
+
+        def check(body, mistake=MIST, old=None, new=None):
+            n[0] += 1
+            d = h.root / ("g%d" % n[0])
+            old = old or h.read(fh.PROJ_RM)
+            new = new or mistakes.normalize_text(old + "".join(rm_entry(t, o["kind"], body).replace(
+                " — %s (" % MIST, " — %s (" % mistake) for o in orders), t)
+            for root, text in (("snap", old), ("copy", new)):
+                f = d / root / PROJ_RM_COPY
+                f.parent.mkdir(parents=True, exist_ok=True)
+                f.write_text(text)
+            diffs, links = targets.diff_copy(d)
+            ch = {"changes": [{"file": PROJ_RM_COPY, "basis": "order", "finding_ids": [], "order_id": o["id"],
+                               "additions": [], "removals": []} for o in orders], "already_saved": [], "declined": []}
+            G = guards.Input(env, d, {PROJ_RM_COPY: {"live": fh.PROJ_RM, "sha": "x"}}, diffs, links, [], orders, ch, t,
+                             targets.load_rules(env))
+            return guards.run_all(G), len(new.encode())
+
+        fails, total = check(400)
+        self.assertEqual(fails, [], "three entries at the allowance")
+        self.assertLessEqual(total, 16000)
+        over = lambda fails: len([x for x in fails if "its order holds it to at most" in x])
+        fails, _ = check(401)
+        self.assertEqual(over(fails), 3, fails)
+        # the heading counts too: the editor writes the one-line mistake, and a longer one than the order's title
+        # takes room the order was not sized for; a shorter one leaves it for the two lines
+        self.assertEqual(over(check(400, MIST + " and again")[0]), 3, "a longer mistake line")
+        fails, total = check(410, MIST[:-10])
+        self.assertEqual(fails, [], "a mistake line 10 bytes shorter, two lines 10 bytes longer")
+        self.assertLessEqual(total, 16000)
+        # an entry the file already holds (the tally can lag behind the file, as after a recovered apply) is not
+        # held again to an add order's bytes: the editor did not write it in this run
+        held = mistakes.normalize_text(h.read(fh.PROJ_RM) + "".join(rm_entry(t, o["kind"], 500) for o in orders), t)
+        self.assertEqual(over(check(0, old=held, new=held + "\n")[0]), 0, "entries already in the file")
+        # end to end: the editor is told the allowance in orders.json, and an entry over it stops the run with that
+        # reason (not a budget crossing it was never told about); one at it goes live
+        h.cleanup()
+        self.h = h = FakeHome("r23e", repo=True)
+        h.write(".claude/dream/state/tally.json", paths.dump_json(dict(state.default_tally(), backfill_done=True)))
+        h.sync()
+        review(h, "proj", "story-a", ["guard took the link path"])
+        h.scenario({"review-helper": {"assign": "new", "new_kind": KIND, "enforce_proposal": ""}})
+        self.assertEqual(h.run(), 0)
+        review(h, "proj", "story-b", ["again the link path"])
+        head = "### link-path-guard — %s (1×: x)\n" % KIND["title"]   # the script writes the count and stories
+        line_c = "- **Check for it:** a test with a link into a never-listed folder.\n"
+        for body, rc in ((480, 3), (400, 0)):
+            line_b = ("- **Build it this way:** resolve every link before the allowlist" + " and every path" * 40)[
+                :body - len(line_c) - 2] + ".\n"
+            h.scenario({"review-helper": {"assign": "link-path-guard"} if rc == 3 else {"assign": "none"},
+                        "editor": {"edits": [{"file": PROJ_RM_COPY, "write": h.read(fh.PROJ_RM) + "\n## Guards\n" + head
+                                              + line_b + line_c}],
+                                   "changes": {"changes": [{"file": PROJ_RM_COPY, "basis": "order", "finding_ids": [],
+                                                            "order_id": "add:link-path-guard", "additions": [],
+                                                            "removals": []}]}}})
+            self.assertEqual(h.run(), rc, h.local("last-run.json"))
+            given = json.loads((h.denv().cache / sorted(p.name for p in h.denv().cache.iterdir())[-1]
+                                / "copy/_dream/orders.json").read_text())
+            most = len(("### link-path-guard — %s (2×: story-a, story-b)\n" % KIND["title"]).encode()) + 400
+            self.assertEqual([(o["id"], o.get("max_entry_bytes")) for o in given], [("add:link-path-guard", most)])
+            if rc == 3:
+                reason = h.local("last-run.json")["reason"]
+                self.assertIn("its order holds it to at most %d" % most, reason)
+                self.assertNotIn("budget", reason)
+        self.assertIn("### link-path-guard", h.read(fh.PROJ_RM))
+        self.assertIn("max_entry_bytes", (fh.DREAM_SRC / "prompts/editor.md").read_text(), "the editor's prompt names it")
+
     def test_the_script_orders_only_the_entries_that_fit_a_repeat_mistakes_file_most_frequent_first(self):
         """R1-9 (DREAM.md section 7: about 15 KB per file, most frequent first): the script orders no more
         entries than fit, the most frequent kinds first; the rest are not owed and wait, unparked. An editor

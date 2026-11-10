@@ -77,6 +77,7 @@ T = {
     # review 2 fixes (fixer 2)
     "basis": "test_a_change_counts_only_in_a_file_its_basis_belongs_to",
     "rmcharge": "test_the_scripts_own_rewrite_of_a_repeat_mistakes_file_is_not_charged_to_its_cap_or_budget",
+    "allowance": "test_an_ordered_entry_is_held_to_the_allowance_the_editor_is_given",
 }
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
               "g_dated_lines,\n       g_dates_on_additions, g_secrets, g_repeat_mistakes, g_memory_index, g_library]")
@@ -336,6 +337,20 @@ MUTANTS = [
      ["rmcharge"]),
     ("G2d", "nothing the editor writes in a repeat-mistakes file is charged (widening)", [(L + "guards.py",
         "            return mistakes.normalize_text(d.old, self.tally)\n", "            return d.new\n")], ["rmcharge"]),
+    ("G3a", "the allowance per ordered entry is 4,000 bytes, not 400 (review 2's V10)", [(L + "mistakes.py",
+        "ENTRY_ALLOWANCE = 400 ", "ENTRY_ALLOWANCE = 4000 ")], ["allowance"]),
+    ("G3b", "an added entry is not held to its order's bytes", [(L + "mistakes.py",
+        '                    if size > o["max_entry_bytes"]:\n', "                    if False:\n")], ["allowance"]),
+    ("G3c", "an added entry's heading is not counted, only its two lines", [(L + "mistakes.py",
+        "            size = len(head.encode()) + sum(len(ln.encode()) + 1 for ln in lines)\n",
+        "            size = sum(len(ln.encode()) + 1 for ln in lines)\n")], ["allowance"]),
+    ("G3d", "an added entry's heading is counted from the order's title, not as the editor wrote it", [(L + "mistakes.py",
+        "            size = len(head.encode()) + sum(len(ln.encode()) + 1 for ln in lines)\n",
+        "            size = len((heading_for(kind, (G.orders.get(\"add:\" + kind) or {}).get(\"title\", \"\"), G.tally) or \"\")"
+        ".encode()) + sum(len(ln.encode()) + 1 for ln in lines)\n")], ["allowance"]),
+    ("G3e", "a listed entry is held to the bytes of an add order for its kind too (widening the check's reach)", [
+        (L + "mistakes.py", '                if kind not in before and o["action"] == "add" and o["kind"] == kind:\n',
+         '                if o["action"] == "add" and o["kind"] == kind:\n')], ["allowance"]),
 ]
 
 

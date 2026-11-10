@@ -229,6 +229,7 @@ def write_editor_inputs(R, mapping, findings, orders):
                       "statement": f["statement"], "replaces": f.get("replaces", ""),
                       "targets": ["(any file in this folder)"] if "*" in scope else [targets.copy_rel(s) for s in scope]})
     (d / "findings.json").write_text(json.dumps(shown, indent=1, ensure_ascii=False))
+    # an add order carries max_entry_bytes, the bytes its entry may take (mistakes.orders, R2-3)
     (d / "orders.json").write_text(json.dumps([dict(o, file=cpath(o["file"]), to=cpath(o["to"]) if o.get("to") else "")
                                                for o in orders], indent=1, ensure_ascii=False))
     rules = dream_sections(R.env, SECTIONS["editor"])
