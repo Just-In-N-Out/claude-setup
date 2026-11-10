@@ -170,6 +170,53 @@ class ScriptRewriteTests(unittest.TestCase):
     def entries(self, rel):
         return MistakeTests.entries(self, rel)
 
+    def test_the_script_orders_only_the_entries_that_fit_a_repeat_mistakes_file_most_frequent_first(self):
+        """R1-9 (DREAM.md section 7: about 15 KB per file, most frequent first): the script orders no more
+        entries than fit, the most frequent kinds first; the rest are not owed and wait, unparked. An editor
+        that writes every ordered entry at an ordinary length stays inside the 16,000-byte budget."""
+        from dreamlib import guards, targets
+        self.h = h = FakeHome("r19")
+        env = h.denv()
+        tally = dict(state.default_tally(), backfill_done=True)
+        tally["stories"] = {"proj": []}
+        for i in range(45):
+            n = 2 + (i * 7) % 4  # 2 to 5 stories each
+            st = ["story-%02d-%d-header-fit" % (i, j) for j in range(n)]
+            tally["kinds"]["kind-%02d-guard-skipped" % i] = {
+                "title": "the guard is skipped when the input comes through a link", "description": "d", "area": "Guards",
+                "listed_in": None, "listed_since": None, "repeats_while_listed": [], "retired": False,
+                "projects": {"proj": {"stories": st, "findings": n, "last_story": st[-1]}}}
+            tally["stories"]["proj"] += st
+            tally["story_seq"] += ["proj/" + s for s in st]
+        orders = mistakes.orders(env, tally)
+        counts = {k: len(v["projects"]["proj"]["stories"]) for k, v in tally["kinds"].items()}
+        got = {o["kind"] for o in orders}
+        self.assertTrue(0 < len(got) < 45, "some, not all: %d" % len(got))
+        self.assertGreaterEqual(min(counts[k] for k in got), max(counts[k] for k in counts if k not in got),
+                                "the most frequent kinds first")
+
+        def entry(o):
+            return (mistakes.heading_for(o["kind"], o["title"], tally) +
+                    "- **Build it this way:** resolve every link and run the same check on every path that reaches the "
+                    "write, with one test per path (2026-11-10).\n- **Check for it:** a test that goes through the "
+                    "link, and one that goes through the second path; both must be refused.\n")
+
+        old = h.read(fh.PROJ_RM)
+        new = mistakes.normalize_text(old + "\n## Guards\n" + "".join(entry(o) for o in orders), tally)
+        self.assertLessEqual(len(new.encode()), 16000)
+        d = h.root / "g"
+        for root, text in (("snap", old), ("copy", new)):
+            f = d / root / PROJ_RM_COPY
+            f.parent.mkdir(parents=True, exist_ok=True)
+            f.write_text(text)
+        diffs, links = targets.diff_copy(d)
+        ch = {"changes": [{"file": PROJ_RM_COPY, "basis": "order", "finding_ids": [], "order_id": o["id"], "additions": [],
+                           "removals": []} for o in orders], "already_saved": [], "declined": []}
+        G = guards.Input(env, d, {PROJ_RM_COPY: {"live": fh.PROJ_RM, "sha": "x"}}, diffs, links, [], orders, ch, tally,
+                         targets.load_rules(env))
+        self.assertEqual(guards.run_all(G), [], "every guard passes the full set of ordered entries")
+        self.assertFalse(any(k.get("parked") for k in tally["kinds"].values()))
+
     def test_text_outside_the_entries_of_a_repeat_mistakes_file_cannot_change(self):
         """R1-8: the line accounting skips these files, so check_copy checks everything in them: the header and
         the text under an area stay as they were, a new area is one an order names, an entry is its heading and

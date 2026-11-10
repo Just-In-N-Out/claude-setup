@@ -10,6 +10,8 @@ import re
 from . import targets
 
 RETIRE_AFTER = 10
+FILE_TARGET = 15000     # DREAM.md section 7: about 15 KB per file (the budget is 16,000)
+ENTRY_ALLOWANCE = 400   # bytes expected for an entry's Build and Check lines, on top of its heading
 HEAD = re.compile(r"^### (?P<kind>[a-z0-9][a-z0-9-]*) — (?P<mistake>.*?)(?: \((?P<n>\d+)×: (?P<stories>[^)]*)\))?\s*$")
 AREA = re.compile(r"^## (.+?)\s*$")
 BUILD = "- **Build it this way:**"
@@ -111,8 +113,17 @@ def retire_due(env, tally, kid):
     return False
 
 
+def _live_size(env, rel):
+    try:
+        return (env.home / rel).stat().st_size
+    except OSError:
+        return 0
+
+
 def orders(env, tally):
-    out = []
+    """Remove, move and add orders for the editor. Entries that would take a file past about 15 KB are not
+    ordered (R1-9): the most frequent kinds go first, and a kind left out is not parked, it waits for room."""
+    cands = []
     for kid in sorted((tally.get("kinds") or {})):
         k = tally["kinds"][kid]
         if k.get("retired") or k.get("parked"):
@@ -123,12 +134,44 @@ def orders(env, tally):
                 "stories": [x.split("/", 1)[1] for x in all_stories(k, tally)]}
         if k.get("listed_in"):
             if retire_due(env, tally, kid):
-                out.append(dict(info, id="remove:" + kid, action="remove", file=k["listed_in"]))
+                cands.append(dict(info, id="remove:" + kid, action="remove", file=k["listed_in"]))
             elif want and want != k["listed_in"]:
-                out.append(dict(info, id="move:" + kid, action="move", file=k["listed_in"], to=want))
+                cands.append(dict(info, id="move:" + kid, action="move", file=k["listed_in"], to=want))
         elif want:
-            out.append(dict(info, id="add:" + kid, action="add", file=want))
-    return out
+            cands.append(dict(info, id="add:" + kid, action="add", file=want))
+    size, texts = {}, {}
+
+    def entry_bytes(f, kind):
+        if f not in texts:
+            try:
+                texts[f] = entries_of((env.home / f).read_text())
+            except OSError:
+                texts[f] = {}
+        e = texts[f].get(kind)
+        return len((e[1] + e[2]).encode()) if e else 0
+
+    out = []
+    for o in cands:
+        if o["action"] == "remove":
+            size.setdefault(o["file"], _live_size(env, o["file"]))
+            size[o["file"]] -= entry_bytes(o["file"], o["kind"])
+            out.append(o)
+    growing = sorted((o for o in cands if o["action"] != "remove"), key=lambda o: (-o["count"], o["kind"]))
+    full = set()
+    for o in growing:
+        dest = o.get("to") or o["file"]
+        size.setdefault(dest, _live_size(env, dest))
+        est = entry_bytes(o["file"], o["kind"]) if o["action"] == "move" else 0
+        est = est or len(heading_for(o["kind"], o["title"], tally).encode()) + ENTRY_ALLOWANCE
+        if dest in full or size[dest] + est > FILE_TARGET:
+            full.add(dest)  # not owed, and nothing less frequent jumps ahead: they wait until the file has room
+            continue
+        size[dest] += est
+        if o["action"] == "move":
+            size.setdefault(o["file"], _live_size(env, o["file"]))
+            size[o["file"]] -= est
+        out.append(o)
+    return sorted(out, key=lambda o: o["kind"])
 
 
 def merge_orders(old, new):
