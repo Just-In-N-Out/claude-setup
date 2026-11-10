@@ -239,14 +239,16 @@ def _run(env, mode, hooks):
     return rc
 
 
-def stop(R, unsettled, reason):
-    """Nothing goes live: every finding and order waiting gets one more try; the markers stay."""
+def stop(R, unsettled, reason, tries=True):
+    """Nothing goes live and the markers stay. A stop in steps 5 to 7 gives every finding and order waiting
+    one more try; a stop in the apply step (tries=False) leaves them as they were (R1-5, AC19)."""
     if R.mode == "live":
-        for f in unsettled.get("findings", []):
-            f["tries"] = f.get("tries", 0) + 1
-        for o in unsettled.get("orders", []):
-            o["tries"] = o.get("tries", 0) + 1
-        state.save_unsettled(R.env, unsettled)
+        if tries:
+            for f in unsettled.get("findings", []):
+                f["tries"] = f.get("tries", 0) + 1
+            for o in unsettled.get("orders", []):
+                o["tries"] = o.get("tries", 0) + 1
+            state.save_unsettled(R.env, unsettled)
         log.append_stop(R.env, R, reason)
     write_last_run(R.env, {"run": R.id, "time": R.now.isoformat(timespec="minutes"), "mode": R.mode,
                            "result": "stopped", "reason": reason, "commit": None, "files": 0,

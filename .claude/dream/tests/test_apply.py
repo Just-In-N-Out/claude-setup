@@ -43,6 +43,22 @@ class ApplyTests(unittest.TestCase):
         u = h.local("unsettled.json")
         self.assertEqual(len(u["findings"]), 1, "the finding stays for the next run")
 
+    def test_a_stop_in_the_apply_step_adds_no_try(self):
+        """R1-5: tries count only stops in steps 5 to 7; a stop in the apply step (a target changed since the
+        copy, the lock, a foreign staged file, a failed commit) leaves the findings as they were."""
+        self.h = h = FakeHome("r15", repo=True)
+        fh.standard(h)
+        h.on_pull('case "$N" in 2|4) echo "- edited by another session $N" >> %s ;; esac\n' % fh.MEM_LIVE)
+        res = []
+        for _ in range(2):
+            rc = h.run()
+            res.append((rc, [f["tries"] for f in h.local("unsettled.json")["findings"]]))
+        self.assertEqual(res, [(3, [0]), (3, [0])], "two apply-step stops, no try counted")
+        self.assertIn("changed since the copy", h.local("last-run.json")["reason"])
+        self.assertEqual(h.run(), 0)
+        self.assertIn(fh.LINT_LINE, h.read(fh.MEM_LIVE))
+        self.assertNotIn("could not apply automatically", h.read(".claude/dream/justin-list.md"))
+
     def test_ac20_library_edit_travels_only_in_the_patch_file(self):
         self.h = h = FakeHome("ac20", repo=True, library=True)
         lib = h.p(".hermes/skills-library")

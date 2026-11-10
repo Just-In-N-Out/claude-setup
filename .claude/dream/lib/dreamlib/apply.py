@@ -332,7 +332,7 @@ def apply(R, P):
     except Stop as e:
         drop_lock(lock)
         lock = None
-        return run_stop(R, unsettled, str(e))
+        return run_stop(R, unsettled, str(e), tries=False)
     finally:
         drop_lock(lock)
 
@@ -373,14 +373,16 @@ def finish(R, J, lock):
         os.unlink(journal_path(env))
         drop_lock(lock)
         return run_stop(R, state.load_unsettled(env), "someone else staged %s in the setup repo while the dream held "
-                                                       "the lock; the dream's own files were restored" % ", ".join(foreign))
+                                                       "the lock; the dream's own files were restored" % ", ".join(foreign),
+                        tries=False)
     c = git_commit(env, J["commit_msg"])
     if c.returncode != 0:
         g(env, "reset", "-q", "--", *gp)
         restore(J, set(range(len(J["files"]))))
         os.unlink(journal_path(env))
         drop_lock(lock)
-        return run_stop(R, state.load_unsettled(env), "git commit failed: %s" % (c.stderr or c.stdout).strip()[-300:])
+        return run_stop(R, state.load_unsettled(env), "git commit failed: %s" % (c.stderr or c.stdout).strip()[-300:],
+                        tries=False)
     J["stage"] = "committed"
     paths.save_json(journal_path(env), J)
     return after_commit(R, J, lock)
