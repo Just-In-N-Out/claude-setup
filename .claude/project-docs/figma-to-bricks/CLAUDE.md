@@ -7,8 +7,15 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-10)
 
-- **Current build `2026-11-10.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-10.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-10.3 site-slider (website importer):** with `--elementor`, a captured Elementor carousel (Image Carousel,
+    Nested Carousel, Pro's Slides and carousels; either key family) pastes as one Slider (Nestable) holding its own
+    slides: the site's timing, loop or fade, pause under the mouse, arrows and dots where the site draws them, per view
+    and gap by Bricks' tiers, a slide's own height kept; Bricks' own slider CSS survives the site reset; `site:check`
+    holds a slider on its first slide; pastes without such a carousel, the plain route and Figma designs are byte for
+    byte as before. Q4 A (tiers) and the `!important` slide height not yet confirmed. Paste check **3dr** (AC10, live:
+    B-Dry's hero on staging /homev2/).
   - **2026-11-10.2 site-reviews (website importer):** a captured page's third-party widget whose loader draws it (a
     reviews carousel) pastes as one live Code element at its own place, holding only the slot's own served markup or
     the loader's own tag (never the page's other scripts), so its arrows and swipes work in Bricks once code signatures
