@@ -1,0 +1,12 @@
+# Frozen sections: file ($HOME-relative real path), heading text without the #s ("*" = the whole file).
+# A change of one byte inside a listed section stops the run; so does a listed heading that no longer
+# exists in its file (a rename cannot unprotect a section). DREAM.md section 8.
+.claude/CLAUDE.md	Git & GitHub Privacy
+.claude/CLAUDE.md	Git Commit Authorship — Read Every Time
+.claude/CLAUDE.md	Worktrees from `claude -w` — Finishing a Feature
+.claude/CLAUDE.md	Setup Sync — Mac ⇄ Windows Desktop
+.claude/CLAUDE.md	Windows Desktop: Runaway Memory (2026-11-02)
+.claude/CLAUDE.md	Dream Pass
+.hermes/skills/software-development/leorna/SKILL.md	Hard rules (details live in memory)
+.hermes/skills/autonomous-ai-agents/feature-dispatch/SKILL.md	Merge policy per project
+.hermes/skills/software-development/git-commit-rules/SKILL.md	*

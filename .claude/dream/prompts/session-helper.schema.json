@@ -1,0 +1,75 @@
+{
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "findings"
+ ],
+ "properties": {
+  "findings": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "uuid",
+     "quote",
+     "kind",
+     "statement",
+     "general",
+     "replaces",
+     "matches_pending",
+     "loosens_safety",
+     "weakens_check",
+     "personal",
+     "ambiguous",
+     "depends_on_image"
+    ],
+    "properties": {
+     "uuid": {
+      "type": "string"
+     },
+     "quote": {
+      "type": "string"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "correction",
+       "decision",
+       "preference",
+       "fact",
+       "implied"
+      ]
+     },
+     "statement": {
+      "type": "string"
+     },
+     "general": {
+      "type": "boolean"
+     },
+     "replaces": {
+      "type": "string"
+     },
+     "matches_pending": {
+      "type": "string"
+     },
+     "loosens_safety": {
+      "type": "boolean"
+     },
+     "weakens_check": {
+      "type": "boolean"
+     },
+     "personal": {
+      "type": "boolean"
+     },
+     "ambiguous": {
+      "type": "boolean"
+     },
+     "depends_on_image": {
+      "type": "boolean"
+     }
+    }
+   }
+  }
+ }
+}

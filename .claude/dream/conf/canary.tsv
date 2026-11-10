@@ -1,0 +1,29 @@
+# Exact facts that must stay: file ($HOME-relative real path), exact text. A run whose edit removes
+# one of these texts from its file does not go live (DREAM.md section 8). At least 25.
+.claude/CLAUDE.md	Justin <issajustin04@gmail.com>
+.claude/CLAUDE.md	Justin Issa <justin@leorna.com>
+.claude/CLAUDE.md	Never override git commit author metadata.
+.claude/CLAUDE.md	never merge
+.claude/CLAUDE.md	`--ff-only`
+.claude/CLAUDE.md	Never run `gh auth switch`
+.claude/CLAUDE.md	pre-dream-2026-11-09
+.claude/CLAUDE.md	when a skill nears Hermes' 100,000-character limit
+.claude/CLAUDE.md	**Never** include `Co-Authored-By` lines referencing Claude, Anthropic, or any AI in commit messages
+.claude/CLAUDE.md	**Never** commit or push `CLAUDE.md` files to any project repository.
+.claude/CLAUDE.md	**never** for git metadata.
+.claude/CLAUDE.md	Leorna code repos are never auto-pulled; only setup files sync.
+.claude/CLAUDE.md	If a push would go as `Just-In-N-Out`, stop and tell the user.
+.claude/CLAUDE.md	push or open a PR only when the user says "push" or "make a PR"
+.claude/CLAUDE.md	WSL is capped at 20 GB
+.claude/CLAUDE.md	Mutation runs always use that cap
+.claude/CLAUDE.md	git-guard.sh` denies these overrides in Claude Code
+.claude/CLAUDE.md	Never force it;
+.claude/CLAUDE.md	don't push it to GitHub.
+.hermes/skills/software-development/leorna/SKILL.md	Never merge a PR. Justin merges.
+.hermes/skills/software-development/leorna/SKILL.md	Never push or open a PR unprompted.
+.hermes/skills/software-development/leorna/SKILL.md	never commit to main.
+.hermes/skills/autonomous-ai-agents/feature-dispatch/SKILL.md	Never merged into main, local or remote.
+.hermes/skills/software-development/git-commit-rules/SKILL.md	Commit messages never contain `Co-Authored-By` lines that mention Claude, Anthropic, Hermes, or any AI.
+.hermes/skills/software-development/git-commit-rules/SKILL.md	Never override author metadata: no `-c user.email=`, `-c user.name=`, `--author=`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_EMAIL`.
+.hermes/skills/software-development/git-commit-rules/SKILL.md	Emails seen in session context (Claude Code's `userEmail`, gateway/WhatsApp metadata) are never git metadata.
+.hermes/skills/software-development/git-commit-rules/SKILL.md	If a push fails on auth, report it. Don't work around it with another account or token.

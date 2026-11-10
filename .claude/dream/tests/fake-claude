@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+"""A stand-in for the claude CLI in the dream's tests.
+
+It records every call (argv, cwd, stdin, start and end time) as one JSON file in $FAKE_CLAUDE_DIR and
+answers from the scenario in $FAKE_CLAUDE_SCENARIO (JSON). The role comes from the
+`<!-- dream-role: X -->` line of --system-prompt. Scenario keys, all optional:
+  "session-helper": {"<session id>": {"findings": [...]}}      the digest's "SESSION <id>" line picks it
+  "review-helper":  {"assignments": [...]} or {"assign": "<kind>|new|none", "new_kind": {...}, "enforce_proposal": "..."}
+  "checker":        {"verdict": "yes", "lost_facts": [], "untraced": [], "notes": ""}
+  "editor":         {"edits": [{"file": <copy path>, "append"|"write"|"prepend": text} or
+                               {"file": ..., "replace": [old, new]} or {"file": ..., "delete": true}],
+                     "changes": {...changes.json...}, "permission_denials": [...]}
+                    In "changes", "finding_ids": "ALL" becomes every id in _dream/findings.json.
+  "sleep": {"<role>": seconds}, "fail": {"<role>": {"exit": n} | {"api_error_status": 401} | {"model": "x"}}
+--help lists the real CLI's flags, minus the ones in $FAKE_CLAUDE_HELP_DROP (space-separated).
+"""
+import json
+import os
+import re
+import sys
+import time
+
+FLAGS = ["--no-session-persistence", "--safe-mode", "--setting-sources", "--settings", "--strict-mcp-config",
+         "--disable-slash-commands", "--permission-prompts", "--model", "--effort", "--output-format", "--tools",
+         "--json-schema", "--restricted", "--permission-mode", "--system-prompt", "--print", "-p"]
+
+
+def arg(argv, name):
+    if name in argv:
+        i = argv.index(name)
+        return argv[i + 1] if i + 1 < len(argv) else None
+    return None
+
+
+def main():
+    argv = sys.argv[1:]
+    if "--help" in argv:
+        drop = set(os.environ.get("FAKE_CLAUDE_HELP_DROP", "").split())
+        print("Usage: claude [options] [command] [prompt]\n\nOptions:")
+        for f in FLAGS:
+            if f not in drop:
+                print("  %-36s fake" % f)
+        return 0
+    if "--version" in argv:
+        print("2.1.322 (Claude Code)")
+        return 0
+    start = time.time()
+    stdin = sys.stdin.read()
+    system = arg(argv, "--system-prompt") or ""
+    m = re.search(r"<!-- dream-role: ([a-z-]+) -->", system)
+    role = m.group(1) if m else "unknown"
+    try:
+        with open(os.environ["FAKE_CLAUDE_SCENARIO"]) as f:
+            sc = json.load(f)
+    except (KeyError, OSError, ValueError):
+        sc = {}
+    time.sleep(float(sc.get("sleep", {}).get(role, 0)))
+    model = arg(argv, "--model") or "claude-opus-5-5"
+    fail = sc.get("fail", {}).get(role, {})
+    denials = []
+    structured = None
+    if role == "session-helper":
+        sm = re.search(r"^# Digest of session (\S+)", stdin, re.M)
+        sid = sm.group(1) if sm else ""
+        structured = sc.get("session-helper", {}).get(sid, {"findings": []})
+    elif role == "review-helper":
+        rh = sc.get("review-helper", {})
+        if "assignments" in rh:
+            structured = {"assignments": rh["assignments"]}
+        else:
+            ids = re.findall(r"^LINE (\S+)", stdin, re.M)
+            kind = rh.get("assign", "none")
+            structured = {"assignments": [
+                {"line_id": i, "kind": kind, "new_kind": rh.get("new_kind"),
+                 "enforce_proposal": rh.get("enforce_proposal", "")} for i in ids]}
+    elif role == "checker":
+        structured = sc.get("checker", {"verdict": "yes", "lost_facts": [], "untraced": [], "notes": ""})
+    elif role == "editor":
+        ed = sc.get("editor", {})
+        cwd = os.getcwd()
+        for e in ed.get("edits", []):
+            p = os.path.join(cwd, e["file"])
+            if e.get("delete"):
+                os.unlink(p)
+                continue
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            old = open(p).read() if os.path.exists(p) else ""
+            if "write" in e:
+                new = e["write"]
+            elif "append" in e:
+                new = old + e["append"]
+            elif "prepend" in e:
+                new = e["prepend"] + old
+            else:
+                a, b = e["replace"]
+                if a not in old:
+                    print("fake-claude: replace text not found in " + e["file"], file=sys.stderr)
+                    return 9
+                new = old.replace(a, b, 1)
+            with open(p, "w") as f:
+                f.write(new)
+        try:
+            with open(os.path.join(cwd, "_dream/findings.json")) as f:
+                ids = [x["id"] for x in json.load(f)]
+        except (OSError, ValueError, KeyError, TypeError):
+            ids = []
+        changes = json.loads(json.dumps(ed.get("changes", {"changes": [], "already_saved": [], "declined": []})))
+        for c in changes.get("changes", []):
+            if c.get("finding_ids") == "ALL":
+                c["finding_ids"] = ids
+        for k in ("already_saved", "declined"):
+            for c in changes.get(k, []):
+                if c.get("finding_id") == "FIRST" and ids:
+                    c["finding_id"] = ids[0]
+        os.makedirs(os.path.join(cwd, "_dream"), exist_ok=True)
+        with open(os.path.join(cwd, "_dream/changes.json"), "w") as f:
+            json.dump(changes, f)
+        denials = ed.get("permission_denials", [])
+    out = {"type": "result", "subtype": "success", "is_error": False,
+           "result": json.dumps(structured) if structured is not None else "done",
+           "session_id": "fake-%d" % os.getpid(), "permission_denials": denials,
+           "modelUsage": {fail.get("model", model): {"inputTokens": 1000, "outputTokens": 200}},
+           "usage": {"input_tokens": 1000, "output_tokens": 200}, "total_cost_usd": 0.01}
+    if structured is not None and "--json-schema" in argv:
+        out["structured_output"] = structured
+    if "api_error_status" in fail:
+        out.update({"is_error": True, "subtype": "error", "api_error_status": fail["api_error_status"]})
+    rec = {"argv": argv, "cwd": os.getcwd(), "stdin": stdin, "role": role, "start": start, "end": time.time()}
+    d = os.environ.get("FAKE_CLAUDE_DIR")
+    if d:
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "call-%d-%d.json" % (time.time_ns(), os.getpid())), "w") as f:
+            json.dump(rec, f)
+    print(json.dumps(out))
+    return int(fail.get("exit", 0))
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+"""The dream pass (rules: ~/.claude/dream/DREAM.md).
+
+  dream run [--dry-run|--live]   one run (exit 0 done or nothing new, 3 a guard stopped it, 4 environment)
+  dream status                   mode, last run, markers
+  dream mode dry-run|live|off    set the mode (missing mode file = dry-run)
+  dream install [--enable]       units into ~/.config/systemd/user (timer enabled only with --enable)
+  dream uninstall                timer off, units removed (local/ is kept)
+  dream undo <commit>            revert one dream commit, the library clone and project CLAUDE.md files too
+  dream init                     first-time markers and ledger baseline
+  dream extract <transcript>     print one session's digest (debugging)
+A run by hand is `systemctl --user start dream.service` (memory-capped); `dream run` typed directly is not.
+"""
+import sys
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
+
+from dreamlib import run  # noqa: E402
+
+if __name__ == "__main__":
+    sys.exit(run.main(sys.argv[1:], __doc__))

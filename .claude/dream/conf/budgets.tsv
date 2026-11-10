@@ -1,0 +1,13 @@
+# Size budgets in bytes (wc -c), first matching glob wins; an optional third column is a line budget.
+# A file over its budget may only shrink; a file under it may not cross it (DREAM.md section 6).
+# The Figma project CLAUDE.md: dream-trim's approved target (56,000) plus 10%.
+.hermes/skills/**/references/repeat-mistakes.md	16000
+.hermes/skills/**/SKILL.md	90000
+.hermes/skills-library/skills/**/SKILL.md	90000
+.hermes/skills/**/*.md	60000
+.hermes/skills-library/skills/**/*.md	60000
+.claude/CLAUDE.md	30000
+.claude/project-docs/figma-to-bricks/CLAUDE.md	61600
+.claude/project-docs/*/CLAUDE.md	40000
+.claude/projects/*/memory/MEMORY.md	12000	200
+.claude/projects/*/memory/**/*.md	8000

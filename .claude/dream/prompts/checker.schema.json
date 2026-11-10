@@ -1,0 +1,60 @@
+{
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "verdict",
+  "lost_facts",
+  "untraced",
+  "notes"
+ ],
+ "properties": {
+  "verdict": {
+   "type": "string",
+   "enum": [
+    "yes",
+    "no"
+   ]
+  },
+  "lost_facts": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "file",
+     "text"
+    ],
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "text": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "untraced": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "file",
+     "text"
+    ],
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "text": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "notes": {
+   "type": "string"
+  }
+ }
+}

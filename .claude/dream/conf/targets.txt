@@ -1,0 +1,24 @@
+# What the dream may write, as $HOME-relative globs matched against the REAL path (every link
+# resolved). ** spans folders. A path must match an allow line (or append/dream) and no never line.
+#   allow   a target the editor may change
+#   append  a file the dream only appends to (the script writes it, never the editor)
+#   dream   the dream's own files (the script writes them)
+#   never   never written, whatever else matches
+allow	.claude/CLAUDE.md
+allow	.claude/project-docs/*/CLAUDE.md
+allow	.claude/projects/*/memory/**/*.md
+allow	.hermes/skills/**/*.md
+allow	.hermes/skills-library/skills/**/*.md
+append	.hermes/plans/claude-setup/enforce-backlog.md
+dream	.claude/dream/dream-log*.md
+dream	.claude/dream/justin-list.md
+dream	.claude/dream/state/*.json
+never	.claude/dream/DREAM.md
+never	.codex/**
+never	Leorna/**
+never	.hermes/memories/**
+never	.hermes/plans/**/evidence/**
+never	.claude/projects/*/*.jsonl
+never	.claude/projects/*/*/subagents/**
+never	.hermes/skills/.hub/**
+never	.hermes/skills/.locks/**

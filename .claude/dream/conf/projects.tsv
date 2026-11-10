@@ -1,0 +1,9 @@
+# Projects for the dream: folder-key glob (under ~/.claude/projects), project name, project skill
+# folder, repeat-mistakes file (both $HOME-relative). First match wins. A folder key that matches no
+# row is its own project with its memory folder only. claude-setup uses the general file.
+-home-justin-Leorna*	leorna	.hermes/skills/software-development/leorna	.hermes/skills/software-development/leorna/references/repeat-mistakes.md
+-home-justin-Documents-FigmaToBricksV2*	figma-to-bricks	.hermes/skills/software-development/figma-to-bricks	.hermes/skills/software-development/figma-to-bricks/references/repeat-mistakes.md
+-home-justin	claude-setup	.hermes/skills/autonomous-ai-agents/feature-dispatch	.hermes/skills/autonomous-ai-agents/feature-dispatch/references/repeat-mistakes.md
+-home-justin--claude*	claude-setup	.hermes/skills/autonomous-ai-agents/feature-dispatch	.hermes/skills/autonomous-ai-agents/feature-dispatch/references/repeat-mistakes.md
+-home-justin--hermes*	claude-setup	.hermes/skills/autonomous-ai-agents/feature-dispatch	.hermes/skills/autonomous-ai-agents/feature-dispatch/references/repeat-mistakes.md
+-home-justin--cache*	claude-setup	.hermes/skills/autonomous-ai-agents/feature-dispatch	.hermes/skills/autonomous-ai-agents/feature-dispatch/references/repeat-mistakes.md
