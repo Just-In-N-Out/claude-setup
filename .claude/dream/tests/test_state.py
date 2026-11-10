@@ -88,5 +88,30 @@ class StateTests(unittest.TestCase):
             h2.cleanup()
 
 
+class ContextTests(unittest.TestCase):
+    def tearDown(self):
+        self.h.cleanup()
+
+    def test_the_first_message_after_a_marker_keeps_claudes_text_before_it(self):
+        """R1-10 (AC1): Claude's text from before the marker is the context of the first message after it."""
+        self.h = h = FakeHome("r110")
+        env = h.denv()
+        f = h.session(fh.PROJ, "sB", [typed("u1", "please fix the header first"),
+                                       assistant("Done. Which do you want next: option A (fast) or option B (safe)?", minute=2)])
+        s1 = state.scan(env, {}, env.now())
+        cursors = {s1.reads[0].key: state.commit_cursor(state.markers_after(s1.reads[0], s1.reads[0].entries, {}))}
+        h.append_session(f, [assistant("Waiting for your answer.", minute=3),
+                             typed("u2", "B, and from now on always pick the safe option", minute=9)])
+        s2 = state.scan(env, cursors, env.now())
+        self.assertEqual([e["uuid"] for e in s2.reads[0].entries], ["u2"])
+        ctx = s2.reads[0].entries[0]["context"]
+        self.assertIn("option B (safe)", ctx, "the question asked before the marker")
+        self.assertIn("Waiting for your answer.", ctx)
+        self.assertNotIn("please fix the header first", ctx, "Justin's own earlier message is not context")
+        # the same as reading the file in one go
+        whole = [e for e in state.extract.read_session(f).entries if e["uuid"] == "u2"][0]["context"]
+        self.assertEqual(ctx, whole)
+
+
 if __name__ == "__main__":
     unittest.main()

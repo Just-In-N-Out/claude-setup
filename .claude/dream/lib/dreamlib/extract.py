@@ -199,6 +199,12 @@ def read_session(path, start_line=0, seen=(), expect=None):
         if idx >= start_line - 1:
             r.line_meta[idx] = (obj.get("uuid"), hashlib.sha256(ln.encode()).hexdigest())
         if idx < start_line:
+            # behind the marker: no entries, but Claude's text still feeds the context of the first message
+            # after it, and an entry there still ends that context (R1-10)
+            try:
+                _line_entries(r.session, idx, obj, ctx)
+            except UnknownShape:
+                ctx.clear()
             continue
         new = [e for e in _line_entries(r.session, idx, obj, ctx) if e["uuid"] not in seen]
         r.entries.extend(new)
