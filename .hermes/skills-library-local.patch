@@ -133,7 +133,7 @@ index 8d8968a..f0855d3 100644
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..18146eb 100644
+index c509c64..ce9914e 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,12 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -175,7 +175,7 @@ index c509c64..18146eb 100644
  Inspect whether the real test runner binds immutable tracked HEAD before proposing dirty-worktree test commands. Specify a verified owner-supported way to admit both candidate identities or block execution; do not loosen provenance or present an untested checkpoint recipe as established practice.
  
 -Preserve already-passing regression tests as regression coverage. Do not fabricate a RED observation or alter correct behavior merely to force failure; distinguish new-feature RED from later adversarial/falsification checks. Avoid planning future behaviors into the first implementation before their own vertical tests.
-+Preserve already-passing regression tests as regression coverage, but keep story-time pins (a file "unchanged since base", an exact file count) out of a suite's default run: make them run only when named, like live tests, because after the merge they fail the next story that touches those files. Before a regression AC ("existing suites pass"), run those suites on the base and record the tally in the plan, because an older pin can already fail there. Do not fabricate a RED observation or alter correct behavior merely to force failure; distinguish new-feature RED from later adversarial/falsification checks. Avoid planning future behaviors into the first implementation before their own vertical tests.
++Preserve already-passing regression tests as regression coverage, but keep story-time pins (a file "unchanged since base", an exact file count) out of a suite's default run: make them run only when named, like live tests, because after the merge they fail the next story that touches those files. Before a regression AC ("existing suites pass"), run those suites on the base and record the tally in the plan, because an older pin can already fail there; run every regression test the plan cites as proof on the prototype too, since a task that changes a script's usage or help text can break a byte-for-byte pin on its usage-error path (pipeline-token-diet: the plan asked for both, `ac11` unrun). Do not fabricate a RED observation or alter correct behavior merely to force failure; distinguish new-feature RED from later adversarial/falsification checks. Avoid planning future behaviors into the first implementation before their own vertical tests.
  
  **Done:** every ready task is executable without guessed paths, code omissions, undefined approval-dependent values or hidden host/container assumptions.
  
