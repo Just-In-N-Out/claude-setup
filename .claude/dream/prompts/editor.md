@@ -23,7 +23,10 @@ For every order: add the entry with the heading `### <kind> — <the mistake in 
 under `## <Area>`, then a `- **Build it this way:** …` line and a `- **Check for it:** …` line; move an
 entry word for word; remove an entry whole. Write the count and stories as given; the script rewrites them.
 You may tidy (merge duplicates, move a whole section to `references/`) only in a file you are already
-editing for a finding, or in at most 2 files over their budget.
+editing for a finding, or in at most 2 files over their budget. A tidy adds no new text: a change with
+basis `duplicate` or `move` only removes lines or moves them word for word, and any new wording belongs
+to a finding's change. A duplicate's `surviving_text` is the whole line (or lines) that stays, exactly as
+it already stands in a file, and it keeps every date of the line you remove.
 
 When done, write `_dream/changes.json` exactly in this shape:
 {"changes": [{"file": "<path in this folder>", "basis": "finding|order|duplicate|move", "finding_ids": [...],

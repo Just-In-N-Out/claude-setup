@@ -70,7 +70,7 @@ MUTANTS = [
                                          "        if False:\n")], ["ac15"]),
     ("M10", "canary check skipped", [(L + "guards.py", "        if d and row[1] in d.old and row[1] not in d.new:\n",
                                       "        if False:\n")], ["ac16"]),
-    ("M11", "unlisted removal accepted", [(L + "guards.py", "            if not removal_ok(G, d, ln, cs, everything):\n",
+    ("M11", "unlisted removal accepted", [(L + "guards.py", "            if not removal_ok(G, d, ln, cs):\n",
                                            "            if False:\n")], ["ac17"]),
     ("M12", "allowlist checked on the link path, not the real path", [
         (L + "guards.py", '        if d.status == "A" and targets.through_link(env, live):\n', "        if False:\n"),

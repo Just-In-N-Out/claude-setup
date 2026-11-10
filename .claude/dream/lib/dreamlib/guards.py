@@ -10,6 +10,7 @@ from pathlib import Path
 from . import extract, mistakes, paths, targets
 
 DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
+WORD = re.compile(r"[a-z0-9]+")
 TYPED_LABELS = ("TYPED", "QUEUED", "mid-turn", "ANSWER", "PASTE (whole message)")
 
 
@@ -44,6 +45,17 @@ class Input:
                           for d in diffs}
         self.moved_in = {d.copy: {ln for ln in d.added if ln.strip() and removed.get(ln, set()) - {d.copy}}
                          for d in diffs}
+        # whole lines of the targets before and after the edit: a duplicate's surviving text must be in both
+        changed = {d.copy for d in diffs}
+        self.before_lines, self.after_lines = set(), set()
+        for d in diffs:
+            self.before_lines.update(norm(ln) for ln in d.old.splitlines() if ln.strip())
+            self.after_lines.update(norm(ln) for ln in d.new.splitlines() if ln.strip())
+        for rel in mapping:
+            if rel not in changed:
+                lines = {norm(ln) for ln in (self.copy_text(rel) or "").splitlines() if ln.strip()}
+                self.before_lines |= lines
+                self.after_lines |= lines
 
     def live(self, d):
         m = self.mapping.get(d.copy)
@@ -265,18 +277,27 @@ def _valid_changes(G, d):
     return out
 
 
-def _all_copy_text(G):
-    out = []
-    for d in G.diffs:
-        out.append(d.new)
-    for rel in G.mapping:
-        t = G.copy_text(rel)
-        if t:
-            out.append(t)
-    return "\n".join(out)
+def words(s):
+    return {w for w in WORD.findall((s or "").lower()) if len(w) >= 3}
 
 
-def removal_ok(G, d, line, cs, everything):
+def duplicate_ok(G, line, removal):
+    """A removal called a duplicate (R1-2): its surviving text is one or more whole lines that were in a
+    target before the edit and are still there after it, and they say what the removed line says: at least
+    half of its words and every date it holds."""
+    surv = [norm(x) for x in str(removal.get("surviving_text") or "").splitlines() if x.strip()]
+    if not surv or any(s not in G.before_lines or s not in G.after_lines for s in surv):
+        return False
+    text = " ".join(surv)
+    if not all(x in text for x in DATE.findall(line)):
+        return False
+    rw = words(line)
+    if not rw:
+        return norm(line) in surv
+    return 2 * len(rw & words(text)) >= len(rw)
+
+
+def removal_ok(G, d, line, cs):
     n = norm(line)
     for c in cs:
         for r in c.get("removals") or []:
@@ -287,10 +308,8 @@ def removal_ok(G, d, line, cs, everything):
                 return True
             if reason == "retired" and c.get("basis") == "order":
                 return True
-            if reason == "duplicate":
-                s = norm(r.get("surviving_text"))
-                if s and s in norm(everything):
-                    return True
+            if reason == "duplicate" and duplicate_ok(G, line, r):
+                return True
             if reason == "moved":
                 t = G.copy_text(str(r.get("moved_to") or ""))
                 if t is not None and n in norm(t):
@@ -300,7 +319,6 @@ def removal_ok(G, d, line, cs, everything):
 
 def g_accounting(G):
     out = []
-    everything = _all_copy_text(G)
     for d in G.diffs:
         if G.is_rm(d):
             continue  # the repeat-mistakes files are checked entry by entry (mistakes.check_copy)
@@ -309,9 +327,11 @@ def g_accounting(G):
         for ln in d.removed:
             if not ln.strip() or ln in mo:
                 continue
-            if not removal_ok(G, d, ln, cs, everything):
+            if not removal_ok(G, d, ln, cs):
                 out.append("%s: a removed line is not accounted for: \"%s\"" % (G.live(d), ln.strip()[:80]))
-        adds = [norm(a) for c in cs if c.get("basis") in ("finding", "order", "duplicate", "move")
+        # text a tidy writes (basis duplicate or move) is not evidence: only a finding or an order may add a
+        # line; text moved word for word from another target is not an addition (R1-2)
+        adds = [norm(a) for c in cs if c.get("basis") in ("finding", "order")
                 for a in (c.get("additions") or []) if isinstance(a, str)]
         for ln in d.added:
             if not ln.strip() or ln in mi:
@@ -376,7 +396,7 @@ def g_dated_lines(G):
                         ok = True
                 elif c.get("basis") == "duplicate":
                     for r in c.get("removals") or []:
-                        if n in norm(r.get("text")) and all(x in (r.get("surviving_text") or "") for x in dates):
+                        if isinstance(r, dict) and n in norm(r.get("text")) and duplicate_ok(G, ln, r):
                             ok = True
                 elif c.get("basis") == "order":
                     ok = True
