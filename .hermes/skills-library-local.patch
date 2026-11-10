@@ -33,7 +33,7 @@ index d8e25dc..da8c1c3 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..825a4ac 100644
+index d6a2493..41ff058 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,30 +60,39 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -47,7 +47,7 @@ index d6a2493..825a4ac 100644
 +- Second fetches: when a fix leans on data from a separate request (the page "as the server sends it"), probe with that request refused (403 or a check page) and read the user's latest real artefact for the tell that it was empty; a stand-in on 127.0.0.1 never fails that fetch (site-reviews review 1). When a fix lets one part stand for the whole (a script tag alone as a widget's code), probe inputs where the part depends on its served neighbours (a placeholder the script replaces; a library tag plus an inline call), each paired with the same input in the shape the fix was written for as a control: the part runs, draws nothing, and a checker that stands in at the captured size still says OK (review 2).
 +- Normalised keys: when a compare keys items by a normalised key (an address without its query) and counts them, probe two items of different origin sharing the key (one served, one a script adds only sometimes); a rule that skips an absent item still fails on the count (staging-fit-capture review 2).
 +- Moved margins: when a fold or merge moves a wrapper's margins onto an inner element that keeps a percentage width or max-width, probe a wrapper with side margins of its own; a proof on measured boxes compares border boxes, which leave margins out, so it passes while the percentage now resolves against the outer container and the element overflows by the margins (site-native-structure review 2).
-+- Own process group: when a fix gives a child a process group of its own, probe at both heads every way the parent can die that its handlers don't cover (SIGQUIT, a group SIGKILL): the child used to die with the group and now survives (staging-fit-renderer review 3).
++- Own process group: when a fix gives a child a process group of its own, probe at both heads every way the parent can die that its handlers don't cover (SIGQUIT, a group SIGKILL): the child used to die with the group and now survives (staging-fit-renderer review 3). Likewise, when a fix closes a guard's bypass on one target (a service-worker bypass on the pressed tab), probe every other target the guarded action can create: a window a press opens was still served by the worker (site-menu review 4).
 +- Rebased-in copies: when a rebase brings in a job that adds copies of elements to the page (a slider's loop clones) or a "never the copy" rule in a shared locator, probe every structural walk of the other tools on the new markup, not only the locator: a rule kept for one locator kind misses a walk that places marks itself (staging-fit-renderer review 4). A locator that finds a slider's slides by their printed ids is probed on a slider whose options have breakpoints, in a tab that crosses widths: Splide re-mounts it and swaps the real slides' ids for its own (`<root>-slide01`), only the `brxe-<id>` class survives, and every slide reads as missing while a check that skips script-styled boxes stays green (review 5).
  - Contracts: API, schema, CLI, config, events, storage, migrations, compatibility.
 -- Data and state: consistency, transactions, idempotency, rollback, retention.
