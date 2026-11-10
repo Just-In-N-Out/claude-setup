@@ -51,6 +51,16 @@ def fail(R, reason, rc=4):
     return rc
 
 
+def clear_failure(R):
+    """A run that found nothing new succeeded: a failed or stopped run shown at every session start is
+    cleared (R1-12, AC31). With no failure to clear, it writes nothing (AC4)."""
+    lr = paths.load_json(R.env.local / "last-run.json", None)
+    if isinstance(lr, dict) and lr.get("result") in ("failed", "stopped"):
+        write_last_run(R.env, {"run": R.id, "time": R.now.isoformat(timespec="minutes"), "mode": R.mode,
+                               "result": "nothing-new", "reason": "", "cleared": lr.get("run"), "commit": None,
+                               "files": 0, "findings": 0, "list_open": log.list_open(R.env), "push_pending": False})
+
+
 def preflight(R):
     env = R.env
     user = env.environ.get("SETUP_SYNC_GH_USER", "Just-In-N-Out")
@@ -130,6 +140,7 @@ def _run(env, mode, hooks):
             R.facts["format_errors"][:3]))
     if not sc.reads and not lines and not state.has_work(unsettled):
         shutil.rmtree(R.dir, ignore_errors=True)
+        clear_failure(R)
         return 0
 
     # steps 3 and 4: helpers, then the bar

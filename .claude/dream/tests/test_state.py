@@ -88,6 +88,39 @@ class StateTests(unittest.TestCase):
             h2.cleanup()
 
 
+class NoticeTests(unittest.TestCase):
+    def tearDown(self):
+        self.h.cleanup()
+
+    def notice(self):
+        import subprocess
+        out = subprocess.run(["bash", str(fh.REPO / ".claude/hooks/dream-notice.sh")], env=self.h.env, input="{}",
+                             capture_output=True, text=True).stdout.strip()
+        return json.loads(out)["systemMessage"] if out else ""
+
+    def test_a_later_run_with_nothing_new_or_dream_mode_off_clears_a_failed_run_from_the_session_start_line(self):
+        """R1-12 (AC31: a failed run shows until a run succeeds): a run that finds nothing new succeeds, and
+        with the dream switched off no run is coming to try again. A home with no failed run still gets no
+        last-run.json from a nothing-new run (AC4)."""
+        self.h = h = FakeHome("r112", repo=True)
+        fh.standard(h)
+        h.on_pull('[ "$N" = 1 ] || exit 0\necho "setup-sync: CONFLICT: both changed the same file" >&2\n')
+        self.assertEqual(h.run(), 4)
+        self.assertIn("FAILED", self.notice())
+        h.p(".claude/projects/%s/s1.jsonl" % fh.PROJ).unlink()
+        self.assertEqual(h.run(), 0, "nothing new")
+        self.assertEqual(self.notice(), "", "the failure is cleared")
+        self.assertEqual(h.local("last-run.json")["result"], "nothing-new")
+        # a failure, then dream mode off: the line no longer says the next run tries again
+        h.write(".claude/dream/local/last-run.json", json.dumps({
+            "run": "r9", "time": "2026-11-10T17:00-05:00", "mode": "live", "result": "failed", "reason": "GitHub unreachable",
+            "commit": None, "files": 0, "findings": 0, "list_open": 0, "push_pending": False}))
+        self.assertIn("FAILED", self.notice())
+        out = h.dream("mode", "off")
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(self.notice(), "")
+
+
 class ContextTests(unittest.TestCase):
     def tearDown(self):
         self.h.cleanup()

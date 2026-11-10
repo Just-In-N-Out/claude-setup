@@ -80,7 +80,28 @@ dream_unreadable_sessions_show_in_the_session_start_line() {
   return "$bad"
 }
 
-TESTS=(ac31_session_start_line_reports_the_last_dream dream_unreadable_sessions_show_in_the_session_start_line)
+# ruling R1-12: a failure is not shown while the dream is off, nor after a run that found nothing new
+dream_a_failed_run_is_not_shown_when_off_or_after_a_nothing_new_run() {
+  bad=0
+  local H="$ROOT/home-off"
+  mkdir -p "$H/.claude/dream/local"
+  last_run "$H" '{"run":"f1","time":"2026-11-10T05:00-05:00","mode":"live","result":"failed","commit":null,"files":0,"findings":0,"list_open":0,"push_pending":false,"reason":"GitHub unreachable"}'
+  start "$H"
+  case "$(msg)" in *"FAILED: GitHub unreachable."*) ;; *) problem "failed: [$out]" ;; esac
+  printf 'off\n' >"$H/.claude/dream/local/mode"
+  start "$H"
+  [ "$rc" = 0 ] && [ -z "$out" ] || problem "mode off: rc=$rc out=$out"
+  printf 'live\n' >"$H/.claude/dream/local/mode"
+  start "$H"
+  case "$(msg)" in *"FAILED"*) ;; *) problem "live again: [$out]" ;; esac
+  last_run "$H" '{"run":"n1","time":"2026-11-10T17:00-05:00","mode":"live","result":"nothing-new","cleared":"f1","commit":null,"files":0,"findings":0,"list_open":0,"push_pending":false,"reason":""}'
+  start "$H"
+  [ "$rc" = 0 ] && [ -z "$out" ] || problem "nothing new: rc=$rc out=$out"
+  return "$bad"
+}
+
+TESTS=(ac31_session_start_line_reports_the_last_dream dream_unreadable_sessions_show_in_the_session_start_line
+  dream_a_failed_run_is_not_shown_when_off_or_after_a_nothing_new_run)
 sel=("$@")
 [ ${#sel[@]} -gt 0 ] || sel=("${TESTS[@]}")
 for t in "${sel[@]}"; do
