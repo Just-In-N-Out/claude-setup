@@ -1,0 +1,673 @@
+{
+ "name": "dream-trim",
+ "plan": "~/.hermes/plans/claude-setup/dream-trim.md",
+ "base": "setup-repo main 131f9b0a (2026-11-09); anchors are each line's first 60 characters",
+ "pass1_subject": "trim: pass 1, move to references (lossless)",
+ "files": [
+  {
+   "path": ".hermes/skills/software-development/figma-to-bricks/SKILL.md",
+   "max_chars": 56000,
+   "groups": [
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/planning-checks.md",
+     "header": "# figma-to-bricks: PLANNER checks (lines moved whole from SKILL.md Step 3; load when planning)",
+     "heading": "## PLANNER checks",
+     "parent": [
+      {
+       "anchor": "- **PLANNER:** do Step 1, then write the plan (playback, app"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "  - **Separate wrong destination, unavailable page and wrong"
+      },
+      {
+       "anchor": "  - **Check who owns the broken element before planning plug"
+      },
+      {
+       "anchor": "  - **A layout that changes only on hover:** the hover is a "
+      },
+      {
+       "anchor": "  - **IR built from a component's other variants** (hover la"
+      },
+      {
+       "anchor": "  - **Any change to margins, gaps, nudges or text size must "
+      },
+      {
+       "anchor": "  - **List existing tests that assert the behaviour you are "
+      },
+      {
+       "anchor": "  - **A base-style change must audit integration budgets and"
+      },
+      {
+       "anchor": "  - **Widening a recognizer \"carefully\" (uncertain = base):*"
+      },
+      {
+       "anchor": "  - **Name the blast radius of a shared sizing/paint rule be"
+      },
+      {
+       "anchor": "  - **Define visual acceptance per element, tier and failure"
+      }
+     ],
+     "pointer": "  - **More PLANNER checks** (link and tab rows, who owns the element, hover-only layouts, IR from other variants, laptop widths 1100–1366, tests that pin the old behaviour, golden payloads, widening a recognizer, blast radius, per-element visual acceptance): load `references/planning-checks.md` → \"PLANNER checks\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/pitfalls.md",
+     "header": "# figma-to-bricks: long pitfalls (lines moved whole from SKILL.md Pitfalls; load when one matches)",
+     "heading": "## Bricks output and hand-built CSS",
+     "lines": [
+      {
+       "anchor": "- A bar painted inside an unpainted section frame becomes se"
+      },
+      {
+       "anchor": "- A phone-only copy made at understand with `show: \"phone\"` "
+      },
+      {
+       "anchor": "- Bricks prints a linked Image (no tag) as its link: `<a id="
+      },
+      {
+       "anchor": "- Hand-built paste CSS: Bricks' Image with tag `figure` is i"
+      },
+      {
+       "anchor": "- **A visible rectangle or seam around a picture:** inspect "
+      },
+      {
+       "anchor": "- **A feature needs a Bricks setting no sample shows:** sear"
+      }
+     ],
+     "pointer": "- **Bricks output pitfalls** (painted bands in unpainted sections, phone-only copies, linked Images, hand-built paste CSS, seams around pictures, settings no sample shows): load `references/pitfalls.md` → \"Bricks output and hand-built CSS\".",
+     "pointer_after": "- `adversarial-ux-test` on the plugin panel: the panel runs "
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/pitfalls.md",
+     "heading": "## Fixtures and text",
+     "lines": [
+      {
+       "anchor": "- Generic text fixtures use the builder option `family`, not"
+      }
+     ],
+     "pointer": "- **Text fixture pitfalls** (builder option `family`, line-height defaults, per-layer diagnostics): load `references/pitfalls.md` → \"Fixtures and text\".",
+     "pointer_after": "- `adversarial-ux-test` on the plugin panel: the panel runs "
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/pitfalls.md",
+     "heading": "## Fonts",
+     "lines": [
+      {
+       "anchor": "- Google supplied-face metadata: validate supported literal "
+      },
+      {
+       "anchor": "- **Google metadata and projection use different eligibility"
+      }
+     ],
+     "pointer": "- **Google font pitfalls** (supplied-face metadata, metadata vs projection eligibility): load `references/pitfalls.md` → \"Fonts\".",
+     "pointer_after": "- `adversarial-ux-test` on the plugin panel: the panel runs "
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/pitfalls.md",
+     "heading": "## Process and evidence",
+     "lines": [
+      {
+       "anchor": "- **Separate Figma preservation from disposable test-folder ",
+       "count": 2
+      },
+      {
+       "anchor": "- **Audit diagnostic exports before requesting them or calli",
+       "count": 2
+      },
+      {
+       "anchor": "- **Offer a safe release split instead of letting an expande"
+      },
+      {
+       "anchor": "- **Trace shared recognizer consumers before freezing the pl"
+      }
+     ],
+     "pointer": "- **Process and evidence pitfalls** (Figma preservation vs test-folder cleanup, auditing diagnostic exports, a safe release split, tracing recognizer consumers before freezing the file list): load `references/pitfalls.md` → \"Process and evidence\".",
+     "pointer_after": "- `adversarial-ux-test` on the plugin panel: the panel runs "
+    }
+   ]
+  },
+  {
+   "path": ".hermes/skills/autonomous-ai-agents/feature-dispatch/SKILL.md",
+   "max_chars": 75000,
+   "groups": [
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/dispatch-edge-cases.md",
+     "header": "# feature-dispatch: edge cases (lines moved whole from SKILL.md; load when one applies)",
+     "heading": "## Autonomous recommendation grants",
+     "lines": [
+      {
+       "anchor": "- **Autonomous recommendation grants:** before acting on lat"
+      }
+     ],
+     "pointer": "- **Autonomous recommendation grants** (record scope and end condition, expiry, re-checks): load `references/dispatch-edge-cases.md` → \"Autonomous recommendation grants\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/board.md",
+     "header": "# feature-dispatch: the board (lines moved whole from SKILL.md \"The board\")",
+     "heading": "## The board",
+     "lines": [
+      {
+       "anchor": "`~/.hermes/plans/dispatch.json` tracks every feature, so \"wh",
+       "offset": 2,
+       "through": "Plans live in `~/.hermes/plans/<project>/<name>.md` (not the"
+      }
+     ],
+     "pointer": "**Board commands, fields and phases** (`dispatch_board.py` calls, what the helper stamps, the JSON fields, waiting on Justin, `queued`, branch names, where plans live): load `references/board.md` → \"The board\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/model-routing.md",
+     "header": "# feature-dispatch: model routing details (lines moved whole from SKILL.md \"Which model runs which agent\")",
+     "heading": "## Limits, resets and explicit picks",
+     "lines": [
+      {
+       "anchor": "- *(2026-10-22 table, superseded: Opus planner, Sol 6.1 buil",
+       "through": "  - **On \"wait\"** (answer to the Opus-limit question above):"
+      }
+     ],
+     "pointer": "- **Superseded tables, Opus or Sol at its limit, after a reset, Justin's explicit model pick, \"wait\":** load `references/model-routing.md` → \"Limits, resets and explicit picks\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/model-routing.md",
+     "heading": "## Checking a routing change took effect",
+     "parent": [
+      {
+       "anchor": "- **How:** `delegate_task` has no model field, but the `dele"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "  - **Prepare before setting shared routing.** Finish the br"
+      },
+      {
+       "anchor": "  - **Serialize routing mutations.** Never put a dispatch an"
+      },
+      {
+       "anchor": "  - **Verify effective routing immediately, before bookkeepi"
+      },
+      {
+       "anchor": "  - **Recover a routing mismatch through the existing native"
+      },
+      {
+       "anchor": "  - **Verify execution, not model self-description.** Check "
+      },
+      {
+       "anchor": "  - **Wait for the config command to finish before dispatchi"
+      }
+     ],
+     "pointer": "  - **Checking a routing change took effect** (prepare, serialize, verify the live child, recover a mismatch, wait for the config command): load `references/model-routing.md` → \"Checking a routing change took effect\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/agent-defect-loop.md",
+     "header": "# feature-dispatch: Agent Defect Loop details (lines moved whole from SKILL.md \"Agent Defect Loop\")",
+     "heading": "## The finisher holds the release",
+     "parent": [
+      {
+       "anchor": "- **The finisher holds the release:** when the loop applies,"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "  - **Check integration before choosing a records-only finis"
+      },
+      {
+       "anchor": "  - **Close out records on that final candidate.** Synchroni"
+      }
+     ],
+     "pointer": "  - **Records-only finishers and closing records:** load `references/agent-defect-loop.md` → \"The finisher holds the release\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/agent-defect-loop.md",
+     "heading": "## Holds and accepted limits",
+     "lines": [
+      {
+       "anchor": "- **Baseline-only validation holds:** separate source correc"
+      },
+      {
+       "anchor": "- **Record each accepted limit before advancing the first un"
+      },
+      {
+       "anchor": "  - Resume the first unmet gate in the same turn: every fix "
+      }
+     ],
+     "pointer": "- **Baseline-only holds and accepted limits:** load `references/agent-defect-loop.md` → \"Holds and accepted limits\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/agent-defect-loop.md",
+     "heading": "## Reopened findings",
+     "parent": [
+      {
+       "anchor": "- **Verifier findings left, or any acceptance criterion not "
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "  - **A verifier or a review round that reopens a finding wi"
+      }
+     ],
+     "pointer": "  - **A finding reopened with new witnesses** (the fix patched examples, not the class): load `references/agent-defect-loop.md` → \"Reopened findings\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/main-chat-housekeeping.md",
+     "header": "# feature-dispatch: main-chat housekeeping (lines moved whole from SKILL.md; load when Justin asks for status or the chat is quiet)",
+     "heading": "## Ask to reset the main chat",
+     "lines": [
+      {
+       "anchor": "The main WhatsApp chat grows with every turn, and each messa",
+       "through": "- Before asking, make sure everything needed is saved: the b"
+      }
+     ],
+     "pointer": "**When and how to offer a reset** (the 🧹 message, when to ask, what to save first): load `references/main-chat-housekeeping.md` → \"Ask to reset the main chat\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/dispatch-edge-cases.md",
+     "heading": "## Reusing an old copy",
+     "lines": [
+      {
+       "anchor": "- **Reusing an old copy** (a stopped builder's worktree with"
+      }
+     ],
+     "pointer": "- **Reusing an old copy** (`git merge --ff-only main` in the brief, never `git reset --hard main`): load `references/dispatch-edge-cases.md` → \"Reusing an old copy\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/dispatch-edge-cases.md",
+     "heading": "## Evidence scope in corrective handoffs",
+     "lines": [
+      {
+       "anchor": "- **Carry evidence scope through every corrective handoff.**"
+      }
+     ],
+     "pointer": "- **Carry evidence scope through every corrective handoff:** load `references/dispatch-edge-cases.md` → \"Evidence scope in corrective handoffs\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/dispatch-edge-cases.md",
+     "heading": "## A test that pins replaced behavior",
+     "lines": [
+      {
+       "anchor": "- **Builder stopped on a test that pins intentionally replac"
+      }
+     ],
+     "pointer": "- **Builder stopped on a test that pins intentionally replaced behavior:** load `references/dispatch-edge-cases.md` → \"A test that pins replaced behavior\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/dispatch-edge-cases.md",
+     "heading": "## Why is it paused",
+     "lines": [
+      {
+       "anchor": "- **When Justin asks why work is paused or says to continue:"
+      }
+     ],
+     "pointer": "- **When Justin asks why work is paused or says to continue:** load `references/dispatch-edge-cases.md` → \"Why is it paused\"."
+    },
+    {
+     "target": ".hermes/skills/autonomous-ai-agents/feature-dispatch/references/main-chat-housekeeping.md",
+     "heading": "## What are we working on",
+     "lines": [
+      {
+       "anchor": "When Justin asks this (or \"what's going on\", \"list the agent",
+       "through": "**\"Will it update the docs / `CLAUDE.md`?\"** Answer from the"
+      }
+     ],
+     "pointer": "**Status answers** (the board and live agents, one block per feature, \"how long did it take?\", \"full breakdown\", docs questions): load `references/main-chat-housekeeping.md` → \"What are we working on\"."
+    }
+   ]
+  },
+  {
+   "path": ".hermes/skills/software-development/leorna/SKILL.md",
+   "max_chars": 52000,
+   "groups": [
+    {
+     "target": ".hermes/skills/software-development/leorna/references/gates.md",
+     "header": "# leorna: the gates of Doing a story step 4 (lines moved whole from SKILL.md)",
+     "heading": "## Step 4: the gates",
+     "parent": [
+      {
+       "anchor": "4. Run the gates and keep their real output:"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "   - **Host prerequisites:** on the Windows desktop (WSL Ubu",
+       "through": "     `GOOS=windows go vet` cannot typecheck the Cursor SQLit"
+      }
+     ],
+     "pointer": "   - **The gates in detail** (host prerequisites, control-plane and client `make check`, `GOOS=windows go vet` on macOS): load `references/gates.md` → \"Step 4: the gates\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/leorna/references/evidence-capture.md",
+     "header": "# leorna: ClickUp evidence while building, by role (lines moved whole from SKILL.md step 4b)",
+     "heading": "## Step 4b: evidence by role",
+     "parent": [
+      {
+       "anchor": "4b. **Collect ClickUp evidence while building**, following `"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "   - **Planner:** make evidence capture a named build task. ",
+       "through": "   - **Open every log before citing or attaching it and read"
+      }
+     ],
+     "pointer": "   - **Evidence by role** (planner, builder, finisher; the terminal capture recipe; open every log before citing it): load `references/evidence-capture.md` → \"Step 4b: evidence by role\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/leorna/references/live-acceptance-setup.md",
+     "heading": "## The seven setup steps",
+     "lines": [
+      {
+       "anchor": "1. **Verify both candidates first:** approved worktrees, bra",
+       "count": 8
+      }
+     ],
+     "pointer": "The seven setup steps (verify both candidates, install, reconcile, verify the launch, guide one manual step, preflight storage, escalate a sign-in blocker): `references/live-acceptance-setup.md` → \"The seven setup steps\".",
+     "pointer_after": "Load `references/live-acceptance-setup.md` for concrete arti"
+    }
+   ]
+  },
+  {
+   "path": ".claude/project-docs/figma-to-bricks/CLAUDE.md",
+   "max_chars": 56000,
+   "groups": [
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-status-log.md",
+     "header": "# Figma to Bricks v2: older Status build entries (lines moved whole from the project CLAUDE.md Status)",
+     "heading": "## Older builds",
+     "parent": [
+      {
+       "anchor": "- **Current build `2026-11-09.4`** (read `src/shared/build.t",
+       "count": 2
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "  - **2026-11-08.1 elementor-map (website importer):** with ",
+       "offset": 0,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - **Older builds** (2026-11-08.1 back to 26.1): `~/.hermes/skills/software-development/figma-to-bricks/references/project-status-log.md` → \"Older builds\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "header": "# Figma to Bricks v2: decision details (lines moved whole from the project CLAUDE.md \"Decisions the user made\"; each under a copy of its headline)",
+     "heading": "## Interactions use native Bricks elements",
+     "parent": [
+      {
+       "anchor": "- **Interactions use native Bricks elements** (2026-10-06, r"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Interactions use native Bricks elements** (2026-10-06, r",
+       "offset": 1,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Interactions use native Bricks elements\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## A grid of cards stays on one row on tablets",
+     "parent": [
+      {
+       "anchor": "- **On tablets, a grid of cards stays on one row rather than",
+       "count": 2
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **On tablets, a grid of cards stays on one row rather than",
+       "offset": 2,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"A grid of cards stays on one row on tablets\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Layout",
+     "parent": [
+      {
+       "anchor": "- **Layout:** one Container per section, 1440px max with gut",
+       "count": 2
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Layout:** one Container per section, 1440px max with gut",
+       "offset": 2,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Layout\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Native Buttons by shape alone",
+     "parent": [
+      {
+       "anchor": "- **Native Buttons by shape alone** (2026-10-06): a painted ",
+       "count": 7
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Native Buttons by shape alone** (2026-10-06): a painted ",
+       "offset": 7,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Native Buttons by shape alone\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Drawn phone designs",
+     "parent": [
+      {
+       "anchor": "- **Drawn phone designs** (user, 2026-10-08): designers some"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Drawn phone designs** (user, 2026-10-08): designers some",
+       "offset": 1,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Drawn phone designs\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Phones and tablets are generated from a desktop-only design",
+     "parent": [
+      {
+       "anchor": "- **Phones and tablets are generated from a desktop-only des",
+       "count": 3
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Phones and tablets are generated from a desktop-only des",
+       "offset": 3,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Phones and tablets are generated from a desktop-only design\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Free-floating designs on phones",
+     "parent": [
+      {
+       "anchor": "- **Free-floating designs on phones** (the user, 2026-10-07;"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Free-floating designs on phones** (the user, 2026-10-07;",
+       "offset": 1,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Free-floating designs on phones\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Website rules",
+     "parent": [
+      {
+       "anchor": "- **Website rules** (2026-10-02: HTML5 semantics, WCAG 2.2 A",
+       "count": 3
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Website rules** (2026-10-02: HTML5 semantics, WCAG 2.2 A",
+       "offset": 3,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Website rules\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## AI picture descriptions with alttext.ai",
+     "parent": [
+      {
+       "anchor": "- **AI picture descriptions with alttext.ai** (user, 2026-10"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **AI picture descriptions with alttext.ai** (user, 2026-10",
+       "offset": 1,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"AI picture descriptions with alttext.ai\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Figma colours in Bricks",
+     "parent": [
+      {
+       "anchor": "- **Figma colours in Bricks** (user and their manager, 2026-"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Figma colours in Bricks** (user and their manager, 2026-",
+       "offset": 1,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Figma colours in Bricks\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Forms",
+     "parent": [
+      {
+       "anchor": "- **Forms** (user, 2026-10-16: \"make the contact form and th"
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Forms** (user, 2026-10-16: \"make the contact form and th",
+       "offset": 1,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Forms\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Call and email links",
+     "parent": [
+      {
+       "anchor": "- **Call and email links** (user, 2026-10-19: \"whenever ther",
+       "count": 2
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Call and email links** (user, 2026-10-19: \"whenever ther",
+       "offset": 2,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Call and email links\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## Links to pages",
+     "parent": [
+      {
+       "anchor": "- **Links to pages** (user, 2026-10-19: \"whenever there's a ",
+       "count": 3
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **Links to pages** (user, 2026-10-19: \"whenever there's a ",
+       "offset": 3,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"Links to pages\"."
+    },
+    {
+     "target": ".hermes/skills/software-development/figma-to-bricks/references/project-decisions.md",
+     "heading": "## The site's own header and footer",
+     "parent": [
+      {
+       "anchor": "- **The site's own header and footer** (user, 2026-10-20: \"i",
+       "count": 2
+      }
+     ],
+     "lines": [
+      {
+       "anchor": "- **The site's own header and footer** (user, 2026-10-20: \"i",
+       "offset": 2,
+       "until_outdent": true
+      }
+     ],
+     "pointer": "  - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → \"The site's own header and footer\"."
+    }
+   ]
+  }
+ ],
+ "protect": {
+  "sections": [
+   {
+    "file": ".hermes/skills/software-development/leorna/SKILL.md",
+    "heading": "## Hard rules"
+   },
+   {
+    "file": ".hermes/skills/software-development/leorna/SKILL.md",
+    "anchor": "7. **\"make a PR\"** (push + open, never merge). \"push\" alone ",
+    "through": "   9. Offer **post** for the ClickUp evidence. **Post only o"
+   },
+   {
+    "file": ".hermes/skills/autonomous-ai-agents/feature-dispatch/SKILL.md",
+    "heading": "## Merge policy per project"
+   },
+   {
+    "file": ".hermes/skills/autonomous-ai-agents/feature-dispatch/SKILL.md",
+    "heading": "## Skills every agent loads"
+   },
+   {
+    "file": ".hermes/skills/autonomous-ai-agents/feature-dispatch/SKILL.md",
+    "heading": "### Phase 3b"
+   },
+   {
+    "file": ".hermes/skills/software-development/figma-to-bricks/SKILL.md",
+    "heading": "## Step 4: Merge into main"
+   },
+   {
+    "file": ".claude/project-docs/figma-to-bricks/CLAUDE.md",
+    "heading": "## Working in this repo"
+   }
+  ]
+ }
+}
