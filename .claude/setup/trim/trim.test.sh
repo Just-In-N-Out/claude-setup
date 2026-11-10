@@ -23,7 +23,8 @@ unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_AUTHOR_NAME GIT_AUTHOR_EMAIL GIT_
 
 OFFLINE="checker_catches_loss_on_fixture mover_builds_fixture_and_stops_on_bad_anchor ac1_pass1_is_lossless
 ac2_sizes_under_target ac3_headings_and_pointers_resolve ac4_existing_pins_still_pass ac5_checker_catches_loss
-ac6_protected_lines_intact ac7_pass2_removals_accounted ac8_land_survives_next_sync"
+ac6_protected_lines_intact ac7_pass2_removals_accounted ac8_land_survives_next_sync
+map_applies_after_status_build_number_changes"
 
 CHECK="$HERE/trim-check.py"
 MOVER="$HERE/move-to-references.py"
@@ -506,6 +507,82 @@ EOF
   [ "$(g worktree list | wc -l | tr -d ' ')" = 2 ] || fail "land.sh left a scratch worktree: $(g worktree list)" || return 1
   echo "# after sync.sh status: the copy is still the trimmed one and nothing is staged for it; lock released"
   g worktree remove --force "$WT" >/dev/null 2>&1
+  done_ok
+}
+
+map_applies_after_status_build_number_changes() {
+  # the next FigmaToBricks build rewrites the Status "Current build `…`" line (19 times in the 7 days before the base);
+  # the map land.sh makes pass 1 again with must still apply then, or the landing needs a map edit (review-1 R1-1)
+  newroot || return 1
+  need "$CHECK" || return 1; need "$MOVER" || return 1; need "$MAP" || return 1
+  p1_trees || return 1
+  local M="$MAP" F=.claude/project-docs/figma-to-bricks/CLAUDE.md old out rc
+  if [ "$B" != "$SRC" ]; then # land.sh makes pass 1 again with the map as it is just before the pass-1 commit
+    M="$B/.claude/setup/trim/maps/dream-trim.json"
+    need "$M" || return 1
+    cmp -s "$M" "$MAP" || fail "the map before the pass-1 commit is not this map: land.sh would make pass 1 again with" \
+      "the older one (a map change belongs before the pass-1 commit)" || return 1
+    echo "# the map land.sh makes pass 1 with (the pass-1 commit's parent's) is this map"
+  fi
+  # the map's files from the tree before pass 1, then what the next build's finisher writes into the project file
+  py - "$M" "$B" "$S/next" <<'EOF' || fail "could not copy the map's files" || return 1
+import json, os, shutil, sys
+mp, src, dst = sys.argv[1:4]
+m = json.load(open(mp, encoding='utf-8'))
+for p in sorted({e['path'] for e in m['files']} | {g['target'] for e in m['files'] for g in e['groups']}):
+    if os.path.isfile(os.path.join(src, p)):
+        os.makedirs(os.path.dirname(os.path.join(dst, p)), exist_ok=True)
+        shutil.copyfile(os.path.join(src, p), os.path.join(dst, p))
+EOF
+  old=$(py - "$S/next/$F" <<'EOF'
+import re, sys
+p = sys.argv[1]
+t = open(p, encoding='utf-8', newline='').read().split('\n')
+i = next(k for k, l in enumerate(t) if l.startswith('- **Current build `'))
+was = t[i]
+t[i] = re.sub(r'^- \*\*Current build `[^`]+`', '- **Current build `2099-01-01.1`', was)
+if t[i] == was or '2099-01-01.1' in was:
+    sys.exit('no build number to bump: ' + was[:60])
+t.insert(i + 2, '  - **2099-01-01.1 next-build (made up):** the entry the next finisher writes at its merge.')
+t = [re.sub(r'^## Status \(\d{4}-\d\d-\d\d\)$', '## Status (2099-01-01)', l) for l in t]
+open(p, 'w', encoding='utf-8', newline='').write('\n'.join(t))
+print(was[:60])
+EOF
+  ) || fail "could not bump the build number in $F" || return 1
+  echo "# bumped the Status line '$old' to build 2099-01-01.1 and added that build's entry"
+  cp -a "$S/next" "$S/moved"
+  out=$(py "$MOVER" --map "$M" --root "$S/moved" 2>&1); rc=$?
+  printf '%s\n' "$out" | cut -c1-160 | sed 's/^/#   /'
+  [ "$rc" = 0 ] || fail "the mover refused the files after the build number changed (exit $rc)" || return 1
+  py "$CHECK" pass1 --map "$M" --base "$S/next" --head "$S/moved" 2>&1 | head -n 20 | cut -c1-200
+  [ "${PIPESTATUS[0]}" = 0 ] || fail "the move after the build number changed is not lossless" || return 1
+  grep -qF -- '- **Current build `2099-01-01.1`**' "$S/moved/.hermes/skills/software-development/figma-to-bricks/references/project-status-log.md" \
+    || fail "project-status-log.md does not carry the Status line as it is at landing" || return 1
+  grep -qF -- '- **Current build `2099-01-01.1`**' "$S/moved/$F" && grep -qF -- '  - **2099-01-01.1 next-build (made up):**' "$S/moved/$F" \
+    || fail "the project file lost the new build's Status line or entry" || return 1
+  ! grep -qF -- '  - **2026-11-08.1 elementor-map (website importer):**' "$S/moved/$F" \
+    || fail "the older build entries did not move" || return 1
+  echo "# after the bump the map still applies: the move is lossless, the new build stays, the older entries move"
+  # control: an anchor holding the build number is refused on the same files (the bump reaches what this test guards)
+  py - "$M" "$S/old-anchor.json" "$old" <<'EOF' || fail "could not write the control map" || return 1
+import json, sys
+src, dst, was = sys.argv[1:4]
+m = json.load(open(src, encoding='utf-8'))
+n = 0
+for e in m['files']:
+    for g in e['groups']:
+        for s in g.get('parent', []) + g.get('lines', []):
+            if s['anchor'].startswith('- **Current build'):
+                s['anchor'] = was
+                n += 1
+if n != 1:
+    sys.exit(f'{n} Current build anchors in the map, want 1')
+json.dump(m, open(dst, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+EOF
+  cp -a "$S/next" "$S/moved-old"
+  out=$(py "$MOVER" --map "$S/old-anchor.json" --root "$S/moved-old" 2>&1); rc=$?
+  [ "$rc" = 2 ] && grep -qF 'anchor missing' <<<"$out" || fail "control: an anchor with the old build number: exit $rc, want 2 'anchor missing'" || return 1
+  echo "# control: an anchor that holds the build number is refused after the bump (exit 2, anchor missing)"
   done_ok
 }
 
