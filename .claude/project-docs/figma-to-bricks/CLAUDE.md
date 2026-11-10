@@ -7,8 +7,19 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-10)
 
-- **Current build `2026-11-10.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-10.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-10.7 panel-embed-code (website importer):** on both routes (the Figma panel's website route and `npm run
+    site`) a pasted Code element runs only a widget's own code: the slot's own served markup, a frame's own markup, a
+    frame a script made as it showed, or the one frame shown at the slot from the capture's code reading; a floating
+    widget's code is pasted only when the file that drew it is a tag the old page served and it drew the box by itself
+    (no other file, no code with no file, none of the page's own code on its stack: Justin's "Safe rule"), else it is
+    listed with one sentence saying why; a box the site's own script draws through another host's file is rebuilt as
+    the site's own only when it holds just the site's links or pictures; what a capture can't prove is an empty box of
+    its size (a floating one listed), named; an older capture pastes nothing collected ("capture the page again with
+    this build"); the code route's bytes and Figma designs are as before. Not yet confirmed: paste a self-drawing
+    served file at all, or always list floating widgets; the "unproven, add it by hand" ruling. Paste check **3dv**
+    (AC11, live).
   - **2026-11-10.6 staging-fit-cancels (website importer):** a website paste no longer cancels a declaration at a
     width range with `revert` (it rolled back the whole author origin, so a wrapper's rule at a narrower range turned a
     painted button into a plain underlined link with square corners): a value a range drops is written as bounded media
@@ -47,8 +58,8 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
     the loader's own tag (never the page's other scripts), so its arrows and swipes work in Bricks once code signatures
     are regenerated; a tag alone counts only where the capture proves it draws the widget by itself, else the still
     copy stays, named; `site:check` stands in for a live widget; the capture hears the page as the server sent it;
-    pastes without such a widget and Figma designs are byte for byte as before. The panel's website route still pastes
-    the whole collected snippet (its own job). Paste check **3dq** (AC9, live: B-Dry's reviews on staging /homev2/
+    pastes without such a widget and Figma designs are byte for byte as before. The panel's website route pasted the
+    whole collected snippet until Build 2026-11-10.7 (panel-embed-code). Paste check **3dq** (AC9, live: B-Dry's reviews on staging /homev2/
     after a re-capture).
   - **2026-11-10.1 site-faq (website importer):** with `--elementor`, a pasted Elementor or ElementsKit FAQ opens at
     load the answers the site opens at the design width (none, one or several; a narrower width that shows other
@@ -596,6 +607,12 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - **bdryswi.com's pages are a live check owed to him** (AC14/AC15, "Mark it mine, merge now"): its bot check stops
     every automated Chrome, so every sitemap page is captured and checked only once he allow-lists the capture; AC14
     covers the other corpus sites' homes.
+  - **A pasted Code element runs only a widget's own code** (panel-embed-code; Justin, 2026-11-10, "Panel widget code
+    go" and, for floating widgets, "Safe rule"): never a tracking tag, a tag manager, a loader, a shared library,
+    another widget's script or a page script. A floating widget's code is pasted only when the file that drew it is a
+    tag the old page served and it drew the box by itself; anything started by a starter script, a tag manager or the
+    page's own script is listed with a plain note (add its install code by hand). Where a capture can't prove a
+    widget's own code nothing is pasted to run. Both routes read `src/core/snapshot/embed-code.ts`.
 - **The website importer copies the site's own code** (Justin, 2026-11-04: "I want a method that can help us get one
   to one, not relying on photos or images but actual code"; method review
   `~/.hermes/plans/figma-to-bricks/evidence/method-review/report.md`): a site's elements, classes and CSS rules go into
