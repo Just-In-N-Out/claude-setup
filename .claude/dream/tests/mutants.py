@@ -632,8 +632,8 @@ MUTANTS = [
     ('R5p', 'equally frequent kinds go by name again', [('.claude/dream/lib/dreamlib/mistakes.py', 'key=lambda o: (-o["count"], -recency(o), o["kind"]))\n', 'key=lambda o: (-o["count"], o["kind"]))\n')], ['r51tie']),
     ('R5q', 'equally frequent kinds go oldest first', [('.claude/dream/lib/dreamlib/mistakes.py', 'key=lambda o: (-o["count"], -recency(o), o["kind"]))\n', 'key=lambda o: (-o["count"], recency(o), o["kind"]))\n')], ['r51tie']),
     ('R5r', 'a tally with nothing counted yet is migrated too, so a run with nothing new changes it', [('.claude/dream/lib/dreamlib/mistakes.py', '    if "story_time" in tally or not tally.get("story_seq"):\n', '    if "story_time" in tally:\n')], ['ac21']),
-    ('P5a', 'the editor is not told the fold that is always accepted (R5-3 back)', [('.claude/dream/prompts/editor.md', '   The safe way, which the fold rule always accepts, is a comma or a full stop and a space before the added\n', '   \n')], ['safefold']),
-    ('P5b', 'the editor is not told the name rule where it writes a new memory note (R5-4 back)', [('.claude/dream/prompts/editor.md', '   A new memory note you write for a finding goes straight in its memory folder, never in a subfolder, with a\n', '   \n')], ['newnote']),
+    ('E5a', 'the editor is not told the fold that is always accepted (R5-3 back)', [('.claude/dream/prompts/editor.md', '   The safe way, which the fold rule always accepts, is a comma or a full stop and a space before the added\n', '   \n')], ['safefold']),
+    ('E5b', 'the editor is not told the name rule where it writes a new memory note (R5-4 back)', [('.claude/dream/prompts/editor.md', '   A new memory note you write for a finding goes straight in its memory folder, never in a subfolder, with a\n', '   \n')], ['newnote']),
 ]
 
 
