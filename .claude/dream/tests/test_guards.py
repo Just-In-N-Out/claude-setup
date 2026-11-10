@@ -1043,6 +1043,10 @@ class PointerTests(unittest.TestCase):
         self.assertTrue(any("an added line is not listed" in x for x in self.judge(
             {NOTE: (mbig, mbig.replace(msec, pointer("../../%s/memory/old-build-notes.md" % fh.OTHER) + "\n")),
              far[1:]: (None, msec)}, [mv(NOTE, far[1:], msec)])), "a note of another folder")
+        self.assertTrue(any("an added line is not listed" in x for x in self.judge(
+            {NOTE: (mbig, mbig.replace(msec, pointer("../../%s/memory/old-build-notes.md" % fh.OTHER) + "\n")),
+             far[1:]: ("# Old\n", "# Old\n" + msec)}, [mv(NOTE, far[1:], msec)])),
+            "an existing note of another folder (its pointer would sit in the note the text left)")
         # end to end: a run with one correction; the editor also moves the over-budget skill's section to
         # references/ and leaves the pointer; it goes live and the pointer names the file that holds the section
         self.h.cleanup()

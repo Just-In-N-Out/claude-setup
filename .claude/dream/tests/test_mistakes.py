@@ -462,6 +462,20 @@ class ScriptRewriteTests(unittest.TestCase):
                          targets.load_rules(env))
         self.assertEqual(guards.run_all(G), [], "every guard passes the full set of ordered entries")
         self.assertFalse(any(k.get("parked") for k in tally["kinds"].values()))
+        # nothing less frequent jumps ahead: room for the rare kind's entry but not for the more frequent one's
+        two = dict(state.default_tally(), backfill_done=True)
+        two["stories"] = {"proj": list(pool)}
+        two["story_seq"] = ["proj/" + s for s in pool]
+        two["kinds"] = {"often-guard": kind_row({"proj": pool[5:]}), "rare-guard": kind_row({"proj": pool[8:]})}
+        est = {k: len(mistakes.heading_for(k, MIST, two).encode()) + mistakes.ENTRY_ALLOWANCE for k in two["kinds"]}
+        self.assertGreater(est["often-guard"], est["rare-guard"])
+        header = fh.RM_HEADER.format(p="proj")
+        pad = mistakes.FILE_TARGET - est["rare-guard"] - len(header.encode()) - 1
+        h.write(fh.PROJ_RM, header + "x" * pad + "\n")
+        self.assertEqual(len(h.read(fh.PROJ_RM).encode()) + est["rare-guard"], mistakes.FILE_TARGET, "room for the rare one exactly")
+        self.assertEqual(mistakes.orders(env, two), [], "the rare kind waits behind the more frequent one")
+        del two["kinds"]["often-guard"]
+        self.assertEqual([o["id"] for o in mistakes.orders(env, two)], ["add:rare-guard"], "control: alone, it fits")
 
     def test_text_outside_the_entries_of_a_repeat_mistakes_file_cannot_change(self):
         """R1-8: the line accounting skips these files, so check_copy checks everything in them: the header and
