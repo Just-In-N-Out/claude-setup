@@ -229,9 +229,37 @@ def normalize_copy(env, run_dir, mapping, tally, orders_):
                 f.write_text(n)
 
 
+def _mistake(head):
+    m = HEAD.match(head.rstrip("\n"))
+    return m.group("mistake") if m else None
+
+
+def _shape_problems(live, old, new, areas_ok):
+    """Text outside the entries (R1-8): every builder, reviewer and fixer reads these files, and the line
+    accounting does not look at them, so the header and the text under an area stay as they were, and a new
+    area is one an order names, with nothing under it but its entries."""
+    out = []
+    h_old, a_old = parse(old)
+    h_new, a_new = parse(new)
+    if h_new.strip() != h_old.strip():
+        out.append("%s: the header changed; only the script writes it" % live)
+    pre_old = {AREA.match(a.rstrip("\n")).group(1): pre for a, pre, _ in a_old}
+    for area, pre, _ in a_new:
+        name = AREA.match(area.rstrip("\n")).group(1)
+        if name in pre_old:
+            if pre.strip() != pre_old[name].strip():
+                out.append("%s: text under area %s changed outside any entry" % (live, name))
+        elif name not in areas_ok:
+            out.append("%s: a new area %s that no order names" % (live, name))
+        elif pre.strip():
+            out.append("%s: text under the new area %s outside any entry" % (live, name))
+    return out
+
+
 def check_copy(G):
     """Each repeat-mistakes file after the edit: exactly the entries the tally and the orders say, in the
-    entry format, wording unchanged except for an order, most frequent first within each area."""
+    entry format, wording unchanged except for an order, most frequent first within each area, and no text
+    outside the entries changed."""
     out = []
     rms = {v["live"]: c for c, v in G.mapping.items() if v["live"].endswith("/references/repeat-mistakes.md")}
     diffs = {G.live(d): d for d in G.diffs}
@@ -247,6 +275,14 @@ def check_copy(G):
             out.append("%s: a repeat-mistakes file was deleted" % live)
             continue
         before, after = entries_of(old), entries_of(new)
+        areas_ok = set()
+        for o in G.orders.values():
+            if (o["action"] == "add" and o["file"] == live) or (o["action"] == "move" and o.get("to") == live):
+                areas_ok.add(o.get("area") or "General")
+                src = diffs[o["file"]].old if o["file"] in diffs else (G.copy_text(rms.get(o["file"], "")) or "")
+                if o["kind"] in entries_of(src):
+                    areas_ok.add(entries_of(src)[o["kind"]][0])
+        out += _shape_problems(live, old, new, areas_ok)
         want = {k for k in before}
         for o in G.orders.values():
             if o["action"] in ("remove", "move") and o["file"] == live:
@@ -260,17 +296,20 @@ def check_copy(G):
             out.append("%s: entries %s%s; the orders say otherwise" % (
                 live, ("missing " + ", ".join(missing)) if missing else "", (" unexpected " + ", ".join(extra)) if extra else ""))
         for kind, (area, head, body) in after.items():
-            if BUILD not in body or CHECK not in body:
-                out.append("%s: entry %s needs a \"Build it this way\" and a \"Check for it\" line" % (live, kind))
+            lines = [ln for ln in body.splitlines() if ln.strip()]
+            if len(lines) != 2 or not lines[0].startswith(BUILD) or not lines[1].startswith(CHECK):
+                out.append("%s: entry %s must be its heading, one \"Build it this way\" line and one \"Check for it\" "
+                           "line" % (live, kind))
             m = HEAD.match(head.rstrip("\n"))
             if not m or m.group("n") is None or head != heading_for(kind, m.group("mistake"), G.tally):
                 out.append("%s: entry %s has a heading the tally does not give" % (live, kind))
-            if kind in before and before[kind][2] != body:
+            if kind in before and (before[kind][2].rstrip() != body.rstrip() or
+                                   _mistake(before[kind][1]) != _mistake(head)):
                 out.append("%s: the wording of entry %s changed with no order" % (live, kind))
             mv = [o for o in G.orders.values() if o["action"] == "move" and o["kind"] == kind and o.get("to") == live]
             for o in mv:
                 src = entries_of(diffs[o["file"]].old if o["file"] in diffs else (G.copy_text(rms.get(o["file"], "")) or ""))
-                if kind in src and src[kind][2] != body:
+                if kind in src and (src[kind][2].rstrip() != body.rstrip() or _mistake(src[kind][1]) != _mistake(head)):
                     out.append("%s: entry %s was not moved word for word" % (live, kind))
         _, areas = parse(new)
         for area, _pre, es in areas:
