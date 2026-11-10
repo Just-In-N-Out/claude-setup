@@ -27,7 +27,7 @@ Never use `--dangerously-skip-permissions`. `claude agents` lists background ses
 
 **Gotchas:**
 - **`--allowedTools` isn't a strict Bash allowlist.** Commands Claude Code treats as read-only (`grep`, `head`, `git ls-files`) are auto-approved anyway, and `Bash(git diff:*)` doesn't match `git -C <dir> diff`.
-- **A throwaway HOME/CLAUDE_CONFIG_DIR doesn't isolate a run whose cwd is under `$HOME`** (e.g. a project under `TMPDIR=~/.cache/...`): Claude Code walks parent folders for `.claude/skills`, so the real skills show in init's `skills`/`slash_commands` and reach the model. Put the project outside `$HOME`, or check init's skills list is empty, before claiming the run read nothing real (86bctmuwy review 2 + auditor, 2.1.319).
+- **A throwaway HOME/CLAUDE_CONFIG_DIR doesn't isolate a run whose cwd is under `$HOME`** (e.g. a project under `TMPDIR=~/.cache/...`): Claude Code walks parent folders for `.claude/skills`, so the real skills show in init's `skills`/`slash_commands` and reach the model. Put the project outside `$HOME`, or check init's skills list is empty, before claiming the run read nothing real (86bctmuwy review 2 + auditor, 2.1.319). The same init line then lists his skill names in the AC log: when rendering it for a screenshot, shorten lines over ~500 characters, say so on the page, and keep the raw log local (86bctmuwy verifier 2).
 - **`~/.claude/CLAUDE.md` still loads under `--setting-sources project`.**
   - Agents under test then append the pipeline's `verdict`/`ac_status`/`skill_lessons`/`MAIN SESSION` lines. Read past them when judging a report's format.
   - The session transcripts under `~/.claude/projects/` carry Justin's email addresses, so never share them as evidence.
