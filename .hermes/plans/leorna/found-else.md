@@ -365,3 +365,9 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - P3 (control plane, flaky): internal/library/upstream TestCloneStopsAtItsDeadlineWhenTheServerStalls fails under heavy load, passes alone (86bcxnymy fixer 1).
 - 2026-11-11 (86bcm928p fixer 2) P2: GO-2026-6859 (net/http, go1.27.3, fixed in 1.27.4) fails `make audit` on control-plane main 4ef14ef too; go.work pins go 1.27.3 and CI uses go-version-file: go.work, so CI audit will likely fail on main and every PR until a separate toolchain-bump PR. Offered to Justin as its own small PR.
 - 2026-11-11 (86bcm928p fixer 2) P3: feat/86bcm928e-custom-integrations commit 27ca94f, internal/integration/custom_checks_test.go trips gitleaks generic-api-key 12 times; plain `make secrets` fails for every story in the shared clone until it changes.
+
+## 86bcm928e fixer 1 (2026-11-11)
+- P2/P3 (needs a gate-policy call): S6, the library gate's gitleaks scan of Codex's rendered config, refuses an ordinary token variable with digits (a token variable named like BILLING_EU1 plus _API_KEY in bearer_token_env_var or env_http_headers) with the generic credential message. Pre-existing in internal/library/gate, shared with library MCP templates. Evidence: evidence/86bcm928e/fixer-1/probe-token-variable-94fa2ee.log.
+- P3: when the scanner is unavailable (ErrCheckUnavailable → 503), the definition form keeps what was typed, so a pattern-only token (ghp_…) gitleaks would have caught comes back in the page. README says so; clearing the form is a UX call.
+- P3: `${{{scope}}}` with a non-name example (eu-west) still saves at define; refused only at configure when a value builds an undeclared name. A define-time "no {{parameter}} inside ${…}" rule would be stricter.
+- Medium (all stories): `make check`'s govulncheck fails on GO-2026-6859 (net/http in go1.27.3, fixed in 1.27.4); base 4ef14ef fails the same. go.work pins 1.27.3, so CI's audit will flag it until the toolchain moves.
