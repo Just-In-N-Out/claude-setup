@@ -261,3 +261,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-11 | capture-refused-styles | figma-to-bricks | test: a test/web capture of a fixture site logging every request's User-Agent asserts none carries HeadlessChrome (npm run test:web) | offered
 - 2026-11-11 | 86bcm928e bring-main-1 | leorna | script: the trial-merge recipe runs `go test ./internal/web/ ./cmd/control-plane/` with no DB URL on every trial tree and fails on "panic:" | offered
 - 2026-11-11 | footer-icon-list | feature-dispatch | script: before dispatching a verifier/auditor, refuse if <evidence>/<role>/ changed in the last 30 min or another brief for the same role and head was saved in the last hour | offered
+- 2026-11-11 | media-avif-alt | implementation-planning | script: plan lint beside ac-check.sh printing every line matching ac_start+AC<n> that isn't a definition, run by the orchestrator in step 3 before showing the plan | offered

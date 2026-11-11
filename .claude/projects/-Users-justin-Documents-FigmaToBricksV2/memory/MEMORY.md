@@ -28,3 +28,4 @@
 - [Importer test steps](importer-test-steps.md) — Elementor sites: test with --elementor (plain route drops scripts, FAQ dead); tablet/phone gap vs site:check is open (2026-11-09)
 - [Importer native structure](importer-native-structure.md) — Justin wants the importer paste to be Section/Container/Block, Heading, Button… like the Figma plugin, not div div div (2026-11-09)
 - [Importer media upload](importer-media-upload.md) — command-line upload of scanned pictures to his WordPress media (2026-11-10); only he runs it; he expects ONE command that asks WordPress details first, then scans and uploads (job site-one-command)
+- [alttext.ai API source](alttext-ai-api-source.md) — docs unfetchable; read its WP plugin on plugins.svn; plugin describes every upload itself
