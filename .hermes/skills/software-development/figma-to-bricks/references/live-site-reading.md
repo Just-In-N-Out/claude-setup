@@ -31,6 +31,16 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   <anchor px>` with a hidden spacer copy, Swiper's slide widths and row `translate3d`), right only at each range's anchor.
   Tell them apart by the served `style` attribute (a MutationObserver's first `oldValue`, installed before the page's
   scripts) and the capture's own sheet ids, never by property names (web-code-page planner).
+- **A check that comes back partway through a scan** (capture-refused-styles planner, 2026-11-10; bdryswi.com is on
+  WordPress.com, whose defensive mode re-checks the same browser): since capture-speed, later page loads of a kind of
+  visitor are answered with the capture's kept page (`replay.ts`), retries included, so no load can meet the check
+  again and every stylesheet, script and picture gets 403 until the run ends ("never got the site's stylesheet …
+  (answered 403) in 3 tries", at a different range each run, 1 window or 4). A retry meant to recover from a refusal
+  must ask the site for the page itself. A local fixture whose pass lasts a few seconds and only a page load can earn
+  reproduces it (`base-expiry8-w4.json`). A refused stylesheet's body is empty in Network even with buffers on (only a
+  Fetch Response-stage pattern for `Stylesheet` reads it); `CSS.enable` asks the site again for each sheet Chrome
+  holds no cached copy of (no-store: twice per load), and if that is refused `getMatchedStyles` loses source ranges
+  and the range is read as longhands, which the styled check never sees.
 - A site may start answering automated Chrome with a bot check ("Checking your browser…"), as bdryswi.com did on
   2026-10-29 after a day of agent probes. Hiding the automation flag is refused as bot-check circumvention: stop
   loading that site and hand the live check to Justin (allow-list the capture or pause the check). A bot page need not
