@@ -553,3 +553,7 @@ READY FOR THE USER on 1f98596 (ac-check.sh --reviews); hand-over drafted, nothin
 - ac-check.sh --reviews: READY FOR THE USER: 7 of 8 ACs proven on 0af4471; AC8 (live) owed to Justin.
 - Hand-over drafts refreshed by finisher 2 in ~/.hermes/cache/scratch/ (PR text, review prompt, ClickUp draft "post after merge", team message "send after merge"); AC2/AC6 images re-rendered without notes.
 - Waiting on Justin: AC8 live; "make a PR" (commit the PROJECT_MEMORY.md line, gates, push, PR, PR-number record, PR-head verifier → auditor → ac-check); post only after merge. Still owed before post: gates screenshot of the pushed head, AC8 screenshots.
+
+## Done (main session, 2026-11-11)
+- PR #33 merged by Justin 2026-11-11 16:31Z (merge 7d2e16e) at head eef72c7 (main 3f4bad7, Go 1.27.4, brought in; review-7 clean). Verifier 3 + auditor 3 clean on eef72c7; ac-check READY FOR THE USER (AC8 live not run; Justin said not to mention AC8 in outgoing text).
+- ClickUp closing comment and 7 AC images (verifier/ on eef72c7) posted 2026-11-11. Card status not changed.
