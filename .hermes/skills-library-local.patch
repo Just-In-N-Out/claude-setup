@@ -226,7 +226,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..3e34aea 100644
+index f2d882d..c629d3d 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,63 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -646,7 +646,7 @@ index f2d882d..3e34aea 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,13 +529,113 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,13 +529,115 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -670,7 +670,9 @@ index f2d882d..3e34aea 100644
 +    `-overlay` reaches files the go command compiles, including `//go:embed`
 +    files (an embedded SQL migration mutated with nothing on disk; mutate its
 +    down file too, or the cleanup rollback fails and muddies the result, 901w
-+    S1–S6). `go build -overlay` does the same for a binary: when wiring is
++    S1–S6). `go build -overlay` does the same for a binary (its `vcs.modified`
++    stamp still reads false, so that stamp can't prove a binary is unmutated: each
++    verifier or auditor builds its own; 86bcxnymy verifier): when wiring is
 +    "proven by the real binary", build one mutant binary per removed wiring
 +    line and require the real-binary probe to flip for each (86bcm901r F6).
 +    Mutate any other run-time input (a JSON record, a diff the test applies) in the real file,
