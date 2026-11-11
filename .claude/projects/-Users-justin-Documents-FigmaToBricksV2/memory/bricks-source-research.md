@@ -28,3 +28,10 @@ nav JS. Related: [[site-and-team]], [[reading-the-live-site]].
 Rich Text (`text`) prints its words through `Helpers::parse_editor_content` (helpers.php:2732-2803, text.php:85): it strips one outer `<p>`, then runs wptexturize (curly quotes, en dashes, ×, …), wpautop (`<br>\s*<br>` becomes a paragraph break) and do_shortcode; Basic Text prints raw (text-basic.php:79-111). The repo renderer doesn't model it (rich-text review 1, 2026-11-04).
 
 **Bricks Image link shape (native-structure review 1, 2026-11-09):** Bricks' schema (`image.json` 2.4.4) and `image.php` 2.2 make an Image's `link` a select (lightbox | attachment | media | url) with the address in a separate `url` link setting; the plugin writes `link: {type, url}` on Images, which DJ staging 2.4.4 prints with `href`. Unproven on B-Dry staging 2.4.2: a copied linked Image from Justin would settle it (wanted with the Button, Divider and Offcanvas samples).
+
+**From Bricks 2.2's `includes/assets.php`** (site-shared-styles planner, 2026-11-11; saved in
+`~/.hermes/plans/figma-to-bricks/evidence/site-shared-styles/planner/bricks-2.2/`): a global class's control CSS is
+generated once per element name that carries it, in the order classes are first met (L1012-1068); a colour setting whose
+id the site's palette holds prints the palette's `var(--name)`, otherwise its own raw, so `var(--name, #hex)` falls back
+before the palette is imported (L845-871); a palette colour `{raw: var(--x), light}` prints `:root{--x: light}`
+(L742-834). The Colors import itself on 2.4.x is still unseen. The Background control: see media-clickable (L1971-2108).
