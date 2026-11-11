@@ -5,10 +5,22 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-10)
+## Status (2026-11-11)
 
-- **Current build `2026-11-10.8`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.1 site-one-command (website importer):** `npm run site:import -- <old page> <https://your-site>
+    [--elementor] [--user …] [--dry-run] [--no-shots] [--out …]` asks for the WordPress site, user name and Application
+    Password first and tests the login (a wrong one stops in seconds, before any scan), scans the page (the person
+    check in the visible window if the site asks), stops only for a real failure (a failed scan or one that isn't the
+    page itself, a range read without the site's styles, `site:upload`'s own conversion refusals) and prints every
+    smaller problem `capture:check` names as a warning (Justin's "Only real failures"), lists the pictures with their
+    alt texts and what the library holds already, uploads with `site:upload`'s uploader only after a `yes` typed after
+    the question shows (anything typed before it, with or without Enter, is dropped), and writes the pastes in
+    `~/Downloads/<page name>/` with numbered next steps; `--dry-run` asks no password and sends nothing; an ending that
+    didn't upload everything prints the `site:upload` line that finishes from that scan; `capture`, `capture:check`,
+    `site`, `site:upload` and the Figma plugin are byte for byte as before. Q1–Q4 not yet confirmed. Paste check
+    **3dw** (AC13, AC14, live: his own run against B-Dry staging, then the paste).
   - **2026-11-10.8 control-weight (website importer):** on the code route an element its parent reads as an inline
     word at some widths (a link that is a word of its wrapper's line on small tablets, its own painted button
     elsewhere) carries those widths in its own class, at every depth the reading nests (a link's icon and label) and
@@ -332,14 +344,19 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   GET/HEAD/OPTIONS, with Chrome's own report uploads off, and is ended by killing its process group, never asked to
   close (a closing page sends its goodbye POSTs); it stops at a login page and never signs in. A tool that loads a
   user's site keeps to this (`tools/lib/read-only.ts`).
-- **One tool writes to WordPress: `npm run site:upload`** (Justin, 2026-11-10: a scanned page's pictures "upload
-  to my Wordpress media library like how it is in the plugin", run "From the command line"). It only adds media
-  items (never changes, moves or deletes one; never touches pages, posts or settings), only on the site whose
-  address was typed, after reading that site and a typed `yes`; the Application Password is typed at its hidden
-  prompt and never goes in an argument, a variable, a file, the paste or a log. Only Justin runs it, in his own
-  terminal, against his own site. Agents never run it against his site or any live site, never ask for or hold his
-  password, and test it only against `test/fixtures/wp-standin.ts`. Every other tool (capture, the helper, site,
-  site:check, compare, replay) stays read-only; the helper still binds 127.0.0.1 only and never writes to a site.
+- **One uploader writes to WordPress, reached by two commands: `npm run site:upload` and `npm run site:import`**
+  (Justin, 2026-11-10: a scanned page's pictures "upload to my Wordpress media library like how it is in the plugin",
+  run "From the command line"; then "One command, Mini": WordPress asked first, then the scan, the upload and the
+  paste). Both run the same code (`tools/lib/site-upload/`). It only adds media items (never changes, moves or deletes
+  one; never touches pages, posts or settings), only on the site whose address was typed, after reading that site and
+  a typed `yes` asked after everything it found is shown (no flag skips it; `site:import` takes only a yes typed after
+  that question). The Application Password is typed at the hidden prompt (`site:import` asks it before the scan and
+  keeps it only in its own memory through it) and never goes in an argument, a variable, a file, the record, the
+  capture, the paste, a log, a printed line or the scan's Chrome. Only Justin runs either, in his own terminal, against
+  his own site. Agents never run them against his site or any live site, never ask for or hold his password, and test
+  them only against `test/fixtures/wp-standin.ts` and local fixture sites. Every other tool (capture, the helper, site,
+  site:check, site:live, compare, replay) stays read-only; the helper still binds 127.0.0.1 only and never writes to a
+  site.
 - **The plugin's conversion** (`src/plugin/convert.ts`) must stay byte-identical to `npm run replay` for the same
   snapshot (`test/unit/plugin-convert.test.ts`).
 - **Checks:** `npm run check` runs typecheck, build and the unit and rule tests. Tests use `node --test` on `.ts` files
@@ -635,7 +652,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   slider keeps all its slides ("Keep all its slides").
 - **A scanned page's pictures go to WordPress from the command line** (Justin, 2026-11-10, "From the command
   line", Full pipeline; ⭐ not yet confirmed, Q12 open, HANDOFF "A scanned page's pictures go to WordPress's media
-  library"): its own command `site:upload` (Q1 A); the password at a hidden prompt each run, never saved (Q2 A); every
+  library"): its own command `site:upload` (Q1 A), and one command `site:import` that asks for WordPress first, then
+  scans, uploads and writes the pastes (Justin, 2026-11-10, "One command, Mini"; after the scan it stops only for real
+  failures and warns of the rest, Justin's Q5 "Only real failures"; site-one-command Q1–Q4 ⭐ not yet confirmed); the
+  password at a hidden prompt each run, never saved (Q2 A); every
   picture the site's own markup shows, each file once, script-made ones and `data:` left (Q3 A); no file in the
   capture: its old address (Q4 A); SVG only with `--svg` (Q5 A); files as served, never re-encoded (Q6 A); the old
   site's first alt with words in Media, an alt in WordPress never changed by a re-run (Q7 A); no alttext.ai (Q8 A); a
