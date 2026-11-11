@@ -18,6 +18,8 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Progress (2026-11-11, latest first)
 
+- Client review round 3 clean: MOVE ON at `d655a73` (base `7d2e16e`); P3s R3-1 (Startup worker launch untested), R3-2 (worker doesn't wait for integration actions) to follow-ups. Verifier round 2 dispatched (brief `-verifier-2.md`, folder `verifier-2/`); auditor-2 brief ready (`auditor-2/`).
+
 - CP review round 5 clean: MOVE ON at `926997e` (base `d3e7391`). found_else: local 86bcm928e branch also adds 000033, 86bcxnykn adds 000032 (whichever merges later renumbers).
 
 - Client bring-main done: merge `d655a73` (main `7d2e16e`; conflicts bridge.go, index.html; gates green, audit green; AC1–AC7 pass vs CP `926997e`). Client review round 3 (delta 76ed828..d655a73, brief `-reviewer-client-3.md`) dispatched; referee base now `7d2e16e`. Verifier/auditor after both reviews MOVE ON; ac-check `--base 7d2e16e`.
