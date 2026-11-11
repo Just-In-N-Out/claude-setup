@@ -349,3 +349,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - Medium (security hardening): admin-written MCP items in the item editor go through gate.CheckTenantItem (internal/library/gate/tenant.go:40-116), which skips the template policy (policy.go:262), so they can carry a stdio command the shipped library would refuse; callers internal/itembuilder/builder.go:87,163,215. Read from code, not run.
 - Low (host): leorna-test-pg has been Exited (255) for 10 days, ~18 stopped story containers remain; leorna skill references/gates.md still says make check needs leorna-test-pg.
 - Info: main checkout's main at d9c6aa8, 4 commits behind GitHub 4ef14ef (builder Task 0 fast-forwards).
+
+## 2026-11-11 — 86bcm928p connection test (builder)
+- P3: POST /admin/integrations/{tileID}/test?variant=<other> re-renders the settings form for the query-string variant under a result for the saved variant (integrationTest reuses loadIntegrationPage, which reads r.URL.Query().Get("variant"), internal/web/integrations.go). Only a hand-made URL reaches it. Sent to the round-1 reviewer to judge.
+- P3 (planner): 17 exited Docker containers from finished stories (pma-ndx6-*, nf8-*, ndx6-f6-*, leorna-domain-review1-*, leorna-86bccndx6-*, ndx6-preview-*, cortexos-*); Justin removes them.
