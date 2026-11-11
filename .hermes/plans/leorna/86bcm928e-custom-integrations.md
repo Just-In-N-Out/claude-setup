@@ -336,3 +336,9 @@ Builder done = the three criterion tests and every supporting test pass on one c
 | `--token <value>` | policy: args[3] holds a credential (the value of a credential option) |
 | env `PATH=/tmp/x` | policy: env "PATH" changes where programs are found |
 | unused parameter; `${OTHER_TOKEN}` not declared | `Validate`: parameter is never used; references ${OTHER_TOKEN}, which no sign-in declares |
+
+## Justin's answers at "make a PR" (2026-11-11, "go")
+Bringing main `d3e7391` in clashed with #126 (integrations connection test). Justin approved the recommended fixes:
+- **Route clash (startup panic):** this story's edit POST moves from `POST /admin/integrations/custom/{tileID}` to `POST /admin/integrations/custom/{tileID}/edit` (the edit page's URL). #126's `POST /admin/integrations/{tileID}/test` stays unchanged. A test that builds the full handler must fail on any route-pattern clash.
+- **Test connection on custom tiles:** the connection tester looks tiles up including the company's custom tiles (`service.Tile(ctx, actor, tileID)`), so a custom tile gets the same checks as a shipped one; tests show a custom tile can be tested and another company's custom tile can't.
+- Migration renumber `000032_integration_custom_tiles` → `000033_…` (main's #125 took 32). ACs unchanged.
