@@ -51,7 +51,11 @@ Supporting assets: `scripts/gh-env.sh` + `scripts/git-credential-token.py`
   claim merged without verifying `state,mergedAt`. A non-zero `gh pr checks
   --watch` can be a network drop ("error connecting to api.github.com", e.g.
   after the Mac sleeps): re-read with `gh pr checks <n> --json name,bucket` or
-  `gh run view <id> --json conclusion` before reporting a failure.
+  `gh run view <id> --json conclusion` before reporting a failure. While other
+  jobs still run, `gh run view <id> --log-failed` prints nothing for a job that
+  already failed: read it with `gh api repos/<o>/<r>/actions/jobs/<job id>/logs
+  --allow-escape-sequences` (without the flag gh refuses the output) and strip
+  ANSI with sed (86bcm928h PR #33).
 - Read full context before writing: `gh issue view --comments` /
   `gh pr view --comments` — decisions live in threads, not titles.
 - Sweep for duplicates before creating anything:
