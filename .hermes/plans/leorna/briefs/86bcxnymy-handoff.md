@@ -18,7 +18,7 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Justin's answers (2026-11-11)
 
-- **Fresh session:** he chose to continue this story in a new session (this one was at 322k tokens). Start from step 1 above.
+- **Fresh session:** he first chose a new session, then said "Honestly just run it here continue": the same session dispatched the verifier (step 1) on 2026-11-11. A resumed session checks whether that verifier already returned before dispatching another.
 - **Go 1.27.4 bump: "Yes, separate job."** A new job of its own, not part of 86bcxnymy: bump the Go toolchain to go1.27.4 in both `leorna-client` and `leorna-control-plane` for GO-2026-6859 (net/http; `make audit` is red on both repos' main because CI reads go1.27.3 from `go.mod`/`go.work`). In the new session, run pipeline step 1 for it first: play it back, recommend Full or Mini (likely Mini), and ask for its ClickUp card ID (or confirm there is none). Evidence of the advisory: `evidence/86bcxnymy-client-self-update/control-plane/fix-1/gates-audit-base.log` and `builder/audit-base-a7839b3.log`.
 
 ## Other notes
