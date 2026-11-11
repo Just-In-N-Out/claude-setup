@@ -41,3 +41,8 @@ He then used a limit reset (2026-11-09 ~19:10: "I used a reset, keep them going"
 **2026-11-10 ~18:30, model routing replaced:** after the updated pipeline landed in the global `~/.claude/CLAUDE.md` and `feature-dispatch` (role table of 2026-11-10), Justin: "use the updated pipline going forward ok". This ends "everything Opus 5.5 high" of 2026-11-09: every agent dispatched from then on takes its role's model and effort from the global file (planner and round-1 reviewer Fable 5.2 high; builder and AC auditor Opus 5.5 xhigh; later-round reviewers, fixers, verifier and finisher Opus 5.5 high), with its round-3 P2 question and the rebase receipt. Agents already running keep the model they started on.
 
 **2026-11-11, rechecks may run side by side when jobs share no code:** asked whether the scan fix's recheck could run beside footer-icon-list's (his earlier rule: "One at a time"), Justin chose "Run it alongside (Recommended)". My reading: since the updated pipeline's rebase receipt (no new verifier/auditor after a pure rebase), the reason for one-at-a-time is gone for jobs that touch different code; run their rechecks in parallel and give the second to merge a rebase receipt. Jobs sharing source files still recheck one at a time.
+
+**2026-11-11 ~16:30, agent limit lifted:** asked why the four parity planners waited at the 8-agent cap, Justin said
+"nah make the limit unlimited for all". **Rule now: no cap on agents across sessions** (replaces the ≤8 of 2026-11-02).
+Still: earlyoom check each time an agent returns; every Chrome/test run under a memory scope; tell the other session.
+**Why:** he wants every job moving at once. **How to apply:** dispatch each job's next role the moment it is ready.
