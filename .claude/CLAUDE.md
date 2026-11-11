@@ -51,7 +51,7 @@ A scheduled job on the Windows desktop that will reread the user's recent Claude
 
 The desktop froze 7 times in a week while agents ran. The memory logs proved the cause: one test process grew to 16–17 GB in about 12 s and filled Linux's memory (a mutation run whose failing assertion diffed huge page trees, FigmaToBricksV2 phone-menu). Now in place, desktop only:
 - WSL is capped at 20 GB (`C:\Users\Admin\.wslconfig`), so Windows keeps about 12 GB and stays usable.
-- **earlyoom** kills the biggest process when Linux has under 5% memory left, picking `node`/`chrome` first and never `claude`. Its kills: `journalctl -u earlyoom --since "-30 min" -o short-iso | grep sending`.
+- **earlyoom** kills the biggest process when Linux has under 5% memory left, picking `node`/`chrome` first and never `claude`. Its kills: `journalctl -u earlyoom --since "-30 min" -o short-iso | grep -E 'sending SIG[A-Z]* to process'` (a bare `grep sending` also matches the startup banner, "sending SIGTERM when mem avail <= 5.00%…", which is not a kill).
 - Memory loggers write a line every 5 s to `~/crashlog/linux-<date>.log` and `C:\Users\Admin\crashlog\windows-<date>.log`. After a freeze or crash report, read their last lines first.
 
 **Every agent:** a command that dies with `signal: 'SIGTERM'`, exit 143 or 137, or "Killed" may be an earlyoom kill, not a test result. Check the earlyoom log before reading it as pass or fail. If earlyoom killed it, say so in the report, find what grew (often a failing assertion that diffs huge objects), and rerun that check under a cap (`systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`), never bare. Mutation runs always use that cap (`mutation-testing-discipline`).
