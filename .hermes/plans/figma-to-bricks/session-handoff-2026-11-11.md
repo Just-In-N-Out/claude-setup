@@ -57,3 +57,4 @@ bdryswi.com's re-checks; 3dy). Merge lock free. Untracked `site-check-out/` in t
 - bdry-demo: R2-1 sticky-header strip; 34 named in-between-width gaps.
 - Live checks owed: 3do–3dy (HANDOFF "End-of-run check list").
 - Not yet answered by Justin: the many "not yet confirmed" ⭐ rulings in each HANDOFF section.
+- 12:4x The newer session (figmatobricksv2-e9) owns site-native-structure and the new jobs (site-scroll-lock, media-avif-alt, media-clickable, site-sticky-header, site-menu-motion, site-no-div, site-shared-styles); this session keeps only footer-icon-list to its merge, then stops.
