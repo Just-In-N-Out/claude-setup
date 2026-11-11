@@ -268,3 +268,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-11 | media-clickable | mutation-testing-discipline | script: the mutation driver template exits nonzero with CONTROL FAILED when any unmutated test file fails | offered
 - 2026-11-11 | media-clickable | figma-to-bricks | script: next-paste-id.sh greps main and every local branch's HANDOFF plus ~/.hermes/plans/figma-to-bricks (evidence excluded) and prints the next free paste-check id; planners and finishers run it | offered
 - 2026-11-11 | site-scroll-lock | feature-dispatch | script: ac-check.sh --rebase-receipt accepts a rebased commit whose +/- lines are identical and whose only changed path is docs/HANDOFF.md (Justin's notes-only rule, 2026-11-11) | offered
+- 2026-11-11 | site-scroll-lock | feature-dispatch | script: a rebase-delta helper printing the story diff with hunk numbers removed plus the files both sides touched; rebase review briefs cite it | offered
