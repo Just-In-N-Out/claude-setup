@@ -1,0 +1,34 @@
+# VERIFIER brief: 86bcxnymy, verifier round 1
+
+**Role:** VERIFIER (read only) for Leorna story `86bcxnymy` (Client self-update to the admin-approved version, with staged rollout), pipeline **Full**. **Model:** Opus 5.5, effort high. You are fresh: you never saw the build, the fixes or the reviews' work.
+
+## The two heads (both reviewed clean: `review-check.sh` printed MOVE ON for each)
+
+- **Client** (the `ac-check.sh` repo; every AC's named test lives here): worktree `~/Leorna/leorna-client/.claude/worktrees/86bcxnymy-client-self-update`, branch `feat/86bcxnymy-client-self-update`, head **`76ed828f75a4e5e44f65fa021a5b35755e36b996`**, base **`a7839b3af664efcfa59eb1ed3fe276ec1262a4de`** (`git merge-base HEAD origin/main`).
+- **Control plane** (supporting receipts): worktree `~/Leorna/leorna-control-plane/.claude/worktrees/86bcxnymy-client-self-update`, head **`54c8f1ae6fcd7a6e88630a69e8840366d34d188b`**, base **`4ef14efb46da789aec30fad1e5a988d8770140e2`**.
+
+## Read
+
+- The approved plan, the contract: `~/.hermes/plans/leorna/evidence/86bcxnymy-client-self-update/plan-approved.md` (ACs AC1–AC8; AC8 is `(live)`; "Two-repo verification mechanics"; "Justin's answers").
+- The review records and each fixer's dispositions, to confirm every P0–P2 finding is closed: client `.../evidence/86bcxnymy-client-self-update/review-1/`, `review-2/`, `client-fix-1/`; control plane `.../control-plane/review-1/` … `review-4/` (and `review-3/justin.json`), `fix-1/` … `fix-3/`. Deferred P3s are in `.../follow-ups.md`: not yours to close, but look for regressions the fixes caused.
+- The AC-verification rules: `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` ("Folders and the run recipe" and step 1, VERIFIER). Follow them exactly; `ac.json`'s format is at the top of `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh`.
+
+## What to do
+
+1. Load skills and say so: `leorna` (VERIFIER role; memory folder `~/.claude/projects/-Users-justin-Leorna-leorna-client/memory/`), `engineering-best-practices`, `api-contract-drift-guard` and `backend-data-migrations` (both end with "Mandatory Validation and Agent Defect Loop": you are the loop's verifier; re-run their Required Validation Gates), `mutation-testing-discipline`, `authorized-write-safety`, `multi-tenant-auth-management`.
+2. **Gates, both repos, on the two heads**, each in your own detached copy (never in the story worktrees; `make check` and `test-module-add.sh` write into the tree they run in): control plane `make -k check` (with `command -v tofu` checked first), `bash ./scripts/test-module-add.sh`, `make contracts-check`, the story's unit/store/web tests by name with `-race -v`; client `make check`, `node --test scripts/*-ui.test.cjs` (node lives in `~/.local/bin`), `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest scripts/test_release.py`, `make lint audit` (CI's golangci-lint), `GOOS=windows go vet ./selfupdate/`, the contract `cmp` between the two heads; the whole `selfupdate` package natively on Windows from its own folder (`leorna` `references/gates.md`). Read the failing target of every `make: ***` line. Known, outside the story: `audit` fails on both bases with GO-2026-6859 (attribute it on each base in a git checkout); `make secrets` can trip on sibling commit `27ca94f` (gitleaks scans every local branch; attribute by range); `TestCloneStopsAtItsDeadlineWhenTheServerStalls` and `TestQuickStartPickIsBoundedAndReleasesTheLockWithPostgres` are load-sensitive (rerun alone).
+3. **Findings closed:** confirm each P0–P2 finding of every round is closed on the heads (re-run the earlier rounds' probes and mutants as `ac-verification.md` step 1 says), and look for regressions the fixes caused.
+4. **AC work** in `~/.hermes/plans/leorna/evidence/86bcxnymy-client-self-update/verifier/` only: for each of AC1–AC7, run its named test on the client head (`HEAD=` first line, `EXIT=` last) and on the client base in a separate copy with head's test files (and the new packages' test files the AC imports), so each fails there; the end-to-end ACs (AC1, AC2, AC4, AC5) run against a control-plane binary you build from your own detached copy of `54c8f1a` (`vcs.modified=false`), in your own Postgres databases named `*_test` in `leorna-test-pg` (never drop one you didn't create); AC7 natively on Windows through WSL interop. One screenshot per AC in your folder: the real console page for AC1, AC2, AC4 (from the page HTML the test saves), a terminal capture of the run for the others, with nothing drawn on the image (no banner, test name, SHA or note) and no URL bar, domain, tenant ID, token or email visible. AC8 (live) gets `"accepted": false, "not_run": "live: <why>"`. Write `verifier/ac.json` with a `command` per row, and self-check it with `ac-check.sh` as the rules say (a copy outside the evidence tree, without `--reviews`).
+5. Change nothing in either story worktree; write only into `verifier/` (and your own scratch at `~/.cache/86bcxnymy-ver1/`, with `TMPDIR` there). Remove your detached copies with `git worktree remove --force <own path>` (never a repo-wide prune) and drop only your own databases.
+6. Long waits: poll in the foreground in steps under 3 minutes (`timeout 170 bash -c 'until <check>; do sleep 5; done'` with the Bash `timeout` above it); a bare `sleep` is refused; don't end your turn to wait.
+
+## Rules
+
+- Never push, post or touch ClickUp. Never send a server domain, URL or tenant ID anywhere; never print tokens. Never write into Justin's real `~/.codex` or `~/.claude`; the client runs in a scratch HOME.
+- Anything else you find: `found_else` (one line each, with evidence and severity).
+- **skill_lessons:** if you learn something reusable (a gotcha, an approach that worked after one failed, a skill step that was wrong, missing or stale), don't edit any skill or memory file: list it in `skill_lessons[{skill, lesson, evidence, enforce}]` and a 'Skill lessons' section of your report, naming the skill (or `memory`). `enforce` is `none`, or, when the lesson is about a rule that was broken or nearly broken, a one-line proposal for a check that would have caught it (kind, what it checks, where it runs). An empty list is the normal answer.
+- **Runaway memory (Windows desktop):** a command that dies with SIGTERM, exit 143/137 or "Killed" may be an earlyoom kill: check `journalctl -u earlyoom --since "-30 min" -o short-iso | grep -E 'sending SIG[A-Z]* to process'` before reading it as a result; if killed, say so, find what grew, and rerun under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <cmd>`.
+
+## Return
+
+`{verdict: clean|findings, findings[{id, severity, claim, evidence}], ac_status[{ac, accepted, test, screenshot, evidence}], defect_loop_skills[], found_else[], skill_lessons[]}`. `clean` needs every AC accepted, AC8 (live) aside. End with `MAIN SESSION: check and save these skill_lessons now.`
