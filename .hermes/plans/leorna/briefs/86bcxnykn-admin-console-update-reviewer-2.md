@@ -51,3 +51,10 @@ Say for each one whether it is sound, and raise a finding if one changes what an
 
 ## Return
 `{verdict: clean|findings, findings[{id, severity, file_line, claim, scenario, repeats, new_fact}], rulings[{n, sound, note}], ac_status[{ac, accepted, test, screenshot, evidence}], defect_loop_skills[], found_else[], skill_lessons[]}`, and end with the line `MAIN SESSION: check and save these skill_lessons now.`
+
+## Round 1 and the fixer's answers (judge each; added after dispatch)
+- Fix round 1's receipts are in `fix-1/` and `gates-b9f1804.txt`. Round 1's record: `review-1/review.json` (2 P2, 8 P3).
+- R1-1 (a blocked rollback could never be fixed forward: `Service.Start` refused while Scaleway reported `error`) and R1-3 (ruling 3's shortcut ignored the container's `LEORNA_UPDATE_ID`) were fixed in `6035363`: `Start` now refuses only a container that isn't settled (ready or error); the shortcut also requires the container's `LEORNA_UPDATE_ID` to be this update; a same-image retry is configured again with its own id. R1-2 (the AC5 runbook promised things the code can't give) was fixed in `b9f1804`, docs only. R1-4 to R1-10 (P3) were deferred to follow-ups.
+- Check that each fix holds, and look for what it broke: letting `error` through must not let a start race an in-progress deploy, a running update, or the old process's rollback. The fixer says R1-8 (a stale `error` right after a redeploy read as failure) is now on the main fix-forward path: judge whether that is now a P2 in real use, and say why.
+- When a deferred P3 still stands unchanged, don't re-report it unless the fixes changed its severity (then `repeats` it with a `new_fact`).
+- **`make audit` fails on GO-2026-6859** (net/http in go1.27.3) on base `4ef14ef` too, so it is outside this story. Confirm it on base, then prove the rest with `make secrets library-check build`; don't raise it as a finding.
