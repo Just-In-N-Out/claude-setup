@@ -190,11 +190,16 @@ MUTANTS = [
                                                    "    missing = []\n")], ["ac29"]),
     # fixer 10: a flagged call never goes on on another model
     ("X29e", "the refusal fallback left on in the environment", [(L + "agents.py",
-     'CALL_ENV = {"CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK": "1"}\n', "CALL_ENV = {}\n")], ["ac29", "flagstop"]),
+     'CALL_ENV = {"CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK": "1"}\n', "CALL_ENV = {}\n")], ["ac29"]),
     ("X29f", "switchModelsOnFlag left out of --settings", [(L + "agents.py",
      """CALL_SETTINGS = '{"hooks": {}, "switchModelsOnFlag": false}\\n'""", """CALL_SETTINGS = '{"hooks": {}}\\n'""")], ["ac29"]),
     ("X29g", "the call's environment not passed", [(L + "agents.py", "cwd=str(cwd), env=call_environ(R),",
-                                                     "cwd=str(cwd), env=R.env.environ,")], ["ac29", "flagstop"]),
+                                                     "cwd=str(cwd), env=R.env.environ,")], ["ac29"]),
+    # the variable and the setting each turn the switch off alone, so only both off reach the flagged call
+    ("X29i", "the switch left on: no variable and no setting", [
+        (L + "agents.py", 'CALL_ENV = {"CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK": "1"}\n', "CALL_ENV = {}\n"),
+        (L + "agents.py", """CALL_SETTINGS = '{"hooks": {}, "switchModelsOnFlag": false}\\n'""",
+         """CALL_SETTINGS = '{"hooks": {}}\\n'""")], ["ac29", "flagstop"]),
     ("X29h", "a safety stop accepted", [(L + "agents.py", "    if stops:\n", "    if False:\n")], ["flagstop"]),
     ("X30a", "8 helpers at once", [(L + "agents.py", "WORKERS = 3\n", "WORKERS = 8\n")], ["ac30"]),
     ("X30b", "the oldest sessions first", [(L + "state.py", "    s.reads.sort(key=lambda r: r.mtime, reverse=True)\n",
