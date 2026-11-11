@@ -225,7 +225,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..e37588b 100644
+index f2d882d..587be7e 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,63 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -631,7 +631,7 @@ index f2d882d..e37588b 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,13 +518,107 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,13 +518,113 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -646,6 +646,12 @@ index f2d882d..e37588b 100644
 +    grade a run whose tests fail at setup (a refused database, a failed ping) as
 +    INVALID, never killed (86bcxnymy fixer 1: a scratch database not named
 +    `*_test` made every mutant "KILLED").
++    `-overlay` never reaches a test that runs its own nested `go build`/`go run`
++    (e.g. an `-ldflags -X` stamp test): that build reads the disk, so run such
++    mutants on a disk copy (`git archive HEAD | tar -x`) and record the overlay
++    run as not reached (86bcxnymy builder 2, M16). On Windows, `OpenProcess`
++    fails once the last handle to a finished process closes, so a STILL_ACTIVE
++    check's mutant needs a test holding a `SYNCHRONIZE` handle (M8w-v2).
 +    `-overlay` reaches files the go command compiles, including `//go:embed`
 +    files (an embedded SQL migration mutated with nothing on disk; mutate its
 +    down file too, or the cleanup rollback fails and muddies the result, 901w
