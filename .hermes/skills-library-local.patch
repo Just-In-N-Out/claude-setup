@@ -226,7 +226,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..047adba 100644
+index f2d882d..662c67e 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,63 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -607,7 +607,7 @@ index f2d882d..047adba 100644
  1. **A no-op mutation is not a pass.** If the pattern no longer matches (you
     refactored), the harness must report BLIND, not skip. A silent no-op looks
 -   exactly like proof.
-+   exactly like proof. A harness whose id filter selects no mutant must fail too, not print its done marker and exit 0 (a wrapper passed its log tag on as a mutant id and ran nothing; site-faq, 2026-11-09). A mutant that calls a real API and discards its error (`_, _ = svc.Save(...)`) can be refused and do nothing, reading as SURVIVED: before grading it, run one copy that prints the call's error, and if a guard refused the write, switch that guard off in the same overlay (86bcm928p verifier V2: "settings are unchanged", then killed as V2-v2).
++   exactly like proof. A harness whose id filter selects no mutant must fail too, not print its done marker and exit 0 (a wrapper passed its log tag on as a mutant id and ran nothing; site-faq, 2026-11-09). A mutant that calls a real API and discards its error (`_, _ = svc.Save(...)`) can be refused and do nothing, reading as SURVIVED: before grading it, run one copy that prints the call's error, and if a guard refused the write, switch that guard off in the same overlay (86bcm928p verifier V2: "settings are unchanged", then killed as V2-v2). Alternatively, overlay a one-off exported write helper into the store package and have it log `rows` and `err` to a file (86bcm928p auditor 2: K16/K17 logged `rows=1 err=<nil>`, then killed).
 +
  2. **Mutate the source the tests import.** If tests read one copy and the
     deployed service loads another, sabotaging one proves only file parity.
