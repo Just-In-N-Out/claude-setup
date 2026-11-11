@@ -155,6 +155,15 @@ Its exports: `stayClass(page): { name, css }`, `STAY_NOTE`, `headerStays(capture
 
 No other source file changes. `siteToBricks` (one section), the opened boxes, `tools/` and `src/web/` are untouched.
 
+**One saved fixture's sums change by design.** `test/unit/site-slider-unchanged.test.ts` holds one sha256 per variant
+of four saved fixture captures. One of them, `code-page`, is a site whose script keeps its header at the top, so its
+eight sums (`test/fixtures/site-slider-base/site.code-page.sha256.json`) change; the other three sites' sums and all
+seven hand-made captures' goldens stay (the prototype's whole unit suite: only those eight miss).
+`<planner>/proto/remake-code-page-sums.ts` first proves, variant by variant, that with the class off the header's
+class table and root and the note off its notes the pastes hash to the sums the file holds (main's), and only then
+writes the file (`<planner>/proto/remake-code-page-sums.log`: all eight "the same as the file's sum"; the file it
+wrote: `<planner>/proto/site.code-page.sha256.json`).
+
 ## Where this meets site-scroll-lock (running now)
 
 - **Shared files:** `src/core/site/parts.ts` (the same two lines: the `classIdsOf([...])` name list and the root
@@ -186,8 +195,8 @@ No other source file changes. `siteToBricks` (one section), the opened boxes, `t
   Test: `test/unit/site-sticky-header.test.ts` › "a header nothing keeps, and one the site's own CSS keeps, paste as before"
 - AC7 (proposed): Given a fixture site whose own CSS fixes its header bars and one whose header is in the page's flow, when each is captured, pasted and drawn as in AC1, then neither paste holds the class or the note, the CSS-fixed header is at the top after the scroll as before, and the in-flow header scrolls away as on its site.
   Test: `test/web/site-sticky-header.test.ts` › "a header the site's own CSS keeps, and one that scrolls away on the site, paste as before"
-- AC8 (proposed): Pastes of the hand-made captures are byte for byte main's (the golden file `test/fixtures/site-no-revert-main.json` is unchanged in the diff), `npm run check` and `npm run corpus` pass, and Figma designs convert byte for byte as before.
-  Test: `test/unit/site-no-revert.test.ts` › "the hand-made captures, against main's pastes of them"
+- AC8 (proposed): Every saved golden holds: the hand-made captures and the saved fixture sites paste byte for byte as main did, except the saved `code-page` site (a header a script keeps), whose eight sums change by exactly that class and that note (`remake-code-page-sums.ts` proves it before writing them); `test/fixtures/site-no-revert-main.json` is unchanged in the diff; `npm run check` and `npm run corpus` pass, so Figma designs convert as before.
+  Test: `test/unit/site-slider-unchanged.test.ts` › "pastes without an Elementor slider are byte-identical"
 - AC9 (proposed) (live): Justin converts his bdryswi.com scan again with the new build, pastes `header.json`, `page.json` and `footer.json` into an emptied page on B-Dry staging and saves; on a desktop and on his phone (logged out or in a private window on the phone) the header stays at the top of the window while he scrolls the whole page, and the page doesn't move sideways.
 
 ## Tests and commands
@@ -207,6 +216,9 @@ CHROME_PATH=/home/justin/.cache/chrome-for-testing/chrome-f2b`.
 - `src/core/site/parts.ts` (5 small edits)
 - `test/unit/site-sticky-header.test.ts` (new)
 - `test/web/site-sticky-header.test.ts` (new)
+- `test/fixtures/site-slider-base/site.code-page.sha256.json` (its eight sums, made again by the helper)
+- `tools/site-sticky-header-sums.ts` (new: the helper, copied from `<planner>/proto/remake-code-page-sums.ts`, kept
+  out of `test/fixtures` as `tools/site-no-revert-golden.ts` is, since unit tests import every module there)
 - `docs/HANDOFF.md`, `docs/plans/2026-11-11-site-sticky-header.md` and its ledger
 
 ## Tasks (test first; one commit a task)
@@ -225,23 +237,35 @@ CHROME_PATH=/home/justin/.cache/chrome-for-testing/chrome-f2b`.
 4. **GREEN.** Add `src/core/site/stay.ts` and apply the `parts.ts` patch. Run both test files: all pass (the planner's
    prototype run: unit `# pass 3`; Chrome `# pass 4`, 195 s, `<planner>/proto/web-test.log`). Commit source and tests
    together.
-5. **Prove the tests can fail** (mutation-testing-discipline is not required: no guard; three quick mutants, each
+5. **The saved fixture's sums.** With the fix in, `node --test test/unit/site-slider-unchanged.test.ts` fails naming
+   exactly the eight `code-page …` variants (the planner's prototype run). Copy
+   `<planner>/proto/remake-code-page-sums.ts` to `tools/site-sticky-header-sums.ts` and run
+   `node tools/site-sticky-header-sums.ts "$PWD" --write`: it must print "the same as the file's sum" for all eight
+   and write the file (if any line says NOT, stop: something else changed). The test then passes. Commit the helper
+   and the sums together, saying in the message why they changed.
+6. **Prove the tests can fail** (mutation-testing-discipline is not required: no guard; three quick mutants, each
    reverted): write line 1 with the class named once (the unit test's CSS assertion fails); drop line 2 (the Header
    template test fails); drop line 3 (the Additional CSS test fails); make `headerStays` return true for every capture
    (the "paste as before" tests fail).
-6. **Regression family.** `npm run check`; `npm run corpus` (same tally as task 1); the tests that paste the same
+7. **Regression family.** `npm run check`; `npm run corpus` (same tally as task 1); the tests that paste the same
    fixture: `node --test --test-concurrency=1 test/web/site-page-proof.test.ts test/web/site-cli.test.ts
    test/web/site-check-cli.test.ts` (the code-page header now holds one more class and one more note; if one of them
-   pins the header's class count or its notes, update that pin and say so in the ledger). `git diff --stat main` must
+   pins the header's class count or its notes, update that pin and say so in the ledger). Run the unit suite with
+   nothing else heavy running: `test/unit/site-upload-cli.test.ts` "AC11 a run stopped half-way …" kills a run
+   half-way by the clock and failed once in the planner's run beside two Chrome runs (it passes alone, 9 of 9).
+   The planner's prototype runs: those three Chrome files `# tests 21, # pass 20, # fail 0, # skipped 1` (the skip is
+   named-only; `<planner>/proto/regress.log`); the whole unit suite `# tests 3701, # pass 3620, # skipped 79` with only
+   the eight sums of task 5 and that clock test missing (`<planner>/proto/unit-suite.txt`). `npm run corpus` and the
+   build were not run by the planner (the fix touches nothing the Figma converter imports). `git diff --stat main` must
    not list `test/fixtures/site-no-revert-main.json`.
-7. **One screenshot per AC** into the evidence folder: for the three Chrome ACs and AC7 a shot at 1440 and 390 after
+8. **One screenshot per AC** into the evidence folder: for the three Chrome ACs and AC7 a shot at 1440 and 390 after
    the scroll (header at the top); for the unit ACs and AC8 a terminal capture of the run.
-8. **Docs & records:** a HANDOFF section at the top ("A scanned header that stays at the top stays in the paste",
+9. **Docs & records:** a HANDOFF section at the top ("A scanned header that stays at the top stays in the paste",
    site-sticky-header: the rule, the three CSS lines and why each, the ⭐ answers as not yet confirmed, the "Not in this
    job" list as follow-ups, where it meets site-scroll-lock, paste check AC9 with Justin's steps) and the ledger.
    Stop at `ready-for-review`.
 
-**Mini stop rule:** if the fix needs more than `stay.ts` and `parts.ts`, or a capture change, stop with `status:
+**Mini stop rule:** if the fix needs more source than `stay.ts` and `parts.ts`, or a capture change, stop with `status:
 stopped`, `stop_reason: escalate to full`.
 
 ## Justin's steps for the live check (the finisher prints these with the real build number)
@@ -261,6 +285,6 @@ stopped`, `stop_reason: escalate to full`.
 - The root becomes a stacking level of 100. A page part the old site itself draws above its header (B-Dry's page holds
   nine `z-index: 9999` rules) still paints above it, as on the old site, where the bar's level was 99.
 - The existing 1:1 checks measure boxes from each part's root with the page at its top, where a sticky root is where a
-  static one was; task 6 runs them.
-- This is Mini-sized: one new 50-line module, five small edits in one file, no capture change, no design decision
-  beyond the ⭐ answers. No reason to go Full.
+  static one was; task 7 runs them.
+- This is Mini-sized: one new 50-line module, five small edits in one file, one saved fixture's sums made again, no
+  capture change, no design decision beyond the ⭐ answers. No reason to go Full.
