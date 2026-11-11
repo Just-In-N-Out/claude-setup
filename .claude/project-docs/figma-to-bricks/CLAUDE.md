@@ -7,8 +7,16 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.5 site-scroll-lock (website importer):** every paste `site`/`site:upload`/`site:import` writes carries
+    one class `site-scroll-lock-<4>` (second after the reset, on each part root) with `html, body { max-width: 100%;
+    overflow-x: clip }`, `html:has(> body.no-scroll) { overflow-y: hidden }`, `body.no-scroll { overflow-y: visible }`
+    and a `hidden` fallback for browsers without `clip`: a page never moves sideways on phones, sticky headers still
+    stick, Bricks' No-scroll pop-ups still hold the page; it hides what sticks out, it doesn't fix it (`site:check`
+    still names it); Figma designs and the panel byte for byte as before. Q1–Q3 A not yet confirmed. Paste check
+    **3ed** (AC7, live: take `html, body { overflow-x: hidden }` out of Additional CSS, re-paste on B-Dry staging, on a
+    phone the page doesn't move sideways, the header sticks, with ☰ open the page behind stays still).
   - **2026-11-11.4 media-clickable (website importer):** with a media map (`site:upload`/`site:import`/`site … --media`),
     a box's own media-library background photo is its class's Bricks Background → Image setting (id, size; a photo per
     Bricks breakpoint in that tier's setting), so it is clickable and swappable in Bricks; `background-image`/`-size`
@@ -174,7 +182,9 @@ header spacer) the user runs Bricks → Settings → Custom code → **Regenerat
   confirmed" ruling in each feature's HANDOFF section.
 - **Bricks samples:** Nav (Nestable) for the phone menu (the right copy contains `nav-nested`; a researched sample,
   `reference/bricks/nav-nested.json` from Bricks' code and live sites, stands in until his own copy replaces it),
-  Tabs, Dropdown, Offcanvas + Toggle, a working Interaction, a `popover` Div. Never write those emitters from memory.
+  Tabs, Dropdown, a working Interaction, a `popover` Div. Never write those emitters from memory. Offcanvas + Toggle is
+  no longer owed as a blocker: a researched `reference/bricks/offcanvas.json` (Bricks' code, site-menu, 2026-11-09)
+  stands in until his own copy replaces it, like nav-nested.json.
 - **M4b** (Figma Motion as CSS keyframes) is built against Figma's typings only: it needs the user's Motion test file.
 - **"Home Page Final"** holds a whole Services page inside its own frame: waiting on Justin's Layers screenshot.
 
@@ -452,6 +462,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   accordion's open look and a slider's button parts (`test/fixtures/site-drops.ts` `excepted`;
   `test/unit/site-no-revert.test.ts` fails on any other). A job that changes what a site paste writes on purpose makes
   `test/fixtures/site-no-revert-main.json` again on its own tree (`node tools/site-no-revert-golden.ts .`).
+- **A website paste locks sideways scrolling with `clip`, never `hidden`, on html and body** (site-scroll-lock):
+  `hidden` on both makes body a scroll container (sticky headers ride off), and any overflow on html stops Bricks'
+  `body.no-scroll` reaching the window, so the lock also carries the two `no-scroll` lines.
 - **Bricks writes text controls as given:** Flex basis numbers go out in px (`flex-basis: 323` is CSS the browser
   drops); `payloadProblems` refuses a bare one (`reference/bricks/README.md` "Text controls").
 - **An empty global class is `settings: []`,** as Bricks keeps it; `{}` makes Bricks ask "Import classes" on every
@@ -679,8 +692,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   Bricks as they are; the measured-box route through the Figma converter is retired for websites once the whole page
   passes.
 - **Code-method class names start with the page's name** (Justin, 2026-11-07, "Never use bare names", then "Prefix
-  every name"): `<page>__<name>`, only `site-reset-<4>`, `site-fonts`, `site-text`, `site-flat` keep theirs; a static
-  slider keeps all its slides ("Keep all its slides").
+  every name"): `<page>__<name>`, only `site-reset-<4>`, `site-scroll-lock-<4>`, `site-fonts`, `site-text`, `site-flat` keep
+  theirs; a static slider keeps all its slides ("Keep all its slides").
 - **A scanned page's pictures go to WordPress from the command line** (Justin, 2026-11-10, "From the command
   line", Full pipeline; ⭐ not yet confirmed, Q12 open, HANDOFF "A scanned page's pictures go to WordPress's media
   library"): its own command `site:upload` (Q1 A), and one command `site:import` that asks for WordPress first, then
