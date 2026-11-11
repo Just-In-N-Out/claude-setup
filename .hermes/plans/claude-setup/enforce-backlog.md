@@ -256,3 +256,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-11 | 86bcxnymy | leorna | script: role gate-script template extracts the failed make target and refuses to record 'make check EXIT=2 = known audit' unless that target is audit | offered
 - 2026-11-11 | 86bcxnykn verifier 1 | leorna | script: a shared wait-pg.sh <container> for role gate scripts that exits non-zero when the TCP pg_isready bound runs out | offered
 - 2026-11-11 | 86bcxnykn finisher | leorna | script: the role gate runner compares the tree's go.work 'go' line with the bound toolchain's 'go version' and stops with 'install go X first' before any gate | offered
+- 2026-11-11 | 86bcm928e finisher | leorna | script: ac-check.sh (or the finisher brief template) warns when <evidence> has no gates-<head7>.png from the verifier, so the gates image is made by the role that ran the gates | offered
