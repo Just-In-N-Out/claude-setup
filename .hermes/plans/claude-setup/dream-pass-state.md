@@ -49,3 +49,8 @@ Updated 2026-11-10 about 18:30 EST by the main session that ran both jobs from t
 ## Update 2026-11-10 about 20:40
 - Review 10: clean (`MOVE ON: review-10 at 2d69e1e`). Verifier 2 (Opus 5.5 high): clean on `2d69e1e4`, base `299862e4`; AC37's live test passed; its `ac.json` is `evidence/dream-pass/verifier/ac.json`.
 - The second blind auditor (Opus 5.5 xhigh, brief `briefs/dream-pass-auditor-2.md`) is running. Next: `ac-check.sh --repo <worktree> --base <merge-base> --plan <evidence>/plan-approved.md --reviews <evidence> <evidence>/verifier/ac.json <evidence>/auditor/ac.json`, then the landing (update `briefs/dream-pass-finisher-2.md` for the rebase-receipt rule in `CLAUDE.md` step 7 and `ac-verification.md`).
+
+## Update 2026-11-10 late evening
+- The second blind auditor: 41 of 45 accepted; **AC8 NOT ACCEPTED** (AUD2-1: `test_ac8` never reads `state/pending.json`, so mutant A8p, which drops that write, survives the whole suite; the code itself is right). `ac-check.sh` printed `NOT ACCEPTED: 1 of 45 ACs on 2d69e1e`.
+- Fixer 9 (Opus 5.5 high, brief `briefs/dream-pass-fixer-9.md`) is extending `test_ac8`. Next: a fresh review of that commit (Opus high), then the verifier again (resume verifier 2) and the auditor again (resume auditor 2), then `ac-check.sh`, then the landing.
+- Justin switched this main session to Opus 5.5 at about this point.
