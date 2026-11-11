@@ -18,6 +18,8 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Progress (2026-11-11, latest first)
 
+- **Justin: "make a PR", AC8 dropped (never mention it), recheck after main moved** (answers file). Bring-main fixers dispatched for both repos (briefs `-bring-main-cp.md`, `-bring-main-client.md`); then review of each merge → verifier → auditor → ac-check → PR finisher. Client main `7d2e16e`, control-plane main `d3e7391`. go1.27.4 is at `~/.local/leorna-toolchain/go1.27.4/bin`.
+
 - **Hand-over ready** (finisher): `ac-check.sh` READY FOR THE USER at client `76ed828` (AC8 live owed); control plane `54c8f1a` MOVE ON. Drafts in `evidence/86bcxnymy-client-self-update/handover/` (stop-and-show, two PR texts, review prompt, ClickUp evidence draft with 7 auditor images, team message). Nothing pushed. Waiting on Justin: the AC8 live run, then "make a PR" (with the OK to bring control-plane main in: renumber to 000033, install go1.27.4, re-gate, PRs control plane first).
 - Auditor round 1: clean.
 
