@@ -1,8 +1,8 @@
 # Amendments (2026-11-10, wording only; planner, at the coordinator's request; builder head `f4a7dc8a`)
 
-- **A1:** the base is main `11e885fd` (Build 2026-11-10.8), onto which the branch was rebased; the story pins' base tree is its archive.
+- **A1:** the base is main `11e885fd` (Build 2026-11-10.8), onto which the branch was rebased; the story pins' base tree is its archive, and the line naming their environment no longer starts with a list marker followed by an AC id.
 - **A2:** AC11 names the one existing test case the move changes (`test/unit/capture-chrome.test.ts`, the launch-line pin) and why; its cited test is unchanged.
-- **A3:** decision (a): the pin follows the line. Task 1 carries the exact replacement case (every old assertion kept where its line now is, plus both commands launching Chrome only through `captureRun`), proven on a scratch head with six mutants; Overlaps says how it meets site-menu's edit of the same case. No other test reads a moved file as text.
+- **A3:** decision (a): the pin follows the line. Task 1 says what the case must prove (both commands find Chrome with `findChrome`, launch it only through the one shared launch in `captureRun` with its path and arguments, and print the helper's line when none is found) and gives its exact shape on this head, proven on a scratch head with six mutants; Overlaps says how the case, `tools/capture.ts` and `tools/lib/capture-run.ts` join with site-menu's `launchCaptureChrome` in either merge order. No other test reads a moved file as text.
 - **A4:** Interfaces as built: `logIn` takes the Prompter or a function that makes it, `Login` carries `prompter`, `Picked` carries `parts`, `captureRun` takes any `FoundChrome`, `scanStop` gives `heard()` and the capture's lines go unsaid after a stop.
 - **A5:** the fresh drop's 150 ms settle is on a terminal only.
 - **A6:** the Prompter driver lives in `test/fixtures/drivers/`.
@@ -344,7 +344,14 @@ record, `F2B_CAPTURE_CONFIG` and TMPDIR, Chrome from `CHROME_PATH`.
    (it regex-pins the launch line in `tools/capture.ts`'s text, line 36; no other test reads a moved file as text: [amended A3]
    `git grep` of `test/` for `tools/capture.ts`, `tools/site-upload.ts`, `capture-pages.ts`, `site-upload/ask.ts`, [amended A3]
    `site-upload/summary.ts` and `web/owned.ts` finds only spawns and imports). It keeps every old assertion where its [amended A3]
-   line now is, and adds that both commands launch Chrome only through `captureRun` (title unchanged): [amended A3]
+   line now is, and adds that both commands launch Chrome only through `captureRun` (title unchanged). [amended A3]
+   What the case must prove, in any tree (this head, or joined with site-menu): `npm run capture` and [amended A3]
+   `npm run site:import` each find Chrome with `findChrome()` and print the helper's line (`chromeMissingText`) and [amended A3]
+   exit 1 when none is found; neither launches Chrome itself; both go through `captureRun`, whose one launch passes [amended A3]
+   `findChrome`'s path and arguments with `visible` to the one launch every capture shares, and whose launch with no [amended A3]
+   Chrome fails with the helper's line. The shared launch is `launchChrome` on this job's own head and [amended A3]
+   `launchCaptureChrome` (`src/web/capture.ts`) once site-menu is in the same tree; the case names exactly the one [amended A3]
+   the tree has, never both as alternatives. On this head: [amended A3]
 
    ```ts
    test("npm run capture launches the Chrome findChrome finds and prints the helper's line when it finds none (amendment 2)", () => {
@@ -413,8 +420,8 @@ record, `F2B_CAPTURE_CONFIG` and TMPDIR, Chrome from `CHROME_PATH`.
   missing; its `capture:check` half passes on base (that's the oracle). AC11 and AC12 are preservation tests: green on
   base against base and on the head; their proof is that they fail when a printed byte of `site:upload` or a byte of
   `dist/` is changed on purpose (one mutant each, recorded in the ledger).
-- AC11's and AC12's tests run only with `F2B_STORY_PINS=1 F2B_BASE_TREE=<a git archive of the base, 11e885fd, with [amended A1]
-  node_modules linked>`; without them they skip, and a skip is never counted as a pass (the verifier and the auditor
+- The tests of AC11 and AC12 run only with `F2B_STORY_PINS=1 F2B_BASE_TREE=<a git archive of the base, 11e885fd, [amended A1]
+  with node_modules linked>`; without them they skip, and a skip is never counted as a pass (the verifier and the auditor
   set both).
 - Mutants the builder runs and records (each must fail its AC test): drop `fresh: true` (AC3); call `confirmOwned`
   without `ask` (AC3); move `logIn` after the scan (AC1); pass the password into Chrome's environment
@@ -498,10 +505,23 @@ In your own terminal window (Windows Terminal → Ubuntu), not through Claude:
   moves `capture.ts:57`'s launch into `tools/lib/capture-run.ts`: whichever merges second resolves the conflict in
   `capture.ts` by putting `launchCaptureChrome` in `capture-run.ts` (so both commands get it; AC9's capture equality
   then still holds). `pictures.ts` isn't edited here: `site:import` inherits site-menu's change through `uploadList`.
-  site-menu also rewrites the same case of `test/unit/capture-chrome.test.ts` (its line 36 to [amended A3]
-  `launchCaptureChrome(…)` in `tools/capture.ts`): whichever merges second keeps this job's case and changes only its [amended A3]
-  `capture-run.ts` assertion to `launchCaptureChrome\(\{ path: chrome\.path, args: chrome\.args, visible \}\)` (its [amended A3]
-  `doesNotMatch(/launch\w*Chrome\(/)` on the two commands already covers both launchers). [amended A3]
+  **The launch and its pin, joined in either order** (site-menu `site-menu-fix6` `86fc5546`: every Chrome a capture [amended A3]
+  starts goes through `launchCaptureChrome` in `src/web/capture.ts`, which adds the WebSocket gate; its commit [amended A3]
+  `7094a7d4` points the same case of `test/unit/capture-chrome.test.ts` at `launchCaptureChrome(…)` in [amended A3]
+  `tools/capture.ts`). The joined tree is the same whichever merges second: `tools/capture.ts` calls only [amended A3]
+  `captureRun` (no launcher import, no launch of its own); `tools/lib/capture-run.ts` imports `launchCaptureChrome` [amended A3]
+  from `../../src/web/capture.ts` (not `launchChrome` from `test/browser/chrome.ts`) and calls [amended A3]
+  `launchCaptureChrome({ path: chrome.path, args: chrome.args, visible })`; the test keeps this job's case with its [amended A3]
+  `capture-run.ts` assertion naming `launchCaptureChrome\(\{ path: chrome\.path, args: chrome\.args, visible \}\)` [amended A3]
+  plus one assertion that `capture-run.ts` imports `launchCaptureChrome` from `../../src/web/capture.ts`. [amended A3]
+  site-menu first: this job's rebase conflicts in `tools/capture.ts` (take this job's `captureRun` call, drop the [amended A3]
+  `launchCaptureChrome` import) and in the test (take this job's case, then the join above); `capture-run.ts` is a [amended A3]
+  new file, so git shows no conflict there: the swap to `launchCaptureChrome` must be made by hand (or `site:import` [amended A3]
+  and `capture` lose the socket gate silently). site-one-command first: site-menu's rebase conflicts in [amended A3]
+  `tools/capture.ts` (its launch line is gone: port `launchCaptureChrome` into `capture-run.ts`) and in the test [amended A3]
+  (keep this job's case, then the join). Either way, after the join: `git grep -n -E 'launch(Capture)?Chrome\(' -- [amended A3]
+  tools/capture.ts tools/site-import.ts` prints nothing, `tools/lib/capture-run.ts` holds exactly one [amended A3]
+  `launchCaptureChrome(`, the case passes, and site-menu's socket-gate tests and AC9 pass on the joined head. [amended A3]
 - **footer-icon-list** (`src/web/read/code*.ts`), **control-weight** (`src/core/site/inline-own.ts`, `convert.ts`),
   **site-native-structure** (`convert.ts`, `parts.ts`, `elementor-fold.ts`, `tools/lib/site-measure.ts`,
   `tools/site-check.ts`): no file in common. A job that changes pastes by design keeps AC9 and AC10 green (both sides
