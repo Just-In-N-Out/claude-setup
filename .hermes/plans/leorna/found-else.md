@@ -353,3 +353,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 2026-11-11 — 86bcm928p connection test (builder)
 - P3: POST /admin/integrations/{tileID}/test?variant=<other> re-renders the settings form for the query-string variant under a result for the saved variant (integrationTest reuses loadIntegrationPage, which reads r.URL.Query().Get("variant"), internal/web/integrations.go). Only a hand-made URL reaches it. Sent to the round-1 reviewer to judge.
 - P3 (planner): 17 exited Docker containers from finished stories (pma-ndx6-*, nf8-*, ndx6-f6-*, leorna-domain-review1-*, leorna-86bccndx6-*, ndx6-preview-*, cortexos-*); Justin removes them.
+
+## 2026-11-10 — 86bcm928e builder
+- Low (UI, pre-existing on main): content library "Preview by tool" shows "Preview unavailable" for any draft with no skipped item — `"skipped":null` meets `view.skipped.map`. Receipts: evidence/86bcm928e/builder/found-else-preview.txt.
+- Info (host): under -race at load 40+ internal/web can exceed go test's 10 min package timeout locally (405–600+ s vs 148 s on CI).
