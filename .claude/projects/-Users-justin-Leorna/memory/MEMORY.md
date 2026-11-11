@@ -14,3 +14,4 @@
 - [Finisher briefs and shared notes](finisher-brief-shared-notes.md) — lessons-only edit rule; ClickUp post waits for merge; "make a PR" includes the PR-number record commit before saying ready
 - [WSL restart truncates files](wsl-restart-truncates-files.md) — files written just before a WSL restart come back 0 bytes; check size/EXIT= before reusing after an interrupted run
 - [No banner on evidence images](no-banner-on-evidence-images.md) — screenshots show the result only: no 'local rendering', test names, stub, SHA or redaction notes on the image
+- [Desktop stuck mouse under load](desktop-stuck-mouse-under-load.md) — mouse dead outside the terminal at ~95% CPU; Ctrl+Alt+Del then Esc fixed it
