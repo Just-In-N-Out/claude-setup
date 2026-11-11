@@ -16,7 +16,10 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 3. Then: `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh --repo ~/Leorna/leorna-client/.claude/worktrees/86bcxnymy-client-self-update --base a7839b3af664efcfa59eb1ed3fe276ec1262a4de --plan <evidence>/plan-approved.md --reviews <evidence> <evidence>/verifier/ac.json <evidence>/auditor/ac.json`, plus `review-check.sh` on `<evidence>/control-plane` still MOVE ON at the control-plane head. Expect `READY FOR THE USER` (AC8 live).
 4. Finisher (Opus 5.5 high): the `leorna` hand-over for both repos (two PR texts, the R1-8 migration rollback note in the control-plane PR, review prompt, ClickUp evidence draft, team message); never push or post. AC8 owed to Justin.
 
-## Progress (2026-11-11)
+## Progress (2026-11-11, latest first)
+
+- **Hand-over ready** (finisher): `ac-check.sh` READY FOR THE USER at client `76ed828` (AC8 live owed); control plane `54c8f1a` MOVE ON. Drafts in `evidence/86bcxnymy-client-self-update/handover/` (stop-and-show, two PR texts, review prompt, ClickUp evidence draft with 7 auditor images, team message). Nothing pushed. Waiting on Justin: the AC8 live run, then "make a PR" (with the OK to bring control-plane main in: renumber to 000033, install go1.27.4, re-gate, PRs control plane first).
+- Auditor round 1: clean.
 
 - Verifier round 1: **clean** (AC1–AC7 accepted, AC8 live; self-check READY FOR THE USER). Blind auditor round 1 dispatched (brief `briefs/86bcxnymy-client-self-update-auditor-1.md`).
 - **For the "make a PR" step (bring main in, with Justin's OK):** GitHub control-plane main (09924b5 at the verifier's check) has `000032_tenant_sso` from #125, so this story's `000032_client_updates` must be renumbered to `000033` when main is brought in (no text conflict, but every Postgres test fails on the duplicate); merge-tree conflicts in `delivery/stories.json` and `internal/store/postgres/store_test.go`. Main's `go.mod` is now go 1.27.4 (#124 fixed GO-2026-6859), while `~/.local/leorna-toolchain` is go1.27.3: install 1.27.4 before the gates on the merged head. Client main hasn't moved (a7839b3).
