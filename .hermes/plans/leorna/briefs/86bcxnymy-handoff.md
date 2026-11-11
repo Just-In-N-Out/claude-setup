@@ -18,6 +18,8 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Progress (2026-11-11, latest first)
 
+- CP review round 5 clean: MOVE ON at `926997e` (base `d3e7391`). found_else: local 86bcm928e branch also adds 000033, 86bcxnykn adds 000032 (whichever merges later renumbers).
+
 - Client bring-main done: merge `d655a73` (main `7d2e16e`; conflicts bridge.go, index.html; gates green, audit green; AC1–AC7 pass vs CP `926997e`). Client review round 3 (delta 76ed828..d655a73, brief `-reviewer-client-3.md`) dispatched; referee base now `7d2e16e`. Verifier/auditor after both reviews MOVE ON; ac-check `--base 7d2e16e`.
 
 - CP bring-main done: merge `e6899b3` + renumber `926997e` (main `d3e7391`, gates green with go1.27.4, audit green). CP review round 5 (delta 54c8f1a..926997e, brief `-reviewer-cp-5.md`) dispatched; referee base is now `d3e7391`. Client bring-main still running.
