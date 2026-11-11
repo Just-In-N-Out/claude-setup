@@ -28,7 +28,7 @@ Planner: Fable 5.2 high, 2026-11-11. Base: `main` at Build 2026-11-11.3, `024817
     phones a `position: sticky` header can scroll away, exactly as with his Additional CSS today. Browsers that know
     `clip` never apply it (`@supports not (overflow-x: clip)`), so sticky is safe everywhere else.
   - B. Lock only the window there (`hidden` on html alone): sticky keeps working, but a finger can still drag the page
-    sideways (proven in Chrome's phone mode: the page moved 365–397px; `<P>/forms.txt` "rejected fallback").
+    sideways (proven in Chrome's phone mode: the page moved 365–388px; `<P>/forms.txt` "rejected fallback").
   - C. Nothing for old browsers.
 - **Q3. The class's name.** ⭐ **A. `site-scroll-lock-<4 letters>`**, one of the plugin's own names like
   `site-reset-<4>` (named after its rules, the same on every page, so a site's pages share one copy and Bricks never
@@ -48,7 +48,7 @@ Planner: Fable 5.2 high, 2026-11-11. Base: `main` at Build 2026-11-11.3, `024817
   written"), so a rule that names no class survives. Read on B-Dry staging's saved page (Bricks 2.4.2,
   `~/.hermes/plans/figma-to-bricks/evidence/staging-fit/planner/staging/css/inline-2.css`): the reset's rule is printed
   exactly as the paste wrote it, and so are the font class's bare `@font-face` rules and classes' `@keyframes`. The
-  renderer does the same (`test/browser/render-order.ts:40-41`). `%root%` isn't needed and isn't used.
+  renderer does the same (`test/browser/render-order.ts:41`). `%root%` isn't needed and isn't used.
 - **One copy per page:** the three parts share one class table (`parts.ts:123`), so the lock has the same id, name and
   settings in header.json, page.json and footer.json; Bricks keeps one class and never asks "Import classes" about it.
   On that staging page three roots carried the reset and its rule is printed **once**. Pasted into three places (Header
@@ -68,12 +68,12 @@ Sideways attempts: a script's `scrollTo(300, 0)`, then a finger's swipe (phone m
 
 | Form | Page width | Moves sideways | Sticky Bricks header 1000px down | Sticky bar |
 |---|---|---|---|---|
-| none (today's paste) | 800–1001 | yes (wheel 300px, finger 384–396px) | at top | sticks |
+| none (today's paste) | 800–1001 | yes (wheel 300px, finger 389–395px) | at top | sticks |
 | `hidden` on html, body (his Additional CSS) | 390 | no | **rode off (−1000)**; the fixed form stays | **rode off (−940)** |
 | `clip` on html, body | 390 | no | at top | sticks |
 | **planned: `clip` + `@supports not` → `hidden`** | 390 | no | at top | sticks |
-| `clip` on html only, or on body only | 800–1001 | finger still moves it 373–393px | at top | sticks |
-| `hidden` on html only (Q2 B) | 800–1001 | finger still moves it 365–397px | at top | sticks |
+| `clip` on html only, or on body only | 800–1001 | finger still moves it 285–460px (the wheel doesn't) | at top | sticks |
+| `hidden` on html only (Q2 B) | 800–1001 | finger still moves it 365–388px (the wheel doesn't) | at top | sticks |
 
 So `hidden` on both makes the body a scroll container (`overflow-y` computes to `auto`) and both sticky ones ride off;
 `clip` on both locks the page and keeps them; and it must be on **both** html and body. In Chrome the planned rule
@@ -126,11 +126,26 @@ paste's `clip` (same weight, whichever prints later) and the sticky header would
 - AC5 (proposed): a website paste differs from the base's only by the lock: with the lock class and its id on the root taken out, every paste of the hand-made and saved fixture captures (the whole page in all eight variants, every section alone on both routes; 198 pastes) is byte for byte the base's. Test: `a website paste without its lock is byte for byte the base tree's` (`test/unit/site-scroll-lock-base.test.ts`, named only: `F2B_BASE_TREE`).
 - AC6 (proposed) (live): Justin takes his rule out of Additional CSS, writes the pastes again with this build, re-pastes on B-Dry staging, and on his phone the page doesn't move sideways and the header still sticks when he scrolls down. Paste check **3dz**. Test: `Justin's own check on his phone (paste check 3dz)`.
 
-How each was proven on the prototype (base tree `02481763` + `<P>/02-source.patch` + the tests):
-AC1 green (`<P>/unit-green.txt`), red on the base with "one lock class (none)" (`<P>/unit-red.txt`); AC2 and AC3 green
-(`<P>/web-green.txt`), red on the base with "the whole page holds one lock class" (`<P>/web-red.txt`); AC4 and AC5
-green against the base tree (`<P>/base-green.txt`, "198 pastes compared"); base against itself, AC4 passes (it is a
-"nothing changed" check) and AC5 fails with "one lock" (`<P>/base-on-base.txt`).
+How each was proven on the prototype (base tree `02481763` + `<P>/02-source.patch` + the tests): the test for AC1 is
+green (`<P>/unit-green.txt`) and red on the base with "one lock class (none)" (`<P>/unit-red.txt`); the two browser
+tests (AC2, AC3) are green (`<P>/web-green.txt`) and red on the base with "the whole page holds one lock class"
+(`<P>/web-red.txt`); the two base-tree tests (AC4, AC5) are green against the base tree (`<P>/base-green.txt`, "198
+pastes compared"); with the base compared against itself the AC5 test fails with "one lock" and the AC4 test passes
+(`<P>/base-on-base.txt`).
+
+Commands (each runs only its AC's test, so no log shows a skipped test):
+```
+node --test --test-name-pattern="every website paste carries the sideways lock once, on its root" test/unit/site-scroll-lock.test.ts
+node --test --test-concurrency=1 --test-name-pattern="at 390 a paste wider than the screen never moves sideways" test/web/site-scroll-lock.test.ts
+node --test --test-concurrency=1 --test-name-pattern="a sticky header and a sticky bar still stick under the lock" test/web/site-scroll-lock.test.ts
+F2B_BASE_TREE=<base tree> node --test --test-name-pattern="Figma designs and the panel's website route paste byte for byte as the base tree's" test/unit/site-scroll-lock-base.test.ts
+F2B_BASE_TREE=<base tree> node --test --test-name-pattern="a website paste without its lock is byte for byte the base tree's" test/unit/site-scroll-lock-base.test.ts
+```
+`<base tree>`: the merge-base with `main` as a `git archive` in a short folder, `node_modules` linked. For the verifier
+and the auditor, the old-code run of each test needs head's `test/web/lib/scroll-lock.ts` beside the test file (every
+test imports it). The AC4 test is a "nothing changed" check: on the old code the base compared with itself rightly
+passes, so its report gives `base_exempt` ("a nothing-changed check: the base against itself rightly passes"); the other
+four fail on the old code on their own assertion.
 
 The live check's steps (for the hand-over, one action each):
 1. WordPress → Appearance → Customize → Additional CSS: delete the `html, body { max-width: 100%; overflow-x: hidden; }` lines, Publish.
