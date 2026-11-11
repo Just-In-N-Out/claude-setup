@@ -5,8 +5,10 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 2fe303d7-90b7-4c97-a578-b1d2535f94fa
-  modified: 2026-11-11T05:42:03.000Z
+  modified: 2026-11-11T05:53:00.000Z
 ---
+
+**Status 2026-11-11 00:53 EST (Claude Code, WSL desktop, 86bcm928p finisher; newest for 86bcm928p):** Connection test for integrations, control plane. Branch `feat/86bcm928p-integration-connection-test`, head `ecbd6b5`, base `4ef14ef`, **not pushed, no PR**. `ac-check.sh --reviews`: **ALL ACCEPTED** (2 of 2 ACs on `ecbd6b5`, review 3 clean); no live AC. GitHub main moved to `89cc6e8` (PR #123 launcher audit and PR #124 Go 1.27.4, which fixes GO-2026-6859, the only failing local gate on `ecbd6b5`), so **no toolchain-bump PR is needed**. Merge-tree: main and PRs #125/#113 conflict only in `delivery/stories.json` (append last). The unpushed local `feat/86bcm928e-custom-integrations` (no PR) also conflicts in `internal/web/integrations.go` (struct fields and one line in `loadIntegrationPage`; keep both) and `internal/integration/README.md` (both append a section; keep both); whichever merges second resolves it. Next: push or "make a PR" on Justin's word. Bring main in first (branch protection); with `go.mod`/`go.work` now at 1.27.4, the local gates need a go1.27.4 toolchain (the desktop has only 1.27.3 at `~/.local/leorna-toolchain`). Hand-over files: `~/.hermes/plans/leorna/evidence/86bcm928p/finisher/`; PR text: `~/.hermes/cache/scratch/leorna-pr-86bcm928p-integration-connection-test.md`. Builder containers and scratch removed.
 
 **Status 2026-11-10 19:55 EST (Claude Code, WSL desktop, 86bctmuwy main session; newest for 86bctmuwy):** Agent items install story, client. **PR #32 MERGED by Justin 2026-11-11 00:49Z, merge `a7839b3`** (head `d42aa58`). ClickUp closing evidence POSTED on card 86bctmuwy: one comment ("✅ Merged and done", CI line = PR run 42794713875 green; main's push run 42934384559 was still running) plus 15 PNG attachments, sizes read back equal. Card status left unchanged ("in verification"). AC13 (live, Cursor editor subagent list) still NOT VERIFIED, owed to Justin. Follow-ups: `~/.hermes/plans/leorna/evidence/86bctmuwy/follow-ups.md`; main's own bugs from #30 and the Windows junction issue: `~/.hermes/plans/leorna/found-else.md`.
 
