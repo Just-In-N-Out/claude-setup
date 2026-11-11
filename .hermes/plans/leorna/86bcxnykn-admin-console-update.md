@@ -1,9 +1,9 @@
 # 86bcxnykn: Update the control plane in place from the admin console (with rollback)
 
-Repo: `leorna-control-plane` only. Pipeline: Full. Size L. Plan written 2026-11-10 by the planner (Fable 5.2 high). Nothing is built yet.
+Repo: `leorna-control-plane` only. Pipeline: Full. Size L. Plan written 2026-11-10 by the planner (Fable 5.2 high). **Approved 2026-11-10 under Justin's auto-go for this story (every ⭐ option; see "Justin's answers" at the end).**
 Card: [Update the control plane in place from the admin console (with rollback)](https://app.clickup.com/t/86bcxnykn)
 
-## Questions (answer before "go"; the plan is written as if every ⭐ option is chosen)
+## Questions (answered 2026-11-10: every ⭐ option, under auto-go)
 
 **Q1. Leorna's GitHub repo is private, so a customer's server can't read its Releases without a token (anonymous call answers 404). What should this story do?**
 - A ⭐ Read GitHub Releases, with an optional read-only token setting. Works on your dev server now; customers need the releases made public later (follow-up card).
@@ -424,3 +424,11 @@ python3 -m unittest discover -s scripts -p 'test_story_shippable.py'
 - Shared notes: story state in `~/.claude/projects/-Users-justin-Leorna-leorna-client/memory/leorna-workflow.md` (branch, head, review state, AC5 owed), and the Scaleway and private-repo facts in `leorna-control-plane-workflow.md`. Agents report these as lessons; the main session writes them.
 - Hand-over (finisher): PR text in the plain style with security, migration and rollback notes, the review prompt, the team message, and the ClickUp evidence draft (images only). Nothing is pushed or posted until Justin says so.
 - Follow-up cards to offer: make releases readable by customers (or a public manifest); a Scaleway startup probe on `/readyz`; a rule or check that lets a previous version run on a newer schema; version stamp in the image; dev mode off for customer installs.
+
+
+## Justin's answers (2026-11-10)
+
+- Pipeline: Full.
+- Justin: "start it after I am done", then "nah keep them working ok". Recorded as **auto-go for this story**: the plan is approved with every ⭐ option, and the builder starts without a separate go. Evidence: `~/.hermes/plans/leorna/evidence/86bcxnykn/intake/justin-answers.md`.
+- Q1 A, Q2 A, Q3 A, Q4 A (all ⭐). AC5 (proposed) (live) is approved as proposed and stays owed to Justin.
+- Not covered by auto-go: push, PR, ClickUp post, any `.github/workflows/*` change, real Scaleway or other cloud writes by agents.

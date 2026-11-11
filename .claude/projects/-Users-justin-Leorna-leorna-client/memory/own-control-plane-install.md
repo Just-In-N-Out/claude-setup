@@ -91,3 +91,5 @@ The rules for testing against the server (only this domain, URL private, tokens,
 - In dev mode, anyone who opens `/dev/login` becomes admin, so keep the URL private.
 - `/dev/login?next=` lets `/%5Cevil.example` and `/%09/evil.example` through as an open redirect. It's pre-existing code; Justin told Yan.
 - Yan deployed her own server with the installer the same way; her installer fixes prove it.
+
+**Scaleway has no container rollback (2026-11-10, 86bcxnykn planner, from `scaleway/docs-content` `pages/serverless-containers/reference-content/containers-limitations.mdx` ~261-275):** Serverless Containers have no versioning or rollback. After a failed deployment the previous version keeps serving for up to 24 hours, then both are removed, so an unattended failed install, resume or update turns into an outage a day later.
