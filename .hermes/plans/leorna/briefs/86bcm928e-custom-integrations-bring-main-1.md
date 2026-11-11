@@ -1,0 +1,41 @@
+# FIXER brief (bring main in, round 1): 86bcm928e custom integrations (Leorna, leorna-control-plane)
+
+**Role:** FIXER (a fresh general-purpose agent, Opus 5.5 high): bring GitHub main into the story branch, renumber the story's migration, and prove the story still holds on the merged head. Stop at `ready-for-next-review`. **No push, no PR, no ClickUp write.** Start no agents (a fresh reviewer of the merge, then a verifier and blind auditor, come next, run by the main session). Justin said "push pr" on 2026-11-11, which includes the OK to bring main in.
+
+## State
+- Story: ClickUp 86bcm928e, "Custom integrations defined by the admin". Pipeline: Full.
+- Worktree `/home/justin/Leorna/86bcm928e-custom-integrations`, branch `feat/86bcm928e-custom-integrations`, head `0a45d39097ae4557409173536a68d852ea13ec6f`, accepted by `ac-check.sh` as ALL ACCEPTED (3 of 3). Old base `4ef14efb46da789aec30fad1e5a988d8770140e2`. Not pushed.
+- GitHub main is now `d3e7391c23c2518d95f11fbe77e26baeb568bb86` (check it yourself; if it moved again, use the newer tip and say so). Since `4ef14ef` it brings #123 (launcher audit), #124 (Go 1.27.4), #125 (company sign-in/OIDC, which **adds migration `000032_tenant_sso`**), and whatever landed after `09924b5` (read `git log --oneline 4ef14ef..<main>`).
+- The finisher's trial merge against `09924b5` (`evidence/86bcm928e/finisher/diff-stat-0a45d39.txt`) found: `delivery/stories.json` conflicts (append last); `internal/store/postgres/store_test.go` conflicts in the `resetDatabase` DROP list (main adds `sso_flows`, `tenant_sso_domains`, `tenant_sso_providers`; keep both); `internal/web/handler.go` auto-merges; a duplicate migration `000032`.
+- Approved plan (read-only, AC1–AC3 and its gates section): `/home/justin/.hermes/plans/leorna/evidence/86bcm928e/plan-approved.md`.
+- Your evidence folder: `/home/justin/.hermes/plans/leorna/evidence/86bcm928e/bring-main-1/` (create it). Scratch in `~/.cache/928e-bring-main-1/` (`mkdir` without `-p`), including TMPDIR and Go temp.
+
+## Skills to load (say so in one line)
+`leorna` (read Doing a story → step 7, the long "A clean merge-tree is not enough to push" paragraph: the bring-in checks, migration renumber proof, `resetDatabase` probe, stories.json rule), `engineering-best-practices`, `receiving-code-review`, `test-driven-development`, `backend-data-migrations`, `git-commit-rules`. Before starting, read `~/.claude/skills/leorna/references/repeat-mistakes.md` and `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/repeat-mistakes.md`.
+
+## What to do
+1. Fetch main over HTTPS through gh as `leorna` step 7.1 says, URL written out; record `git rev-parse origin/main`.
+2. `git merge` that main into the branch (never rebase). Resolve **only** these mechanically:
+   - `delivery/stories.json`: main's file unchanged, this story's entry appended last as text; prove every earlier entry unchanged by value.
+   - `store_test.go` `resetDatabase` DROP list: keep both sides' tables.
+   - Renumber this story's migration pair from `000032_integration_custom_tiles` to `000033_…` (`git mv` inside the merge), and update every reference to its number (round-trip/reset lists, tests, README/docs, plan-referenced docs). Check `ls internal/store/postgres/migrations | grep '\.up\.sql$' | cut -d_ -f1 | sort | uniq -d` is empty, judged by output.
+   - Any other conflict, or one needing a design call: stop with `status: stopped` and report it; don't resolve.
+   Commit: `merge: bring main (<short sha>) into feat/86bcm928e-custom-integrations`. No AI attribution lines; never override author metadata.
+3. Bring-in checks from `leorna` step 7: story's own patch survived per file (`git diff -U0 4ef14ef 0a45d39` vs `git diff -U0 <main> <merge>`, index/`@@` stripped, the renumber mapped: renamed blobs equal, other changed lines differ only by the number); files merged content differs from both parents = the both-sides set (no evil merge); hand-resolved files read closely; an overlay probe running `ApplyMigrations`, `resetDatabase`, `ApplyMigrations` so a dropped table name fails; `gitleaks dir` over the both-sides files from the merged tree as well as `gitleaks git <main>..HEAD`.
+4. Semantic interaction with what main brought (each answered with file:line): does #125's company sign-in (OIDC, new routes/middleware in `handler.go`) change how the custom-integration admin routes authenticate, require admin, or check CSRF? Did main tighten any fixture or runtime check the story's tests rely on (grep `git diff 4ef14ef <main> -- '*_test.go'` for repeated `-` lines and apply main's same edit to the story's tests in a separate commit if needed)? Did #123's launcher audit change the launcher policy (`npx`/`docker`) the story's define-time gate calls? Grep the whole tracked tree for `86bcm928e` near until/once/later wording, and the branch for stale "until … merges" wording about the merged siblings.
+5. If something needs a code or test change (compile fix, semantic clash, fixture edit), make it test-first in a **separate** commit after the merge, with the failing run shown first, and say exactly why. A design decision that belongs to Justin: stop and report it.
+6. Gates on the final head with **Go 1.27.4**: put `~/.local/leorna-toolchain/go1.27.4/bin` first on PATH (check `go version` says 1.27.4 and matches main's `go.work`/`go.mod` toolchain line), then `~/.local/leorna-toolchain/bin` (golangci-lint 2.14.0, govulncheck 1.7.0, by absolute path). Run the plan's gates serially in a detached copy with your own Postgres (`928e-bm1-pg`, `--memory 1g`, `mirror.gcr.io/library/postgres:18.6-alpine3.23`, db name ending `_test`, wait with `docker exec 928e-bm1-pg pg_isready -h 127.0.0.1` in a bounded loop), removed at the end: full `make check` (audit should now pass on 1.27.4; if a new advisory fails it, attribute on main's tip), `test-module-add`, `test_release`, Postgres no-skip (`-timeout 1800s`), no `.github/`/contract path, authors (branch-only commits: `git log --format='%an <%ae>' HEAD ^4ef14ef ^origin/main`), attribution lines, gitleaks. One `label EXIT=<rc>` line each into `/home/justin/.hermes/plans/leorna/evidence/86bcm928e/gates-<sha7>.txt`. Render the gates summary as `gates-<sha7>.png` (WSL recipe in `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md`).
+7. Run AC1–AC3 by name on the final head into `bring-main-1/ac<n>-<sha7>.log` (first line `HEAD=`, last `EXIT=`). If an AC page changed (main changed the admin layout/nav), retake its screenshot (result only, no banners) and say so; otherwise say unchanged.
+8. Leave the worktree clean.
+
+## Rules
+- Never push, rebase, force or run `git worktree prune`; deregister your own detached copies with `git worktree remove --force <path>`.
+- Memory (WSL desktop): SIGTERM, 143, 137 or "Killed" may be an earlyoom kill: check `journalctl -u earlyoom --since "-30 min" -o short-iso | grep -E 'sending SIG[A-Z]* to process'` first. Mutants/probes under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`; never alongside `make check`.
+- Under load `internal/web -race` can hit go test's 10-minute default with a seconds-old running test: load, not a hang; rerun before judging (`leorna/references/gates.md`).
+- Don't end your turn to wait for a background command; foreground polls under 170 s with the Bash `timeout` above the bound.
+- Don't write key-shaped values whole in any test source or evidence.
+- Other bugs: `found_else` (one line each, evidence, severity).
+- **skill_lessons:** don't edit any skill or memory file; list reusable lessons in `skill_lessons[{skill, lesson, evidence, enforce}]` and a "Skill lessons" section (`enforce` is `none` or a one-line check proposal: kind, what it checks, where it runs). An empty list is normal.
+
+## Report (as text)
+`{status: ready-for-next-review|stopped, main_sha, merge_sha, new_head, fix_commits[], migration{old, new, dup_check}, merge_proofs{patch_survived, both_sides_set, reset_probe, gitleaks}, semantic_checks[{question, answer, evidence}], gates[{label, exit}], ac_tests[{ac, test, log, result}], shots_changed, found_else[], skill_lessons[]}`. End with `MAIN SESSION: check and save these skill_lessons now.`
