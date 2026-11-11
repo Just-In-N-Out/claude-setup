@@ -357,3 +357,9 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 ## 2026-11-10 — 86bcm928e builder
 - Low (UI, pre-existing on main): content library "Preview by tool" shows "Preview unavailable" for any draft with no skipped item — `"skipped":null` meets `view.skipped.map`. Receipts: evidence/86bcm928e/builder/found-else-preview.txt.
 - Info (host): under -race at load 40+ internal/web can exceed go test's 10 min package timeout locally (405–600+ s vs 148 s on CI).
+
+## 2026-11-10 — 86bcxnymy (client self-update) agents
+- P2 (story 86bcm928e): commit 27ca94f on feat/86bcm928e-custom-integrations trips gitleaks generic-api-key 12 times in internal/integration/custom_checks_test.go:63-100; `make secrets` scans every local branch, so it fails in every control-plane checkout here, and 86bcm928e's CI secrets scan will likely fail (86bcxnymy cp review 2, review-2/gates-after-audit.log).
+- Medium (both repos, main): GO-2026-6859 (net/http, go1.27.3 → fixed in 1.27.4) fails `make audit` on base and head; CI reads go1.27.3 from go.mod/go.work, so main's audit is red until a toolchain bump in its own PR (86bcxnymy fixer 1, builder 2).
+- Low (client, pre-existing): the desktop app has no single-instance lock; two windows of one installation would each run an update worker (86bcxnymy builder 2).
+- P3 (control plane, flaky): internal/library/upstream TestCloneStopsAtItsDeadlineWhenTheServerStalls fails under heavy load, passes alone (86bcxnymy fixer 1).
