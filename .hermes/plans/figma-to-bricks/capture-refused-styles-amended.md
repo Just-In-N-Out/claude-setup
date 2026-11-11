@@ -39,7 +39,16 @@ styleless: `bhead-new.tap`; the planner reproduced it on the edge fixture, every
 with the amendment AC10, the AC1 search test, AC2, AC6 and human-check's AC3 pass (`amend-new.tap`,
 `amend-ac2-ac6.tap`, `amend-human-check.tap`); M05 applied to the amended tree fails the AC1 search test (`page load 3
 asked ["/phone.css", …]`: `m05-search.tap`); on `11e885fd` both new tests fail (`red2-new.tap`). The amendment's code is
-`amend-src.diff` and `amend-tools.diff` (against `993d80b4`). AC3's amended proof: AC3_AMEND_RESULT.
+`amend-src.diff` and `amend-tools.diff` (against `993d80b4`). AC3's amended proof, on the amended tree against `11e885fd`
+at load 27–32 (`ac3-amended.tap`, `ac3-amended.load`, 24 min): **passes**, every round equal, every address asked no
+more often (edge 67 against 69 and 95 against 99; the folder fixtures 420/435/480/445 alike), the pooled median of 30
+paired ratios **1.065**. The per-site tables show single pairs far off both ways (base 115 s against head 24 s in one
+edge pair; head 72–75 s against base 20 s in two kept-page pairs of `basic` and `code-page`); a probe alternating
+`basic` 4 rounds a tree with kept pages found no head-only cost (head 17.0–34.8 s, base 20.9–47.7 s, the slow ones'
+extra time outside the timed steps: `slow-basic.log`), and the builder's 6-round `code-page` probe had the head faster
+(`builder/timing/code-page-r6.log`). The verifier runs AC3 at the lowest load it can and reads the per-site tables: a
+site and mode whose 5 ratios are all above 1.10 fails the test (its second assertion; none did in this run: each
+site and mode had a pair at or under 1.10).
 
 ## Questions (⭐ = recommended; with no reply the builder takes the ⭐ answers)
 
@@ -168,7 +177,7 @@ asked ["/phone.css", …]`: `m05-search.tap`); on `11e885fd` both new tests fail
   Also [amended A4]: `test/web/capture-refused.test.ts` › "AC1 the switch-point search made again after a stylesheet wait asks the site for its page".
 - AC2 (proposed): on a fixture that keeps refusing its stylesheets, `npm run capture` exits 1 with one `Failed:` line naming who refused what (whole address with its query, HTTP status, the server's name, the refusal page's title) and what to do in the command's own words, a `What the site answered:` line naming the log file (each refused request's address, status, headers without cookies, first 300 bytes; the scan's page loads asked and kept), and no capture file; test `test/web/capture-refused.test.ts` › "AC2 a site that keeps refusing stops the command with what answered and what to do".
   Also [amended A5]: `test/unit/capture-asked.test.ts` › "AC2 the log keeps no cookie, no Authorization header and no secret-looking query value" and `test/unit/capture-asked.test.ts` › "AC2 the log keeps only the site's own refusals, the first 300 bytes of each".
-- AC3 (proposed) [amended A2]: a site that refuses nothing (the edge fixture open, `basic`, `code-page`; kept pages on and off) is captured byte for byte as the base captures it in every round (timings, capturedAt and build aside); over the rounds the head asks each address of the site no more often than the base (per address, summed); and it is no slower: in 5 rounds per site and mode, base and head back to back with the order alternating, the median of all 30 paired head/base time ratios is at most 1.10; test `test/web/capture-refused-same.test.ts` › "AC3 a site that refuses nothing is captured as before, as often asked and as fast".
+- AC3 (proposed) [amended A2]: a site that refuses nothing (the edge fixture open, `basic`, `code-page`; kept pages on and off) is captured byte for byte as the base captures it in every round (timings, capturedAt and build aside); over the rounds the head asks each address of the site no more often than the base (per address, summed); and it is no slower: in 5 rounds per site and mode, base and head back to back with the order alternating, the median of all 30 paired head/base time ratios is at most 1.10, and no site and mode has all 5 of its ratios above 1.10; test `test/web/capture-refused-same.test.ts` › "AC3 a site that refuses nothing is captured as before, as often asked and as fast".
 - AC4 (proposed): the panel's helper route passes the same returning check and, on a site that keeps refusing, fails with the same line in the panel's words ("press Capture to try again", nothing about `npm run`); test `test/web/capture-refused.test.ts` › "AC4 the panel's helper route passes the check again and stops in the panel's words".
 - AC5 (proposed): the command's other stop lines end with what to type (`Run npm run capture -- <address> again.`) while the panel's errors keep their words; test `test/web/capture-refused.test.ts` › "AC5 the command's stop lines say what to type, the panel's keep its words".
   Also [amended A5]: `test/web/capture-unreachable.test.ts` › "R1-2 --all: an unreachable page prints its one line and no later page is tried" (the command's words, the panel's text unchanged).
@@ -638,7 +647,7 @@ test("AC10 a site that refuses every stylesheet from the first page load stops t
 // capturedAt and build aside); over the rounds the head asks each address of the site no more often than the base
 // (per address, summed); and it is no slower: in 5 rounds per site and mode, base and head back to back with the order
 // alternating (so load on a shared machine falls on both sides of a pair), the median of all paired head/base time
-// ratios is at most 1.10. The per-site tables are printed for the receipt.
+// ratios is at most 1.10, and no site and mode has every one of its pairs above 1.10. The tables are printed.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { hasChrome } from "../browser/chrome.ts";
@@ -693,6 +702,9 @@ test("AC3 a site that refuses nothing is captured as before, as often asked and 
         const more = [...h].filter(([u, n]) => n > (b.get(u) ?? 0)).map(([u, n]) => `${u} ${n} against ${b.get(u) ?? 0}`);
         assert.deepEqual(more, [], `${s.name} (F2B_REPLAY=${replay ?? "unset"}): addresses the head asked more often than the base`);
         t.diagnostic(`${s.name} F2B_REPLAY=${replay ?? "unset"}: ms base ${ms.base} head ${ms.head}; ratios ${ms.head.map((x, i) => (x / ms.base[i]).toFixed(2))}; requests base ${asked.base.length} head ${asked.head.length}`);
+        // a slow-down of one site and mode the pooled median could hide: every one of its pairs slower than the margin
+        const own = ms.head.map((x, i) => x / ms.base[i]);
+        assert.ok(own.some((r) => r <= 1.10), `${s.name} (F2B_REPLAY=${replay ?? "unset"}): every pair slower than 1.10 (${own.map((r) => r.toFixed(2))})`);
       }
     }
     t.diagnostic(`paired ratios (${ratios.length}): ${ratios.map((r) => r.toFixed(2)).join(" ")}; median ${median(ratios).toFixed(3)}`);
