@@ -78,7 +78,8 @@ three inside `<main id="brx-content">`), at 1440 and 390, scrolled 1200 px:
 | C. The fix's sticky rule on the header's root | 0: stays |
 | D. C with `html, body { overflow-x: hidden }` printed after | −1200: scrolls away (the body became a scroll container) |
 | E. C plus the fix's `clip` guard, with that Additional CSS | 0: stays, no sideways scroll |
-| G. C with site-scroll-lock's `html, body { overflow-x: clip }`, then the Additional CSS | −1200: the later `hidden` wins |
+| F. C with site-scroll-lock's `html, body { overflow-x: clip }` alone | 0: stays, no sideways scroll |
+| G. C with site-scroll-lock's rule, then the Additional CSS | −1200: the later `hidden` wins |
 | H. C plus the guard, the scroll lock and the Additional CSS | 0: stays |
 | I. Your paste as it is, header inside a Header template (`#brx-header`) | −1200: scrolls away |
 | J, K. The fix, header inside a Header template (K: with the Additional CSS) | 0: stays |
@@ -117,6 +118,11 @@ html:root, html:root > body { overflow-x: clip; }
   a sticky box then rides away with the page (cases D, G). `clip` makes no scroll container and still stops sideways
   scrolling. `html:root` and `html:root > body` outweigh a plain `html, body` rule wherever it is printed.
 
+**Proven on Justin's own scan** (`<planner>/bdry-parts.ts`; `bdry-parts-base.json` against `bdry-parts-proto.json`):
+his capture converted by a clean export of `02481763` and by the prototype, on the code route and with `--elementor`.
+The header's root goes from 3 classes to 4 (`home__site-stay-jdkr`) and its notes gain the one line; with that class
+taken off, the header paste hashes the same as main's; the page and footer pastes hash the same as main's.
+
 **What Justin does in Bricks:** nothing new. He pastes `header.json` at the top of the page as before (or into a
 Header template, Sticky header off), Accepts "Import classes", saves.
 
@@ -127,8 +133,10 @@ Header template, Sticky header off), Accepts "Import classes", saves.
 - A header the site's own CSS keeps with `position: sticky`, pasted into a Header template: it still needs Bricks'
   Sticky header there (in the page it stays by its own CSS).
 - The Figma panel's website route keeps its "turn on Sticky header" line.
-- Logged in on a phone, WordPress's admin bar scrolls away but its height stays reserved, so the header rests 46 px
-  down while scrolled. Bricks' own sticky header and the Figma plugin's bar do the same. Logged out it is at the top.
+- Logged in on a phone, the header may rest one admin bar's height below the top while scrolled (WordPress lets its
+  admin bar scroll away on small screens but keeps the height variable; from WordPress's own admin-bar CSS as I know
+  it, not re-read here). Bricks' own sticky header and the Figma plugin's bar use the same `top`. Logged out, or in a
+  private window, it is at the top: AC9 is checked that way on the phone.
 - Safari before 16 doesn't know `clip`: there the header scrolls away only if Additional CSS holds the `hidden` rule.
 
 ### Source (complete; both pieces ran in the prototype)
@@ -136,7 +144,8 @@ Header template, Sticky header off), Accepts "Import classes", saves.
 New file `src/core/site/stay.ts`: copy `<planner>/proto/stay.ts` byte for byte (sha256 in `<planner>/proto/SHA256SUMS`).
 Its exports: `stayClass(page): { name, css }`, `STAY_NOTE`, `headerStays(capture): boolean`.
 
-`src/core/site/parts.ts`: apply `<planner>/proto/parts.patch` (5 hunks, 39 lines of diff):
+`src/core/site/parts.ts`: apply `<planner>/proto/parts.patch` (`patch -p1 < …` in the copy; 3 hunks, 5 edits), then check
+`npm run typecheck` (the prototype: 0 errors under both configs):
 1. import `{ headerStays, STAY_NOTE, stayClass }` from `./stay.ts`;
 2. before `classId`: `const stay = parts.some((x) => x.part === "header") && headerStays(capture) ? stayClass(page) : null;`
    and add `...(stay ? [stay.name] : [])` right after `RESET_NAME` in the `classIdsOf([...])` list;
@@ -179,12 +188,23 @@ No other source file changes. `siteToBricks` (one section), the opened boxes, `t
   Test: `test/web/site-sticky-header.test.ts` › "a header the site's own CSS keeps, and one that scrolls away on the site, paste as before"
 - AC8 (proposed): Pastes of the hand-made captures are byte for byte main's (the golden file `test/fixtures/site-no-revert-main.json` is unchanged in the diff), `npm run check` and `npm run corpus` pass, and Figma designs convert byte for byte as before.
   Test: `test/unit/site-no-revert.test.ts` › "the hand-made captures, against main's pastes of them"
-- AC9 (live) (proposed): Justin converts his bdryswi.com scan again with the new build, pastes `header.json`, `page.json` and `footer.json` into an emptied page on B-Dry staging and saves; on a desktop and on his phone (logged out or in a private window on the phone) the header stays at the top of the window while he scrolls the whole page, and the page doesn't move sideways.
+- AC9 (proposed) (live): Justin converts his bdryswi.com scan again with the new build, pastes `header.json`, `page.json` and `footer.json` into an emptied page on B-Dry staging and saves; on a desktop and on his phone (logged out or in a private window on the phone) the header stays at the top of the window while he scrolls the whole page, and the page doesn't move sideways.
+
+## Tests and commands
+
+Machine (WSL): `export PATH=/home/justin/.local/node-v22.23.3/bin:$PATH TMPDIR=$HOME/.cache/<short>/t1
+CHROME_PATH=/home/justin/.cache/chrome-for-testing/chrome-f2b`.
+- Unit: `node --test test/unit/site-sticky-header.test.ts` (under a second).
+- Chrome: `node --test test/web/site-sticky-header.test.ts` (about 3.5 minutes: three fixture captures, then 108 drawn
+  pages). It loads only the repo's local fixture sites.
+- Gates: `npm run check`, `npm run corpus`.
+- Nobody loads bdryswi.com, B-Dry staging or any live site. `<planner>/repro.ts` shows how Justin's saved pastes are
+  drawn with every address replaced and no host resolved, if a reviewer wants to see his own page.
 
 ## Touched files
 
 - `src/core/site/stay.ts` (new, about 50 lines)
-- `src/core/site/parts.ts` (5 small hunks)
+- `src/core/site/parts.ts` (5 small edits)
 - `test/unit/site-sticky-header.test.ts` (new)
 - `test/web/site-sticky-header.test.ts` (new)
 - `docs/HANDOFF.md`, `docs/plans/2026-11-11-site-sticky-header.md` and its ledger
@@ -200,12 +220,15 @@ No other source file changes. `siteToBricks` (one section), the opened boxes, `t
 3. **RED, Chrome.** Copy `<planner>/proto/site-sticky-header.web.test.ts` to `test/web/site-sticky-header.test.ts`.
    Run it (`CHROME_PATH` set; it captures three fixture sites, allow about 6 minutes; run it in the background or with a
    long timeout, never under a 2-minute cap). Expected on base: the first three tests fail ("the bar is at the
-   window's top before (0) and after the scroll (−600)"), the fourth passes.
+   window's top before (0) and after the scroll (-600)"), the fourth passes. The planner's run on a clean export of
+   `02481763`: `# pass 1`, `# fail 3` (`<planner>/proto/web-test-base.log`).
 4. **GREEN.** Add `src/core/site/stay.ts` and apply the `parts.ts` patch. Run both test files: all pass (the planner's
-   prototype run: unit `# pass 3`; Chrome: see `<planner>/proto/web-test.log`). Commit source and tests together.
+   prototype run: unit `# pass 3`; Chrome `# pass 4`, 195 s, `<planner>/proto/web-test.log`). Commit source and tests
+   together.
 5. **Prove the tests can fail** (mutation-testing-discipline is not required: no guard; three quick mutants, each
-   reverted): drop the doubled class in line 1 and give the fixture root's class a `position: relative` (the unit CSS
-   assertion fails); drop line 2 (the Header template test fails); drop line 3 (the Additional CSS test fails).
+   reverted): write line 1 with the class named once (the unit test's CSS assertion fails); drop line 2 (the Header
+   template test fails); drop line 3 (the Additional CSS test fails); make `headerStays` return true for every capture
+   (the "paste as before" tests fail).
 6. **Regression family.** `npm run check`; `npm run corpus` (same tally as task 1); the tests that paste the same
    fixture: `node --test --test-concurrency=1 test/web/site-page-proof.test.ts test/web/site-cli.test.ts
    test/web/site-check-cli.test.ts` (the code-page header now holds one more class and one more note; if one of them
@@ -239,5 +262,5 @@ stopped`, `stop_reason: escalate to full`.
   nine `z-index: 9999` rules) still paints above it, as on the old site, where the bar's level was 99.
 - The existing 1:1 checks measure boxes from each part's root with the page at its top, where a sticky root is where a
   static one was; task 6 runs them.
-- This is Mini-sized: one new 50-line module, five small hunks in one file, no capture change, no design decision
+- This is Mini-sized: one new 50-line module, five small edits in one file, no capture change, no design decision
   beyond the ⭐ answers. No reason to go Full.
