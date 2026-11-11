@@ -55,7 +55,10 @@ Supporting assets: `scripts/gh-env.sh` + `scripts/git-credential-token.py`
   jobs still run, `gh run view <id> --log-failed` prints nothing for a job that
   already failed: read it with `gh api repos/<o>/<r>/actions/jobs/<job id>/logs
   --allow-escape-sequences` (without the flag gh refuses the output) and strip
-  ANSI with sed (86bcm928h PR #33).
+  ANSI with sed (86bcm928h PR #33). Re-running a pull_request run checks out
+  the same test merge it made the first time (`HEAD is now at <sha> Merge <head>
+  into <old main>`), so a fix merged into main since is not picked up: push a
+  new head (bring main in) instead (#33 attempt 2 still used go1.27.3).
 - Read full context before writing: `gh issue view --comments` /
   `gh pr view --comments` — decisions live in threads, not titles.
 - Sweep for duplicates before creating anything:
