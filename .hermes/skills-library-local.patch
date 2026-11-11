@@ -224,7 +224,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..e4a6a68 100644
+index f2d882d..199e909 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,63 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -322,7 +322,7 @@ index f2d882d..e4a6a68 100644
  
  ## Procedure
  
-@@ -82,15 +150,63 @@ itself prove that the entire test is worthless.
+@@ -82,15 +150,66 @@ itself prove that the entire test is worthless.
     unaffected controls.
     Before registering a mutation, grep every call site of the guarded helper
     and list every other mechanism that yields the same observable, such as a
@@ -376,7 +376,10 @@ index f2d882d..e4a6a68 100644
 +   survivor this trace before calling it a blind test, and write its class into the
 +   receipt: a defence-in-depth survivor is proven by pairing it with a mutant of the
 +   backing guard (both off must be killed) and by the older story's suite (901y
-+   review 2: a tenant clause survived until paired with the composite FK). To show a branch never
++   review 2: a tenant clause survived until paired with the composite FK), or killed
++   by asserting which layer refused when both give the same status (the route's
++   `ADMIN_REQUIRED` vs the store's `INTEGRATION_UNAVAILABLE`, both 403; 86bcm928p
++   planner W1). To show a branch never
 +   changes the outcome, count its visits from an instrumented scratch copy with
 +   `appendFileSync` to a file: under `node --test`, `process.stderr` writes from
 +   the code under test never reach the run's output. When a change adds a caller to a
@@ -392,7 +395,7 @@ index f2d882d..e4a6a68 100644
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -99,14 +215,33 @@ itself prove that the entire test is worthless.
+@@ -99,14 +218,33 @@ itself prove that the entire test is worthless.
     leave mutated source behind. After a mid-cycle crash, compare the working
     file with the saved green bytes and restore before launching another probe.
  4. **Require the intended failure for every mutation.** A nonzero exit from
@@ -429,7 +432,7 @@ index f2d882d..e4a6a68 100644
     Validate evidence against the exact intentional variant and actual process
     return, not pristine-only assumptions or attempted-publication flags.
     Repair diagnostic readers offline against retained output; preserve their
-@@ -142,12 +277,22 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -142,12 +280,22 @@ transcripts in `references/blind-test-patterns.md`.
  1. **The assertion matched a comment.** A test regexed a window of source and
     found its keyword inside an explanatory comment, not the code. Parse the
     *construct* (e.g. just the set literal) and strip comments before matching.
@@ -453,7 +456,7 @@ index f2d882d..e4a6a68 100644
  4. **A different guard masked the one under test.** A per-person cap test
     passed because a dedup guard fired first; deleting the cap entirely stayed
     green. Build fixtures that isolate the guard under test, and add a
-@@ -155,7 +300,22 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,7 +303,22 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -477,7 +480,7 @@ index f2d882d..e4a6a68 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -170,16 +330,29 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -170,16 +333,29 @@ transcripts in `references/blind-test-patterns.md`.
     `references/blind-test-patterns.md` for concurrent callback paths.
  6. **A redundant fallback masked the primary path.** Two mechanisms resolved
     the same input, so either could be deleted invisibly. Test each path with a
@@ -509,7 +512,7 @@ index f2d882d..e4a6a68 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -189,7 +362,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -189,7 +365,11 @@ transcripts in `references/blind-test-patterns.md`.
     legitimately empty ones. A test filtered to a cfg-gated family lists zero
     tests when the cfg is off; a fake that returns a non-empty listing hides a
     parser that rejects that correct output. The cost lands where a run cannot
@@ -522,7 +525,7 @@ index f2d882d..e4a6a68 100644
  9. **The assertion was satisfied by the ambient config, not the logic.** A
     clamp/floor test asserting only `scope["floor"] >= 200000` against the live
     config passes even when the clamp is deleted, because the config already
-@@ -197,7 +374,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +377,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -534,7 +537,7 @@ index f2d882d..e4a6a68 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -208,6 +388,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -208,6 +391,10 @@ transcripts in `references/blind-test-patterns.md`.
      distinction is selected and authorized within the remaining allowance.
      Missing or skipped required cases block acceptance; report permitted optional
      or platform skips with reasons instead of failing every skip message.
@@ -545,7 +548,7 @@ index f2d882d..e4a6a68 100644
      Full transcript in `references/blind-test-patterns.md`.
  
  11. **Check-then-act races are invisible to sequential tests.** A publisher that
-@@ -221,11 +405,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -221,11 +408,15 @@ transcripts in `references/blind-test-patterns.md`.
  
  12. **Replayed context masqueraded as UI ownership.** A callback that records the current ContextVars can appear to belong to B even when it is A's panel; an async fixture closing over a mutable loop key has the same blind spot. Bind immutable UI owners at construction, assert the bridge's actual session identifier, and pair distinct owner decisions with equal-outcome stale-owner mutations. Equal cancellations prevent action assertions from hiding a missing identity check. Keep the negative-control body unchanged while strengthening the oracle, and require the precise owner/session failure rather than any asynchronous exception.
  
@@ -562,7 +565,7 @@ index f2d882d..e4a6a68 100644
  2. **Mutate the source the tests import.** If tests read one copy and the
     deployed service loads another, sabotaging one proves only file parity.
     Confirm which path is under test first.
-@@ -240,7 +428,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +431,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -579,7 +582,7 @@ index f2d882d..e4a6a68 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -261,7 +457,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +460,11 @@ transcripts in `references/blind-test-patterns.md`.
     very edits being tested. Stale mutated bytecode can fake either red or green
     despite correct-looking source.
  8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
@@ -592,7 +595,7 @@ index f2d882d..e4a6a68 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,7 +490,94 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,7 +493,94 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -711,7 +714,7 @@ index 6f12e3e..5128668 100644
 +
 +In agent-facing content (skills, prompts), read `npx <pkg>` as `npx -y <pkg>@latest`: npm exec assumes `--yes` whenever stdin is not a TTY or CI is detected (npm 10.9.4 `npm-exec.md` lines 37-38), which is how coding agents run commands, so an unpinned line installs and runs the newest release. Look each bare name up (`npm view <name> description bin maintainers deprecated`: an exact pin of a deprecated package isn't vetting, e.g. `@modelcontextprotocol/server-github` 2025.4.8 and `server-postgres` 0.6.2 say "Package no longer supported", so prefer the vendor's hosted MCP server, for GitHub `https://api.githubcopilot.com/mcp/readonly` with a PAT as `Authorization: Bearer` and Codex's `bearer_token_env_var`; 901j, 2026-10-28). A launcher allowlist (`command == "npx"`) is bypassed by `PATH` in the server's own `env`, because Node spawn and Rust `Command` resolve the command with the child's PATH: refuse `PATH`/`PATHEXT`, `LD_*`, `DYLD_*`, `NODE_*`, `NPM_CONFIG_*`, `COREPACK_*`, `HOME`/`USERPROFILE`/`APPDATA`/`LOCALAPPDATA`/`XDG_*`, `PREFIX`, `OPENSSL_*`/`SSL_CERT_*`, `GIT_*`, and the shell npm runs the package through (`sh` via PATH, or `%ComSpec%`: `BASH_ENV`, `BASH_FUNC_*`, `SHELLOPTS`/`PS4`, `COMSPEC`) case-insensitively, or allowlist env keys (npm 10.9.9 reads `PREFIX`, `LOCALAPPDATA` and `ComSpec`; 901j fixer 2). First refuse any env key that isn't a variable name (`^[A-Za-z_][A-Za-z0-9_]*$`): Claude Code 2.1.312 passes a key `"PATH=/dir:"` through as `PATH=/dir:=value` and finds the command on that PATH, so a whole-name list is bypassed by `NAME=` keys (901j verifier); it also passes keys with a space, an empty name, a line break, full-width or Cyrillic look-alike letters or `${…}` unchanged (no expansion in keys), and refuses to start a server with a NUL in an env key or value, an argument (`ERR_INVALID_ARG_VALUE`) or a remote server's header value, and refuses to connect when a header value holds an interior CR or LF (one at either end it trims with a whitespace warning and connects, as Node 22 fetch does; the trim is HTTP whitespace only, so a CR or LF next to a no-break space, U+000B or U+000C still counts as inside) or a character above U+00FF, or a header name is empty or holds a NUL, line break, space or colon (tab, U+0001, U+007F and Latin-1 values pass), while Codex 0.165 warns and connects without that header (any non-token name; CR, LF, NUL or any control character but tab in a value). Both send a template `Host` in place of the url's host, Codex sends a template `Content-Length` and cuts the body to it, Claude Code joins case-variant names into one header (two Bearer tokens in one `Authorization`) and expands `${NAME:-default}` (its pattern is `/\$\{([A-Za-z_][A-Za-z0-9_]*(?::-[^}]*)?)\}/g`: valid NAME and closing brace only, so `${1ABC}`, `${A.B}` and an unclosed `${A:-x` go as written; header values get a second pass, a variable's own value included, so `$${EMPTY}{SET}` with EMPTY empty reads SET, while command, args, env values and url get one; it also reads `ANTHROPIC_API_KEY` and `CLAUDE_CODE_OAUTH_TOKEN` as empty toward a remote server, set or unset (a stdio server gets the real value), a guaranteed empty reference: refuse `$` or an unfinished `${` directly before a reference, and `{` directly after one, in header values) in command, args, env, url and headers while Codex sends it as written. Node 22's own fetch, unlike Claude Code, also refuses U+0001–U+001F (not tab) and U+007F in a value, so Node-based clients (Cursor) may differ again. So a policy that reports a tool as verified checks all of these, not only NUL (901j fixer 4, verifier 3, fixer 6). To see what a launched server really received, have the fake command dump its own `/proc/$$/environ`: a `/bin/sh` fake re-exports only valid names, so odd keys look dropped (901j fixer 3) (901j review 2: Claude Code 2.1.312 ran a fake `npx` from env.PATH; `env -i HOME=<scratch> claude mcp add-json -s user …` then `claude mcp list` starts every user-scope stdio server, so a marker-writing fake command shows what ran, no login needed), and read its latest bin script from the tarball (download into an empty folder, check `dist.shasum`, never run it; npm `tsc` 2.0.4 calls itself a deprecated TypeScript release but its bin only prints a warning and exits 1), before calling it safe: the name can belong to someone else (npm `lhci` is a third-party placeholder with an `lhci` bin; Lighthouse CI is `@lhci/cli`) (9019, 2026-10-25).
 diff --git a/skills/security-best-practices/references/golang-general-backend-security.md b/skills/security-best-practices/references/golang-general-backend-security.md
-index 0f0bc69..57a7b0f 100644
+index 0f0bc69..44b8ba4 100644
 --- a/skills/security-best-practices/references/golang-general-backend-security.md
 +++ b/skills/security-best-practices/references/golang-general-backend-security.md
 @@ -431,6 +431,7 @@ Detection hints:
@@ -730,4 +733,12 @@ index 0f0bc69..57a7b0f 100644
 +- SHOULD block access to localhost/private IP ranges/link-local addresses and cloud metadata endpoints. For public-only Go egress, `netip.Addr.IsPrivate` plus global-unicast/link-local checks is not a complete allowlist: explicitly exclude deprecated IPv6 site-local `fec0::/10`, and test `fec0::1` and `feff::1` are rejected before dialing (86bccndx6 RED/GREEN and guard-mutation receipts; [Go netip semantics](https://pkg.go.dev/net/netip#Addr.IsPrivate)).
  - MUST restrict schemes to `http`/`https` (no `file:`, `gopher:`, etc.).
  - MUST set client timeouts and restrict redirects.
+ 
+@@ -582,6 +583,7 @@ Fix:
+ - Parse URLs strictly; enforce scheme and allowlisted hostnames.
+ - Resolve DNS and enforce IP-range restrictions (with care for DNS rebinding).
+ - Set timeouts, disable redirects unless needed, and cap response sizes.
++- Test the guard without an "allow loopback" switch. Keep the public-address rule on, and fake only the resolver (names → made-up public IPs) and the dialer (those IPs → loopback `httptest` TLS stubs), with a test CA as the prober's only root. Unknown names then don't resolve and unrouted IPs can't be dialled, so no packet leaves the machine, and mutants that turn the rule off are killed (86bcm928p planner: 19 of 19 mutants).
+ 
+ ---
  
