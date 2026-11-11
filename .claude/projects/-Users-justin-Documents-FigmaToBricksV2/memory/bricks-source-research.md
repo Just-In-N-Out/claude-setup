@@ -44,3 +44,10 @@ the default background rule 0,4,0 repaints a Button with no Style too). Border c
 prints rel, title, ariaLabel (L2352-2368); a Toggle-offcanvas Interaction adds tabindex, aria-expanded and aria-label "Open"
 only where none is set (interactions.php L640-651). A Nav items child is wrapped in `li.menu-item` only when its HTML
 doesn't start with `<li` (container.php `maybe_wrap_nav_link`); `mobileMenu: "never"` prints no mobile-menu CSS.
+
+**Icon element** (bricks-icons planner, 2026-11-11; 2.2 `icon.php`, `base.php` render_icon L4135-4238): prints an SVG only when
+`icon.svg.id` names a media file; inlines the file's `<svg>`, drops the root id and inserts its own id and classes at a
+fixed offset, so the file must start `<svg ` with no id or class on the root; `icon.width/height/fill/stroke` print as CSS
+on the root (assets.php L2596-2640), fill or stroke adds class `fill`/`stroke` (`svg.fill *{fill:inherit}`). Icon CSS
+`.brxe-icon{font-size:60px}svg.brxe-icon{font-size:inherit}` is the same in 2.2 and live 2.3.9. Samples with Icons:
+`reference/bricks/staff-card.json`, `card-row-and-phone-slider.json`.
