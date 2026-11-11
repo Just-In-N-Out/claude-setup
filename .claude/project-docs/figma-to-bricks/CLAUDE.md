@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.4 media-clickable (website importer):** with a media map (`site:upload`/`site:import`/`site … --media`),
+    a box's own media-library background photo is its class's Bricks Background → Image setting (id, size; a photo per
+    Bricks breakpoint in that tier's setting), so it is clickable and swappable in Bricks; `background-image`/`-size`
+    leave the class's custom CSS; what a setting can't hold (a gradient, layers, a photo changing between Bricks' tiers,
+    a hover's photo, `::before`) stays CSS, named in the notes; the test renderer prints `_background` as Bricks does
+    (an unset position is no longer printed); pastes without a media map and Figma designs are byte for byte as before;
+    on the Elementor route the 25 changed classes of B-Dry's home arrive as new classes on a re-paste. Q1–Q3 A not yet
+    confirmed. Paste check **3ea** (AC7, live: re-paste on B-Dry staging, click a box's class, Style → Background shows
+    the photo and opens Media).
   - **2026-11-11.3 capture-refused-styles (website importer):** a scan of a site whose check comes back partway
     (bdryswi.com on WordPress.com) reads the range again asking the site for its page (the person may press 'I am
     human' once more), renews the pass for the pictures and font files at the scan's end (at most 3 renewal page
