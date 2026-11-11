@@ -31,3 +31,11 @@ Load `systematic-debugging` when a test fails unexpectedly or a number gets wors
 
 ## Return
 `{name, status: ready-for-review|stopped, summary, base_sha, worktree, branch, last_commit, diff_stat, gates[{label, exit}], ac_tests[{ac, test, red_on_base, green_on_head}], shots[], mutants[], rulings[], stop_reason, found_else[], defect_loop_skills[], skill_lessons[]}`, then end the report with the line `MAIN SESSION: check and save these skill_lessons now.`
+
+## Continuation (2026-11-10, after the first builder was stopped by Justin mid-gates)
+The first builder was stopped by the user, not for a code reason, and can't be resumed. You continue its work; don't restart the build:
+- Worktree `/home/justin/Leorna/86bcm928e-custom-integrations`, branch `feat/86bcm928e-custom-integrations`, last commit `5fc0826` (11 commits, Tasks 0–10 done per its `builder/INVENTORY.md`). Its container `928e-builder-pg` is still up: reuse it.
+- First check `git status`, read `<evidence>/builder/INVENTORY.md` and the existing `gates-*.txt` to see which tasks are done. Check each plan task's completion against the repo and evidence before skipping it; finish any that isn't done.
+- Then run Task 11's gates once on the current head, serially, into a fresh `gates-<sha7>.txt`; mark any earlier interrupted run as not the head's result.
+- The machine is heavily loaded (load ~45 on 24 cores from other sessions): if a Postgres test times out, rerun it alone before judging. earlyoom kills: `journalctl -u earlyoom --since "-30 min" -o short-iso | grep -E 'sending SIG[A-Z]* to process'` (a bare `grep sending` also matches the startup banner).
+- Then remove only your own container and stop at `ready-for-review` (Task 12).
