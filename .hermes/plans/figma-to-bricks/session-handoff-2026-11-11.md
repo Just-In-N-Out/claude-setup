@@ -37,8 +37,11 @@ bdryswi.com's re-checks; 3dy). Merge lock free. Untracked `site-check-out/` in t
 - **Justin's first clean scan of bdryswi.com** (Build 2026-11-11.3): `~/Downloads/bdry-test/bdryswi-com-home.f2b-capture.json`
   (`capture:check` ok; 52/52 pictures; 22 min, three "I am human" presses). He ran `site:upload` against B-Dry
   staging: 34 pictures uploaded (media 174–207); pastes in `~/Downloads/bdry-test/paste/` (header, page, footer) and
-  Windows `Downloads\bdry-paste-2026-11-11\`. He pasted header and page into a new staging page and was on the footer,
-  then Regenerate code signatures, LiteSpeed Purge All, view in incognito. Expect the footer icon list squashed until
+  Windows `Downloads\bdry-paste-2026-11-11\`. **Justin has updated B-Dry staging with this import** (2026-11-11 ~11:35: header, page and
+  footer pasted into a new staging page — suggested title "Home import test"; ask him the page's address before reading
+  it with `site:live`, which only reads), then Regenerate code signatures, LiteSpeed Purge All, view in incognito. This
+  is the live check of 3dt (site:upload), 3dy (scan fix) and, partly, 3dp–3dx; his screenshots of it are the next
+  feedback. Expect the footer icon list squashed until
   footer-icon-list merges and he re-scans (`npm run site:import -- https://bdryswi.com/
   https://bdry.staging.growithgro.com --elementor`).
 - Clipboard: set with PowerShell `Set-Clipboard` and always read back before telling him (memory `wsl-clipboard`: it
