@@ -18,6 +18,8 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Progress (2026-11-11, latest first)
 
+- Verifier round 2 clean (AC1–AC7 on client `d655a73` / CP `926997e`; AC8 not_run, dropped). Auditor round 2 dispatched (brief `-auditor-2.md`, own throwaway Postgres). Owed cleanup once `leorna-test-pg` starts again: drop verifier-2's DBs leorna_86bcxnymy_ver2_test, _ver2_ac1_test, _ac2_test, _ac4_test, _ac5_test, leorna_86bcxnymy_ver2m_test. Then ac-check: `--base 7d2e16e… --plan <E>/plan-approved.md --reviews <E> <E>/verifier-2/ac.json <E>/auditor-2/ac.json`.
+
 - Client review round 3 clean: MOVE ON at `d655a73` (base `7d2e16e`); P3s R3-1 (Startup worker launch untested), R3-2 (worker doesn't wait for integration actions) to follow-ups. Verifier round 2 dispatched (brief `-verifier-2.md`, folder `verifier-2/`); auditor-2 brief ready (`auditor-2/`).
 
 - CP review round 5 clean: MOVE ON at `926997e` (base `d3e7391`). found_else: local 86bcm928e branch also adds 000033, 86bcxnykn adds 000032 (whichever merges later renumbers).
