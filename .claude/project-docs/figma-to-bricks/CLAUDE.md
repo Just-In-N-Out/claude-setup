@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-10)
 
-- **Current build `2026-11-10.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-10.8`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-10.8 control-weight (website importer):** on the code route an element its parent reads as an inline
+    word at some widths (a link that is a word of its wrapper's line on small tablets, its own painted button
+    elsewhere) carries those widths in its own class, at every depth the reading nests (a link's icon and label) and
+    across two parents' moves, so Bricks' class control (printed as `.cls.brxe-<el>`) no longer out-weighs the
+    parent's rule (the link was `inline-block` and the fixture's hero 28 px taller in the range); where the paste can't
+    prove which child is which (a hidden child before it, words beside it, an element the paste doesn't hold) or the
+    parent is hidden there, the parent's rule stays as before; pastes without the shape and Figma designs are byte for
+    byte as before. Q1 A (Display in the class's Custom CSS for these elements) and Q2 A not yet confirmed. No paste
+    check owed (no page of Justin's holds the shape).
   - **2026-11-10.7 panel-embed-code (website importer):** on both routes (the Figma panel's website route and `npm run
     site`) a pasted Code element runs only a widget's own code: the slot's own served markup, a frame's own markup, a
     frame a script made as it showed, or the one frame shown at the slot from the capture's code reading; a floating
@@ -26,9 +35,9 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
     runs; classes change only where main wrote such a `revert` (B-Dry's saved home stand-in: 0 left, 18 before); two
     uses stay, named: an Elementor accordion's open look and a slider's `<button>` arrows and dots; the live widget's
     inner box prints as a bounded block too; other pastes and Figma designs are byte for byte as before. Q1 A (only
-    classes where a range drops a value change) and Q2 A not yet confirmed. Known limit: a link its wrapper reads as an
-    inline word at some widths paints `inline-block` there (control-weight). Paste check **3du** (B-Dry's hero buttons
-    on phones, after a re-capture).
+    classes where a range drops a value change) and Q2 A not yet confirmed. The link a wrapper reads as an inline word at
+    some widths painted `inline-block` there until Build 2026-11-10.8 (control-weight). Paste check **3du** (B-Dry's
+    hero buttons on phones, after a re-capture).
   - **2026-11-10.5 site-media-upload (website importer):** `npm run site:upload -- <capture> <outDir> <https://site>`
     (`--dry-run`, `--svg`, `--elementor`, `--part`, `--basic-text`, `--user`, `--record`) uploads a scanned page's own
     pictures to that WordPress site's media library with the panel's uploader (each file once, as served, the old
