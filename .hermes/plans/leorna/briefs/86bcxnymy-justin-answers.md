@@ -10,3 +10,7 @@
 - **AC8 dropped:** not run, and not mentioned in any PR text, ClickUp evidence, team message or review prompt. No "live check owed" wording anywhere outward-facing.
 - **Recheck:** main moved (client `a7839b3` → `7d2e16e`: #34 Go 1.27.4, #33 per-user credentials; control plane `4ef14ef` → `d3e7391`: #124, #123, #125 OIDC SSO with migration 000032, #126). Full path after the bring-in: fresh review of each merge → verifier → blind auditor → `ac-check.sh` → PR finisher.
 - With main in, both repos are on Go 1.27.4, so the earlier `make audit` note should no longer be needed (drop it if audit is green).
+
+## 2026-11-11 ~23:40 UTC
+- #128 BEHIND after #127 (v0.2.0 release notes) merged: **"Bring main in now"** (merge main, the PR-number record commit, fresh review of the merge, push, CI), despite the v0.2.0 merge pause (he merges when it ends).
+- Stuck CI after GitHub's Actions incident: **"Close and reopen #36"** — done 23:42; new client run 43121848966.
