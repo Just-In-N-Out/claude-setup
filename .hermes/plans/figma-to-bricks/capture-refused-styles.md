@@ -1,8 +1,11 @@
 # capture-refused-styles: a site whose protection turns the scan away partway is passed again, or named (plan, 2026-11-10)
 
 A bug, **Mini pipeline** (Justin's choice; it stays Mini: one rule of about ten lines in four files, a request log, two
-lines of wording). Planned against main `7ec16d6060a76b441e42581b78ad3a502461fd66` (Build 2026-11-10.7; `git rev-parse
-main` checked). Website importer rules: one real-bug review, edge cases to follow-ups. Evidence and every probe:
+lines of wording). **Base: main `11e885fda5d08863a5875f939085350c007ac732`** (Build 2026-11-10.8, control-weight on top
+of `7ec16d60`, where the probes ran; `git diff 7ec16d60 11e885fd` touches no file this plan reads, changes or tests:
+`src/web`, `tools`, `test/browser`, `test/web` but `lib/site-page-check.ts`, the fixtures the tests import, `src/ui`,
+`src/core/snapshot` and `package.json` are byte for byte the same; only `BUILD`'s value and the site converter moved, and
+no planned test reads either). Website importer rules: one real-bug review, edge cases to follow-ups. Evidence and every probe:
 `~/.hermes/plans/figma-to-bricks/evidence/capture-refused-styles/planner/` (index `notes.md`; scripts and scratch trees
 in `~/.cache/capture-refused-styles-planner/`). The builder copies this file to
 `docs/plans/2026-11-10-capture-refused-styles.md` as Task 0.
@@ -135,8 +138,16 @@ in `~/.cache/capture-refused-styles-planner/`). The builder copies this file to
 - AC8 (proposed): the gates pass as on the base: `npm run check`, and the web suites named in Task 9 with the base's tallies; test `npm run check` plus the Task 9 list.
 - AC9 (proposed) (live): Justin's own `npm run capture -- https://bdryswi.com/` on the desktop ends with a capture `npm run capture:check` calls `ok`, or with the plain refusal line and its log file naming what refused it; test: Justin's run (paste check 3dw).
 
-**RED on base** (the test files below applied alone to a clean `git archive` of `7ec16d60`; receipt
-`red-base-all.tap`): RED_RESULTS_HERE
+**RED on base** (the three test files applied alone to a clean `git archive` of `7ec16d60`, byte for byte the base's
+files on `11e885fd`; receipt `red-base-all.tap`, 0 of 5 pass): AC1 throws `The page loads for widths 768–900 px never
+got the site's stylesheet http://127.0.0.1:…/_jb_static/ (answered 403) in 3 tries …`; AC2's `Failed:` line is the old
+`The page loads for widths 901–1024 px never got … Press Capture to try again.`; AC4's helper job ends `failed` where
+`done` is wanted; AC5's line ends `Press Capture to try again.`; AC6 exits 1 (no capture). AC3 is a regression guard
+(green on base by construction). **GREEN of the rule alone:** AC1 passes on base + `proto1-R1.diff` (`green-proto1-ac1.tap`,
+107 s). **GREEN of the whole plan:** every planned test on the planner's full prototype (base + Tasks 2–6 exactly as the
+code below): AC1, AC2, AC5, AC6 pass (`green-pfull-all.tap`; AC4 there failed on a fixture counter bug, since fixed:
+`set({ after })` now counts from the set), AC4 and AC6 pass again with the fixed fixture (`green-pfull-ac4.tap`), and AC4
+stays RED on base with it (`red-base-ac4.tap`). AC3 on the prototype against a base export: AC3_RESULT_HERE
 
 ## Approach (the general rule, nothing keyed on a site or a host)
 
@@ -159,13 +170,14 @@ in `~/.cache/capture-refused-styles-planner/`). The builder copies this file to
 - `src/web/replay.ts` (turn's `fresh`; the stylesheet Response-stage pattern), `src/web/session.ts` (options `fresh`,
   `requests`), `src/web/styled.ts` (`open(fresh)`, the error fields, `SiteRefused`, `refusedText`), `src/web/capture.ts`
   (four call lines, the recorder, the stop conversion), `src/web/discover.ts` (options `fresh`, `requests`), new
-  `src/web/asked.ts`, `tools/lib/capture-pages.ts` (three lines), new `tools/lib/capture-refused.ts`; tests and the
+  `src/web/asked.ts`, `tools/lib/capture-pages.ts` (`one()`'s first lines, its two failure lines, one line after
+  `Took`, `PagesOptions.again`), new `tools/lib/capture-refused.ts`; tests and the
   fixture `test/fixtures/web/edge-site.ts` (new); `test/web/capture-styled-ranges.test.ts` (its three CLI lines'
   last sentence).
 - **site-menu** (`site-menu-fix6`) changes `src/web/capture.ts` at other lines (imports, `CaptureOptions.opens`,
   `launchCaptureChrome`, the `Got` type, the opens readings) and `test/fixtures/web/styled-site.ts`: this job keeps out of
   both (its own fixture; its capture.ts lines are `openRange`, `openDesign`'s and a range's `open`, `search`/`searchAgain`
-  and the final `catch`). A rebase may meet `CaptureOptions` (both add one member): keep both.
+  and the final `catch`). A rebase may meet the imports and `CaptureOptions` (both add lines there): keep both.
 - **site-one-command** (`site-one-command-build`) turns `one()` in `tools/lib/capture-pages.ts` into `capturePage` and
   moves the launch into `tools/lib/capture-run.ts`: this job's command-side code lives in its own
   `tools/lib/capture-refused.ts`, called from three lines of `one()`'s body, so whichever merges second moves those three
@@ -202,40 +214,28 @@ under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`.
    passed to its `openSession`. (Exactly `proto1-R1.diff` plus the search's two lines.) AC1 green; run
    `capture-styled-ranges`, `capture-styled-loads`, `capture-replay`, `human-once` (they count page loads). Commit.
 
-3. **The recorder.** New `src/web/asked.ts` (code below). `session.ts`: `SessionOptions.requests?: SiteRequests`; after
-   `watchLost`, `if (opts.requests) s.offs.push(await opts.requests.watch(page, host));`; at the top of each pass of the
-   load loop `opts.requests?.pageLoad(!!kept);`; the `recordTo` callback becomes `(a) => { heard = a; opts.requests?.
-   answered(a); }`; `answerFrom(page, kept, opts.requests)` / `recordTo(page, cb, opts.requests)`. `replay.ts`: both take
-   an optional `sheets?: SheetHook` (`(q: { url: string; status: number; headers: Array<{ name: string; value: string }>;
-   body: () => Promise<string> }) => void`); with it, `Fetch.enable` gets a second pattern `{ urlPattern: "*",
-   resourceType: "Stylesheet", requestStage: "Response" }` and the listener, first thing: `if (q.responseStatusCode !==
-   undefined || q.responseErrorReason) { if (q.resourceType === "Stylesheet") sheets?.({ url: q.request.url, status:
-   q.responseStatusCode ?? 0, headers: q.responseHeaders ?? [], body: () => bodyOf(page, q.requestId) }); void
-   page.cdp("Fetch.continueResponse", { requestId: q.requestId }).catch(() => page.cdp("Fetch.continueRequest", {
-   requestId: q.requestId }).catch(() => undefined)); return; }` (in `recordTo` the document branch keeps its own
-   response handling: test `q.resourceType === "Stylesheet"` before it). `capture.ts`: `CaptureOptions.requests?:
-   SiteRequests` ("what the run asked the site and what it refused (capture-refused-styles): the command's log; one is
-   made when none is given"), `const requests = opts.requests ?? new SiteRequests(opts.url)`, passed to every
-   `openSession` (`openRange`) and to `discover`. `discover.ts`: `DiscoverOptions.requests` to its `openSession`. AC3 must
-   stay green here (run it: `F2B_BASE_TREE=<base export> node --test test/web/capture-refused-same.test.ts`). Commit.
+3. **The recorder.** New `src/web/asked.ts` (Code below). `session.ts`: `SessionOptions.requests?: SiteRequests`; after
+   `s.offs.push(watch.off);`, `if (opts.requests) s.offs.push(await opts.requests.watch(page, host));`; at the top of each
+   pass of the load loop (after `watch.reset();`) `opts.requests?.pageLoad(!!kept);`; `answerFrom(page, kept,
+   opts.requests?.sheet)` and `recordTo(page, (a) => { heard = a; opts.requests?.answered(a); }, opts.requests?.sheet)`.
+   `replay.ts`: the stylesheet hook (Code below). `capture.ts`: `CaptureOptions.requests?: SiteRequests`, `const requests
+   = opts.requests ?? new SiteRequests(opts.url);` above `search`, passed to `openSession` in `openRange` and to
+   `discover`; `discover.ts`: `DiscoverOptions.requests` to its `openSession`. AC3 must stay green here (run it:
+   `F2B_BASE_TREE=<a git archive of 11e885fd with node_modules linked> node --test test/web/capture-refused-same.test.ts`).
+   Commit.
 
-4. **The line (AC2's and AC4's text).** `styled.ts`: `UnstyledRange` keeps `readonly sheet: Lack; readonly loads: number;
-   readonly span: Pick<WebRange, "min" | "max">`, `UnstyledSearch` `sheet` and `loads`; add `refusedText`, `SiteRefused`
-   and `refusalOf` (code below). `capture.ts`: the outer `catch (e) { closing = true; throw e; }` (line 340) becomes
+4. **The line (AC2's and AC4's text).** `styled.ts`: the error fields and `refusedText`, `SiteRefused`, `refusalOf` (Code
+   below). `capture.ts`: the outer `catch (e) { closing = true; throw e; }` (after the kept loads' check) becomes
    `catch (e) { closing = true; throw refusalOf(e, requests, typed); }`. AC4 green. Commit.
 
-5. **The command's words (AC5).** New `tools/lib/capture-refused.ts` (code below: `cliWords`, `writeRefused`,
-   `refusedLine`). `tools/lib/capture-pages.ts` `one()`: `const requests = new SiteRequests(url);` passed in
-   `run.capture({ …, requests })`; every `print.error(\`Failed: ${url}: ${e.message}\`)` becomes
-   `print.error(\`Failed: ${url}: ${cliWords(e.message, again)}\`)` with `const again = o.again ?? \`npm run capture --
-   ${o.url}\``; `PagesOptions.again?: string` ("the command a person types to run this again; site:import passes its
-   own"). In `test/web/capture-styled-ranges.test.ts`, the three CLI lines' last sentence `Press Capture to try again\\.`
-   becomes `Run npm run capture -- SITE again\\.` (`SITE` replaced with `literal(fx.site + "/")` where `SHEET` is). AC5
-   green. Commit.
+5. **The command's words and log (AC2, AC5, AC6).** New `tools/lib/capture-refused.ts`; `tools/lib/capture-pages.ts`
+   `one()` as in Code below. In `test/web/capture-styled-ranges.test.ts`, the three CLI cases' expected last sentence
+   `Press Capture to try again\\.` becomes `Run npm run capture -- ${literal(fx.site + "/")} again\\.` (the `RANGE_LINE`
+   helper and the search case's `line` take the site, as `SHEET` is filled in now). AC2, AC5, AC6 green. Commit.
 
-6. **The log (AC2, AC6).** In `one()`: after a failure, `const file = writeRefused(o.out, url, requests); if (file)
-   print.error(\`What the site answered: ${file}\`);`; after a saved capture, `const line = refusedLine(o.out, url,
-   requests); if (line) print.log(line);` (after the `Took` line). AC2 and AC6 green. Commit.
+6. **The panel's words stay** (no code): `src/web/helper/job.ts` shows `e.message`, the panel's words, unchanged; AC4
+   proves it. The tests that pin `e.message` (`capture-retry`, `capture-styled-loads`, `web-styled-open`, `human-check`,
+   `human-reload`) stay as they are.
 
 7. **The other suites.** Run Task 9's list; a test pinning a page-load or stylesheet count that the rule changes only
    when something was refused is the expected kind; anything else: stop and report (never weaken it).
@@ -254,6 +254,10 @@ under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`.
 
 ## Code
 
+The whole change is the planner's prototype, proven by the GREEN run above: **`pfull-src.diff` and `pfull-tools.diff`**
+in the evidence folder (`git apply -p1` from the repo root; the builder may type it task by task instead, but the result
+is these bytes plus Task 8's docs). The new files and blocks, in full:
+
 ### `src/web/asked.ts` (new)
 
 ```ts
@@ -261,27 +265,30 @@ under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`.
 // site for its page and those answered from the kept page (replay.ts), the site's own requests by kind (asked, from
 // Chrome's cache, refused), and every refused one: its whole address (a secret-looking query value hidden), status,
 // response headers without cookies, and the first 300 bytes of its answer where Chrome still has them (a stylesheet's,
-// read at Fetch's Response stage; the page's own). Refused: an error answer that isn't "missing" (not 404 or 410).
-// The site's own: the typed host or a host one of its page loads went to, www. aside (as lost.ts).
+// read at Fetch's Response stage; the page's own, as the tab heard it). Refused: an error answer that isn't "missing"
+// (not 404 or 410). The site's own: the typed host or a host one of its page loads went to, www. aside (as lost.ts).
 import type { Page } from "../../test/browser/chrome.ts";
 import type { Answer } from "./replay.ts";
 import { BUILD } from "../shared/build.ts";
 
 export interface RefusedRequest { at: number; url: string; type: string; status: number; headers: Record<string, string>; body: string | null }
-export type SheetHook = (q: { url: string; status: number; headers: Array<{ name: string; value: string }>; body: () => Promise<string> }) => void;
+export type SheetHook = (q: { url: string; status: number; headers: Array<{ name: string; value: string }>; body: string | null }) => void;
 
 const bare = (h: string) => h.toLowerCase().replace(/^www\./, "");
 const PRIVATE_HEADER = /^(set-cookie|cookie|authorization|proxy-authorization)$/i;
 const SECRET = /token|key|sig|secret|pass|auth|session|nonce|code/i;
-export const refusing = (status: number) => status >= 400 && status !== 404 && status !== 410;
+export const refusing = (status: number): boolean => status >= 400 && status !== 404 && status !== 410;
 
-// an address as the log keeps it: a secret-looking query value hidden
+// an address as the log keeps it: a secret-looking query value hidden (a combined file's ??list kept as it is)
 export function logged(url: string): string {
   try {
     const u = new URL(url);
+    if (u.search.startsWith("??")) return url;
     for (const k of [...u.searchParams.keys()]) if (SECRET.test(k)) u.searchParams.set(k, "…");
-    return u.search.startsWith("??") ? url : u.href;
-  } catch { return url; }
+    return u.href;
+  } catch {
+    return url;
+  }
 }
 
 export class SiteRequests {
@@ -290,32 +297,29 @@ export class SiteRequests {
   readonly loads = { asked: 0, kept: 0 };
   readonly requests: Record<string, { asked: number; cached: number; refused: number }> = {};
   readonly refused: RefusedRequest[] = [];
-  private hosts: string[];
+  private readonly hosts: string[];
   constructor(address: string) { this.address = address; this.hosts = [new URL(address).host]; }
 
-  private own(url: string): boolean { try { return this.hosts.some((h) => bare(h) === bare(new URL(url).host)); } catch { return false; } }
+  private own(url: string): boolean { try { const h = bare(new URL(url).host); return this.hosts.some((x) => bare(x) === h); } catch { return false; } }
   private kind(type: string) { return (this.requests[type] ??= { asked: 0, cached: 0, refused: 0 }); }
-  private add(url: string, type: string, status: number, headers: Record<string, string>, body: string | null): RefusedRequest {
-    const r = { at: Date.now() - this.started, url: logged(url), type, status, headers: Object.fromEntries(Object.entries(headers).filter(([k]) => !PRIVATE_HEADER.test(k))), body };
-    this.refused.push(r);
+  private add(url: string, type: string, status: number, headers: Record<string, string>, body: string | null): void {
+    this.refused.push({ at: Date.now() - this.started, url: logged(url), type, status, headers: Object.fromEntries(Object.entries(headers).filter(([k]) => !PRIVATE_HEADER.test(k))), body });
     this.kind(type).refused++;
-    return r;
   }
 
   pageLoad(kept: boolean): void { if (kept) this.loads.kept++; else this.loads.asked++; }
 
-  // the page's own answer heard by the tab (replay.ts recordTo): an error answer's first bytes
+  // the page's own answer as the tab heard it (replay.ts recordTo): an error answer's first bytes
   answered(a: Answer): void {
     if (!refusing(a.status)) return;
     const r = [...this.refused].reverse().find((x) => x.type === "Document" && x.url === logged(a.url) && x.body === null);
     if (r) r.body = Buffer.from(a.body, "base64").toString("utf8").slice(0, 300);
   }
 
-  // a stylesheet's answer at Fetch's Response stage (replay.ts): the only place a refused one's body still is
+  // a stylesheet's answer at Fetch's Response stage (replay.ts): the page's own request and DevTools' asking for its text
   readonly sheet: SheetHook = (q) => {
     if (!this.own(q.url) || !refusing(q.status)) return;
-    const r = this.add(q.url, "Stylesheet", q.status, Object.fromEntries(q.headers.map((h) => [h.name.toLowerCase(), h.value])), "");
-    void q.body().then((b) => { r.body = b.slice(0, 300); }, () => { r.body = null; });
+    this.add(q.url, "Stylesheet", q.status, Object.fromEntries(q.headers.map((h) => [h.name.toLowerCase(), h.value])), q.body === null ? null : q.body.slice(0, 300));
   };
 
   // one page load's tab: its own-site requests counted, every refused one but a stylesheet's (the sheet hook has those)
@@ -334,7 +338,7 @@ export class SiteRequests {
         const type = types.get(q.requestId) ?? q.type ?? "Other";
         types.delete(q.requestId);
         if (type === "Stylesheet" || !this.own(q.response.url) || !refusing(q.response.status)) return;
-        this.add(q.response.url, type, q.response.status, Object.fromEntries(Object.entries(q.response.headers).map(([k, v]) => [k.toLowerCase(), v])), type === "Document" ? null : null);
+        this.add(q.response.url, type, q.response.status, Object.fromEntries(Object.entries(q.response.headers).map(([k, v]) => [k.toLowerCase(), v])), null);
       }),
     ];
     return () => { for (const o of offs) o(); };
@@ -347,27 +351,49 @@ export class SiteRequests {
 }
 ```
 
-`replay.ts` gets `async function bodyOf(page: Page, requestId: string): Promise<string> { const b = await
-page.cdp<{ body: string; base64Encoded: boolean }>("Fetch.getResponseBody", { requestId }); return b.base64Encoded ?
-Buffer.from(b.body, "base64").toString("utf8") : b.body; }` and imports `type SheetHook` from `./asked.ts`; session
-passes `opts.requests?.sheet`.
-
-### `src/web/styled.ts` additions
+### `src/web/replay.ts` (appended; `answerFrom(page, a, sheets?: SheetHook)` and `recordTo(page, heard, sheets?: SheetHook)` call `if (sheetAnswer(page, q, sheets)) return;` first in their listener and add `...(sheets ? [SHEETS] : [])` to their `Fetch.enable` patterns; `import type { SheetHook } from "./asked.ts";`)
 
 ```ts
-import type { SiteRequests } from "./asked.ts";
+// capture-refused-styles: every stylesheet's answer is paused once at Fetch's Response stage (the only place Chrome still
+// holds a refused one's body) and told to the hook; true when q was such an answer (it is let go on at once)
+const SHEETS = { urlPattern: "*", resourceType: "Stylesheet", requestStage: "Response" };
+function sheetAnswer(page: Page, q: Paused, sheets: SheetHook | undefined): boolean {
+  if (!sheets || q.resourceType !== "Stylesheet" || (q.responseStatusCode === undefined && !q.responseErrorReason)) return false;
+  void (async () => {
+    const status = q.responseStatusCode ?? 0;
+    // an error answer's body is read before it goes on (afterwards Chrome drops it)
+    const body = status >= 400 ? await bodyOf(page, q.requestId).catch(() => null) : null;
+    sheets({ url: q.request.url, status, headers: q.responseHeaders ?? [], body });
+    await page.cdp("Fetch.continueResponse", { requestId: q.requestId }).catch(() => page.cdp("Fetch.continueRequest", { requestId: q.requestId }).catch(() => undefined));
+  })();
+  return true;
+}
+async function bodyOf(page: Page, requestId: string): Promise<string> {
+  const b = await page.cdp<{ body: string; base64Encoded: boolean }>("Fetch.getResponseBody", { requestId });
+  return b.base64Encoded ? Buffer.from(b.body, "base64").toString("utf8") : b.body;
+}
+```
 
-// a stylesheet the site answered with a refusal (the protection's own statuses), not a fault (a 503 keeps its old line)
+### `src/web/styled.ts` (appended; `import type { SiteRequests } from "./asked.ts";`)
+
+`UnstyledRange` gains `readonly sheet: Lack; readonly loads: number; readonly span: Pick<WebRange, "min" | "max">;`, set
+in its constructor (`this.sheet = sheet; this.loads = loads; this.span = { min: r.min, max: r.max };`); `UnstyledSearch`
+`readonly sheet: Lack; readonly loads: number;`. Every message is unchanged byte for byte.
+
+```ts
+// capture-refused-styles Q3 A: a stylesheet the site answered with a refusal (the protection's own statuses), not a
+// fault (a 503 keeps its old line): who refused what, and what a person can do (the panel's words; the command swaps
+// its "press Capture to try again" for what to type: tools/lib/capture-refused.ts)
 const REFUSAL = /^answered (401|403|429)$/;
-const titleOf = (body: string | null) => (body ? /<title[^>]*>([^<]{1,80})<\/title>/i.exec(body)?.[1].trim() ?? "" : "");
-
-// capture-refused-styles Q3 A: who refused what, and what a person can do (the panel's words; the command swaps its
-// "press Capture to try again" for what to type: tools/lib/capture-refused.ts)
+const titleOf = (body: string | null): string => (body ? /<title[^>]*>([^<]{1,80})<\/title>/i.exec(body)?.[1].trim() ?? "" : "");
 export const refusedText = (host: string, url: string, status: string, server: string, title: string, where: string, loads: number) =>
   `${host} turned the capture away: it answered the stylesheet ${url} with HTTP ${status}${server ? ` (${server})` : ""}${title ? `, "${title}"` : ""}, ${where} in ${loads} tries, the last asking the site for its page again, so nothing was captured. Wait a few minutes and press Capture to try again; if it keeps happening, ask the site's owner to let this computer through, or to switch its bot protection off while you capture.`;
 
 export class SiteRefused extends Unstyled {
-  constructor(message: string) { super(message); this.name = "SiteRefused"; }
+  constructor(message: string) {
+    super(message);
+    this.name = "SiteRefused";
+  }
 }
 
 // a stop because a stylesheet was refused becomes SiteRefused, named from the run's own record of the answer (its whole
@@ -381,9 +407,6 @@ export function refusalOf(e: unknown, requests: SiteRequests, host: string): unk
   return new SiteRefused(refusedText(host, r?.url ?? lack.sheet.key, lack.sheet.why.slice("answered ".length), r?.headers.server ?? "", titleOf(r?.body ?? null), lack.where, lack.loads));
 }
 ```
-
-`UnstyledRange`'s constructor stores `this.sheet = sheet; this.loads = loads; this.span = { min: r.min, max: r.max };`;
-`UnstyledSearch`'s `this.sheet = sheet; this.loads = loads;` (messages unchanged byte for byte).
 
 ### `tools/lib/capture-refused.ts` (new)
 
@@ -401,6 +424,7 @@ export const cliWords = (message: string, again: string): string =>
 
 const logPath = (out: string, url: string) => join(out, captureName(url).replace(/\.f2b-capture\.json$/, "") + ".f2b-refused.json");
 
+// the log, when the site refused anything in the run; its path, else null
 export function writeRefused(out: string, url: string, requests: SiteRequests): string | null {
   if (!requests.refused.length) return null;
   mkdirSync(out, { recursive: true });
@@ -419,11 +443,30 @@ export function refusedLine(out: string, url: string, requests: SiteRequests): s
 }
 ```
 
+### `tools/lib/capture-pages.ts` `one()`: its first lines; `requests` added to `run.capture({ … })`; after the `Took` line `const refused = refusedLine(o.out, url, requests); if (refused) print.log(refused);`; the two `print.error(\`Failed: ${url}: ${e.message}\`)` of `HumanCheckFailed`/`PageUnreachable` and `Unstyled` become `fail(e.message)`; `PagesOptions` gains `again?: string`
+
+```ts
+  print.log(`Capturing ${url}`);
+  // capture-refused-styles: what the site refused (the log), and the command a person types to run this again
+  const requests = new SiteRequests(url);
+  const again = o.again ?? `npm run capture -- ${o.url}`;
+  const fail = (message: string) => {
+    print.error(`Failed: ${url}: ${cliWords(message, again)}`);
+    const file = writeRefused(o.out, url, requests);
+    if (file) print.error(`What the site answered: ${file}`);
+  };
+```
+
 ## Test code
 
-The three files, exactly as written in the planner's scratch copy (`~/.cache/capture-refused-styles-planner/plan-code/`;
-copy them from there, byte for byte): `test/fixtures/web/edge-site.ts`, `test/web/capture-refused.test.ts`,
-`test/web/capture-refused-same.test.ts`. TEST_NOTES_HERE
+The three files, byte for byte as the RED and GREEN runs used them, are kept in the evidence folder:
+`~/.hermes/plans/figma-to-bricks/evidence/capture-refused-styles/planner/plan-code/test/` (`fixtures/web/edge-site.ts`,
+`web/capture-refused.test.ts`, `web/capture-refused-same.test.ts`); copy them into the copy's `test/`. What they hold:
+the fixture's protection modes (`open`, `recheck` with `passMs`, `refuse` with `after`, `fail`) and its two combined
+stylesheets at one path told apart by their query (cacheable for a year, `Vary: Cookie`, beside a script that sets a
+cookie on each load: the shape bdryswi.com's evidence points to, S2); AC1 asserts that the site really turned stylesheet
+requests away in each case (a run with no refusal proves nothing) and compares whole captures (`timeless`); AC2–AC6 are
+as their AC lines say; AC3 runs only with `F2B_BASE_TREE`.
 
 ## Risks
 

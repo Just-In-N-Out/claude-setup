@@ -78,4 +78,4 @@ Every later commit, even a records-only one, needs a fresh delta review (Full's 
 
 Mini: the same loop and brakes, with round 1 the only full round (`mini-pipeline.md`).
 
-- **Prove a docs-only rebase resolution** by applying main's own patch (`diff -u <old base file> <new base file>`) with `patch` to the old head's file and `cmp`-ing it with the new head's file: one comparison shows both sides kept (elementor-footer-fit review 3, 2026-11-09).
+- **Prove a docs-only rebase resolution** by applying main's own patch (`diff -u <old base file> <new base file>`) with `patch` to the old head's file and `cmp`-ing it with the new head's file: one comparison shows both sides kept (elementor-footer-fit review 3, 2026-11-09). Where the two sides changed adjacent lines, a patch with context conflicts again: use zero-context patches (`git diff -U0 <base> <side> -- f`, then `git apply --unidiff-zero`), each side's change onto the other side's file, and require the rebased file byte for byte both ways (dream-pass fixer 8).

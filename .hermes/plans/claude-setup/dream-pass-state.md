@@ -41,3 +41,7 @@ Updated 2026-11-10 about 18:30 EST by the main session that ran both jobs from t
 - Lessons saved from these two jobs are already in the skills and memory (synced); nothing is pending.
 - The hand trial of 2026-11-09 (three sessions, scratch only) is not kept; its findings are in the plan.
 - Backup tag before the first dream: `pre-dream-2026-11-09` (`fafe0ac3`) on `Just-In-N-Out/claude-setup`.
+
+## Update 2026-11-10 about 19:40
+- Fixer 8 done: budget commit made and the branch rebased onto `main` `299862e4`. New head **`2d69e1e42b126b15a534a09d801f3d4cec411ce2`** (52 commits). One conflict, the known one in `.claude/CLAUDE.md`, both sides kept. `CLAUDE.md` is 31,915 bytes on the head (budget now 36,000). Dream suite 93 passed; regression gate ok after one load flake rerun alone. Records: `evidence/dream-pass/fixer-8/`.
+- Reviewer 10 (Opus 5.5 high, brief `briefs/dream-pass-reviewer-10.md`) is reviewing the budget commit and the rebase. Next: `review-check.sh --base 299862e4…`, then a fresh verifier (Opus high) and a fresh blind auditor (Opus xhigh) on `2d69e1e4`, `ac-check.sh`, then the landing with a rebase receipt.
