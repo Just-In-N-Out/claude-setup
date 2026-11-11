@@ -147,7 +147,10 @@ got the site's stylesheet http://127.0.0.1:…/_jb_static/ (answered 403) in 3 t
 107 s). **GREEN of the whole plan:** every planned test on the planner's full prototype (base + Tasks 2–6 exactly as the
 code below): AC1, AC2, AC5, AC6 pass (`green-pfull-all.tap`; AC4 there failed on a fixture counter bug, since fixed:
 `set({ after })` now counts from the set), AC4 and AC6 pass again with the fixed fixture (`green-pfull-ac4.tap`), and AC4
-stays RED on base with it (`red-base-ac4.tap`). AC3 on the prototype against a base export: AC3_RESULT_HERE
+stays RED on base with it (`red-base-ac4.tap`). AC3 on the prototype against a base export at the same build passes
+(`ac3-pfull-vs-base.tap`: 3 sites, kept pages on and off, 3 interleaved rounds, byte for byte, as often asked, within the
+margin; a first run against the `11e885fd` export differed only in `build`, which the test now leaves aside:
+`ac3-pfull-vs-base2.tap`).
 
 ## Approach (the general rule, nothing keyed on a site or a host)
 
