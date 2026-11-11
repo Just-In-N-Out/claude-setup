@@ -18,6 +18,8 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Progress (2026-11-11, latest first)
 
+- Client bring-main done: merge `d655a73` (main `7d2e16e`; conflicts bridge.go, index.html; gates green, audit green; AC1–AC7 pass vs CP `926997e`). Client review round 3 (delta 76ed828..d655a73, brief `-reviewer-client-3.md`) dispatched; referee base now `7d2e16e`. Verifier/auditor after both reviews MOVE ON; ac-check `--base 7d2e16e`.
+
 - CP bring-main done: merge `e6899b3` + renumber `926997e` (main `d3e7391`, gates green with go1.27.4, audit green). CP review round 5 (delta 54c8f1a..926997e, brief `-reviewer-cp-5.md`) dispatched; referee base is now `d3e7391`. Client bring-main still running.
 
 - **Justin: "make a PR", AC8 dropped (never mention it), recheck after main moved** (answers file). Bring-main fixers dispatched for both repos (briefs `-bring-main-cp.md`, `-bring-main-client.md`); then review of each merge → verifier → auditor → ac-check → PR finisher. Client main `7d2e16e`, control-plane main `d3e7391`. go1.27.4 is at `~/.local/leorna-toolchain/go1.27.4/bin`.
