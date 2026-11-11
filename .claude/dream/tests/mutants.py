@@ -109,6 +109,8 @@ T = {
     # fixer 8: the global CLAUDE.md's budget is 36,000 (Justin, 2026-11-10)
     "cm36": "test_the_global_claude_md_budget_is_36000_bytes",
     "ac36": "test_ac36_pointer_lines_and_docs_are_in_place",
+    # fixer 11: R12-1, AC37's live probe runs once more only after a safeguard stop
+    "r121": "test_the_live_editor_probe_runs_once_more_only_after_a_safeguard_stop",
 }
 P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
@@ -675,6 +677,11 @@ MUTANTS = [
     # fixer 9: AUD2-1, the waiting candidate must survive between runs in state/pending.json
     ('A8p', 'the apply step never writes state/pending.json (AUD2-1)', [(L + 'apply.py', '(("pending", o["whole"]["pending"]), ("tally"', '(("tally"')], ['ac8']),
     ('A8r', 'a run never reads state/pending.json back', [(L + 'run.py', 'state.load_state(env, "pending", {"candidates": {}})', '{"candidates": {}}')], ['ac8']),
+    # fixer 11: R12-1, the live AC37 probe's one retry after a safeguard stop (the test's own code)
+    ('R12a', 'the probe is run again after any error', [('.claude/dream/tests/test_agents.py', '        if res2.ok or not res2.error.startswith(SAFEGUARD_STOP):\n', '        if res2.ok:\n')], ['r121']),
+    ('R12b', 'the probe is never run again', [('.claude/dream/tests/test_agents.py', '    for n in (1, 2):\n', '    for n in (1,):\n')], ['r121']),
+    ('R12c', 'the probe is run again more than once', [('.claude/dream/tests/test_agents.py', '    for n in (1, 2):\n', '    for n in (1, 2, 3):\n')], ['r121']),
+    ('R12d', "the leak check skips the stopped run's session id", [('.claude/dream/tests/test_agents.py', '        runs.append(res2)\n', '        runs[:] = [res2]\n')], ['r121']),
 ]
 
 
