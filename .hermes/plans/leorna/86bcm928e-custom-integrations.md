@@ -1,6 +1,9 @@
 # 86bcm928e — Custom integrations defined by the admin (plan)
 
-Status: **plan, waiting for Justin's "go"**. Planner: Fable 5.2 high, 2026-11-10. Repo: `leorna-control-plane` only. Pipeline: Full. Size M.
+Status: **Approved by Justin 2026-11-10 ("go": plan + every ⭐ answer, see "Justin's answers" below)**. Planner: Fable 5.2 high, 2026-11-10.
+
+## Justin's answers (2026-11-10)
+Bare "go": every ⭐ taken — 1A (only `npx` at an exact version or a digest-pinned `docker run`), 2A (token in a variable, or OAuth), 3A (no delete; follow-up), 4A (desktop tile list unchanged; follow-up after 928h), 5A (each role runs its own throwaway Postgres container). The question block below is answered. Repo: `leorna-control-plane` only. Pipeline: Full. Size M.
 Card: ClickUp 86bcm928e (E14 Integrations, PI-2). Snapshot: `~/.hermes/plans/leorna/evidence/86bcm928e/intake/clickup-snapshot.md`. Dependency 86bcm927y is merged (PR #112).
 
 ## Questions (the plan is written as if every ⭐ was chosen; a bare "go" accepts them)
