@@ -7,5 +7,5 @@
 - [Hook payload cwd drift](hook-payload-cwd-drift.md) — hook cwd follows cd/worktrees; use dirname(transcript_path) for the project
 - [Headless Claude, isolated call](headless-claude-isolated-call.md) — flags for `claude -p` with no hooks, CLAUDE.md or transcript, on the subscription login
 - [Sync overwrites copies](sync-overwrites-copies.md) — edit the project's own CLAUDE.md, not the project-docs copy; reverting the library patch needs the clone reset
-- [Bash grep is ugrep](bash-grep-is-ugrep.md) — grep in the Bash tool is ugrep; big bounded repeats fail, use /usr/bin/grep
+- [Bash grep is ugrep](bash-grep-is-ugrep.md) — grep is ugrep, find is bfs (relative -newermt dates fail silently); use /usr/bin/grep, /usr/bin/find
 - [jq regex is quadratic](jq-regex-quadratic.md) — scan/splits/gsub O(n²) on big strings; --arg caps at 128 KB, use --rawfile
