@@ -1,15 +1,11 @@
 # 86bcxnymy — Client self-update to the admin-approved version, with staged rollout
 
-**Status:** plan for approval (planner, 2026-11-10 evening EST). Nothing is built. Card: [Client self-update to the admin-approved version, with staged rollout](https://app.clickup.com/t/86bcxnymy), size L, repo both, assignee Justin, status "to do", no comments.
-**Bases (GitHub `main`, fetched over HTTPS through gh):** leorna-control-plane `4ef14efb46da789aec30fad1e5a988d8770140e2`; leorna-client `a7839b3af664efcfa59eb1ed3fe276ec1262a4de` (client `main` moved during planning: PR #32 merged at 2026-11-11T00:49Z; the files this plan reads are unchanged between `f3bc960` and `a7839b3`). Local main checkouts are behind and were not moved; the builders' worktrees start from these SHAs.
-**Evidence folder:** `~/.hermes/plans/leorna/evidence/86bcxnymy-client-self-update/`.
-
 ## Questions (answer with letters; **go** alone takes every ⭐)
 
 **Q1. Where does a client download the new exe from?** Both repos are private on GitHub (`gh repo view`: PRIVATE), so a client without a GitHub login gets 404 from the Release link the card names.
-- A) ⭐ A download link per approved version, default the GitHub Release
+- A) ⭐ A link per approved version; default the GitHub Release
 - B) The control plane proxies the download with a GitHub token
-- C) The admin uploads the exe; clients download it from the server
+- C) Admin uploads the exe; clients download it from the server
 
 Why ⭐: A is what the card describes and the smallest build. The admin can type any HTTPS link when approving a version, so your live test works today from any HTTPS host. Real customers can update only once the release file can be downloaded without a GitHub login (a public release or mirror): that is Christian's and Yan's decision, not this story's. B puts a Leorna GitHub token on every customer's server. C stores 35 MB files in Postgres and is a bigger build.
 
@@ -60,6 +56,12 @@ Why ⭐: the card says "replaces itself and restarts". The window shows a line f
 
 Why ⭐: each builder holds one repo in its head, and the client builder tests against the finished control-plane branch. One plan, one "go", one evidence folder. C needs a new card and a re-plan (the card's ACs all need both halves).
 
+## Status and bases
+
+**Status:** plan for approval (planner, 2026-11-10 evening EST). Nothing is built. Card: [Client self-update to the admin-approved version, with staged rollout](https://app.clickup.com/t/86bcxnymy), size L, repo both, assignee Justin, status "to do", no comments.
+**Bases (GitHub `main`, fetched over HTTPS through gh):** leorna-control-plane `4ef14efb46da789aec30fad1e5a988d8770140e2`; leorna-client `a7839b3af664efcfa59eb1ed3fe276ec1262a4de` (client `main` moved during planning: PR #32 merged at 2026-11-11T00:49Z; the files this plan reads are unchanged between `f3bc960` and `a7839b3`). Local main checkouts are behind and were not moved; the builders' worktrees start from these SHAs.
+**Evidence folder:** `~/.hermes/plans/leorna/evidence/86bcxnymy-client-self-update/`.
+
 ## Playback
 
 You sent the card with "do this clickup story". The ask: a tenant admin approves client versions, pins one for the whole tenant, can roll a version out to a group or a percentage first, and can go back to an older approved version. The control plane tells each client which version to run and that release's SHA-256, over TLS, and shows how many clients run each version. The client asks its control plane, downloads the exe, checks it against the SHA-256, replaces itself and restarts. A wrong checksum is refused (current version stays, the failure is reported). A new version that doesn't start is replaced by the previous one on the next launch. No code signing yet: the checksum is the integrity check, and the signing story [Sign the engineer client](https://app.clickup.com/t/86bcm9031) later adds an Authenticode check at one named place in the same step.
@@ -75,7 +77,7 @@ You sent the card with "do this clickup story". The ask: a tenant admin approves
 
 ## Acceptance criteria
 
-AC1–AC4 are the card's own, in card order. AC5–AC7 are **proposed** by the planner; **go** approves them. AC8 is the card's Verify and only you can run it. Each AC has one named test, in the client repo.
+The card's own criteria are AC1–AC4, in card order. AC5–AC7 are **proposed** by the planner; **go** approves them. AC8 is the card's Verify and only you can run it. Each AC has one named test, in the client repo.
 
 - AC1: Given the admin approves client vX.Y.Z for a group, then only clients in that group update, and the console shows how many clients run each version. Test: `TestAC1GroupRolloutUpdatesOnlyThatGroupAndConsoleCountsVersions`
 - AC2: Given a downloaded file whose checksum does not match, then the client refuses it, keeps the current version and reports the failure to the control plane. Test: `TestAC2ChecksumMismatchIsRefusedKeptAndReported`
@@ -461,7 +463,7 @@ func ConfirmStarted(statePath, exePath, databasePath, version string) error
 
 ### D9. Client wiring
 
-- `desktop/selfupdate.go` (no build tag, so `make check` tests it): `GuardLaunch(args []string) bool` (false at once for `--verify-startup`; builds `GuardOptions` from `os.Executable()`, `application.DefaultDatabasePath()` and `selfupdate.Version`), `ConfirmStarted()`, the worker and `SelfUpdateStatus()`.
+- `desktop/selfupdate.go` (no build tag, so `make check` tests it): `GuardLaunch(args []string) bool` (false at once for `--verify-startup`; builds `GuardOptions` from `os.Executable()`, `application.DefaultDatabasePath()` and `selfupdate.Version`), `ConfirmStarted()`, `Relaunch()`, the worker, and the bridge methods `SelfUpdateStatus()` (bound to the window) and `RelaunchRequested()`.
 - Worker `runSelfUpdateWorker(ctx)`, started in `Bridge.Startup` beside the two existing workers and awaited in `Shutdown`: first check 3 s after startup, then every 6 hours; 5 minutes after `signed_out` or `unavailable`. Each check takes `b.syncMu` with `TryLock` (retry each second, like the drift worker) and holds it through download and install, so it never runs during a Sync, Restore or tool install. It builds the client with `b.login.Client(company)` (the existing bearer client; both new responses fit its 64 KiB cap). On `installed`: publish the status, set `b.relaunch`, call the injected `b.quit` (default `wailsruntime.Quit(b.runtimeContext)`), return.
 - `cmd/leorna-client/main.go` (tag `desktop`; kept to three small edits because `make check` doesn't compile it, only the Windows CI build does): `if desktop.GuardLaunch(os.Args[1:]) { return }` as the first statement; `OnDomReady: func(context.Context) { desktop.ConfirmStarted() }`; after `wails.Run` returns, `if bridge.RelaunchRequested() { desktop.Relaunch() }`. Relaunching after `wails.Run` means the database is already closed when the new exe starts.
 - Window: `<p id="update-status" role="status" aria-live="polite"></p>` in `index.html` and a new `frontend/dist/update.js` (+ one `<script>` line) that calls `SelfUpdateStatus()` and listens to the `self-update` event. Texts: "Leorna v1.2.0", "Updating Leorna to v1.3.0…", "Update to v1.3.0 was refused: the download did not match its checksum. Staying on v1.2.0.", "Update to v1.3.0 could not be installed. Staying on v1.2.0.", "Leorna went back to v1.2.0 because v1.3.0 did not start." Test: `scripts/update-ui.test.cjs` in the style of `scripts/login-ui.test.cjs`.
