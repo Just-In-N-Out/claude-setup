@@ -33,7 +33,7 @@ index d8e25dc..da8c1c3 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..f1cbe7d 100644
+index d6a2493..ee7f3bb 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,30 +60,39 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -41,7 +41,7 @@ index d6a2493..f1cbe7d 100644
  
  - Scope: change matches request, no unrelated churn, no generated junk.
 -- Behavior: happy path, edge cases, invalid input, empty state, failure state.
-+- Behavior: happy path, edge cases, invalid input, empty state, failure state. When a fix defers a decision up a chain (an inner element passes its need to its parent), probe the parents the decider rejects: the deferral needs a fallback when no ancestor decides, or it trades a safe fallback for an unchecked overflow. When code decides "something changed" from a fixed list of compared facts, probe a change to a fact not on the list; probes built from the plan's own examples pass (web-capture: width-only media queries made no switch point). After a fix widens such a detector, check that the record it feeds writes the new change too: a boundary found with nothing recorded for it is as lost as one never found (web-capture review 2). When a fix adds a better measure only for items the first pass left unmatched, probe items the first pass matched on an incomplete measure: equal keys don't mean equal measurements, so the fallback never runs where it's needed (web-compare review 3). When a fix instead stops pairing such items, probe the items it now leaves unpaired with a real difference (a move, a width): the false alarm becomes silence, and exact pairs are dropped too (web-compare review 4). When a stand-in for a group may replace its members' exact pairs, probe a real change in a member that paired exactly, inside the widest group the rule admits on ordinary pages (a column holding a heading, lines and a button), not only the case the fix was built for (web-compare review 5). When a checker excuses each item because its neighbour moved about as much (within a tolerance), probe N steps each just inside the tolerance: the excuses chain with no limit (8 sections each 8px lower, 64px total, exit 0 at every width; web-compare review 7). After a fix carries remainders across one kind of boundary, probe every other boundary where the chain may restart (a section painted on both pages, a painted footer), at the widths with the loosest tolerances (web-compare review 8). When a fix excuses a difference because a marker sits on the element or any ancestor (a state class), probe a widget whose marker sits on the outermost box (ElementsKit's `active` on the item itself) together with its own position CSS (`:not(:last-child)` margins) in a two-item list: every descendant passes and the guard does nothing (elementor-map review 2). When a fix replaces a settings-only "already done" check with a live health probe plus a repair fallback, probe a target whose probe fails for a normal, unrelated reason (a fresh install with no tenant yet, so discovery 404s): the fallback can turn a harmless press into provider writes and sticky state that blocks unrelated actions (86bccndx6 review 6).
++- Behavior: happy path, edge cases, invalid input, empty state, failure state. When a fix defers a decision up a chain (an inner element passes its need to its parent), probe the parents the decider rejects: the deferral needs a fallback when no ancestor decides, or it trades a safe fallback for an unchecked overflow. When code decides "something changed" from a fixed list of compared facts, probe a change to a fact not on the list; probes built from the plan's own examples pass (web-capture: width-only media queries made no switch point). After a fix widens such a detector, check that the record it feeds writes the new change too: a boundary found with nothing recorded for it is as lost as one never found (web-capture review 2). When a fix adds a better measure only for items the first pass left unmatched, probe items the first pass matched on an incomplete measure: equal keys don't mean equal measurements, so the fallback never runs where it's needed (web-compare review 3). When a fix instead stops pairing such items, probe the items it now leaves unpaired with a real difference (a move, a width): the false alarm becomes silence, and exact pairs are dropped too (web-compare review 4). When a stand-in for a group may replace its members' exact pairs, probe a real change in a member that paired exactly, inside the widest group the rule admits on ordinary pages (a column holding a heading, lines and a button), not only the case the fix was built for (web-compare review 5). When a checker excuses each item because its neighbour moved about as much (within a tolerance), probe N steps each just inside the tolerance: the excuses chain with no limit (8 sections each 8px lower, 64px total, exit 0 at every width; web-compare review 7). After a fix carries remainders across one kind of boundary, probe every other boundary where the chain may restart (a section painted on both pages, a painted footer), at the widths with the loosest tolerances (web-compare review 8). When a fix excuses a difference because a marker sits on the element or any ancestor (a state class), probe a widget whose marker sits on the outermost box (ElementsKit's `active` on the item itself) together with its own position CSS (`:not(:last-child)` margins) in a two-item list: every descendant passes and the guard does nothing (elementor-map review 2). When a fix replaces a settings-only "already done" check with a live health probe plus a repair fallback, probe a target whose probe fails for a normal, unrelated reason (a fresh install with no tenant yet, so discovery 404s): the fallback can turn a harmless press into provider writes and sticky state that blocks unrelated actions (86bccndx6 review 6). When a failure state's message names remedies (retry, update to a fixed release), drive each one through the real handler in that exact state: a side condition of the state (the provider still reporting `error`) can refuse it for good while a unit test pins the refusal as intended; and trace every "the page shows X" line of a live AC's runbook to the code computing X with the runbook's own setup, since no agent ran it (86bcxnykn review 1, R1-1 and R1-2).
 +- Trusted references: when a fix checks every item against one trusted item (the first load, a baseline, the design width), probe that reference being the bad one, and the step before it that it depends on; a compare that skips whatever the reference lacks accepts everything, and a test built from the plan's example (items after the reference fail) still passes (staging-fit-capture review 1, 2026-11-09). Also probe an item that doesn't exist at the reference (a widget the site hides at the design width): a rule reading state from one trusted width reads "nothing" there and drops what every other width agrees on (site-faq review 1).
 +- Host blocks: when a tool blocks a host with a wildcard resolver rule (Chrome `--host-resolver-rules "MAP *.<host> ~NOTFOUND"`), probe a target on a subdomain of the blocked host (`staging.<old site>`); Chrome resolves any `*.localhost` to loopback, so `a.localhost` against `x.staging.a.localhost:<port>` reproduces it locally (staging-fit-renderer review 1).
 +- Second fetches: when a fix leans on data from a separate request (the page "as the server sends it"), probe with that request refused (403 or a check page) and read the user's latest real artefact for the tell that it was empty; a stand-in on 127.0.0.1 never fails that fetch (site-reviews review 1). A fetch wrapper that clears its timer once the headers arrive leaves the body read with no time or size limit: probe a new read with a server that sends headers, then drips the body (site-media-upload review 2: `arrayBuffer()` held a rerun 45 s). When a fix lets one part stand for the whole (a script tag alone as a widget's code), probe inputs where the part depends on its served neighbours (a placeholder the script replaces; a library tag plus an inline call), each paired with the same input in the shape the fix was written for as a control: the part runs, draws nothing, and a checker that stands in at the captured size still says OK (review 2).
@@ -224,7 +224,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..dea0162 100644
+index f2d882d..47b3929 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,63 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -292,7 +292,7 @@ index f2d882d..dea0162 100644
  
  ## The Core Rule
  
-@@ -46,9 +97,26 @@ apply its owned causal mutation, re-run unchanged tests, require intended RED,
+@@ -46,9 +97,30 @@ apply its owned causal mutation, re-run unchanged tests, require intended RED,
  then restore exact candidate bytes and verify the relevant GREEN.
  ```
  
@@ -303,7 +303,11 @@ index f2d882d..dea0162 100644
 +end-to-end fixture trips two conditions of a guard at once, each single-condition
 +mutant survives there: give every condition its own small case around a part that
 +passes all the others, have the test name each wrongly accepted case so the grader
-+requires that exact set, and grade the overlap with pair mutants; a `!==` between two
++requires that exact set, and grade the overlap with pair mutants; when one input kind
++returns early in a shared pipeline, give each kind its own negative fixture per step its
++success message claims, plus a "skip this step, still succeed" mutant per kind (86bcm928p
++auditor: address targets' dial and certificate steps survived because every failure
++fixture used MCP targets); a `!==` between two
 +counts is mutated each way on its own, `<` and `>`: "removed" and "reversed" mutants both
 +die on a fixture that breaks it one way only; site-reviews fixer 2 and review 3; a grader
 +matching test names by regex leaves `#` out of the pattern, since node's TAP reporter
@@ -322,7 +326,7 @@ index f2d882d..dea0162 100644
  
  ## Procedure
  
-@@ -82,15 +150,74 @@ itself prove that the entire test is worthless.
+@@ -82,15 +154,74 @@ itself prove that the entire test is worthless.
     unaffected controls.
     Before registering a mutation, grep every call site of the guarded helper
     and list every other mechanism that yields the same observable, such as a
@@ -403,7 +407,7 @@ index f2d882d..dea0162 100644
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -99,14 +226,33 @@ itself prove that the entire test is worthless.
+@@ -99,14 +230,33 @@ itself prove that the entire test is worthless.
     leave mutated source behind. After a mid-cycle crash, compare the working
     file with the saved green bytes and restore before launching another probe.
  4. **Require the intended failure for every mutation.** A nonzero exit from
@@ -440,7 +444,7 @@ index f2d882d..dea0162 100644
     Validate evidence against the exact intentional variant and actual process
     return, not pristine-only assumptions or attempted-publication flags.
     Repair diagnostic readers offline against retained output; preserve their
-@@ -142,12 +288,22 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -142,12 +292,22 @@ transcripts in `references/blind-test-patterns.md`.
  1. **The assertion matched a comment.** A test regexed a window of source and
     found its keyword inside an explanatory comment, not the code. Parse the
     *construct* (e.g. just the set literal) and strip comments before matching.
@@ -464,7 +468,7 @@ index f2d882d..dea0162 100644
  4. **A different guard masked the one under test.** A per-person cap test
     passed because a dedup guard fired first; deleting the cap entirely stayed
     green. Build fixtures that isolate the guard under test, and add a
-@@ -155,7 +311,22 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,7 +315,22 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -488,7 +492,7 @@ index f2d882d..dea0162 100644
   collisions: a fake whose `None` argument means "use the valid default"
   silently turns the `None` rejection case into a positive one — use a
   private `object()` sentinel for "not provided".
-@@ -170,16 +341,29 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -170,16 +345,29 @@ transcripts in `references/blind-test-patterns.md`.
     `references/blind-test-patterns.md` for concurrent callback paths.
  6. **A redundant fallback masked the primary path.** Two mechanisms resolved
     the same input, so either could be deleted invisibly. Test each path with a
@@ -520,7 +524,7 @@ index f2d882d..dea0162 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -189,7 +373,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -189,7 +377,11 @@ transcripts in `references/blind-test-patterns.md`.
     legitimately empty ones. A test filtered to a cfg-gated family lists zero
     tests when the cfg is off; a fake that returns a non-empty listing hides a
     parser that rejects that correct output. The cost lands where a run cannot
@@ -533,7 +537,7 @@ index f2d882d..dea0162 100644
  9. **The assertion was satisfied by the ambient config, not the logic.** A
     clamp/floor test asserting only `scope["floor"] >= 200000` against the live
     config passes even when the clamp is deleted, because the config already
-@@ -197,7 +385,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +389,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -545,7 +549,7 @@ index f2d882d..dea0162 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -208,6 +399,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -208,6 +403,10 @@ transcripts in `references/blind-test-patterns.md`.
      distinction is selected and authorized within the remaining allowance.
      Missing or skipped required cases block acceptance; report permitted optional
      or platform skips with reasons instead of failing every skip message.
@@ -556,7 +560,7 @@ index f2d882d..dea0162 100644
      Full transcript in `references/blind-test-patterns.md`.
  
  11. **Check-then-act races are invisible to sequential tests.** A publisher that
-@@ -217,15 +412,23 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -217,15 +416,23 @@ transcripts in `references/blind-test-patterns.md`.
      Kill it by patching the pre-check to report "absent" over a real foreign
      file, then assert both the refusal and the preserved foreign bytes. Any
      guard duplicated by a later atomic primitive needs a test that disables the
@@ -582,7 +586,7 @@ index f2d882d..dea0162 100644
  2. **Mutate the source the tests import.** If tests read one copy and the
     deployed service loads another, sabotaging one proves only file parity.
     Confirm which path is under test first.
-@@ -240,7 +443,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +447,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -599,7 +603,7 @@ index f2d882d..dea0162 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -261,7 +472,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +476,11 @@ transcripts in `references/blind-test-patterns.md`.
     very edits being tested. Stale mutated bytecode can fake either red or green
     despite correct-looking source.
  8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
@@ -612,7 +616,7 @@ index f2d882d..dea0162 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,13 +505,103 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,13 +509,103 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
