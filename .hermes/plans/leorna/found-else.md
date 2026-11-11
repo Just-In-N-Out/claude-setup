@@ -371,3 +371,7 @@ Reported by the Opus planner; not independently validated by the dispatcher. The
 - P3: when the scanner is unavailable (ErrCheckUnavailable → 503), the definition form keeps what was typed, so a pattern-only token (ghp_…) gitleaks would have caught comes back in the page. README says so; clearing the form is a UX call.
 - P3: `${{{scope}}}` with a non-name example (eu-west) still saves at define; refused only at configure when a value builds an undeclared name. A define-time "no {{parameter}} inside ${…}" rule would be stricter.
 - Medium (all stories): `make check`'s govulncheck fails on GO-2026-6859 (net/http in go1.27.3, fixed in 1.27.4); base 4ef14ef fails the same. go.work pins 1.27.3, so CI's audit will flag it until the toolchain moves.
+
+## 86bcm928e review 2 (2026-11-11)
+- Medium (coordination): migration 32 is also added by unmerged sibling branches feat/86bcxnykn-admin-console-update (000032_control_plane_updates) and feat/86bcxnymy-client-self-update (000032_client_updates); whichever merges later must renumber.
+- Info: GitHub main moved to 89cc6e8 (Go 1.27.4 via #124 clears GO-2026-6859; launcher audit; a stories.json entry). Bringing main into 86bcm928e will conflict in delivery/stories.json (append at end).
