@@ -35,3 +35,12 @@ generated once per element name that carries it, in the order classes are first 
 id the site's palette holds prints the palette's `var(--name)`, otherwise its own raw, so `var(--name, #hex)` falls back
 before the palette is imported (L845-871); a palette colour `{raw: var(--x), light}` prints `:root{--x: light}`
 (L742-834). **The Colors import on 2.4.2** is readable offline in B-Dry staging's saved builder script (`~/.hermes/plans/figma-to-bricks/evidence/site-faq/planner/staging/builder-main-2.4.2.min.js`; search `<name>:function`): `importPalettes` refuses only an existing palette **name**, adds the palette under a new id with the colours' ids as given, and never checks a colour's id or variable against other palettes (so an imported id the site has leaves two colours with one id; the later `:root` var wins); `addColor` by hand refuses a variable name any palette or Global Variable has; a palette colour has no label field (shared-palette planner, `evidence/shared-palette/planner/bricks-import-2.4.2.txt`). The Background control: see media-clickable (L1971-2108).
+
+**More from Bricks 2.2's source** (importer-parity planner, 2026-11-11; `evidence/importer-parity/planner/bricks-2.2/`):
+Theme Style button rules out-weigh any class (`:root .bricks-button[class*="primary"]` 0,3,0, `…:not(.outline)` 0,4,0, and
+the default background rule 0,4,0 repaints a Button with no Style too). Border control: `border: 0` for four zero widths,
+`border: W style colour` for four equal widths with a style, else per side; Box shadow prints `transparent` with no colour
+(assets.php L2111-2337). `_attributes` print on the root and replace same-named ones (base.php L1905-1930); the link control
+prints rel, title, ariaLabel (L2352-2368); a Toggle-offcanvas Interaction adds tabindex, aria-expanded and aria-label "Open"
+only where none is set (interactions.php L640-651). A Nav items child is wrapped in `li.menu-item` only when its HTML
+doesn't start with `<li` (container.php `maybe_wrap_nav_link`); `mobileMenu: "never"` prints no mobile-menu CSS.
