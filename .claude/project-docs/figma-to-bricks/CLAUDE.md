@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.2 site-menu (website importer):** the capture presses a page's menu, pop-up and drawer buttons and
+    reads what opens, under a guard (while it presses, no data-sending request, no page load a press starts and no
+    WebSocket handshake or message leaves — sockets go through a gate in the capture's own process, every Chrome a
+    capture starts launches through `launchCaptureChrome` — each stopped attempt named); the paste carries each box as
+    Bricks' Offcanvas its openers toggle, opening and closing as on the site (its own animation, Escape, the dim, ×)
+    and a closed `<details>` keeps its hidden content; a picture the site itself put in an opened box goes up with
+    `site:upload` (Justin's 'Upload them too'); a capture without opens pastes as before with a 'capture again' note.
+    Recorded limit: a page's own same-host live socket that beats during its own press can cost that press (F7-1).
+    Paste check **3dx** (AC8, live: after the scan fix, re-capture bdryswi.com and paste; the ☰ opens the menu).
   - **2026-11-11.1 site-one-command (website importer):** `npm run site:import -- <old page> <https://your-site>
     [--elementor] [--user …] [--dry-run] [--no-shots] [--out …]` asks for the WordPress site, user name and Application
     Password first and tests the login (a wrong one stops in seconds, before any scan), scans the page (the person
@@ -344,6 +353,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   GET/HEAD/OPTIONS, with Chrome's own report uploads off, and is ended by killing its process group, never asked to
   close (a closing page sends its goodbye POSTs); it stops at a login page and never signs in. A tool that loads a
   user's site keeps to this (`tools/lib/read-only.ts`).
+- **Every Chrome a capture starts launches through `launchCaptureChrome`** (`src/web/capture.ts`; site-menu, Justin,
+  2026-11-10, "Block sockets"): it adds the socket gate (`src/web/socket-gate.ts`) the press guard shuts while the
+  capture presses a page's menu and pop-up buttons. `launchChrome` alone starts a Chrome with no gate: its sockets
+  during a press are only named as not stopped.
 - **One uploader writes to WordPress, reached by two commands: `npm run site:upload` and `npm run site:import`**
   (Justin, 2026-11-10: a scanned page's pictures "upload to my Wordpress media library like how it is in the plugin",
   run "From the command line"; then "One command, Mini": WordPress asked first, then the scan, the upload and the
@@ -656,7 +669,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   scans, uploads and writes the pastes (Justin, 2026-11-10, "One command, Mini"; after the scan it stops only for real
   failures and warns of the rest, Justin's Q5 "Only real failures"; site-one-command Q1–Q4 ⭐ not yet confirmed); the
   password at a hidden prompt each run, never saved (Q2 A); every
-  picture the site's own markup shows, each file once, script-made ones and `data:` left (Q3 A); no file in the
+  picture the site's own markup shows, each file once, script-made ones and `data:` left, **except the site's own
+  pictures inside a box the capture opened** (every script-made step made by the site's own files; Justin, 2026-11-10,
+  "Upload them too"); an address that goes up is never also listed as staying (Q3 A); no file in the
   capture: its old address (Q4 A); SVG only with `--svg` (Q5 A); files as served, never re-encoded (Q6 A); the old
   site's first alt with words in Media, an alt in WordPress never changed by a re-run (Q7 A); no alttext.ai (Q8 A); a
   record per computer at `~/.config/figma-to-bricks/site-uploads.json` (Q9 A); https, the site read first, a typed yes
