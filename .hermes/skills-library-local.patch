@@ -224,7 +224,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..ba5980d 100644
+index f2d882d..6bd669e 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,63 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -556,7 +556,16 @@ index f2d882d..ba5980d 100644
      Full transcript in `references/blind-test-patterns.md`.
  
  11. **Check-then-act races are invisible to sequential tests.** A publisher that
-@@ -221,11 +416,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -217,15 +412,23 @@ transcripts in `references/blind-test-patterns.md`.
+     Kill it by patching the pre-check to report "absent" over a real foreign
+     file, then assert both the refusal and the preserved foreign bytes. Any
+     guard duplicated by a later atomic primitive needs a test that disables the
+-    guard, so that only the primitive is exercised.
++    guard, so that only the primitive is exercised. A mutant that removes a
++    race-closing wait (CDP `waitForDebuggerOnStart`) can survive a fixture made
++    to start instantly (site-menu fixer 7, N11: 2 of 3); kill it by construction
++    by blocking the test process's own event loop right after the trigger
++    (`Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 600)`).
  
  12. **Replayed context masqueraded as UI ownership.** A callback that records the current ContextVars can appear to belong to B even when it is A's panel; an async fixture closing over a mutable loop key has the same blind spot. Bind immutable UI owners at construction, assert the bridge's actual session identifier, and pair distinct owner decisions with equal-outcome stale-owner mutations. Equal cancellations prevent action assertions from hiding a missing identity check. Keep the negative-control body unchanged while strengthening the oracle, and require the precise owner/session failure rather than any asynchronous exception.
  
@@ -573,7 +582,7 @@ index f2d882d..ba5980d 100644
  2. **Mutate the source the tests import.** If tests read one copy and the
     deployed service loads another, sabotaging one proves only file parity.
     Confirm which path is under test first.
-@@ -240,7 +439,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +443,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -590,7 +599,7 @@ index f2d882d..ba5980d 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -261,7 +468,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +472,11 @@ transcripts in `references/blind-test-patterns.md`.
     very edits being tested. Stale mutated bytecode can fake either red or green
     despite correct-looking source.
  8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
@@ -603,7 +612,7 @@ index f2d882d..ba5980d 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,13 +501,103 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,13 +505,103 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
