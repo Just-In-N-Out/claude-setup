@@ -45,3 +45,7 @@ Updated 2026-11-10 about 18:30 EST by the main session that ran both jobs from t
 ## Update 2026-11-10 about 19:40
 - Fixer 8 done: budget commit made and the branch rebased onto `main` `299862e4`. New head **`2d69e1e42b126b15a534a09d801f3d4cec411ce2`** (52 commits). One conflict, the known one in `.claude/CLAUDE.md`, both sides kept. `CLAUDE.md` is 31,915 bytes on the head (budget now 36,000). Dream suite 93 passed; regression gate ok after one load flake rerun alone. Records: `evidence/dream-pass/fixer-8/`.
 - Reviewer 10 (Opus 5.5 high, brief `briefs/dream-pass-reviewer-10.md`) is reviewing the budget commit and the rebase. Next: `review-check.sh --base 299862e4…`, then a fresh verifier (Opus high) and a fresh blind auditor (Opus xhigh) on `2d69e1e4`, `ac-check.sh`, then the landing with a rebase receipt.
+
+## Update 2026-11-10 about 20:40
+- Review 10: clean (`MOVE ON: review-10 at 2d69e1e`). Verifier 2 (Opus 5.5 high): clean on `2d69e1e4`, base `299862e4`; AC37's live test passed; its `ac.json` is `evidence/dream-pass/verifier/ac.json`.
+- The second blind auditor (Opus 5.5 xhigh, brief `briefs/dream-pass-auditor-2.md`) is running. Next: `ac-check.sh --repo <worktree> --base <merge-base> --plan <evidence>/plan-approved.md --reviews <evidence> <evidence>/verifier/ac.json <evidence>/auditor/ac.json`, then the landing (update `briefs/dream-pass-finisher-2.md` for the rebase-receipt rule in `CLAUDE.md` step 7 and `ac-verification.md`).
