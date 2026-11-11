@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.3 capture-refused-styles (website importer):** a scan of a site whose check comes back partway
+    (bdryswi.com on WordPress.com) reads the range again asking the site for its page (the person may press 'I am
+    human' once more), renews the pass for the pictures and font files at the scan's end (at most 3 renewal page
+    loads, each tab closed once its page loads), stops a site that keeps refusing with one line naming who refused
+    what and what to type plus a `.f2b-refused.json` log (no cookies), and never saves a page whose own stylesheets
+    were all refused from the first load; the command's stop lines say what to type; sites that refuse nothing scan
+    byte for byte as before and no slower. Q1–Q6 not yet confirmed. Known limit: after a renewal in the hidden window
+    the downloads are marked HeadlessChrome (a site tying its pass to the browser name can leave pictures missing;
+    Justin: fix later). Paste check **3dy** (AC9, live: Justin's own scan of bdryswi.com).
   - **2026-11-11.2 site-menu (website importer):** the capture presses a page's menu, pop-up and drawer buttons and
     reads what opens, under a guard (while it presses, no data-sending request, no page load a press starts and no
     WebSocket handshake or message leaves — sockets go through a gate in the capture's own process, every Chrome a
