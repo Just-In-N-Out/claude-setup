@@ -32,6 +32,15 @@ branch, from `60f1cea5`; nothing done so far is undone. Evidence of this amendme
   AC5's words (AC5's Also); `test/unit/capture-asked.test.ts` proves the log's privacy and first bytes (AC2's Also).
 - A6 [amended A6] Base `11e885fd` (named above since the first amendment of the base line; unchanged).
 
+[amended] Receipts of this amendment (scratch trees: `993d80b4` as built, the same plus this amendment's code, and a clean
+`11e885fd`; `planner/amend/summary.txt`): on `993d80b4` AC10 fails (exit 0, `Switch points found: none`, one range read
+styleless: `bhead-new.tap`; the planner reproduced it on the edge fixture, every stylesheet 403 from the start:
+`head-first-refused-w4.json`, `320-up` sheets `error/403/0`), and the human-check AC3 listing fails as the builder found;
+with the amendment AC10, the AC1 search test, AC2, AC6 and human-check's AC3 pass (`amend-new.tap`,
+`amend-ac2-ac6.tap`, `amend-human-check.tap`); M05 applied to the amended tree fails the AC1 search test (`page load 3
+asked ["/phone.css", …]`: `m05-search.tap`); on `11e885fd` both new tests fail (`red2-new.tap`). The amendment's code is
+`amend-src.diff` and `amend-tools.diff` (against `993d80b4`). AC3's amended proof: AC3_AMEND_RESULT.
+
 ## Questions (⭐ = recommended; with no reply the builder takes the ⭐ answers)
 
 1. **When the site's check comes back partway through a scan** (its pass runs out after a few minutes). ⭐ **A:** the
@@ -199,6 +208,18 @@ margin; a first run against the `11e885fd` export differed only in `build`, whic
    again` in every stop line it prints; the panel and the helper keep theirs. The command writes the log
    `<out>/<name>.f2b-refused.json` when the capture failed with something refused, or when the site refused any request
    but the page itself on the way, and names it in one line.
+   [amended A1] "Anything but the page itself" is exactly: a refused request of the kinds the page asks for itself,
+   `Stylesheet`, `Script`, `Font`, `Image` or `Media`, of the site's own host (the recorder's `type`, as `lost.ts` names
+   them). The page's own refusals (`Document`: a check met and passed) and everything else (`Other`: Chrome's own
+   `/favicon.ico` of a check page; `Fetch`, `XHR`, `Ping`: a script's calls) never trigger the line or the log after a
+   saved capture; when the log is written (that trigger, or a failed capture with anything refused) it holds every
+   refused request of every kind, so Justin's run still shows the check pages and the favicon.
+4. [amended A3] **A page turned away from the start.** In `openStyled`, a page load that lacks nothing the reference
+   applied but whose own stylesheet links (the page's origin; switched-off alternates aside) are at least one and were
+   **all** answered 401, 403 or 429 counts as lacking the first of them (`answered 403`): it is read again asking the site
+   (A's rule), and still so after the tries the capture stops with AC2's refusal line and the log. The design width's
+   page load goes through `openStyled`, so a site refusing from its very first page load stops there. One refused file
+   among stylesheets that load keeps today's rule (refused in two loads apart it is the site's own dead link).
 
 ## Files and conflicts with the jobs beside it
 
@@ -282,7 +303,7 @@ under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`.
    lacked a stylesheet asks the site for its page itself, never the kept page (capture-refused-styles)" beside the
    "Website captures" decisions).
 
-9. **Gates (AC8).** `npm run check`; `npm run corpus` (no file worse); web suites, each alone:
+9. **Gates (AC8).** [amended A1] (Run again after Tasks 10–13.) `npm run check`; `npm run corpus` (no file worse); web suites, each alone:
    `capture-refused`, `capture-styled-ranges`, `capture-styled-loads`, `capture-replay`, `capture-retry`, `capture-lost`,
    `capture-steady`, `capture-unreachable`, `capture-windows`, `capture-cli`, `capture-person-front`, `human-check`,
    `human-once`, `human-reload`, `helper-capture`, `helper-windows`; AC3 named. Base tallies (a clean export of `11e885fd`,
@@ -292,6 +313,26 @@ under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`.
    skipped (the opt-in visible window, `F2B_VISIBLE_CHROME=1`), `human-once` 3, `human-reload` 6, `helper-capture` 1,
    `helper-windows` 1; `npm run check` 3538 + 2 pass, 0 fail. The head's tallies must equal these by test name, plus
    `capture-refused`'s 5 (AC3 named only).
+
+10. [amended A1] **The trigger** (on the branch, from `60f1cea5`). In `tools/lib/capture-refused.ts`, `refusedLine`'s
+    condition `requests.refused.some((r) => r.type !== "Document")` becomes `requests.refused.some((r) =>
+    PAGE_OWN.has(r.type))` with `const PAGE_OWN = new Set(["Stylesheet", "Script", "Font", "Image", "Media"]);` and its
+    comment (Code, "Amendment code"). RED first: `human-check.test.ts` "AC3 after the pass every load stays in the Chrome
+    that passed, which closes at the end" fails on `993d80b4` (its `--out` listing holds `-home.f2b-refused.json`:
+    `builder/probes/check-all-log.log`); GREEN after. AC6 and AC2 stay green. Commit.
+
+11. [amended A3] **The first-load rule.** Append the two new tests (Test code, "Amendment tests") to
+    `test/web/capture-refused.test.ts`; AC10 fails on `993d80b4` (exit 0, a styleless capture), the AC1 search test
+    passes there (Task 2's rule) and fails with M05 applied. Then `turnedAway` in `src/web/styled.ts` and its three
+    lines in `openStyled` (Code, "Amendment code"). AC10 green; AC1–AC6 and `capture-styled-ranges`,
+    `capture-styled-loads` green (a 503 dead link is still captured as it is: their "dead in every load" cases). Commit.
+
+12. [amended A2] **AC3's new proof.** Replace `test/web/capture-refused-same.test.ts` with the amended file (Test code);
+    run it once against a clean export of `11e885fd` (`F2B_BASE_TREE`), about 60 captures, 20–45 min on the desktop.
+    Record its printed tables and the pooled median in the ledger. Commit.
+
+13. [amended A5] **Records.** HANDOFF: the trigger's wording, the first-load rule (Q6) and its limit; the ledger: the
+    amendment, M05 closed by the AC1 search test (re-run M05 against it: it must fail), the receipts. Commit.
 
 ## Code
 
@@ -498,6 +539,43 @@ export function refusedLine(out: string, url: string, requests: SiteRequests): s
   };
 ```
 
+### Amendment code [amended A1, A3]
+
+`tools/lib/capture-refused.ts`: above `refusedLine`, and its first line:
+
+```ts
+// the kinds a page asks for itself (lost.ts's, the page aside): Chrome's own requests (a check page's /favicon.ico is
+// "Other") and the page itself (a check met and passed) never trigger the line; the log, when written, keeps them all
+const PAGE_OWN = new Set(["Stylesheet", "Script", "Font", "Image", "Media"]);
+
+// after a saved capture: one line when the site refused one of the page's own files on the way (amendment A1)
+export function refusedLine(out: string, url: string, requests: SiteRequests): string | null {
+  if (!requests.refused.some((r) => PAGE_OWN.has(r.type))) return null;
+```
+
+`src/web/styled.ts`: in `openStyled`, right after `missing = unstyledLoad(got.sheets, [...(o.seen?.() ?? []), ...tries], reference);`
+
+```ts
+      // capture-refused-styles amendment A3: a page load whose own stylesheets the site refused, every one of them, is
+      // the site turning the capture away, never its dead links (even when the reference was turned away alike)
+      const turned = missing.length ? null : turnedAway(got.sheets, got.s.finalUrl);
+      if (turned) missing = [turned];
+```
+
+and, appended:
+
+```ts
+// capture-refused-styles amendment A3: the site's own stylesheet links (the page's origin; switched-off alternates left
+// out) when there is at least one and the site refused every one (401, 403, 429): the first, as a lacking sheet
+const REFUSED_STATUS = new Set([401, 403, 429]);
+export function turnedAway(sheets: WebSheets, pageUrl: string): Lack | null {
+  const originOf = (u: string): string | null => { try { return new URL(u).origin; } catch { return null; } };
+  const own = sheets.links.filter((l) => !l.disabled && originOf(l.key) !== null && originOf(l.key) === originOf(pageUrl));
+  if (!own.length || !own.every((l) => REFUSED_STATUS.has(l.status))) return null;
+  return { key: own[0].key, why: `answered ${own[0].status}` };
+}
+```
+
 ## Test code
 
 The three files, byte for byte as the RED and GREEN runs used them, are kept in the evidence folder:
@@ -508,6 +586,124 @@ stylesheets at one path told apart by their query (cacheable for a year, `Vary: 
 cookie on each load: the shape bdryswi.com's evidence points to, S2); AC1 asserts that the site really turned stylesheet
 requests away in each case (a run with no refusal proves nothing) and compares whole captures (`timeless`); AC2–AC6 are
 as their AC lines say; AC3 runs only with `F2B_BASE_TREE`.
+
+### Amendment tests [amended A2, A3, A4]
+
+Appended to `test/web/capture-refused.test.ts` (it already imports everything they use):
+
+```ts
+// amendment A4 (M05): the switch-point search made again after a stylesheet wait asks the site for its page, never the
+// kept page. The styled fixture's stylesheet fails in the 1st page load only (the search's); its phone page links
+// /phone.css, so a page load's kind shows in what it asked. The design width's first load is answered from the kept
+// page (the search's HTML: its stylesheet fails again), read again asking the site (load 2, styled), and the search is
+// then made again: asking the site, it is page load 3 and a desktop one; answered from the kept page, load 3 would be
+// the first phone range's.
+test("AC1 the switch-point search made again after a stylesheet wait asks the site for its page", { skip: chromeSkip, timeout: 600000 }, async () => {
+  const fx = await serveStyledSite({ answer: (load) => (load === 1 ? "fail" : "ok"), phone: "own" });
+  try {
+    await local(() => captureSite({ url: fx.site + "/", fontSource: noFonts, shots: false, windows: 4, retryMs: [2000, 2000], styleRetryMs: [1000, 1000] }));
+    const third = fx.asked.filter((a) => a.load === 3).map((a) => a.sheet);
+    assert.ok(third.length > 0 && third.every((s) => s === "/style.css"), `page load 3 asked ${JSON.stringify(third)}; every request: ${fx.asked.map((a) => `${a.load} ${a.sheet} ${a.answer}`).join(", ")}`);
+  } finally {
+    await fx.close();
+  }
+});
+
+// amendment A3: a site that refuses every one of its own stylesheets from the first page load on (no load ever gets
+// one) is turned away, never captured styleless as if the stylesheets were dead links
+test("AC10 a site that refuses every stylesheet from the first page load stops the command with the refusal line", { skip: chromeSkip, timeout: 600000 }, async () => {
+  const fx = await serveEdgeSite({ mode: "refuse", after: 0 });
+  const dir = mkdtempSync(join(tmpdir(), "f2b-ref0-"));
+  try {
+    const out = join(dir, "out");
+    const r = await cli([fx.url, "--owned", "--out", out, "--no-shots"], cliEnv(dir, fx.url));
+    assert.equal(r.code, 1, r.out + r.err);
+    const failed = r.err.split("\n").filter((l) => l.startsWith("Failed: "));
+    assert.equal(failed.length, 1, r.err);
+    assert.match(failed[0], new RegExp(`^Failed: ${literal(fx.url)}: ${literal(fx.host)} turned the capture away: it answered the stylesheet ${literal(fx.url)}_jb_static/\\?\\?(aaa111|bbb222) with HTTP 403 \\(nginx\\), "Checking your browser…", on the page loads? (for widths \\d+(–\\d+| and wider)? px|that finds where the page changes) in 3 tries, the last asking the site for its page again, so nothing was captured\\. Wait a few minutes and run npm run capture -- ${literal(fx.url)} again; if it keeps happening, ask the site's owner to let this computer through, or to switch its bot protection off while you capture\\.$`));
+    assert.match(r.err, /^What the site answered: .+\.f2b-refused\.json$/m);
+    assert.deepEqual(existsSync(out) ? readdirSync(out).filter((f) => f.endsWith(".f2b-capture.json")) : [], [], "no capture file");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+    await fx.close();
+  }
+});
+```
+
+`test/web/capture-refused-same.test.ts`, replaced whole:
+
+```ts
+// capture-refused-styles AC3 (named only: F2B_BASE_TREE=<a git archive of the base commit, with node_modules linked>),
+// amendment A2: a site that refuses nothing is captured byte for byte as the base captures it in every round (timings,
+// capturedAt and build aside); over the rounds the head asks each address of the site no more often than the base
+// (per address, summed); and it is no slower: in 5 rounds per site and mode, base and head back to back with the order
+// alternating (so load on a shared machine falls on both sides of a pair), the median of all paired head/base time
+// ratios is at most 1.10. The per-site tables are printed for the receipt.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { hasChrome } from "../browser/chrome.ts";
+import { serveEdgeSite } from "../fixtures/web/edge-site.ts";
+import { serveFixture } from "../fixtures/web/serve.ts";
+import { standIn } from "../fixtures/web/capture.ts";
+import { firstDifference, noFonts, timeless } from "../fixtures/web/human-helpers.ts";
+import { captureSite } from "../../src/web/capture.ts";
+
+const BASE = process.env.F2B_BASE_TREE;
+const ROUNDS = 5;
+const median = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const counts = (urls: string[]) => { const m = new Map<string, number>(); for (const u of urls) m.set(u, (m.get(u) ?? 0) + 1); return m; };
+
+test("AC3 a site that refuses nothing is captured as before, as often asked and as fast", { skip: !BASE || !hasChrome() ? "named only: F2B_BASE_TREE" : false, timeout: 5400000 }, async (t) => {
+  const base = (await import(`${BASE}/src/web/capture.ts`)).captureSite as typeof captureSite;
+  const edge = await serveEdgeSite({ mode: "open" });
+  const basic = await serveFixture("basic");
+  const page = await serveFixture("code-page");
+  const ratios: number[] = [];
+  try {
+    // every address the site was asked, in order (the edge fixture's log; the folder fixtures' own list)
+    const sites = [
+      { name: "edge", url: edge.url, fonts: noFonts, asked: () => edge.log.map((l) => l.url) },
+      { name: "basic", url: basic.site + "/", fonts: standIn(basic), asked: () => [...basic.requests] },
+      { name: "code-page", url: page.site + "/", fonts: standIn(page), asked: () => [...page.requests] },
+    ];
+    for (const replay of ["local", undefined]) {
+      for (const s of sites) {
+        const ms: Record<string, number[]> = { base: [], head: [] };
+        const asked: Record<string, string[]> = { base: [], head: [] };
+        for (let round = 0; round < ROUNDS; round++) {
+          const got: Record<string, unknown> = {};
+          const order = round % 2 === 0 ? [["base", base], ["head", captureSite]] as const : [["head", captureSite], ["base", base]] as const;
+          for (const [name, capture] of order) {
+            if (replay) process.env.F2B_REPLAY = replay; else delete process.env.F2B_REPLAY;
+            const before = s.asked().length;
+            const t0 = Date.now();
+            try {
+              // the build number aside too: a base export older than the copy carries another BUILD
+              got[name] = { ...timeless(await capture({ url: s.url, fontSource: s.fonts, shots: false })), build: null };
+            } finally {
+              delete process.env.F2B_REPLAY;
+            }
+            ms[name].push(Date.now() - t0);
+            asked[name].push(...s.asked().slice(before));
+          }
+          assert.equal(firstDifference(got.head, got.base), null, `${s.name} (F2B_REPLAY=${replay ?? "unset"}), round ${round + 1}`);
+          ratios.push(ms.head[round] / ms.base[round]);
+        }
+        const b = counts(asked.base), h = counts(asked.head);
+        const more = [...h].filter(([u, n]) => n > (b.get(u) ?? 0)).map(([u, n]) => `${u} ${n} against ${b.get(u) ?? 0}`);
+        assert.deepEqual(more, [], `${s.name} (F2B_REPLAY=${replay ?? "unset"}): addresses the head asked more often than the base`);
+        t.diagnostic(`${s.name} F2B_REPLAY=${replay ?? "unset"}: ms base ${ms.base} head ${ms.head}; ratios ${ms.head.map((x, i) => (x / ms.base[i]).toFixed(2))}; requests base ${asked.base.length} head ${asked.head.length}`);
+      }
+    }
+    t.diagnostic(`paired ratios (${ratios.length}): ${ratios.map((r) => r.toFixed(2)).join(" ")}; median ${median(ratios).toFixed(3)}`);
+    assert.ok(median(ratios) <= 1.10, `the median of every paired head/base time ratio is ${median(ratios).toFixed(3)} (${ratios.map((r) => r.toFixed(2)).join(" ")})`);
+  } finally {
+    await edge.close();
+    await basic.close();
+    await page.close();
+  }
+});
+```
 
 ## Risks
 
@@ -521,6 +717,12 @@ as their AC lines say; AC3 runs only with `F2B_BASE_TREE`.
   `base-none-w4.json`: `1201-up` `border` lost).
 - The log holds addresses and the site's answers, never request headers or cookies; a query value whose name looks like
   a secret is hidden.
+- [amended A3] Limits of the first-load rule: a site whose stylesheets all live on another host (a CDN) that refuses them
+  isn't covered (they aren't the page's own); a capture saved before this build styleless that way isn't flagged by
+  `capture:check` (none of bdryswi.com is known: Justin's 11-10 runs stopped); a check page whose own scripts or
+  pictures the site refuses prints the "refused on the way" line after the pass (true, and harmless).
+- [amended A2] AC3's timing can still fail on a desktop loaded so unevenly that most pairs fall on a spike on the head's
+  side; it is never retried until green: a failure is reported with its table and the load (`uptime`) at the time.
 
 ## Completion
 
