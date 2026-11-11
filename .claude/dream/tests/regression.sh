@@ -33,23 +33,52 @@ if [[ $(git -C "$ROOT" rev-parse --is-inside-work-tree 2>/dev/null) != true ]]; 
   echo "not ok 1 - $TEST"
   exit 1
 fi
-SUITES=(.claude/setup/sync.test.sh)
+# A setup or write failure is never a pass (V2C-1): --record writes no baseline and exits 2; a compare
+# prints not ok and exits 1.
+die() {
+  if [[ $mode == record ]]; then echo "regression.sh: $*; no baseline written"; exit 2; fi
+  echo "not ok 1 - $TEST"; echo "# $*"; exit 1
+}
+head_suites() {  # every suite --record runs on this checkout, in order
+  echo .claude/setup/sync.test.sh
+  for s in "$ROOT"/.claude/hooks/tests/*.test.sh; do [[ -e $s ]] && echo ".claude/hooks/tests/${s##*/}"; done
+  printf '%s\n' .claude/setup/codex/codex-parity.test.sh \
+    .hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.test.sh \
+    .hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.test.sh
+}
+SUITES=()  # filled with while-read, not mapfile: macOS /bin/bash is 3.2
 if [[ $mode == record ]]; then
-  for s in "$ROOT"/.claude/hooks/tests/*.test.sh; do SUITES+=(".claude/hooks/tests/${s##*/}"); done
+  while IFS= read -r s; do SUITES+=("$s"); done < <(head_suites)
 else
   [[ -f $base ]] || { echo "not ok 1 - $TEST"; echo "# no baseline at $base"; exit 1; }
-  mapfile -t SUITES < <(sed -n '/^```json$/,/^```$/p' "$base" | sed '1d;$d' | jq -r '.suites[].suite')
+  bjson=$(sed -n '/^```json$/,/^```$/p' "$base" | sed '1d;$d')
+  printf '%s' "$bjson" | jq -e '.suites | type == "array"' >/dev/null 2>&1 \
+    || die "the baseline $base holds no readable suites block"
+  while IFS= read -r s; do [[ -n $s ]] && SUITES+=("$s"); done < <(printf '%s' "$bjson" | jq -r '.suites[].suite')
+  ((${#SUITES[@]})) || die "the baseline lists no suites: nothing would be compared"
+  zero=$(printf '%s' "$bjson" | jq -r '[.suites[] | select(.pass + (.failing | length) == 0) | .suite] | join(", ")')
+  [[ -z $zero ]] || die "the baseline has suites with no tests: $zero"
+  # every suite the head has that already existed on the base must be in the baseline (a suite the story
+  # added is not); the base is the first full commit id in the baseline's text above its json block
+  bsha=$(sed '/^```json$/,$d' "$base" | grep -oE '[0-9a-f]{40}' | head -n 1)
+  [[ -n $bsha ]] || die "the baseline names no base commit"
+  git -C "$ROOT" cat-file -e "$bsha^{commit}" 2>/dev/null || die "the baseline's base commit $bsha is not in $ROOT"
+  left=""
+  while IFS= read -r s; do
+    git -C "$ROOT" cat-file -e "$bsha:$s" 2>/dev/null || continue
+    printf '%s\n' "${SUITES[@]}" | grep -xF -- "$s" >/dev/null || left="${left:+$left, }$s"
+  done < <(head_suites)
+  [[ -z $left ]] || die "the baseline leaves out suites the base had: $left"
 fi
-[[ $mode == record ]] && SUITES+=(.claude/setup/codex/codex-parity.test.sh
-  .hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.test.sh
-  .hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/review-check.test.sh)
 
-tmp=$(mktemp -d "${TMPDIR:-/tmp}/dream-regression.XXXX")
+tmp=$(mktemp -d "${TMPDIR:-/tmp}/dream-regression.XXXX" 2>/dev/null) && [[ -n $tmp && -d $tmp ]] \
+  || die "could not make a temporary folder in ${TMPDIR:-/tmp}"
 trap 'rm -rf "$tmp"' EXIT
 results="$tmp/results.jsonl"
-: >"$results"
+: >"$results" || die "could not write $results"
 for s in "${SUITES[@]}"; do
   log="$tmp/$(echo "$s" | tr '/' '_').log"
+  : >"$log" || die "could not write $log"
   if [[ -f $ROOT/$s ]]; then
     (cd "$ROOT" && timeout 1800 bash "$s" </dev/null >"$log" 2>&1)
     rc=$?
@@ -59,11 +88,17 @@ for s in "${SUITES[@]}"; do
   pass=$(grep -cE '^ok( |$)' "$log")
   fails=$(grep -E '^(not ok|NOT OK)' "$log" | sed -E 's/^(not ok|NOT OK)( [0-9]+)? - //' | sort)
   jq -cn --arg suite "$s" --argjson pass "$pass" --argjson rc "$rc" --arg fails "$fails" \
-    '{suite: $suite, pass: $pass, rc: $rc, failing: ($fails | split("\n") | map(select(. != "")))}' >>"$results"
+    '{suite: $suite, pass: $pass, rc: $rc, failing: ($fails | split("\n") | map(select(. != "")))}' >>"$results" \
+    || die "could not write the tally of $s to $results"
   echo "# $s: rc=$rc, $pass passed, $(printf '%s' "$fails" | grep -c .) failing"
 done
 
+n=$(jq -s length "$results" 2>/dev/null)
+[[ $n == "${#SUITES[@]}" ]] || die "only ${n:-0} of ${#SUITES[@]} suites were tallied"
 if [[ $mode == record ]]; then
+  # a suite that did not run (missing, or killed before its first line) or tallied 0 tests is no baseline
+  zero=$(jq -rs '[.[] | select(.pass + (.failing | length) == 0) | .suite] | join(", ")' "$results")
+  [[ -z $zero ]] || die "these suites did not run or tallied no tests: $zero"
   {
     echo "# dream-pass baseline (AC38)"
     echo
@@ -77,7 +112,8 @@ if [[ $mode == record ]]; then
     echo '```json'
     jq -s '{suites: .}' "$results"
     echo '```'
-  } >"$base"
+  } >"$tmp/baseline.md" || die "could not write the baseline"
+  cp "$tmp/baseline.md" "$base" || { rm -f "$base"; die "could not write $base"; }
   echo "# baseline written to $base"
   exit 0
 fi

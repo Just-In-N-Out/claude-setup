@@ -111,6 +111,13 @@ T = {
     "ac36": "test_ac36_pointer_lines_and_docs_are_in_place",
     # fixer 11: R12-1, AC37's live probe runs once more only after a safeguard stop
     "r121": "test_the_live_editor_probe_runs_once_more_only_after_a_safeguard_stop",
+    # fixer 13: V2C-1, AC38's regression.sh never passes with nothing compared
+    "rgctl": "test_regression_records_and_compares_a_small_suite_set",
+    "rgtmp": "test_regression_refuses_to_record_or_compare_without_a_temporary_folder",
+    "rgrec0": "test_regression_refuses_to_record_a_suite_that_tallied_no_tests",
+    "rgnone": "test_regression_refuses_a_baseline_that_lists_no_suites",
+    "rgleft": "test_regression_refuses_a_baseline_that_leaves_out_a_suite_the_base_had",
+    "rgcmp0": "test_regression_refuses_a_baseline_suite_at_no_tests",
 }
 P = ".claude/dream/prompts/"
 ALL_GUARDS = ("ALL = [g_links, g_allowlist, g_protected, g_budgets, g_caps, g_canary, g_accounting, g_settled, "
@@ -684,6 +691,13 @@ MUTANTS = [
     ('R12d', "the leak check skips the stopped run's session id", [('.claude/dream/tests/test_agents.py', '        runs.append(res2)\n', '        runs[:] = [res2]\n')], ['r121']),
     # fixer 12: R13-1, the stopped run's outside folder is checked for escaped.txt too
     ('R13a', "only the last run's outside folder is checked for escaped.txt", [('.claude/dream/tests/test_agents.py', '    for o in outsides:  # a stopped run', '    for o in outsides[-1:]:  # a stopped run')], ['r121']),
+    # fixer 13: V2C-1, AC38's regression.sh refusals
+    ('G1', 'a failed mktemp is not refused', [('.claude/dream/tests/regression.sh', '  || die "could not make a temporary folder in ${TMPDIR:-/tmp}"\n', '  || true\n')], ['rgtmp']),
+    ('G2', 'a record with a suite that tallied no tests is written', [('.claude/dream/tests/regression.sh', '  [[ -z $zero ]] || die "these suites did not run or tallied no tests: $zero"\n', '  true\n')], ['rgrec0']),
+    ('G3', 'a baseline listing no suites is compared', [('.claude/dream/tests/regression.sh', '  ((${#SUITES[@]})) || die "the baseline lists no suites: nothing would be compared"\n', '  true\n')], ['rgnone']),
+    ('G4', 'a baseline suite with no tests is compared', [('.claude/dream/tests/regression.sh', '  [[ -z $zero ]] || die "the baseline has suites with no tests: $zero"\n', '  true\n')], ['rgcmp0']),
+    ('G5', 'a baseline that leaves out a suite the base had is compared', [('.claude/dream/tests/regression.sh', '  [[ -z $left ]] || die "the baseline leaves out suites the base had: $left"\n', '  true\n')], ['rgleft']),
+    ('G6', 'every head suite is asked of the baseline, a suite the story added too (widening)', [('.claude/dream/tests/regression.sh', '    git -C "$ROOT" cat-file -e "$bsha:$s" 2>/dev/null || continue\n', '    true\n')], ['rgctl']),
 ]
 
 
