@@ -106,6 +106,52 @@ class BarTests(unittest.TestCase):
         self.assertEqual(list(pending["candidates"]), ["new1"])
         self.assertEqual(len(lines), 1)
         self.assertIn("old1", lines[0])
+        # end to end, two real runs: the waiting candidate is kept on disk in state/pending.json between them
+        # (a test that hands the dict from one check to the next never reads that file: dream-pass auditor 2)
+        self.h.cleanup()
+        self.h = h = FakeHome("ac8run", repo=True)
+        implied = "shorter commit messages read better"
+        short = "- Keep commit messages short (2026-11-09)."
+
+        def editor_quotes(calls):
+            eds = [c for c in calls if c["role"] == "editor"]
+            self.assertEqual(len(eds), 1, "one editor call: %s" % [c["role"] for c in calls])
+            with open(eds[0]["cwd"] + "/_dream/findings.json") as f:
+                return [x["quote"] for x in json.load(f)]
+
+        def on_disk():
+            return json.loads(h.read(".claude/dream/state/pending.json")).get("candidates")
+
+        def editor_adds(line, summary):
+            return {"edits": [{"file": fh.MEM_COPY, "append": line + "\n"}],
+                    "changes": {"changes": [{"file": fh.MEM_COPY, "basis": "finding", "finding_ids": "ALL",
+                                             "order_id": "", "summary": summary, "additions": [line], "removals": []}],
+                                "already_saved": [], "declined": []}}
+
+        yes = {"verdict": "yes", "lost_facts": [], "untraced": [], "notes": ""}
+        h.session(fh.PROJ, "s8a", [assistant("I committed without linting."), typed("u1", "No, " + fh.LINT_Q + ", please."),
+                                   typed("u2", "hmm, maybe " + implied + " here", minute=2)])
+        h.scenario({"session-helper": {"s8a": {"findings": [
+                        fh.finding("u1", fh.LINT_Q),
+                        F("u2", implied, kind="implied", statement="Keep commit messages short.")]}},
+                    "editor": editor_adds(fh.LINT_LINE, "lint before commit"), "checker": yes})
+        self.assertEqual(h.run(), 0)
+        self.assertEqual(editor_quotes(h.calls_by_role()), [fh.LINT_Q], "run 1: only the explicit one reaches the editor")
+        waiting = on_disk()
+        self.assertEqual([c["statement"] for c in waiting.values()], ["Keep commit messages short."],
+                         "run 1: the implied one waits in state/pending.json")
+        cid = next(iter(waiting))
+        # run 2: a second session matches the candidate read back from the file, so it passes and reaches the editor
+        n = len(h.calls_by_role())
+        h.session(fh.PROJ, "s8b", [assistant("Done."), typed("v1", "again, I prefer short commit messages over long ones")])
+        h.scenario({"session-helper": {"s8b": {"findings": [F("v1", "I prefer short commit messages", kind="implied",
+                                                               matches_pending=cid, statement="Keep commit messages short.")]}},
+                    "editor": editor_adds(short, "short commits"), "checker": yes})
+        self.assertEqual(h.run(), 0)
+        self.assertEqual(editor_quotes(h.calls_by_role()[n:]), ["I prefer short commit messages"],
+                         "run 2: the second sighting passes")
+        self.assertNotIn(cid, on_disk(), "run 2: the candidate left state/pending.json")
+        self.assertIn(short, h.read(fh.MEM_LIVE))
 
     def test_ac10_safety_loosening_and_weakened_checks_go_to_justins_list(self):
         h = self.h

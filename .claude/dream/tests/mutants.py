@@ -658,6 +658,9 @@ MUTANTS = [
     ('B36c', "the global CLAUDE.md's budget narrowed by one byte", [('.claude/dream/conf/budgets.tsv', '.claude/CLAUDE.md\t36000\n', '.claude/CLAUDE.md\t35999\n')], ['cm36', 'ac36']),
     ('B36d', 'DREAM.md states the old 30,000 budget for the global CLAUDE.md', [('.claude/dream/DREAM.md', '`~/.claude/CLAUDE.md` 36,000;', '`~/.claude/CLAUDE.md` 30,000;')], ['ac36']),
     ('B36e', 'the global CLAUDE.md grows past 36,000 bytes', [('.claude/CLAUDE.md', '# Global Instructions\n', '# Global Instructions\n' + 'x' * 6100 + '\n')], ['ac36']),
+    # fixer 9: AUD2-1, the waiting candidate must survive between runs in state/pending.json
+    ('A8p', 'the apply step never writes state/pending.json (AUD2-1)', [(L + 'apply.py', '(("pending", o["whole"]["pending"]), ("tally"', '(("tally"')], ['ac8']),
+    ('A8r', 'a run never reads state/pending.json back', [(L + 'run.py', 'state.load_state(env, "pending", {"candidates": {}})', '{"candidates": {}}')], ['ac8']),
 ]
 
 
