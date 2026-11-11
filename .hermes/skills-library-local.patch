@@ -226,7 +226,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..1b6298f 100644
+index f2d882d..3e34aea 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,63 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -329,7 +329,7 @@ index f2d882d..1b6298f 100644
  
  ## Procedure
  
-@@ -82,15 +155,81 @@ itself prove that the entire test is worthless.
+@@ -82,15 +155,83 @@ itself prove that the entire test is worthless.
     unaffected controls.
     Before registering a mutation, grep every call site of the guarded helper
     and list every other mechanism that yields the same observable, such as a
@@ -395,7 +395,9 @@ index f2d882d..1b6298f 100644
 +   receipt: a defence-in-depth survivor is proven by pairing it with a mutant of the
 +   backing guard (both off must be killed) and by the older story's suite (901y
 +   review 2: a tenant clause survived until paired with the composite FK), or killed
-+   by asserting which layer refused when both give the same status (the route's
++   by asserting which layer refused when both give the same status (a reviewer who
++   can't edit tests adds a second overlay edit making the guard under test return a
++   distinct error and requires the kill line to show it; 86bcxnymy review 4) (the route's
 +   `ADMIN_REQUIRED` vs the store's `INTEGRATION_UNAVAILABLE`, both 403; 86bcm928p
 +   planner W1). A refusal test on a stub fixture can fail later for an unrelated reason
 +   and pass with its guard deleted (an unknown-`user_version` file holding only
@@ -417,7 +419,7 @@ index f2d882d..1b6298f 100644
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -99,14 +238,33 @@ itself prove that the entire test is worthless.
+@@ -99,14 +240,33 @@ itself prove that the entire test is worthless.
     leave mutated source behind. After a mid-cycle crash, compare the working
     file with the saved green bytes and restore before launching another probe.
  4. **Require the intended failure for every mutation.** A nonzero exit from
@@ -454,7 +456,7 @@ index f2d882d..1b6298f 100644
     Validate evidence against the exact intentional variant and actual process
     return, not pristine-only assumptions or attempted-publication flags.
     Repair diagnostic readers offline against retained output; preserve their
-@@ -142,12 +300,22 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -142,12 +302,22 @@ transcripts in `references/blind-test-patterns.md`.
  1. **The assertion matched a comment.** A test regexed a window of source and
     found its keyword inside an explanatory comment, not the code. Parse the
     *construct* (e.g. just the set literal) and strip comments before matching.
@@ -478,7 +480,7 @@ index f2d882d..1b6298f 100644
  4. **A different guard masked the one under test.** A per-person cap test
     passed because a dedup guard fired first; deleting the cap entirely stayed
     green. Build fixtures that isolate the guard under test, and add a
-@@ -155,12 +323,33 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,12 +325,33 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -513,7 +515,7 @@ index f2d882d..1b6298f 100644
     Execute the real producer-to-consumer path with inert external transport,
     keep the decision backend real, and assert its state change. For added
     identity fields, observe the actual published object and fail on an
-@@ -170,16 +359,29 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -170,16 +361,29 @@ transcripts in `references/blind-test-patterns.md`.
     `references/blind-test-patterns.md` for concurrent callback paths.
  6. **A redundant fallback masked the primary path.** Two mechanisms resolved
     the same input, so either could be deleted invisibly. Test each path with a
@@ -545,7 +547,7 @@ index f2d882d..1b6298f 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -189,7 +391,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -189,7 +393,11 @@ transcripts in `references/blind-test-patterns.md`.
     legitimately empty ones. A test filtered to a cfg-gated family lists zero
     tests when the cfg is off; a fake that returns a non-empty listing hides a
     parser that rejects that correct output. The cost lands where a run cannot
@@ -558,7 +560,7 @@ index f2d882d..1b6298f 100644
  9. **The assertion was satisfied by the ambient config, not the logic.** A
     clamp/floor test asserting only `scope["floor"] >= 200000` against the live
     config passes even when the clamp is deleted, because the config already
-@@ -197,7 +403,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +405,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -570,7 +572,7 @@ index f2d882d..1b6298f 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -208,6 +417,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -208,6 +419,10 @@ transcripts in `references/blind-test-patterns.md`.
      distinction is selected and authorized within the remaining allowance.
      Missing or skipped required cases block acceptance; report permitted optional
      or platform skips with reasons instead of failing every skip message.
@@ -581,7 +583,7 @@ index f2d882d..1b6298f 100644
      Full transcript in `references/blind-test-patterns.md`.
  
  11. **Check-then-act races are invisible to sequential tests.** A publisher that
-@@ -215,17 +428,29 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -215,17 +430,29 @@ transcripts in `references/blind-test-patterns.md`.
      `os.replace` passes every "existing target refused" test, yet a mutation
      from `os.link` to `os.replace` survives, because the check fires first.
      Kill it by patching the pre-check to report "absent" over a real foreign
@@ -614,7 +616,7 @@ index f2d882d..1b6298f 100644
  2. **Mutate the source the tests import.** If tests read one copy and the
     deployed service loads another, sabotaging one proves only file parity.
     Confirm which path is under test first.
-@@ -240,7 +465,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +467,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -631,7 +633,7 @@ index f2d882d..1b6298f 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -261,7 +494,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +496,11 @@ transcripts in `references/blind-test-patterns.md`.
     very edits being tested. Stale mutated bytecode can fake either red or green
     despite correct-looking source.
  8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
@@ -644,7 +646,7 @@ index f2d882d..1b6298f 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,13 +527,113 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,13 +529,113 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
