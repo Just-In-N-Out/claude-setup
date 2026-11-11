@@ -1,6 +1,6 @@
 # 86bcxnymy — Client self-update to the admin-approved version, with staged rollout
 
-## Questions (answer with letters; **go** alone takes every ⭐)
+## Questions (answered 2026-11-10: every ⭐; see "Justin's answers" at the end)
 
 **Q1. Where does a client download the new exe from?** Both repos are private on GitHub (`gh repo view`: PRIVATE), so a client without a GitHub login gets 404 from the Release link the card names.
 - A) ⭐ A link per approved version; default the GitHub Release
@@ -58,7 +58,7 @@ Why ⭐: each builder holds one repo in its head, and the client builder tests a
 
 ## Status and bases
 
-**Status:** plan for approval (planner, 2026-11-10 evening EST). Nothing is built. Card: [Client self-update to the admin-approved version, with staged rollout](https://app.clickup.com/t/86bcxnymy), size L, repo both, assignee Justin, status "to do", no comments.
+**Status:** Approved by Justin 2026-11-10 (go given in advance, with every ⭐ answer; see "Justin's answers" at the end). Planned by the planner 2026-11-10 evening EST. Part 1 (control plane) is being built by builder 1. Card: [Client self-update to the admin-approved version, with staged rollout](https://app.clickup.com/t/86bcxnymy), size L, repo both, assignee Justin, status "to do", no comments.
 **Bases (GitHub `main`, fetched over HTTPS through gh):** leorna-control-plane `4ef14efb46da789aec30fad1e5a988d8770140e2`; leorna-client `a7839b3af664efcfa59eb1ed3fe276ec1262a4de` (client `main` moved during planning: PR #32 merged at 2026-11-11T00:49Z; the files this plan reads are unchanged between `f3bc960` and `a7839b3`). Local main checkouts are behind and were not moved; the builders' worktrees start from these SHAs.
 **Evidence folder:** `~/.hermes/plans/leorna/evidence/86bcxnymy-client-self-update/`.
 
@@ -633,3 +633,9 @@ Needs: your dev server running the story's control-plane build (local image mode
 ## Completion contract
 
 Each builder returns: branch, head SHA, base SHA, the diff stat (`git diff --stat origin/main...HEAD`), the gate results with real exit codes, one line per AC or supporting test it added (name → result), anything in this plan it had to change and why, and `skill_lessons`. It stops at `ready-for-review`: no push, no PR, no ClickUp write. The story is ready for hand-over only when both repos have a clean review on their current heads, the verifier and the blind auditor accept AC1–AC7 on the client head with the control-plane head named, and `ac-check.sh --reviews` prints `READY FOR THE USER` (AC8 owed to Justin).
+
+## Justin's answers (2026-11-10)
+
+- Pipeline: **Full**.
+- While the planner ran, Justin said "start the builder after done": a **go** given in advance for this plan with every ⭐ answer: Q1 A (a download link per approved version, defaulting to the GitHub Release), Q2 A (teams plus clients the admin ticks), Q3 A (percentage rollout in this story, AC5), Q4 A (installations seen in the last 30 days), Q5 A (the new version's window never loaded on its first launch), Q6 A (the admin pastes the SHA-256), Q7 A (restart right away when no Sync, Restore or install is running), Q8 A (one plan, two builders in a row: control plane, then client).
+- The proposed AC5, AC6, AC7 and the live AC8 are approved with that go.
