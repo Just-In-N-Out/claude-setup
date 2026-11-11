@@ -682,6 +682,8 @@ MUTANTS = [
     ('R12b', 'the probe is never run again', [('.claude/dream/tests/test_agents.py', '    for n in (1, 2):\n', '    for n in (1,):\n')], ['r121']),
     ('R12c', 'the probe is run again more than once', [('.claude/dream/tests/test_agents.py', '    for n in (1, 2):\n', '    for n in (1, 2, 3):\n')], ['r121']),
     ('R12d', "the leak check skips the stopped run's session id", [('.claude/dream/tests/test_agents.py', '        runs.append(res2)\n', '        runs[:] = [res2]\n')], ['r121']),
+    # fixer 12: R13-1, the stopped run's outside folder is checked for escaped.txt too
+    ('R13a', "only the last run's outside folder is checked for escaped.txt", [('.claude/dream/tests/test_agents.py', '    for o in outsides:  # a stopped run', '    for o in outsides[-1:]:  # a stopped run')], ['r121']),
 ]
 
 

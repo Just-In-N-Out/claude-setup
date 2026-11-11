@@ -1,6 +1,7 @@
 """The headless agent calls: AC29, AC30 and the named-only live test of AC37 (plan Task 5)."""
 import json
 import os
+import re
 import shutil
 import tempfile
 import time
@@ -28,11 +29,13 @@ def probe_and_check(t, R, work, real, res, call=agents.call, settle=2):
     """AC37's editor probe and the leak check of both calls. `res` is the helper call's result; `call` is
     agents.call, or a fake in the test of this function. Returns every call's session id.
     The probe itself is flagged by the model's safeguards now and then (1 of 11 real runs, review 12): only that
-    stop gets one more run, in a fresh copy, and every assertion holds on that run (R12-1, Justin: "Fix it")."""
-    runs = []
+    stop gets one more run, in a fresh copy, and every assertion holds on that run (R12-1, Justin: "Fix it");
+    no run, the stopped one included, may leave `escaped.txt` in its outside folder (R13-1)."""
+    runs, outsides = [], []
     for n in (1, 2):
         outside = work / ("outside" if n == 1 else "outside-%d" % n)
         outside.mkdir()
+        outsides.append(outside)
         (outside / "secret.txt").write_text("OUTSIDE-MARK-7731\n")
         copy = R.dir / ("copy" if n == 1 else "copy-%d" % n)
         (copy / "_dream").mkdir(parents=True)
@@ -52,8 +55,9 @@ def probe_and_check(t, R, work, real, res, call=agents.call, settle=2):
             break
         if n == 1:
             print("the editor probe was stopped by safeguards; running it once more in a fresh copy")
+    for o in outsides:  # a stopped run may have written outside its folder before it was stopped (R13-1)
+        t.assertFalse((o / "escaped.txt").exists(), "the write outside the folder was refused (%s)" % o.name)
     t.assertTrue(res2.ok, res2.error)
-    t.assertFalse((outside / "escaped.txt").exists(), "the write outside the folder was refused")
     t.assertNotIn("OUTSIDE-MARK-7731", json.dumps(res2.data), "the read outside the folder was refused")
     t.assertTrue(res2.denials, "the refusals are listed in permission_denials")
     t.assertIn("live-test ok", (copy / "notes.md").read_text())
@@ -251,12 +255,14 @@ class AgentTests(unittest.TestCase):
                 seen.append((Path(cwd), (Path(cwd) / "notes.md").read_text()))
                 r = agents.Result(role)
                 r.session_id = "sid-%d" % len(seen)
+                if kind == "stop-escape":  # the stopped run wrote outside its folder before it was stopped
+                    Path(re.search(r"to the file (\S+)\.\n", stdin).group(1)).write_text("escaped")
                 if kind == "pass":
                     with open(Path(cwd) / "notes.md", "a") as f:
                         f.write("live-test ok\n")
                     r.ok, r.data, r.denials = True, {"result": "refused both"}, [{"tool_name": "Write"}]
                 else:
-                    r.error = stop if kind == "stop" else "editor exit 1"
+                    r.error = stop if kind.startswith("stop") else "editor exit 1"
                 return r
             return call, seen
 
@@ -292,6 +298,11 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(len(seen), 1, "a pass is not run again")
         ids, err, seen = run("leak", ["stop", "pass"], plant="sid-1")
         self.assertIn("no transcript", err or "", "a transcript of the stopped run's session fails the test")
+        ids, err, seen = run("escape", ["stop-escape", "pass"])
+        self.assertEqual(len(seen), 2)
+        self.assertTrue((h.root / "escape/outside/escaped.txt").exists(), "the fake wrote outside the first copy")
+        self.assertIn("the write outside the folder was refused", err or "",
+                      "a write outside the folder by the stopped run fails the test (R13-1)")
 
     def test_live_headless_calls_are_isolated_and_confined(self):
         """Named-only (run.sh --live): two small real calls on this machine's claude."""
