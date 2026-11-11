@@ -251,3 +251,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-10 | 86bcxnymy | leorna | script: control-plane gates.sh exits non-zero before make check when command -v tofu is empty or tofu version isn't the pinned one (else TestGoldenHCLPassesTofuValidate skips silently) | offered
 - 2026-11-10 | 86bcxnymy | mutation-testing-discipline | script: the mutation harness runs a no-overlay CTRL entry first and aborts the batch unless CTRL passes; grades setup failures INVALID | offered
 - 2026-11-10 | 86bcxnymy | mutation-testing-discipline | script: the mutation harness greps each expected test for exec.Command running the go tool and refuses overlay mode for it (disk copy instead) | offered
+- 2026-11-10 | 86bcxnymy | leorna | script: builder/verifier gate script runs every changed cgo-free client package's full test binary natively on Windows (GOOS=windows go test -c, run from the package folder) and fails on any --- FAIL | offered
