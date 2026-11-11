@@ -224,7 +224,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..6bd669e 100644
+index f2d882d..c81c57c 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,63 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -347,7 +347,7 @@ index f2d882d..6bd669e 100644
 -   survivor this trace before calling it a blind test. Keep its receipt and
 +   test can kill, unless the guards answer differently: then assert the outer
 +   guard's own code (a route's `ADMIN_REQUIRED`, not just the store's 403) and
-+   the deletion is killable (86bcm902w M6). It is equivalent only if the other site rejects every input class the deleted one does: enumerate them (a route gate stopping only states where `Status` errors left a still-`creating` binding, or none, to the manager's `PhaseReady` gate alone; three rounds had called it equivalent, 86bccndx6 verifier 3), plus a transient failure hitting only the first call: the outer gate can be the only path to a side guard (an acknowledgement field) the inner one never checks (86bccndx6 review 9). Mutate all sites (or the shared helper) together, and record
++   the deletion is killable (86bcm902w M6); when both answer the same code, send a request that also fails a check between them (a wrong CSRF token, invalid input): the outer guard must answer first, its mutant gets the middle check's code (86bcxnykn M01). It is equivalent only if the other site rejects every input class the deleted one does: enumerate them (a route gate stopping only states where `Status` errors left a still-`creating` binding, or none, to the manager's `PhaseReady` gate alone; three rounds had called it equivalent, 86bccndx6 verifier 3), plus a transient failure hitting only the first call: the outer gate can be the only path to a side guard (an acknowledgement field) the inner one never checks (86bccndx6 review 9). Mutate all sites (or the shared helper) together, and record
 +   the single-site variants as documented equivalents. Ignoring a write's error
 +   inside a Postgres transaction (`_ = appendAudit(...)`) is equivalent too: the
 +   failed statement aborts the transaction and Commit fails; prove atomicity by

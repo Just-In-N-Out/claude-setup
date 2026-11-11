@@ -546,3 +546,10 @@ Until Justin runs it, AC8 is **NOT VERIFIED** and acceptance-blocking for "ready
 
 ## Hand-over state (main session, 2026-11-08)
 READY FOR THE USER on 1f98596 (ac-check.sh --reviews); hand-over drafted, nothing committed after 1f98596, not pushed, no PR, nothing posted. Waiting on Justin: AC8 (live, now unblocked: 927y merged as CP #112), the "renderings OK for ClickUp?" question, and the words push / make a PR / post. Justin, 2026-11-08: "keep this chat going as I will not be on it" — read as: keep the session open and idle; no new agents, push, PR or post while he's away.
+
+## Hand-over state (main session, 2026-11-10), replaces the 2026-11-08 state
+- Main a7839b3 (#30, #31, #32) brought in: merge a608c1d; story migration renumbered 9 → 10 (main's 9 = managed_drift_queue); 9b35bbb (generated-constant rename); 0af4471 (R4-1: unknown-version test on a real database; Justin said "fix").
+- review-4 (R4-1 P2, Justin: fix) → review-5 clean (MOVE ON at 0af4471). verifier/ and auditor/ fresh on 0af4471 (old ones kept as verifier-1f98596/, auditor-1f98596/).
+- ac-check.sh --reviews: READY FOR THE USER: 7 of 8 ACs proven on 0af4471; AC8 (live) owed to Justin.
+- Hand-over drafts refreshed by finisher 2 in ~/.hermes/cache/scratch/ (PR text, review prompt, ClickUp draft "post after merge", team message "send after merge"); AC2/AC6 images re-rendered without notes.
+- Waiting on Justin: AC8 live; "make a PR" (commit the PROJECT_MEMORY.md line, gates, push, PR, PR-number record, PR-head verifier → auditor → ac-check); post only after merge. Still owed before post: gates screenshot of the pushed head, AC8 screenshots.
