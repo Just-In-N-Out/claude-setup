@@ -250,7 +250,13 @@ under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`.
 9. **Gates (AC8).** `npm run check`; `npm run corpus` (no file worse); web suites, each alone:
    `capture-refused`, `capture-styled-ranges`, `capture-styled-loads`, `capture-replay`, `capture-retry`, `capture-lost`,
    `capture-steady`, `capture-unreachable`, `capture-windows`, `capture-cli`, `capture-person-front`, `human-check`,
-   `human-once`, `human-reload`, `helper-capture`, `helper-windows`; AC3 named. Base tallies: BASE_TALLIES_HERE
+   `human-once`, `human-reload`, `helper-capture`, `helper-windows`; AC3 named. Base tallies (a clean export of `11e885fd`,
+   2026-11-10, `tallies-base2/summary.txt`, every file exit 0, no failure): `capture-styled-ranges` 10 pass,
+   `capture-styled-loads` 6, `capture-replay` 3, `capture-retry` 5, `capture-lost` 3, `capture-steady` 9,
+   `capture-unreachable` 2, `capture-windows` 2, `capture-cli` 6, `capture-person-front` 2, `human-check` 7 pass + 1
+   skipped (the opt-in visible window, `F2B_VISIBLE_CHROME=1`), `human-once` 3, `human-reload` 6, `helper-capture` 1,
+   `helper-windows` 1; `npm run check` 3538 + 2 pass, 0 fail. The head's tallies must equal these by test name, plus
+   `capture-refused`'s 5 (AC3 named only).
 
 ## Code
 
