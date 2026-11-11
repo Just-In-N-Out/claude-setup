@@ -13,7 +13,12 @@ answers from the scenario in $FAKE_CLAUDE_SCENARIO (JSON). The role comes from t
                     In "changes", "finding_ids": "ALL" becomes every id in _dream/findings.json;
                     "changes_raw": "<text>" writes that text as changes.json instead.
                     "obey_orders": true also does what _dream/orders.json says (obey.py) and lists it.
-  "sleep": {"<role>": seconds}, "fail": {"<role>": {"exit": n} | {"api_error_status": 401} | {"model": "x"}}
+  "sleep": {"<role>": seconds}, "fail": {"<role>": {"exit": n} | {"api_error_status": 401} | {"model": "x"} |
+                                         {"models": ["x", "y"]}}
+  "flag": {"<role>": true}  the model's safeguards flag the call, as the real CLI handles it (fixer 10): with
+                    its switch on (no CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK=1, no "switchModelsOnFlag": false in
+                    --settings) the turn goes on on claude-opus-4-8, with modelUsage naming both models; with the
+                    switch off the call stops on the pinned model, with no output. Both count one safety stop.
 --help lists the real CLI's flags, minus the ones in $FAKE_CLAUDE_HELP_DROP (space-separated).
 """
 import json
@@ -32,6 +37,24 @@ def arg(argv, name):
         i = argv.index(name)
         return argv[i + 1] if i + 1 < len(argv) else None
     return None
+
+
+# one modelUsage entry, the shape claude 2.1.322 prints (fixer-10/call-1-probe.stdout.json)
+USAGE = {"inputTokens": 12, "outputTokens": 1196, "cacheReadInputTokens": 25813, "cacheCreationInputTokens": 1972,
+         "webSearchRequests": 0, "costUSD": 0.0449066, "contextWindow": 1000000, "maxOutputTokens": 128000,
+         "thinkingTokens": 189, "cacheCreationEphemeral5mInputTokens": 0, "cacheCreationEphemeral1hInputTokens": 1972,
+         "canonicalModel": "claude-opus-5-5", "provider": "firstParty", "costBasis": "list"}
+
+
+def record(argv, stdin, role, start, settings, switch_on, flagged):
+    rec = {"argv": argv, "cwd": os.getcwd(), "stdin": stdin, "role": role, "start": start, "end": time.time(),
+           "settings": settings, "model_switch_on_flag": switch_on, "flagged": flagged,
+           "env": {k: os.environ.get(k) for k in ("CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK",)}}
+    d = os.environ.get("FAKE_CLAUDE_DIR")
+    if d:
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "call-%d-%d.json" % (time.time_ns(), os.getpid())), "w") as f:
+            json.dump(rec, f)
 
 
 def main():
@@ -59,6 +82,22 @@ def main():
     time.sleep(float(sc.get("sleep", {}).get(role, 0)))
     model = arg(argv, "--model") or "claude-opus-5-5"
     fail = sc.get("fail", {}).get(role, {})
+    try:
+        with open(arg(argv, "--settings") or "") as f:
+            settings = json.load(f)
+    except (OSError, ValueError):
+        settings = {}
+    switch_on = (os.environ.get("CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK") != "1"
+                 and settings.get("switchModelsOnFlag", True) is not False)
+    flagged = bool(sc.get("flag", {}).get(role))
+    if flagged and not switch_on:  # the call stops where it was flagged: no work, no output
+        out = {"type": "result", "subtype": "success", "is_error": False, "stop_reason": "refusal",
+               "result": "Claude's safeguards flagged this message.", "session_id": "fake-%d" % os.getpid(),
+               "permission_denials": [], "safety_stops": 1, "modelUsage": {model: dict(USAGE)},
+               "usage": {"input_tokens": 12, "output_tokens": 0}, "total_cost_usd": 0.01}
+        record(argv, stdin, role, start, settings, switch_on, flagged)
+        print(json.dumps(out))
+        return 0
     denials = []
     structured = None
     if role == "session-helper":
@@ -129,18 +168,16 @@ def main():
     out = {"type": "result", "subtype": "success", "is_error": False,
            "result": json.dumps(structured) if structured is not None else "done",
            "session_id": "fake-%d" % os.getpid(), "permission_denials": denials,
-           "modelUsage": {fail.get("model", model): {"inputTokens": 1000, "outputTokens": 200}},
-           "usage": {"input_tokens": 1000, "output_tokens": 200}, "total_cost_usd": 0.01}
+           "modelUsage": {m: dict(USAGE, canonicalModel=m) for m in fail.get("models", [fail.get("model", model)])},
+           "usage": {"input_tokens": 1000, "output_tokens": 200}, "total_cost_usd": 0.01, "safety_stops": 0}
+    if flagged:  # the switch is on: the CLI carries the turn on to its refusal fallback model
+        out["modelUsage"]["claude-opus-4-8"] = dict(USAGE, canonicalModel="claude-opus-4-8")
+        out["safety_stops"] = 1
     if structured is not None and "--json-schema" in argv:
         out["structured_output"] = structured
     if "api_error_status" in fail:
         out.update({"is_error": True, "subtype": "error", "api_error_status": fail["api_error_status"]})
-    rec = {"argv": argv, "cwd": os.getcwd(), "stdin": stdin, "role": role, "start": start, "end": time.time()}
-    d = os.environ.get("FAKE_CLAUDE_DIR")
-    if d:
-        os.makedirs(d, exist_ok=True)
-        with open(os.path.join(d, "call-%d-%d.json" % (time.time_ns(), os.getpid())), "w") as f:
-            json.dump(rec, f)
+    record(argv, stdin, role, start, settings, switch_on, flagged)
     print(json.dumps(out))
     return int(fail.get("exit", 0))
 

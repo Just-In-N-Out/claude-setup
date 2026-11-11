@@ -3,6 +3,8 @@
 Helpers and the checker have no tools at all; the editor has file tools confined to its copy by
 --restricted. Every call runs with no session saved, no customizations, no hooks, no MCP servers and
 no slash commands, on the model in conf/models.conf, and its result must name exactly that model.
+No call may go on on another model when safeguards flag a message (CALL_ENV, CALL_SETTINGS): a flagged
+call stops, and the dream refuses it.
 """
 import concurrent.futures
 import json
@@ -21,6 +23,11 @@ HELPER_TIMEOUT = 900
 EDITOR_TIMEOUT = 1800
 WORKERS = 3
 FATAL_STATUS = {401, 403, 429}
+# When a model's safeguards flag a message, claude carries the turn on to another model (claude-opus-4-8 on
+# 2.1.322) unless this is set; its changelog names the variable. With it, a flagged call stops on the pinned model.
+CALL_ENV = {"CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK": "1"}
+# the --settings file: no hooks, and the same switch off as a setting ("When off, your session will pause instead")
+CALL_SETTINGS = '{"hooks": {}, "switchModelsOnFlag": false}\n'
 # DREAM.md sections each prompt carries
 SECTIONS = {"session-helper": [3, 4, 8, 9], "review-helper": [7], "checker": [4, 6, 8, 9],
             "editor": [3, 4, 5, 6, 7, 8, 9]}
@@ -85,7 +92,7 @@ def base_cmd(R):
     model, effort = models(R.env)
     settings = R.dir / "empty-settings.json"
     if not settings.exists():
-        settings.write_text('{"hooks": {}}\n')
+        settings.write_text(CALL_SETTINGS)
     return [claude_bin(R.env), "-p", "--no-session-persistence", "--safe-mode", "--setting-sources", "",
             "--settings", str(settings), "--strict-mcp-config", "--disable-slash-commands",
             "--permission-prompts", "none", "--model", model, "--effort", effort, "--output-format", "json"]
@@ -101,11 +108,15 @@ def editor_cmd(R):
                           "--system-prompt", prompt_text(R.env, "editor")]
 
 
+def call_environ(R):
+    return {**R.env.environ, **CALL_ENV}
+
+
 def call(R, role, cmd, stdin, cwd, timeout, schema):
     res = Result(role)
     model, _ = models(R.env)
     try:
-        p = subprocess.run(cmd, input=stdin, capture_output=True, text=True, cwd=str(cwd), env=R.env.environ,
+        p = subprocess.run(cmd, input=stdin, capture_output=True, text=True, cwd=str(cwd), env=call_environ(R),
                            timeout=timeout)
     except subprocess.TimeoutExpired:
         res.error = "%s timed out after %d s" % (role, timeout)
@@ -130,7 +141,11 @@ def call(R, role, cmd, stdin, cwd, timeout, schema):
         res.error = "the %s call failed on login or limits (HTTP %s); open claude once, or see desktop.md" % (role, status)
         return _done(R, res)
     used = set((out.get("modelUsage") or {}).keys())
-    if p.returncode != 0:
+    stops = out.get("safety_stops") or 0
+    if stops:
+        res.error = "%s was stopped by safeguards (%s safety stop%s); the dream never switches to another model" % (
+            role, stops, "" if stops == 1 else "s")
+    elif p.returncode != 0:
         res.error = "%s exit %d" % (role, p.returncode)
     elif out.get("is_error") or out.get("subtype") != "success":
         res.error = "%s returned an error (%s)" % (role, out.get("subtype"))

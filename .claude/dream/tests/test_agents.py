@@ -48,7 +48,11 @@ class AgentTests(unittest.TestCase):
             want = list(BASE)
             want[6] = argv[6]
             self.assertEqual(argv[:len(BASE)], want, role)
-            self.assertEqual(json.loads(Path(flag(argv, "--settings")).read_text()), {"hooks": {}}, role)
+            # no hooks, and no switch to another model when safeguards flag a message (fixer 10)
+            self.assertEqual(json.loads(Path(flag(argv, "--settings")).read_text()),
+                             {"hooks": {}, "switchModelsOnFlag": False}, role)
+            self.assertEqual(c["env"], {"CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK": "1"}, role)
+            self.assertFalse(c["model_switch_on_flag"], role)
         for role in ("session-helper", "checker"):
             argv = calls[role]["argv"]
             self.assertEqual(flag(argv, "--tools"), "", role)
@@ -86,6 +90,39 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(h.run(), 4)
         self.assertEqual(h.calls_by_role(), [], "no model call")
         self.assertIn("--safe-mode", h.local("last-run.json")["reason"])
+
+    def test_a_flagged_call_never_goes_on_on_another_model_and_is_refused(self):
+        """Fixer 10: when safeguards flag a message, claude 2.1.322 carries the turn on to claude-opus-4-8 unless
+        its switch is off (CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK=1; switchModelsOnFlag false). Every dream call
+        turns it off, so a flagged call stops on the pinned model, and the dream refuses it, saying why."""
+        self.h = h = FakeHome("flag")
+        R = self.ctx()
+        (R.dir / "copy").mkdir()
+        agents.write_editor_inputs(R, {}, [], [])
+        h.scenario({"flag": {"editor": True, "session-helper": True}})
+        res = agents.editor(R)
+        f = h.session(fh.PROJ, "s1", [typed("u1", "from now on run the linter before every commit")])
+        r = extract.read_session(f)
+        r.project = "proj"
+        digest, used = extract.render_digest("s1", "proj", r.entries)
+        hres = agents.session_helpers(R, [(r, digest, used)], {})[0]
+        calls = {c["role"]: c for c in h.calls_by_role()}
+        for role, got in (("editor", res), ("session-helper", hres)):
+            self.assertTrue(calls[role]["flagged"], role)
+            self.assertFalse(calls[role]["model_switch_on_flag"], "%s: the switch to another model is off" % role)
+            self.assertFalse(got.ok, role)
+            self.assertEqual(got.error, "%s was stopped by safeguards (1 safety stop); the dream never switches "
+                                        "to another model" % role)
+        self.assertEqual([c["ok"] for c in R.calls], [False, False], "both are failed calls in the run's log")
+        # still refused: a second model in modelUsage with no safety stop, and no model at all
+        h.scenario({"fail": {"editor": {"models": ["claude-opus-5-5", "claude-opus-4-8"]}}})
+        self.assertEqual(agents.editor(R).error, "editor ran on claude-opus-4-8, claude-opus-5-5, not claude-opus-5-5")
+        h.scenario({"fail": {"editor": {"models": ["claude-opus-4-8"]}}})
+        self.assertEqual(agents.editor(R).error, "editor ran on claude-opus-4-8, not claude-opus-5-5")
+        h.scenario({"fail": {"editor": {"models": []}}})
+        self.assertEqual(agents.editor(R).error, "editor ran on no model, not claude-opus-5-5")
+        h.scenario({})
+        self.assertTrue(agents.editor(R).ok, "an unflagged call on the pinned model alone is accepted")
 
     def test_the_checkers_prompt_names_the_four_changes_that_need_no_finding(self):
         """R4-8: DREAM.md section 6 lets four changes go in with no finding or order (a move word for word, the one
