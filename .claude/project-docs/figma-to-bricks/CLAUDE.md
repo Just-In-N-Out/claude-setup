@@ -7,8 +7,15 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.8`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.8 plugin-header-footer-ticks (Figma plugin panel):** the two boxes read "Leave the header out of the
+    paste (my site already has its own; the page starts below it)" and "Leave the footer out of the paste (my site
+    already has its own)" (a tick still leaves the part out, an empty box keeps it), the line under them says what the
+    next paste does in all four states, and every note names a box by those words (`tickName()` in
+    `src/core/normalise/site.ts`); no paste changes by a byte. Q1–Q3 A; Q2 open (if Justin's boxes were ticked when
+    both parts stayed, a recognition bug: needs his debug file). Paste check **3ee** (AC6, live: in Figma tick both
+    boxes, convert, paste on darksalmon, neither part is in it; with both empty the line says the paste keeps both).
   - **2026-11-11.7 site-sticky-header (website importer):** a header whose bars the site's script keeps at the top (the
     capture's `web.position: "fixed"` mark, not fixed by the site's own CSS) gets one class `<page>__site-stay-<4>` on
     the header root: `position: sticky; top: var(--wp-admin--admin-bar--height, 0px); z-index: 100` (also on
@@ -682,6 +689,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **The site's own header and footer** (user, 2026-10-20: "if there is already a header and footer in bricks then the
   plugin will remove the header and footer"):
   - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → "The site's own header and footer".
+  - The panel's two boxes (2026-11-11, plugin-header-footer-ticks) read "Leave the header out of the paste (my site
+    already has its own; the page starts below it)" and "Leave the footer out of the paste (my site already has its
+    own)"; a tick leaves the part out, an empty box keeps it.
 - **Social icons link to the business's profiles in Yoast SEO** (Justin, 2026-10-30, chose "From Yoast" over a panel
   box or links set in Figma; build `2026-10-30.20`): the panel reads Yoast's Other profiles when connected and saves them
   in the file; small icons named after a network link to them. HANDOFF "Social icons link".

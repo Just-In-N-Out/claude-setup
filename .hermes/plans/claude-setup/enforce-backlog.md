@@ -272,3 +272,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-11 | media-avif-alt | test-driven-development | test: a unit check that every test/web file's stand-in servers are stopped in a finally reached on every path, or a runner wrapper failing a file whose process outlives its last ok/not ok by 60 s | offered
 - 2026-11-11 | media-avif-alt | code-review-practice | test: in test/web/site-upload-ai-alt.test.ts, a record id whose library item is another file gets no POST wp/v2/media/<id> | offered
 - 2026-11-11 | footer-icon-list | code-review-practice | script: the rebase receipt step lists env-gated (`skip: … ? false : "set F2B_…"`) tests added between the old and new base and runs each whose input file exists, on both trees | offered
+- 2026-11-11 | footer-icon-list | figma-to-bricks | script: a finisher pre-check that runs every F2B_* named pin on main's tip and lists any already failing there, before stacking | offered
