@@ -113,3 +113,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - site-fonts-match verifier 2 clean (READY 8/9 on c8ad17b). Auditor 2 dispatched.
 - site-fonts-match: auditor 2 clean; ac-check READY (8/9) on c8ad17b8; ff-merged into main (lock held). After-merge finisher dispatched (BUILD 2026-11-12.2, paste check 3eh). bricks-icons and site-no-div will need a rebase onto the new main after.
 - Build 2026-11-12.2 (site-fonts-match) 6cd6154e pushed; 3eh. Lock released. Next free paste id 3ei.
+- bricks-icons verifier 2 clean (READY 6/7 on 643109ec). Dispatched in parallel: auditor 2 on 643109ec + rebase-2 finisher onto 6cd6154e (branch bricks-icons-final2; notes-only rule if only HANDOFF/pin conflicts).
