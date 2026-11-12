@@ -46,3 +46,8 @@ He then used a limit reset (2026-11-09 ~19:10: "I used a reset, keep them going"
 "nah make the limit unlimited for all". **Rule now: no cap on agents across sessions** (replaces the ≤8 of 2026-11-02).
 Still: earlyoom check each time an agent returns; every Chrome/test run under a memory scope; tell the other session.
 **Why:** he wants every job moving at once. **How to apply:** dispatch each job's next role the moment it is ready.
+
+**2026-11-11 20:06, Linux restarted under CPU overload with no agent cap:** the memory log showed 8.7 GB still free but load
+~50, CPU pressure (psi10) rising to 17 and 35 Chromes across ~12 agents; Windows stayed up (Justin earlier couldn't switch
+tabs). Not a memory kill. **How to apply:** with no agent cap, tell every agent "one Chrome suite at a time" and, when the
+load passes ~40, hold new dispatches until it drops.
