@@ -15,5 +15,7 @@ session records the review, the receipt and this rule in the job's follow-ups an
 **Why:** Justin chose it in a question (2026-11-11, site-scroll-lock): nearly every merge now hits a HANDOFF-only conflict
 (every job adds its section at the top), and a fresh verifier + auditor cost 1–2 hours each time.
 
-**How to apply:** any conflict in a source or test file still takes the full path (review → verifier → auditor →
+**Extended (Justin, 2026-11-11, site-menu-motion):** the same short path (a short review of the change + an AC test re-run) also covers a **test-only pin update** a merged feature forces after a rebase (e.g. a byte-for-byte pin compared without site-scroll-lock's lock class), when no source changes.
+
+**How to apply:** any conflict or change in a source file, or a test change beyond such a pin, still takes the full path (review → verifier → auditor →
 ac-check). Related: [[review-round-cap]], [[run-without-stopping]].
