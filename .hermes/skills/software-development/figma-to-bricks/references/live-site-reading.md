@@ -198,7 +198,7 @@ Read-only GETs of public pages, through the repo's Chrome driver (`test/browser/
   animations (`el.getAnimations({subtree:true})` → `finish()`): injecting `*{transition:none!important}` alone loses to
   a site's own more specific `!important` transition (OneTap), and without either it reads mid-transition (Elementor
   "grow" read 1.0038 instead of its end scale). Read duration/easing separately; Elementor hover animations also fire
-  on `:focus` (website-importer probe, web-compare). On a page that isn't the front tab headless Chrome runs no transitions, so a forced state reads where its transition started: `Page.bringToFront` before each read; `CSS.enable` needs `DOM.enable` first (site-no-div AC7).
+  on `:focus` (website-importer probe, web-compare). On a page that isn't the front tab headless Chrome runs no transitions, so a forced state reads where its transition started: `Page.bringToFront` before each read; `CSS.enable` needs `DOM.enable` first (site-no-div AC7). Comparing two drawings under forced states: finish transitions after each force and each un-force (else hundreds of false differences); a lone `animation-name`/`opacity` difference on identical rules is a Bricks enter-view entrance mid-play (site-shared-styles review 1).
 - A freeze that only stops transform tracks and slider APIs misses carousels that slide by `scrollLeft` on an
   `overflow:hidden` wrapper (Trustindex); and `scrollIntoView` scrolls every clipping ancestor (carousels, sideways
   scrollers: their first item can land past the page edge and be dropped), so scroll only the page's own scroller (the window, or body when body is the scroll container: "only the window"
