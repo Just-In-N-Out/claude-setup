@@ -117,3 +117,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - bricks-icons rebase-2: 37687fcb on 6cd6154e, HANDOFF-only conflict, receipt EXIT=0. Short review 4 dispatched; auditor 2 (on 643109ec) still running. Merge on auditor clean + review 4 clean + receipt (notes-only rule).
 - bricks-icons review 4 clean (37687fcb); waiting on auditor 2. site-shared-styles builder done (e124dcda); review 1 (Fable) dispatched. Started early on e124dcda: shared-palette builder, plugin-parity builder. importer-parity waits (same site code as shared-styles' fixes).
 - bricks-icons M1 ff-merged into main (37687fcb; notes-only rule). After-merge finisher dispatched (BUILD 2026-11-12.3, paste check 3ei). Lock held.
+- Build 2026-11-12.3 (bricks-icons M1) 7f54b0a5 pushed; 3ei. Lock released. Next free paste id 3ej. site-no-div (on 56b5076b) must rebase onto 7f54b0a5 after its auditor.

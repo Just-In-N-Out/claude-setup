@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-12)
 
-- **Current build `2026-11-12.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-12.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-12.3 bricks-icons (Figma plugin panel):** with "Pictures go: to WordPress", a connected site and "Icons
+    as: SVG", a drawn icon of one flat colour (vector-only, at most 96 px, drawn all filled or all stroked, no link,
+    description, hover redraw or other special role) pastes as Bricks' Icon element showing its SVG from the media
+    library (`settings.icon`, `library: "svg"`; colour and size in the Icon's controls, recolourable in Bricks), drawn
+    where the picture was; the panel counts the icons that could be Icons; a site that refuses SVG gets the paste
+    converted again without Icons and one note; Icons off (pictures inside the JSON, Icons as PNG, website captures)
+    byte for byte as before. Q1–Q8 ⭐ A not yet confirmed. The importer half is the job bricks-icons-site. Paste check
+    **3ei** (AC7, live: in Figma with Pictures to WordPress and Icons as SVG, convert, paste on darksalmon, Structure
+    shows Icons, the looks at three widths, recolour an Icon in Bricks).
   - **2026-11-12.2 site-fonts-match (website importer):** a scan keeps each face's file from its own `@font-face` rule
     (the last loaded face draws, so a family two rule sets declare keeps the file that loads) and asks a face that
     failed in its browser once more at the scan's end (refused: named "couldn't be kept"; `web.fontsRead: 2`); the
@@ -252,7 +261,8 @@ header spacer) the user runs Bricks → Settings → Custom code → **Regenerat
   `reference/bricks/nav-nested.json` from Bricks' code and live sites, stands in until his own copy replaces it),
   Tabs, Dropdown, a working Interaction, a `popover` Div. Never write those emitters from memory. Offcanvas + Toggle is
   no longer owed as a blocker: a researched `reference/bricks/offcanvas.json` (Bricks' code, site-menu, 2026-11-09)
-  stands in until his own copy replaces it, like nav-nested.json.
+  stands in until his own copy replaces it, like nav-nested.json. An Icon sample exists (`reference/bricks/icon-svg.json`,
+  his staff card's Icon, bricks-icons).
 - **M4b** (Figma Motion as CSS keyframes) is built against Figma's typings only: it needs the user's Motion test file.
 - **"Home Page Final"** holds a whole Services page inside its own frame: waiting on Justin's Layers screenshot.
 
@@ -569,6 +579,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **An element's own custom CSS never writes `display`** (icon-buttons, 2026-11-04): Bricks prints `#brxe-<id>{…}`
   after the control CSS, so it beats every tier `_display: none` a rule writes (phone.swap, compose.hide, the menu
   fold). Bricks' `.bricks-button` already gives a Button `inline-flex`, centring and gap.
+- **Bricks' Icon prints an SVG only from the media library** (`icon.svg.id`; bricks-icons): the plugin makes Icons only
+  with pictures to WordPress and Icons as SVG, and an Icon's drawing holds no ids. **An Icon's box rules never
+  out-weigh its own Width and Height controls:** its floor is `overflow: clip`, its shape `height: auto` under
+  `:where()` (`Style.weightless`), never a `min-width` floor or an `aspect-ratio` (`style/icon.ts`).
 - **Words elements hold a `<p>` since rich-text** (`div.brxe-text > p`): browser tests measure the inner `p`
   (`el.querySelector(':scope > p') || el`); `Range.selectNodeContents(el).getClientRects()` also returns the `p`'s own
   box (one line too many) and `el.firstChild` is the `p`, not the text node.
