@@ -102,3 +102,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - site-fonts-match fixer 2 done: c8ad17b8 (AC7 elementor sums from 56b5076b; receipt-c8ad17b EXIT=0). Review 3 (delta: resolution + re-pins + sums) dispatched.
 - site-fonts-match review 3 clean (MOVE ON c8ad17b). Old verifier/auditor archived -dde5505. Verifier 2 dispatched on c8ad17b8 / base 56b5076b.
 - site-no-div fixer 1 done: 374ea2ce (R1-1..R1-4 fixed; 11/11 mutants). Dispatched: plan amendment 1 (AC14 words, Fable) + review 2 (delta, Opus high). Shared-styles builder told to rebase onto 374ea2ce.
+- site-no-div: amendment 1 installed (AC14 words). Amendment 2 (AC4 vs builder's Section/Container tag rule) dispatched. AC5 rows (ac5-rows.txt) go to the next fixer step after review 2.
