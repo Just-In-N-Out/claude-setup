@@ -282,3 +282,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-12 | site-no-div | figma-to-bricks | test: a unit test feeding every new element-by-shape rule a word box holding one link and a box painted by a `border` shorthand only | offered
 - 2026-11-12 | site-no-div | figma-to-bricks | lint: a test/web check that every PartPaste literal and every readSection call on a part paste passes `lifted`/PART | offered
 - 2026-11-12 | site-no-div | figma-to-bricks | script: the golden regenerator refuses to write unless its run on the base archive reproduces the base's goldens | offered
+- 2026-11-12 | site-fonts-match | feature-dispatch | script: a post-restart check the orchestrator runs before resuming agents, listing 0-byte files under .git/objects, .git/refs and .git/worktrees with their reachability | offered
