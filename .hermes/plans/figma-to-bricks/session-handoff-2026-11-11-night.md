@@ -60,3 +60,11 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
   e61c0ca0 (expect notes-only) → receipt → merge as next build, 3eb.
 - **media-avif-alt**: fixer 1 done (caf9291f); **Full review round 2 running** (`briefs/media-avif-alt-reviewer-2.md`).
 - **site-menu-motion**: merged as 11.6 (3ec).
+
+## Later still (after the 20:06 restart; session now figmatobricksv2-12, peer figmatobricksv2-69)
+- **Merged:** 11.7 site-sticky-header (3eb), main = 9f75e8ac. Next: footer-icon-list = 11.8 (3dz, peer's).
+- **site-native-structure:** accepted 14/15 on f86ab19d (base 731707c5). After 11.8: `git rebase --onto <main> 731707c5 site-native-structure-stack7`, review (+ verifier/auditor if code conflicts), merge; then site-no-div's builder.
+- **media-avif-alt:** reviews clean; verifier running (`briefs/media-avif-alt-verifier.md`); then auditor, rebase, merge.
+- **plugin-header-footer-ticks:** built (c0e04ef4); Mini review r1 running.
+- **site-fonts-match** (Full) and **bricks-icons M1** (Full): builders running.
+- Rule learned: no agent cap → one Chrome suite per agent; hold dispatch above load ~40 (Linux restarted at 20:06 under load ~50).
