@@ -17,3 +17,9 @@ if I hadn't understood them.
 
 **How to apply:** first message after a bug report: "Here's how I understand it: 1… 2… 3…", then name the catch (if
 any) in one plain sentence, then the question. See [[user-workflow]].
+
+**Ask with the control's own words (2026-11-11, plugin-header-footer-ticks):** before asking Justin what he saw with a panel
+control, grep its label (`src/ui/index.html`) and quote it in the question, with options for both states (ticked and empty). I
+asked "What did you untick?" with only "off" options while a **tick** means "leave out" there, so "Both off, both pasted" couldn't
+separate by-design from a bug, and the brief's live AC was written backwards. Put the question and options word for word in the
+planner's brief.

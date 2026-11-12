@@ -143,7 +143,15 @@ Proof on the plan's exact test files (`<planner>/tests/`, copied into scratch tr
 - New tests: `test/fixtures/site-box.ts`, `test/unit/ui-site-box-line.test.ts`, `test/unit/ui-site-tick-words.test.ts`,
   `test/unit/ui-site-box-path.test.ts`, `test/unit/site-ticks-base.test.ts` (ready in `<planner>/tests/`).
 - Tests that pin the old words (expected strings only: put the box's new name in; never loosen an assertion):
-  PINNED_LIST
+  the six unit tests that go red on the prototype and nowhere else (`<planner>/fail-prototype.txt` against
+  `fail-base.txt`; 3715 tests, typecheck clean on both trees):
+  `test/unit/ui-site-ticks.test.ts` ("a part the paste still holds: a warning naming the tick to use", 3 strings),
+  `test/unit/understand-site-header.test.ts` ("unticked: a header the page has stays, …"),
+  `test/unit/understand-site-footer.test.ts` ("unticked: a footer the page has stays, …"),
+  `test/unit/understand-footer-stack.test.ts` (2 tests, 3 strings),
+  `test/unit/understand-footer-careful.test.ts:263` ("a footer frame whose own part can't be told, …");
+  and in Chrome `test/browser/panel.test.ts:218`. Comments only: `test/browser/footer-stack.test.ts:1`,
+  `test/fixtures/header-check.ts:1`, `test/unit/adapt-section-top.test.ts:101`, `test/unit/header-bar-shapes.test.ts:2`.
 - Docs: `docs/HANDOFF.md`, the ledger.
 
 ## Tasks (one commit each, `npm run check` green at each commit from Task 3 on)
@@ -160,8 +168,9 @@ Proof on the plan's exact test files (`<planner>/tests/`, copied into scratch tr
    "each commit green").
 3. **Green.** Make the edits of "The fix" 1–6 (by hand or `python3 <planner>/prototype.py <worktree>`, then the
    `room.ts` comment by hand as the diff shows). The three test files pass (4 tests). Update the pinned words in the
-   existing tests listed above, then `npm run check`. Compare failures by name with the base
-   (`<planner>/suite-base.log`): no test may fail that passes there. Commit.
+   existing tests listed above, then `npm run check`: on the planner's scratch trees the base has no failing unit
+   test of its own and the prototype exactly those six (`<planner>/suite-base.log` holds the three new red tests
+   too, copied in for the proof). No test may fail that passes on the base. Commit.
 4. **The byte test.** Copy `<planner>/tests/test/unit/site-ticks-base.test.ts` in. Make the base tree
    (`git archive <base> | tar -x -C <scratch>`, `node_modules` linked to the main folder's) and run
    `F2B_BASE_TREE=<scratch> node --test test/unit/site-ticks-base.test.ts`: 1 pass, 0 skipped. Without the variable it
