@@ -7,8 +7,15 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.8`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.9`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.9 footer-icon-list (website importer):** the capture keeps each box side and size by one name, the
+    one the site's cascade applied (a reset's physical `margin: 0` then Elementor's logical `margin-block-start`, at
+    every range, under hover and focus, a logical side read by the element's own writing mode and direction;
+    `web.code.oneName`), so B-Dry's footer contact list no longer pastes 69 px short (Bricks' class setting beat the
+    custom CSS); captures made before this build paste byte for byte as before with one 'capture the page again' note
+    where a top/bottom side or size has two names (Q4 A not yet confirmed); Figma designs byte for byte as before.
+    Paste check **3dz** (AC6, live: re-scan bdryswi.com, re-paste B-Dry's home, `site:live`: footer within 2 px).
   - **2026-11-11.8 plugin-header-footer-ticks (Figma plugin panel):** the two boxes read "Leave the header out of the
     paste (my site already has its own; the page starts below it)" and "Leave the footer out of the paste (my site
     already has its own)" (a tick still leaves the part out, an empty box keeps it), the line under them says what the
