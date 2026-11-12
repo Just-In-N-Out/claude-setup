@@ -136,7 +136,7 @@ index 8d8968a..f0855d3 100644
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..596b010 100644
+index c509c64..127a310 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,12 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -169,7 +169,7 @@ index c509c64..596b010 100644
  Map consumer ingress, domain logic, authority, durable execution and external effects to their existing owners. Select one bounded useful vertical result before adding models, writes, schedules or multiple hosting profiles.
  
 -For removals, trace shared domain kernels, importers, every source/runtime composer, inherited packages, registrations, CLI/MCP/background routes, startup and reinstall recipes. Check the composed artifact as well as the source tree, because overlay merging can restore a removed upstream plugin. Map retained behavior to independent replacement tests before deleting a transport; a source-name search or numeric pass floor is not preservation evidence.
-+For a rule changed "everywhere", search by the rule's meaning, not its wording: project `CLAUDE.md` copies (`~/.claude/project-docs/*/CLAUDE.md`) restate global steps in their own words, and a fix there must also change the project's own file, because `sync.sh` overwrites the copy (pipeline-token-diet review 1). For removals, trace shared domain kernels, importers, every source/runtime composer, inherited packages, registrations, CLI/MCP/background routes, startup and reinstall recipes. Check the composed artifact as well as the source tree, because overlay merging can restore a removed upstream plugin. Map retained behavior to independent replacement tests before deleting a transport; a source-name search or numeric pass floor is not preservation evidence.
++For a rule changed "everywhere", search by the rule's meaning, not its wording: project `CLAUDE.md` copies (`~/.claude/project-docs/*/CLAUDE.md`) restate global steps in their own words, and a fix there must also change the project's own file, because `sync.sh` overwrites the copy (pipeline-token-diet review 1). Tracked project memory notes (`~/.claude/projects/*/memory/*.md`) restate role tables too, and the routing test doesn't scan them: list each hit in the Docs & records task (fable-planner-only review 1). For removals, trace shared domain kernels, importers, every source/runtime composer, inherited packages, registrations, CLI/MCP/background routes, startup and reinstall recipes. Check the composed artifact as well as the source tree, because overlay merging can restore a removed upstream plugin. Map retained behavior to independent replacement tests before deleting a transport; a source-name search or numeric pass floor is not preservation evidence.
  
  Distinguish platform IDs, native manifest names, portable manifest names, install subdirectories and resolved aliases at their actual validation boundaries. Preserve each format's rules instead of repairing identifiers or substring-banning a provider. Inspect the pinned lazy-feature table before proposing a feature denial; shared SDK libraries can serve unrelated consumers and do not themselves identify the retired integration.
  
