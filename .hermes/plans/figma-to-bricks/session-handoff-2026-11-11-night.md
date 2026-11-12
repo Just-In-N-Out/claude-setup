@@ -76,3 +76,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - **site-no-div builder started early** on f86ab19d (branch site-no-div-build; `briefs/site-no-div-builder.md`); moves onto main after native merges.
 - site-fonts-match, bricks-icons M1: builders running.
 - Known: site-menu-motion's F2B_SITE_SLIDE_BDRY pin fails on main since 11.7 (stay class); footer-icon-list's 11.9 fixes it test-only.
+- Merged 11.10 media-avif-alt (3ef), main = 4f8b6116 (2026-11-11 ~22:55).

@@ -7,8 +7,19 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.9`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.10`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.10 media-avif-alt (website importer uploader):** `site:upload`/`site:import` make every still JPEG,
+    PNG and WebP a `.avif` before the typed yes (the panel's pinned encoder in an offline Chrome of the tool's own; own
+    size up to 2560 px, upright, alpha kept; SVG, GIFs, moving pictures and AVIF stay as served, named; a picture that
+    can't be made stops the run, never another format), record keyed `<source>-avif-max2560` (earlier as-served uploads
+    aren't sent again; `--reupload-avif` sends AVIF copies), and after the upload describe every picture whose alt is
+    still empty in WordPress with alttext.ai (key asked once after the login, tested, saved
+    `~/.config/figma-to-bricks/alttext-key` 0600; Enter skips; `--new-ai-key`, `--no-ai-alt`), writing only
+    `{alt_text}` on an item this tool uploaded whose file still matches; `--as-served --no-ai-alt` is byte for byte as
+    before; nothing under `src/` changed. Q1–Q13 ⭐ not yet confirmed. Paste check **3ef** (AC16, AC17, live: his own
+    `site:import … --elementor --reupload-avif` on B-Dry staging, Media shows `.avif` with alt text, the pastes show
+    them).
   - **2026-11-11.9 footer-icon-list (website importer):** the capture keeps each box side and size by one name, the
     one the site's cascade applied (a reset's physical `margin: 0` then Elementor's logical `margin-block-start`, at
     every range, under hover and focus, a logical side read by the element's own writing mode and direction;
@@ -421,12 +432,14 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **One uploader writes to WordPress, reached by two commands: `npm run site:upload` and `npm run site:import`**
   (Justin, 2026-11-10: a scanned page's pictures "upload to my Wordpress media library like how it is in the plugin",
   run "From the command line"; then "One command, Mini": WordPress asked first, then the scan, the upload and the
-  paste). Both run the same code (`tools/lib/site-upload/`). It only adds media items (never changes, moves or deletes
-  one; never touches pages, posts or settings), only on the site whose address was typed, after reading that site and
+  paste). Both run the same code (`tools/lib/site-upload/`). It only adds media items and fills the empty alt text of an
+  item it uploaded itself whose file still matches (never changes, moves or deletes one; never touches pages, posts or settings), only on the site whose address was typed, after reading that site and
   a typed `yes` asked after everything it found is shown (no flag skips it; `site:import` takes only a yes typed after
   that question). The Application Password is typed at the hidden prompt (`site:import` asks it before the scan and
   keeps it only in its own memory through it) and never goes in an argument, a variable, a file, the record, the
-  capture, the paste, a log, a printed line or the scan's Chrome. Only Justin runs either, in his own terminal, against
+  capture, the paste, a log, a printed line or the scan's Chrome. The alttext.ai key is asked once and saved only in
+  `~/.config/figma-to-bricks/alttext-key` (0600); it never goes in an argument, a variable, the record, the capture,
+  the paste, a log, a printed line or Chrome, and is sent only to alttext.ai. Only Justin runs either, in his own terminal, against
   his own site. Agents never run them against his site or any live site, never ask for or hold his password, and test
   them only against `test/fixtures/wp-standin.ts` and local fixture sites. Every other tool (capture, the helper, site,
   site:check, site:live, compare, replay) stays read-only; the helper still binds 127.0.0.1 only and never writes to a
@@ -739,8 +752,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   picture the site's own markup shows, each file once, script-made ones and `data:` left, **except the site's own
   pictures inside a box the capture opened** (every script-made step made by the site's own files; Justin, 2026-11-10,
   "Upload them too"); an address that goes up is never also listed as staying (Q3 A); no file in the
-  capture: its old address (Q4 A); SVG only with `--svg` (Q5 A); files as served, never re-encoded (Q6 A); the old
-  site's first alt with words in Media, an alt in WordPress never changed by a re-run (Q7 A); no alttext.ai (Q8 A); a
+  capture: its old address (Q4 A); SVG only with `--svg` (Q5 A); files as served, never re-encoded (Q6 A; reversed by media-avif-alt, Justin, 2026-11-11: AVIF for photos and PNGs); the old
+  site's first alt with words in Media, an alt in WordPress never changed by a re-run (Q7 A); no alttext.ai (Q8 A; reversed by media-avif-alt, Justin, 2026-11-11: AI alt text for pictures with none); a
   record per computer at `~/.config/figma-to-bricks/site-uploads.json` (Q9 A); https, the site read first, a typed yes
   (Q10 A); a stopped run keeps what went up, the next sends the rest (Q11 A).
 - **Lists a visitor searches and filters** (user, 2026-10-19): "In the page" (the plugin pastes every row and a small
