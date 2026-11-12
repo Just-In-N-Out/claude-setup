@@ -77,3 +77,7 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - site-fonts-match, bricks-icons M1: builders running.
 - Known: site-menu-motion's F2B_SITE_SLIDE_BDRY pin fails on main since 11.7 (stay class); footer-icon-list's 11.9 fixes it test-only.
 - Merged 11.10 media-avif-alt (3ef), main = 4f8b6116 (2026-11-11 ~22:55).
+
+## 2026-11-12 01:15
+- bricks-icons: review 2 clean (MOVE ON c78fa0cf). Amendment 1 installed (M1 only, AC1–AC7; rules 2–5 prose matched to head's stricter code; old copy plan-approved-v1-before-amendment-1.md). Verifier dispatched on c78fa0cf / base 02481763.
+- New job bricks-icons-site (the importer half, AC1–AC5, AC5 live): plan ~/.hermes/plans/figma-to-bricks/bricks-icons-site.md. Full (planner's recommendation; Justin's "go with recommended"). Starts after site-no-div, site-shared-styles and bricks-icons M1 are on main (Task 0 checks).

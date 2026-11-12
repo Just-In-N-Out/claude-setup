@@ -1,14 +1,70 @@
-# bricks-icons: drawn icons become Bricks' Icon element, from the Figma plugin and from the website importer
+# bricks-icons: drawn icons become Bricks' Icon element, from the Figma plugin (plan, 2026-11-11; amended 1: the website importer half is the job bricks-icons-site)
 
 Planner: bricks-icons (Fable 5.2, high), 2026-11-11. One of the four structure-parity jobs (audit gap 9:
 `~/.hermes/plans/figma-to-bricks/evidence/structure-parity/report.md`).
 **Pipeline: Full recommended** (asked as "Mini; escalate if big"): two tools, a new native element, the panel's upload
 path and the WordPress uploader. Milestone 1 (the Figma plugin) alone is Mini-sized and can build now.
-**Base:** M1 on `main` (`02481763`, Build 2026-11-11.3). M2 on `main` once site-no-div and site-shared-styles have
-merged (they build on `site-native-structure-stack6`, `2a38027f`); every importer file:line below is from that branch.
+[amended 1] This plan is now Milestone 1 alone (the Figma plugin). Milestone 2 (the website importer) is the job
+**bricks-icons-site**, plan `~/.hermes/plans/figma-to-bricks/bricks-icons-site.md`.
+**Base:** M1 on `main` (`02481763`, Build 2026-11-11.3). [amended 1: M2's base line moved to bricks-icons-site.]
 Evidence (scripts, outputs, prototype diffs, Bricks' source): `~/.hermes/plans/figma-to-bricks/evidence/bricks-icons/planner/`
 (called `<planner>` below; `README.md` there lists every file).
 Plan copy for the repo: `docs/plans/2026-11-11-bricks-icons.md` (the builder copies this file there in Task 1's commit).
+
+## Amendments
+
+**Amendment 1 (2026-11-12, after fix round 1 and the clean review 2, before the verifier): Milestone 2 is its own job,
+and the plan's prose says the Icon's rules as they are built.** Every changed line or block is tagged `[amended 1]`.
+Evidence (`<A>` below): `~/.hermes/plans/figma-to-bricks/evidence/bricks-icons/planner-amend-1/` (`README.md` lists
+every file). The text before it: `git show c78fa0cf:docs/plans/2026-11-11-bricks-icons.md` (sha256
+`fc7b50c56edff4d1226b9f4f5acd63cdfcffd84798b4def78b9068b0af0356a1`, byte for byte the approved copy), which the main
+session keeps beside this file as `plan-approved-v1-before-amendment-1.md` when it installs this one.
+
+Why: `ac-check.sh` accepts a plan only when every one of its criteria is proven on one head. Milestone 1 is built on
+`bricks-icons-fix1` (`c78fa0cf`) and reviewed clean twice. Milestone 2 can't start until site-no-div and
+site-shared-styles are on `main`. With both in one plan, Milestone 1 could not be accepted or merged before Milestone 2
+was built. Q8 ⭐ A ("two milestones", Justin's "go with recommended") stands: the importer half still builds after
+those two jobs, on top of this one, now under its own plan and its own acceptance.
+
+What changed:
+
+1. **Moved to bricks-icons-site, unchanged in meaning:** the section "M2: the website importer", the five importer
+   criteria (the eighth to the twelfth here, the first to the fifth there, the fifth live), Tasks 11–16, Q4–Q6 and
+   Q7's sentence about a site icon, the importer rows of "Blast radius", the importer's clause of the standing rule
+   and the one limit that is only the importer's. Each place holds one `[amended 1]` line saying so.
+2. **Milestone 1's criteria are byte for byte as approved:** the same seven ids, the same six cited test names, each
+   whole on one line, and the same one live criterion (`<A>/regex-receipts.txt`). No criterion's wording changed.
+3. **The Icon's two box rules, as fix round 1 built them** (review 1's R1-1 and R1-2; commits `35bd55e3`, `0e7b82b5`):
+   the floor is `overflow: clip`, never a fixed `min-width`; the shape is `height: auto` at no weight
+   (`:where(#brxe-…)`, typed `Style.weightless`), with no `aspect-ratio`. Both leave the Icon's own Width and Height
+   controls in charge. Changed: "What is built" → style, the note under "Proven on a prototype", Tasks 4 and 7,
+   "Docs & records", "Risks". The fourth and fifth criteria name boxes and the Width and Height controls, never these
+   rules, so their wording holds as approved.
+4. **Rules 2–5 of "The rule", as the builder built them** (`model/icon-svg.ts`, `understand/icon.ts` on `c78fa0cf`;
+   HANDOFF's section there says the same): each difference refuses more, never less (the Playback's "where that
+   can't be proven, the icon stays as it is today"), and the five real files' counts are the plan's own (18, 10, 32,
+   16, 7). The second criterion says "exactly when rules 1–5 hold", so the rules it points at are brought to the head;
+   its own wording is unchanged.
+
+Receipts that still hold the approved box rules (none proves the fourth or fifth criterion on the head):
+
+- Sorters: `git show <head>:src/core/style/icon.ts | grep -c widthMin` reads 2 up to `dc625574` (the `min-width`
+  floor) and 0 from `35bd55e3`; `grep -c 'aspect-ratio: '` on the same file reads 1 up to `35bd55e3` and 0 from
+  `0e7b82b5`; `git show <head>:test/browser/icon-elements.test.ts | grep -c 'height alone'` reads 0 up to `dc625574`
+  and 1 from `35bd55e3` (the fifth criterion's test, its name unchanged, gained the Width and Height edits there, so
+  every older receipt of that name ran a weaker test). `c78fa0cf` differs from `0e7b82b5` only in the ledger and
+  HANDOFF (`<A>/regex-receipts.txt`, "heads").
+- Old (all made before `35bd55e3`): `../builder/ac4-ac5-green.tap` (Task 7), `../builder/gates/` (its browser runs
+  and the `mut-box-*` mutants of the approved two rules), `../builder/shots/ac4-*.png` (pictures drawn under the
+  `min-width` floor; the verifier and the auditor take their own), `../fixer-1/ac5-red.log` (the expected red on
+  `dc625574`), and the planner's `boxes-*.json`, `scripts/debug-squeeze.ts` and `proto-m1.diff` (the prototype's floor
+  and shape; worst 0.41 px). Superseded inside fix round 1: `../fixer-1/ac4-fix.log` and `../fixer-1/mut1/` (where the
+  `aspect-ratio` mutant survived, before `0e7b82b5` took the rule out).
+- Current: `../fixer-1/ac45-final.log` (`0e7b82b5`: both tests ok, worst 0 px over 108 runs) and `../fixer-1/mut2/`
+  (the four mutants of the built rules, each killed).
+- Unchanged by the fix round (their cited test files are identical on `dc625574` and `c78fa0cf`; the code under them
+  changed in `style/icon.ts`, `style/picture.ts`, `style/types.ts` and `emit/settings.ts` only): the first, second,
+  third and sixth criteria's receipts; the verifier runs each again on the head all the same.
 
 ## Playback
 
@@ -35,20 +91,15 @@ Plan copy for the repo: `docs/plans/2026-11-11-bricks-icons.md` (the builder cop
   (`<planner>/count-figma-icons.txt`). The rest stay pictures: two-colour icons, icon badges drawn with their own
   box, blur or mask, linked icons. B: also icons of several colours, with no colour control (a later job: the same
   drawing shown twice can break where it uses gradients or masks).
-- **Q4. Which site icons (importer).** ⭐ **A: the site's own `<svg>` drawings, and only with `--svg`** (the files must
-  go up as SVG; WordPress takes SVG only once Bricks → Settings → SVG uploads or a plugin allows it). Icons a site
-  draws with an icon font (`<i class="…">`) stay Blocks labelled "Icon" with the site's own font, as site-no-div makes
-  them. B: swap a site's Font Awesome glyph for Bricks' own Font Awesome: only 1:1 when the versions match; a later job.
-- **Q5. Where a site icon's look lives.** ⭐ **A: on its class, like every importer element** (colour, size, hover). The
-  Icon's own Fill and Size boxes stay empty in Bricks; typing a colour there still recolours it. B: move the colour
-  into the Icon's own control (breaks "one class per look", which site-shared-styles builds on).
-- **Q6. File names in your media library (importer).** ⭐ **A: `icon-<8 letters>.svg`**, the letters from the drawing
-  itself, so the same drawing on two pages is one file. B: named after the words next to it.
+- [amended 1] **Q4–Q6** (which site icons, where a site icon's look lives, file names in your media library) are the
+  importer's: moved with their ⭐ answers, under the same numbers, to bricks-icons-site.
 - **Q7. Hover.** ⭐ **A: unchanged.** A Figma icon whose own hover redraws it stays a picture with its hover copy; an
-  icon that only follows its card's hover (it fades with it) is an Icon and still follows. A site icon's hover colour
-  stays on its class. B: hover as the Icon's own `:hover` colour control: no sample shows Bricks keeps it; later.
+  icon that only follows its card's hover (it fades with it) is an Icon and still follows. B: hover as the Icon's own
+  `:hover` colour control: no sample shows Bricks keeps it; later. [amended 1: the sentence on a site icon's hover
+  colour moved to bricks-icons-site.]
 - **Q8. Order.** ⭐ **A: two milestones.** M1 (Figma plugin) builds now on main. M2 (importer) builds after
-  site-no-div and site-shared-styles merge. B: only M1 now, M2 as its own job later.
+  site-no-div and site-shared-styles merge. B: only M1 now, M2 as its own job later. [amended 1: A stands. M2 builds
+  in the order A names, as the job bricks-icons-site with its own plan and acceptance.]
 
 ## What Bricks' Icon element is (proven, not from memory)
 
@@ -84,20 +135,30 @@ A layer becomes an Icon when all of these hold; otherwise it is the picture it i
    (`path`, `rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon`) has the same `fill` and no outline, or the same
    `stroke` and no fill; the colour is `#RRGGBB`, `white` or `black`. Bricks' `svg.fill *{fill:inherit}` gives every
    part the control's colour, so a part with no paint of its own would be painted: such a drawing doesn't qualify.
+   [amended 1, as built: a part's paint is its own, else the root's (a fill nobody sets is black, a stroke none); a
+   group with a `fill` or `stroke` of its own doesn't qualify.]
 3. **Nothing a second copy of it on the page can break:** no `<defs`, `url(#`, `<mask`, `<filter`, `<style`, `<use`,
    `<image`, `<text`, `<foreignObject`, no `opacity`, no `style=`, no `id=`, no `preserveAspectRatio=`. An Icon prints
    the drawing inline, so two copies (a phone copy of a card) share ids, and a reference then resolves into the hidden
    copy. One exception, dropped before the test: **Figma's own frame clip**, exactly
    `<g clip-path="url(#X)">…</g><defs><clipPath id="X"><rect width="W" height="H" fill="white"/></clipPath></defs>`
    with W and H the svg's own width and height (the svg's viewport clips there already).
+   [amended 1, as built: a closed list. The drawing holds only its root, groups and the seven shape tags, and nowhere
+   a comment or `<?…?>`, an `id=`, `class=`, `style=`, `href=`, `url(`, `opacity=` or `preserveAspectRatio=`; the
+   frame clip is dropped only when the svg's viewBox is also `0 0 W H`.]
 4. Its root tag starts `<svg `, has `viewBox`, `width` and `height`, and no `id` or `class` (Bricks' `render_svg`
-   writes its own at a fixed offset).
+   writes its own at a fixed offset). [amended 1, as built: its `width` and `height` are numbers above 0.]
 5. It has no link (`elementLink(n) === null`: Bricks wraps a linked Icon in an unstyled `<a>`, which moves it), no
    typed description or Decorative mark (an inline svg has no alt), and it is not a state picture (`only`), a hover or
    overlay layer, a showcase photo, a video poster, a marquee part or a hotspot. A Button's own icons stay the
-   Button's (`buttonIcons`: they are not IR elements).
+   Button's (`buttonIcons`: they are not IR elements). [amended 1, as built: nor a layer whose own hover redraws it
+   (Q7 A), one that opens a card, or a stroke that draws itself; and a layer is an Icon in all its copies or in none
+   (its file is one asset, so a copy that is refused keeps every copy a picture).]
 
 ### What is built
+
+[amended 1] Some names differ on the head (`planIcons` and `iconRefusal` in `understand/icon.ts` for `iconElement`;
+`tools/icons-off-golden.ts` for Task 0's script): HANDOFF's section on `c78fa0cf` names every file and test.
 
 - **understand** decides the element once, beside the existing switch (`understand/understand.ts:115`):
   `else if (opts.icons === true) walkIR(sections, (n) => { if (iconElement(n)) n.element = "icon"; })`. Never with
@@ -105,13 +166,21 @@ A layer becomes an Icon when all of these hold; otherwise it is the picture it i
   so every adapt rule and recogniser reads the layer as before (they read `role`, never `element === "image"`:
   grep in "Blast radius").
 - **style** (`style/picture.ts`, the box in a new `style/icon.ts`): the Icon takes the picture's size, placement and
-  paint, **without** `objectFit`, plus the two box rules an `<svg>` root needs that an `<img>` has by itself:
-  - in a row, a browser never squeezes an `<img>` below its own size but does squeeze an `<svg>` (measured: GRO's
-    lettering 57.78 → 19.91 px at 1024): `widthMin: min(<floor>px, 100%)` for a flow icon with a numeric width, where
-    floor = the drawn width, or `min(width, height × svgWidth / svgHeight)` when both are set (an `<img>`'s own floor is
-    its height times its file's shape; Figma rounds a 61.5 px box to a 62 px file);
-  - where nothing sets its height (a row of pictures shrinking together, a captured picture keeping its shape):
-    `aspect-ratio: W / H` and `height: auto` in its custom CSS (the svg's own `height` attribute would hold it).
+  paint, **without** `objectFit`, plus the two box rules an `<svg>` root needs that an `<img>` has by itself
+  [amended 1: both as fix round 1 built them, so the Icon's own Width and Height controls still size it in Bricks;
+  the approved text gave the floor as `widthMin: min(<floor>px, 100%)` for a flow icon and the shape as
+  `aspect-ratio: W / H` with `height: auto` in the custom CSS]:
+  - the floor: in a row, a browser never squeezes an `<img>` below its own size but does squeeze an `<svg>` (measured:
+    GRO's lettering 57.78 → 19.91 px at 1024), because the browser's own `overflow: hidden` makes an svg a scroll
+    container, whose floor in a row is 0. The Icon takes `overflow: clip` (Bricks' `_overflow`; a picture's own
+    overflow stays): it clips the same and is no scroll container, so the svg keeps an `<img>`'s own floor (the smaller
+    of its width and its file's size, never past its room). A smaller Width typed in Bricks shrinks it, and a tier's
+    `min-width` still replaces it. Never a fixed `min-width`: it out-weighs any Width typed below it (R1-1);
+  - the shape, where nothing sets its height (a row of pictures shrinking together, a captured picture keeping its
+    shape): `height: auto` at no weight, `:where(#brxe-<id>) { height: auto; }` in its custom CSS (typed
+    `Style.weightless`, written once by `emit/settings.ts`). It beats the file's own `height` attribute, so the svg
+    follows its width by its own viewBox as an `<img>` does by its file, and a Height typed in the icon control beats
+    it (R1-2). No `aspect-ratio`: it was redundant (without it the box comparison's worst is 0 px, was 0.41).
   `Styled` gains `icon?: { kind: "fill" | "stroke"; color: RGBA }`, and the asset is the icon's markup with the frame
   clip dropped (`AssetList.icon(n, svg, info)`, same key `svg:<id>`).
 - **emit** (`emit/icons.ts`, one call in `elements.ts`): `settings.icon = { library: "svg", svg: { __asset: key,
@@ -156,64 +225,17 @@ A layer becomes an Icon when all of these hold; otherwise it is the picture it i
   | Services (`2199895`) | 29 → 22 | 7 | 0 |
 
   Without the two box rules GRO moved by 77 px and brainstorm by 34 px: they are part of the rule, not polish.
+  [amended 1] These numbers are the prototype's, under the approved floor and shape. On the head, under the rules as
+  built, the same comparison reads worst 0 px over 108 page, look and width runs
+  (`~/.hermes/plans/figma-to-bricks/evidence/bricks-icons/fixer-1/ac45-final.log`), and taking either rule away is
+  caught (`fixer-1/mut2/`: no `overflow: clip`, the old floor back, the shape at full weight, no `height: auto`).
 - Unit suite: base `02481763` 3698 tests, 3619 pass, 0 fail, 79 skipped (`<planner>/unit-base-02481763.log`);
   prototype 1 fail, the render golden above (`unit-proto-m1.log`). Both typechecks pass on the prototype.
 
 ## M2: the website importer
 
-### The rule
-
-With a media map that holds its file, a site's `<svg>` that today pastes as a Code element becomes an Icon when:
-
-1. Its kept markup (`CodeNode.html`) is one `<svg` whose root starts `<svg ` and has a `viewBox`; it holds no
-   `<script`, `<foreignObject`, `<style`, and no `<use` or `url(#` (a second copy's ids); its root's `id`, when it has
-   one, is named nowhere inside.
-2. It is the site's own: not on a script-made path of another company (`madePath` / `madeInOpen`, the pictures' own
-   rule, `site/media.ts`), not a live widget's, and not a drawing another step already folds (an Elementor button's
-   icon, a slider's arrows: `elementor-button.ts`, `slider-look.ts` stay as they are).
-3. The media map holds a library file for exactly that markup (`SiteMedia.drawings[markup]`).
-
-Everything else stays as site-no-div makes it: a Code element labelled "SVG", a font glyph a Block labelled "Icon".
-
-**Assumed from the two plans M2 builds on** (Task 11 checks each on the real base): site-no-div Q7 A (a site svg is a
-flat Code element labelled "SVG", its class's rules on `> :first-child`; a font glyph is a Block labelled "Icon";
-"site-icons" is named there as this later job); site-no-div's labels (`labels.ts`: Bricks' own elements take none);
-site-shared-styles' grouping (elements that draw alike may share one class: an svg's class is shared only with other
-svgs, or Task 11 stops) and its palette (a class's `fill` may be a palette colour: unchanged here, the rule moves with
-the class).
-
-### What is built
-
-- **`src/core/site/icons.ts`** (new): the rule; `drawingFile(markup)`: the file that goes up (the markup, its root
-  `id` dropped, `xmlns` added when missing); the Icon's settings `{ icon: { library: "svg", svg: { id, filename, url } } }`.
-- **`kinds.ts`**: before the Code choice, `ctx.icon?.(n, path)` → `{ name: "icon", settings, place: "outer",
-  shared: [], own: true }`: the svg is the element's root, so its class names it (`.cls { … }`, where the Code
-  element's was `.cls > :first-child { … }`) and `site-flat` is not needed. **All of the class's rules stay custom
-  CSS in this job** (`convert.ts:318`: the split that `place === "inner"` takes), exactly what the proof measured;
-  controls are site-controls' job.
-- **`convert.ts`**: lists each drawing the paste shows (`Prepared.drawings`, `SiteResult.drawings`: markup, path,
-  made), as it lists pictures; `librarySource` counts a drawing too (the paste then names the site, so Bricks reads
-  the file there); notes per part: "N of the site's drawings are Bricks Icons (files in your media library)", and
-  without files "N drawings can be Bricks Icons: run site:upload or site:import with --svg".
-- **`media.ts`**: `SiteMedia.drawings?: Record<string, MediaPicture>`, keyed by the markup as the capture holds it
-  (exact, no hash in core); absent: as before.
-- **Upload (`tools/lib/site-upload/pictures.ts`, `flow.ts`, `summary.ts`)**: with `--svg`, `uploadList` adds one item
-  per distinct drawing (`svg: drawingFile(markup)`, name `icon-<first 8 of its fingerprint>`, no alt), `mediaMap`
-  writes `drawings`; the list shown before the typed `yes` counts them ("N drawings as SVG files"); `--dry-run` sends
-  nothing; without `--svg` none goes and the summary says how many would. The standing rule holds: the uploader only
-  adds media items, on the typed site, after the typed `yes`. A site that refuses SVG leaves them Code elements, named.
-- **Renderer / checks:** M1's Icon branch, on the site route with Bricks' icon rules layered as live Bricks prints
-  them; the Icon's file is found by its address in the test's own table (tests never fetch).
-
-### Proven (`<planner>/boxes-site-*.json`, `scripts/boxes-site-icons.ts`, scratch tree of `2a38027f`)
-
-The B-Dry stand-in capture (`evidence/site-native-structure/inputs/standin-capture-b2435de.json`) pasted as today and
-with each svg Code element swapped for an Icon (class on the root), drawn at 1440, 1024, 768 and 390 with Bricks
-2.4.2 and 2.3.9 over the hostile theme: with `--elementor` 12 icons (page 6, footer 6), plain route 14 (page 8,
-footer 6): **every element's box equal (worst 0), each icon's computed fill, colour, font size and display equal,
-each icon's pixels equal (0 of 255)**. Justin's own scan holds 44 svgs (36 shown) and 20 font glyphs
-(`<planner>/site-icons-justin-capture.txt`). The swap there is the proof script's own; the job makes the Icon in the
-conversion.
+[amended 1] Moved whole (the rule, what is built, what was proven) to `~/.hermes/plans/figma-to-bricks/bricks-icons-site.md`,
+the plan of the job bricks-icons-site. Nothing of it is built or accepted under this plan.
 
 ## Acceptance criteria (all **proposed**)
 
@@ -252,26 +274,8 @@ Milestone 1, the Figma plugin:
   SVG" and pastes it on darksalmon: the Structure panel shows Icon elements, each looks as in Figma on desktop, tablet
   and phone, and changing one Icon's colour in Bricks recolours it.
 
-Milestone 2, the website importer:
-
-- AC8 (proposed): With a media map holding its file, a site's own svg drawing is an Icon whose class names the svg
-  itself; without a file, or where rule 1 or 2 refuses it (a drawing with a `<use>`, a script-made one, a font glyph),
-  it is the Code element or Block site-no-div makes, and the part's notes count both.
-  Test: `test/unit/site-icons.test.ts` › "a site's own svg with a library file is an Icon; without one, or refused by the rule, it stays as it was, and the notes count each"
-- AC9 (proposed): `site:upload` and `site:import` with `--svg` list each distinct drawing once before the typed yes,
-  send it once as `icon-<8 letters>.svg`, and write it into media.json; `--dry-run` sends nothing; without `--svg`
-  no drawing goes and the summary says how many would; a second run sends none again; a site that refuses SVG leaves
-  them Code elements, named (against `test/fixtures/wp-standin.ts` only).
-  Test: `test/web/site-upload-icons.test.ts` › "a scanned page's drawings go up once as SVG files with --svg, never without it, and never twice"
-- AC10 (proposed): With the map, the paste draws as the paste without it: every element's box within 0.5 px, and each
-  icon's computed fill, colour and font size and its pixels equal, at 1440, 1024, 768 and 390 with Bricks 2.4.2 and
-  2.3.9, on the fixture site and (named-only) the B-Dry stand-in, plain route and `--elementor`.
-  Test: `test/web/site-icons-look.test.ts` › "a site drawing as an Icon draws exactly as its Code element did, Bricks 2.4.2 and 2.3.9"
-- AC11 (proposed): Every paste made without a media map, or with a map that holds no drawing, is byte for byte the
-  base's (the head site-no-div and site-shared-styles left), and the Figma plugin's pastes are untouched by M2.
-  Test: `test/unit/site-icons-pin.test.ts` › "without a drawing in the media map every site paste is the base's, byte for byte"
-- AC12 (proposed) (live): Justin runs `site:import` with `--svg` on bdryswi.com and pastes on B-Dry staging: the
-  site's drawn icons are Icon elements in the Structure panel and look as on the old site on desktop, tablet and phone.
+[amended 1] Was AC8–AC12 (Milestone 2, the website importer): moved with their tests to
+`~/.hermes/plans/figma-to-bricks/bricks-icons-site.md`, where they are its first to fifth criteria (the fifth live).
 
 ## Tasks
 
@@ -297,8 +301,9 @@ One commit a task, each green (`npm run check`), test first (`test-driven-develo
    outcome of AC2; texts carry no fills; a wrapper with an absolute layer needs its own size. RED on base: the test
    passes `{ icons: true }`, which base ignores, so it fails on "no Icon elements" (an assertion, not an import).
 4. **style** (`style/icon.ts`, `picture.ts`, `types.ts`, `model/assets.ts`): the box rules and `Styled.icon`.
-   Unit: the floor's value for width-only and width-and-height icons; `aspect-ratio` + `height: auto` only with no
-   height; no `objectFit`; never `display` in custom CSS (the standing rule).
+   Unit [amended 1, as `test/unit/icon-style.test.ts` holds on `c78fa0cf`]: the floor is `overflow: clip` and never
+   a `min-width` (a picture's own overflow stays); `height: auto` at no weight (`Style.weightless`) only with no
+   height, and no `aspect-ratio`; no `objectFit`; never `display` in custom CSS (the standing rule).
 5. **emit** (`emit/icons.ts`, `elements.ts`, `payload.ts`, `fillAssets`): AC1's test; `payloadProblems` cases;
    add Icons to `test/unit/emit-paste-ids.test.ts`'s walk (no id of another element in its CSS) and to the both-modes
    loops that name `"image"` (`pdf-direct-download.test.ts:90` expects `image` with Icons off: unchanged).
@@ -310,6 +315,7 @@ One commit a task, each green (`npm run check`), test first (`test-driven-develo
    first run read 97 "moved" elements that way), real CSS from `reference/bricks/frontend-*`, plus the icon rules.
    Real files: `corpus/files/*.json` and the repo-root debug files, read only. Prove the test can fail: with the two
    box rules removed (`git checkout HEAD~1 -- src/core/style/icon.ts` style), GRO's row must fail it.
+   [amended 1: on the head this is fix round 1's mutants, one per built rule, `fixer-1/mut2/`.]
 8. **panel + plugin** (`shared/messages.ts`, `plugin/main.ts`, `plugin/convert.ts` `resultOf`, `ui/run.ts`,
    `ui/main.ts`, `ui/settings.ts`): AC6's test with the panel stand-ins (`test/fixtures/panel.ts`, the uploader's fake
    site as `ui-uploader.test.ts`: one that takes SVG, one that refuses it). `plugin-convert.test.ts` (plugin = replay)
@@ -320,34 +326,27 @@ One commit a task, each green (`npm run check`), test first (`test-driven-develo
 10. `npm run check`, `npm run test:browser` (by name against Task 0), `npm run corpus` (no file worse; with Icons
     off nothing changes, so the numbers must equal Task 0's).
 
-### M2 (gated: starts only when `git log main` shows site-no-div's and site-shared-styles' build commits)
+### M2
 
-11. **Re-read the base.** Open `kinds.ts`, `convert.ts`, `media.ts`, `labels.ts`, `tools/lib/site-upload/*` on the
-    real base (site-no-div renames boxes and labels Code elements "SVG"; site-shared-styles changes how classes are
-    grouped; media-clickable and media-avif-alt change `media.ts` and the uploader). Rerun
-    `<planner>/scripts/boxes-site-icons.ts` on that base first: it must still read 0. If a shared class now carries
-    both an Icon and another element (the script throws), stop and report: the class split is site-shared-styles'.
-12. **`site/icons.ts`** (rule, `drawingFile`) with unit tests; **`media.ts`** `drawings`.
-13. **`kinds.ts` + `convert.ts`**: the Icon choice, the class on the root, `drawings` listed, notes, `librarySource`.
-    The test for AC8 runs on a fixture capture (site-no-div's plan adds a plain fixture site with an svg icon and a
-    font glyph: reuse it, or add one; add a drawing with a `<use>`, one with a root id, a script-made one).
-14. **Upload**: `uploadList`, `mediaMap`, `pick`, the summary lines; AC9's test against `wp-standin.ts`
-    (`allowSvg` on and off). Agents never run it against a live site.
-15. **Renderer on the site route + AC10's test**; AC11's pin (`F2B_STORY_PINS=1`, sums made on the base tree).
-16. `npm run check`, `npm run test:web` and `test:browser` by name, `site:check --all` on the stand-in with and
-    without `--elementor` for Bricks 2.4.2 and 2.3.9 (unchanged: `site:check` passes no media map), `npm run corpus`.
+[amended 1] Was Tasks 11–16 (gated on site-no-div and site-shared-styles): moved to
+`~/.hermes/plans/figma-to-bricks/bricks-icons-site.md`.
 
-### Docs & records (the finisher; each milestone's merge)
+### Docs & records (the finisher, at this job's merge) [amended 1]
 
 - Plan copied to `docs/plans/2026-11-11-bricks-icons.md`; ledger moved to `docs/plans/2026-11-11-bricks-icons-ledger.md`
   before the final premerge commit.
 - `docs/HANDOFF.md`: a new section above the previous top heading with the rulings (Q1–Q8 ⭐ "not yet confirmed"),
   the counts table, the limits below, and the paste check owed with the next free id at the merge (3dz or later:
   check main and every branch's HANDOFF); its entry at the top of "End-of-run check list".
-- `BUILD` bumped at the merge; main `CLAUDE.md` Status: the build line and one line per milestone; **standing rules
-  to add:** "Bricks' Icon prints an SVG only from the media library (`icon.svg.id`); the plugin makes Icons only
-  with pictures to WordPress and Icons as SVG, the importer only with `--svg`; an Icon's drawing holds no ids"; and
-  correct "Bricks samples" (an Icon sample exists; Offcanvas is no longer owed, per the audit).
+- `BUILD` bumped at the merge; main `CLAUDE.md` Status: the build line and one line for this feature; **standing rules
+  to add** [amended 1: the importer's clause, "the importer only with `--svg`", is added at bricks-icons-site's merge;
+  the second rule is fix round 1's]: "Bricks' Icon prints an SVG only from the media library (`icon.svg.id`); the
+  plugin makes Icons only with pictures to WordPress and Icons as SVG; an Icon's drawing holds no ids" and "an Icon's
+  box rules never out-weigh its own Width and Height controls: its floor is `overflow: clip`, its shape `height: auto`
+  under `:where()`, never a `min-width` floor or an `aspect-ratio`"; and correct "Bricks samples" (an Icon sample
+  exists; Offcanvas is no longer owed, per the audit).
+- [amended 1] The repo's copy `docs/plans/2026-11-11-bricks-icons.md` becomes this amended file in the finisher's own
+  docs commit, not earlier: a commit on the reviewed head `c78fa0cf` would be one no clean review covers.
 - `reference/bricks/README.md` as in Task 1.
 
 ## Blast radius and shared files
@@ -363,23 +362,25 @@ One commit a task, each green (`npm run check`), test first (`test-driven-develo
 |---|---|---|
 | plugin-parity | `understand/node.ts`, `understand/labels.ts`, `style/classes.ts`, `emit/elements.ts` | it changes Divs to Blocks and adds shared classes; this job touches `elements.ts` in one line (the asset key) and `understand.ts:115`. Either order; the second rebases |
 | shared-palette | `emit/palette.ts`, `normalise/colors.ts` | the Icon's colour goes through `out.setting()`, so it takes whatever names that job settles |
-| site-no-div (before M2) | `kinds.ts`, `convert.ts`, `labels.ts`, `test/browser/render.ts` | its Q7 A defers exactly this ("site-icons"); M2 replaces its Code "SVG" where a file exists; an Icon takes no label (Bricks' own name) |
-| site-shared-styles (before M2) | `classes.ts`, `convert.ts`, `controls.ts` | an Icon's class stays custom CSS; if it shares a class between an svg and another element, Task 11 stops |
-| media-clickable, media-avif-alt | `site/media.ts`, `tools/lib/site-upload/*`, `src/ui/uploader.ts` | M2 adds `drawings` beside `pictures` and one more kind of item; rebase keeps both |
-| importer-parity | `kinds.ts` (names, forms, video, nav) | an icon-only link's `aria-label` is that job's; the Icon sits inside the link unchanged |
+| site-no-div, site-shared-styles, media-clickable, media-avif-alt, importer-parity | [amended 1] the importer's files only | they meet Milestone 2: their rows moved to bricks-icons-site's table |
 | site-menu-motion, site-sticky-header, site-scroll-lock | none of the icon files | no overlap |
 
 Order: **M1 any time** (it shares only `test/browser/render.ts`, `reference/bricks/README.md` and `docs/HANDOFF.md`
-with the site jobs). **M2 after** site-no-div, site-shared-styles, media-clickable and media-avif-alt.
+with the site jobs). [amended 1] Milestone 2's order is bricks-icons-site's: after site-no-div and
+site-shared-styles, on top of this job's merge (media-clickable and media-avif-alt are on `main` since 2026-11-11).
 
 ## Risks, limits and what is not in this job (each named in HANDOFF)
 
-- **Bricks 2.3.9 / 2.4.2 printing an SVG Icon** is read from 2.2's code (the CSS is equal in 2.3.9): AC7 and AC12
-  are the proof. If a live paste shows otherwise, the fallback is today's output (Icons off).
+- **Bricks 2.3.9 / 2.4.2 printing an SVG Icon** is read from 2.2's code (the CSS is equal in 2.3.9): the live paste
+  check (the seventh criterion) is the proof [amended 1: the importer's own live check is bricks-icons-site's fifth].
+  If a live paste shows otherwise, the fallback is today's output (Icons off).
 - **A site that changes SVG files on upload** (a sanitiser plugin) prints its own version: the live check sees it.
 - **Not Icons:** icons of several colours, icon badges drawn with their own box, blur or mask (hydraulics has 16
   drawings with a mask, a blur or an opacity), linked or described icons, icons over 96 px, a Button's own icons (Bricks' Button takes the same icon control: its SVG shape
-  is unseen, `README` "Still wanted"), a site's font glyphs, an accordion's open/closed icon (`isAccordionIcon`).
+  is unseen, `README` "Still wanted"), an accordion's open/closed icon (`isAccordionIcon`). [amended 1: "a site's
+  font glyphs" moved to bricks-icons-site.]
+- [amended 1] **Safari before 16** has no `overflow: clip`: it keeps the svg's own `overflow: hidden`, so an Icon in a
+  row too narrow for its words may be squeezed there (fix round 1's recorded limit, in HANDOFF).
 - **Hover as the Icon's own control** (Q7 B) and **Bricks' SVG element** (Q1 C): later jobs, each needs a sample.
 - The panel's website route (a capture through the Figma converter) makes no Icons.
 - GRO's outlined lettering (up to 80 × 93 px) counts as icons by the existing 96 px rule, so it becomes Icons too.

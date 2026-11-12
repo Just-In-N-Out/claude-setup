@@ -278,3 +278,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-11 | site-native-structure | feature-dispatch | script: ac-check.sh (or a receipt builder) runs bash -n on each ac.json row's command and flags a single-quoted --test-name-pattern containing an apostrophe | offered
 - 2026-11-11 | bricks-icons | figma-to-bricks | test: a test/browser helper that refuses a uniform (one-colour) region in any pixel compare | offered
 - 2026-11-12 | bricks-icons | figma-to-bricks | test: in test/unit/render.test.ts, for each element-specific CSS printer, a payload whose desktop control and _width:<bp> differ shows the breakpoint value in the narrower window in the default order | offered
+- 2026-11-12 | bricks-icons | implementation-planning | script: an amendment's regex.sh prints grep -n '^#' for the old and new plan and fails on a heading that appears twice in the new one | offered
