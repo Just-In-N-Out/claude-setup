@@ -93,3 +93,5 @@ When Justin decides something mid-build that changes an approved AC, a planner a
 6. **The orchestrator does nothing else here:** it doesn't open logs, rerun tests or judge ACs. That is the agents' and the script's work.
 
 Tests for the script: `scripts/ac-check.test.sh` (fixtures follow real go, node, pytest and jest output).
+
+- **A rebase receipt's finisher re-reads `git rev-parse main` after the receipt and gates, before handing back:** main can land a build while the gates run, leaving a receipt on a head that won't fast-forward (media-avif-alt, 2026-11-11: main moved 9f75e8ac → 20ce41a8 mid-gates; rebased and re-ran). When another session's merge is imminent, hold the move until it lands rather than receipt twice.
