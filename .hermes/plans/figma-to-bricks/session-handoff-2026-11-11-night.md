@@ -109,3 +109,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - site-no-div review 3 MOVE ON (d915f7dc). Waiting on amendment 3 → then verifier. Shared-styles builder told final head.
 - site-no-div amendment 3 installed (40770b68). Fixer 3 (test-only AC5 rows + plan copy) dispatched on d915f7dc → then short review → verifier → auditor.
 - site-no-div fixer 3 done: 828f7dc0 (test+docs only; 50/50 mutants). Short review 4 dispatched.
+- site-no-div review 4 MOVE ON (828f7dc0). Verifier dispatched on 828f7dc0 / base 56b5076b.
