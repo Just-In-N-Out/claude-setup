@@ -112,3 +112,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - site-no-div review 4 MOVE ON (828f7dc0). Verifier dispatched on 828f7dc0 / base 56b5076b.
 - site-fonts-match verifier 2 clean (READY 8/9 on c8ad17b). Auditor 2 dispatched.
 - site-fonts-match: auditor 2 clean; ac-check READY (8/9) on c8ad17b8; ff-merged into main (lock held). After-merge finisher dispatched (BUILD 2026-11-12.2, paste check 3eh). bricks-icons and site-no-div will need a rebase onto the new main after.
+- Build 2026-11-12.2 (site-fonts-match) 6cd6154e pushed; 3eh. Lock released. Next free paste id 3ei.

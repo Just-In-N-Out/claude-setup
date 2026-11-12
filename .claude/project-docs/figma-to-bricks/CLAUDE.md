@@ -7,8 +7,19 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-12)
 
-- **Current build `2026-11-12.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-12.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-12.2 site-fonts-match (website importer):** a scan keeps each face's file from its own `@font-face` rule
+    (the last loaded face draws, so a family two rule sets declare keeps the file that loads) and asks a face that
+    failed in its browser once more at the scan's end (refused: named "couldn't be kept"; `web.fontsRead: 2`); the
+    paste writes a family the site serves itself under the page's name (`"home__Roboto"`, never a Typography control)
+    with its own `@font-face` in the fonts class (`<page>__site-fonts-<4>`), a face visitors never get as a failing
+    file so its words go to the site's next font, one note each, so Bricks' Google scan no longer adds Google's copy;
+    `site:check` draws a failed face with the stand-in the capture measured; captures made before this build, the
+    one-section route, Google-loaded families and Figma designs byte for byte as before. Q1 A ("show what the official
+    page shows", not Google's copy of the broken heading font) and the builder's rulings not yet confirmed. Paste check
+    **3eh** (AC9, live: rescan bdryswi.com with this build (`npm run site:import`), paste on B-Dry staging, compare the
+    fonts at desktop and phone width).
   - **2026-11-12.1 site-native-structure (website importer):** with `--elementor` the paste is Bricks' own elements:
     every top-level Elementor container a Section, a boxed container's inner a Container, nested containers Blocks
     (Row, Column, Grid, Box); Elementor buttons Bricks Buttons (words in Text, link in Link to, no Style, an svg icon as
