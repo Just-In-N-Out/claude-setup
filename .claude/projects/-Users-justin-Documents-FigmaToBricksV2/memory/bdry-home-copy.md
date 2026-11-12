@@ -73,3 +73,8 @@ and the slider-only draft.
 The `bdry-source/tree-*.json` captures recorded lazy Elementor images unloaded at 767/390 (24px tall, e.g. the Fee picture): a live re-measure must scroll each image into view, set loading=eager and wait for load. Justin's live pages for checks: https://bdryswi.com/ and https://bdry.staging.growithgro.com/homev2/?bricks_preview=1793276386 (our paste is on /homev2/, page 155; his combined header+Home paste is Downloads/bdry-home-with-header.json = header-v1 + v4).
 
 **Trustindex reviews (site-reviews planner, 2026-11-09):** bdryswi.com's reviews are Trustindex's hosted loader (`cdn.trustindex.io/loader.js?<id>`) in an Elementor HTML widget (`f414ab0`); the loader replaces its own `<script>` with `div.ti-widget` + a style, so the live DOM keeps no `script[src]` — read the served HTML to find it. B-Dry staging has no Trustindex plugin.
+
+**bdryswi.com's own heading fonts are broken on the live site** (site-fonts-match planner, 2026-11-11): Elementor's Roboto 600 and
+ADLaM Display files point at `growithgro1.wpcomstaging.com` (HTTP 403), so its headings, buttons and menu show the system sans-serif
+(Arial/Helvetica); Roboto 400/500/700 come from the accessibility-onetap plugin's files. A paste with real Google Roboto therefore
+looks "different" from the official page (Justin noticed it). site-fonts-match ⭐ A copies what visitors see (with a note).

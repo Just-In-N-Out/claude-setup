@@ -51,3 +51,8 @@ fixed offset, so the file must start `<svg ` with no id or class on the root; `i
 on the root (assets.php L2596-2640), fill or stroke adds class `fill`/`stroke` (`svg.fill *{fill:inherit}`). Icon CSS
 `.brxe-icon{font-size:60px}svg.brxe-icon{font-size:inherit}` is the same in 2.2 and live 2.3.9. Samples with Icons:
 `reference/bricks/staff-card.json`, `card-row-and-phone-slider.json`.
+
+**Bricks adds Google's copy of any family a paste names** (site-fonts-match planner, 2026-11-11; 2.2 `assets.php` L1223-1345,
+staging's 2.4.2 link matches): whenever any rule's `font-family` starts with a Google family name (quotes stripped, cut at the first
+comma) — a paste's own `@font-face` rule included — Bricks loads all that family's variants; only a Bricks Custom Font of the same
+name or "Disable Google Fonts" stops it. A paste that must draw a site's own font file uses a family name Google doesn't have.
