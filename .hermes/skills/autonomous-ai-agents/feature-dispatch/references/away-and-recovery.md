@@ -57,3 +57,5 @@ A `/new` usually kills every live child; the handoff's "live delegates" list is 
 ## A batch child finished but the batch hasn't returned
 
 A batch (`tasks=[a, b]`) reports only when every child is done. If the board or `delegate_task(action="list")` shows one child gone, its transcript ends with `final | status=completed` and the result JSON. Act on it (e.g. dispatch its reviewer) without waiting, and don't re-dispatch when the batch result arrives.
+
+- **After a machine restart an agent resumes from its own evidence folder without rerunning finished work:** check each log's first line `HEAD=`, last line `EXIT=` and no NUL bytes, each PNG ends in IEND; rerun only failed timing tests on the now-quiet machine (site-sticky-header auditor 2, 2026-11-11: 29 receipts intact after the 20:06 restart).
