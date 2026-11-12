@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.6 site-menu-motion (website importer):** inside a box a button opens (a ☰ drawer, a pop-up), a
+    `<details>` list whose own height the site's script animates when its summary is pressed (Elementor's Nested
+    Accordion: Web Animations, 400 ms linear on B-Dry) is recorded by the scan (`CodeNode.slide`: duration, easing) and
+    pastes with a marker class plus one Code element in the Offcanvas that plays the same slide opening and closing (a
+    second press turns it back; Escape closes the drawer; reduced motion opens at once); needs Regenerate code
+    signatures; Bricks' editor doesn't play it; captures without a slide and Figma designs are byte for byte as before.
+    Q1–Q4 A not yet confirmed. Known limit: a list open at load records no slide. Paste check **3ec** (AC7, live:
+    re-scan bdryswi.com with this build, paste the header, regenerate code signatures, on a phone Services slides as on
+    the site).
   - **2026-11-11.5 site-scroll-lock (website importer):** every paste `site`/`site:upload`/`site:import` writes carries
     one class `site-scroll-lock-<4>` (second after the reset, on each part root) with `html, body { max-width: 100%;
     overflow-x: clip }`, `html:has(> body.no-scroll) { overflow-y: hidden }`, `body.no-scroll { overflow-y: visible }`
