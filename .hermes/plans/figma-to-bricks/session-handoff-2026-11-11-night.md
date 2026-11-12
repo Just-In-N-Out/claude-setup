@@ -68,3 +68,11 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - **plugin-header-footer-ticks:** built (c0e04ef4); Mini review r1 running.
 - **site-fonts-match** (Full) and **bricks-icons M1** (Full): builders running.
 - Rule learned: no agent cap → one Chrome suite per agent; hold dispatch above load ~40 (Linux restarted at 20:06 under load ~50).
+
+## Late night (Justin asleep: "keep them all moving whenever you can start something do it")
+- Merged 11.8 plugin-header-footer-ticks (3ee), main = 20ce41a8. HOLD my merges until peer's footer-icon-list = 11.9 (3dz).
+- media-avif-alt: accepted; rebased onto 20ce41a8 as 93e1afcf (receipt EXIT=0). After 11.9: rebase again + receipt + short review → merge (3ef).
+- site-native-structure: accepted on f86ab19d; after 11.9: rebase --onto main 731707c5 → review (+verifier/auditor if code conflicts) → merge.
+- **site-no-div builder started early** on f86ab19d (branch site-no-div-build; `briefs/site-no-div-builder.md`); moves onto main after native merges.
+- site-fonts-match, bricks-icons M1: builders running.
+- Known: site-menu-motion's F2B_SITE_SLIDE_BDRY pin fails on main since 11.7 (stay class); footer-icon-list's 11.9 fixes it test-only.
