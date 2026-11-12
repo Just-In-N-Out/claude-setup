@@ -96,3 +96,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 07:48 Linux restarted ~07:01 (crashlog gap 07:00:50→07:02:57; 16 GB free, load 2.5: not an overload; 2nd restart today, also 02:15). Resumed 4 agents: site-no-div reviewer 1, site-shared-styles builder (4f4599f3), bricks-icons rebase finisher (9bf4d3a0, re-pins logged), site-fonts-match rebase finisher (nothing recorded yet).
 - bricks-icons rebased → 643109ec on main 56b5076b; render.ts test conflict → full path. Review 3 (delta, Opus high) dispatched; then verifier → auditor → ac-check on 643109ec.
 - bricks-icons review 3 clean (MOVE ON 643109e; R3-1 P3). Old verifier/auditor archived as -c78fa0c. Verifier 2 dispatched on 643109ec / base 56b5076b.
+- site-no-div review 1: REVIEW AGAIN (3 P2: R1-1 % sizes fold, R1-2 nested relative font sizes, R1-3 HANDOFF live check words). Fixer 1 dispatched (site-no-div-fix1 from ae288ac8). Shared-styles builder told.
