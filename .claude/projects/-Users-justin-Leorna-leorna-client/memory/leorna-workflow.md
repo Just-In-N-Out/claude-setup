@@ -257,6 +257,8 @@ metadata:
 - **Status 2026-10-22 17:32 UTC (fresh connector / Justin decision):** PI-2 queried by `pi-2`, include_closed=true, page 0, has_more=false: 39 cards. Justin resolved from justin@leorna.com to 240157212; assignee-filtered lookup returned 5 cards, has_more=false, all to do/high. Full descriptions and incoming dependencies re-read for all five: 9016/901v/945u/901u each wait only on 9018 (complete); 9019 additionally waits on 901u (to do), 945u (to do) and Yan's 945q (to do). Repo fields: 9016 both; 901v/901u control-plane; 945u/9019 content. Justin picked **901u**, authorized a **CI exception only for that story**, and requested Opus planning first. This supersedes the earlier instruction to ask about the CI-policy conflict; it does not approve building.
 - ClickUp statuses on these lists: to do → in progress → in verification → complete (closed).
 
+**Status 2026-11-11 (Claude Code ClickUp check):** PI-1 has no `pi-1` tag and its sprint lists (Sprint 1–5) are empty; PI-1 cards are the untagged `86bbu3x…` cards in the E1–E9 lists. Justin's PI-1 cards: 9 assigned, 9 complete (100%); 7 closed inside PI-1's dates (8/31–10/4), 86bbu3xmt (10/6) and 86bbu3xg8 (10/12) after. 86bccndx6 (custom domain, closed 11/8) is untagged but later work, not counted. PI-2 (`pi-2` tag): 23 assigned, 21 complete, 86bcxnymy and 86bcxnykn in verification.
+
 ## Other cards
 - **Daily auto-update on startup** (client, "available for interns"): unblocked by #43.
 - **Internal dogfood chat wiring** (optional): blocker unknown without the card.
