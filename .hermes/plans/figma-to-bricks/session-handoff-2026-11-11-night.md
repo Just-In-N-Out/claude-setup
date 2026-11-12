@@ -106,3 +106,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - site-no-div review 2: REVIEW AGAIN (R2-1 flex-row % exception, R2-2 heading font settings). Fixer 2 dispatched (+ AC5 rows). Round 3 = last review (project cap).
 - site-no-div amendment 2 installed (sha 60206e75, AC4 = head's rule S). AC4 rows sent to fixer 2.
 - site-no-div fixer 2 done (d915f7dc). Dispatched: amendment 3 (AC5 words) + review 3 (last round, delta from 374ea2ce). Shared-styles builder to be told the final head after review 3.
+- site-no-div review 3 MOVE ON (d915f7dc). Waiting on amendment 3 → then verifier. Shared-styles builder told final head.
