@@ -2,7 +2,132 @@
 
 Pipeline: **Mini**. Repo: the setup repo `~/.claude-setup.git` (work tree `$HOME`), base `main` at `7ff38333` when planned (`main` has since moved to `9b765a25`, which changed other lines of `leorna/SKILL.md`; the edits and the three tests were re-proven on it). Planned 2026-11-11.
 
-**Questions for Justin:** none. The main session's reading holds in every file.
+**Questions for Justin:** none on the 2026-11-11 plan (the main session's reading holds in every file). Amendment 1 (2026-11-12): none beyond the go on the amended second and third criteria.
+
+## Amendment 1 (2026-11-12): check 7 reads no grammar
+
+**Status:** head `9f6d93b8` (story base `bcfeb5fe`), worktree `~/.claude-setup-wt/fable-planner-only`. The rule-text edits are done and stay exactly as they are; `routing_text_agrees` has passed on every head. Only `pipeline-rules.test.sh` changes, in one fix commit on top of `9f6d93b8`. The sections below this one are history, except "After acceptance", which still holds.
+
+**Why.** Three heads tried to work out, from English, which role a model word belongs to: one clause at a time (`8a721839`), every role before the model (`2629ccb0`), the nearest role with skips (`9f6d93b8`). Each either passed a wrong line or refused a right one (auditor on AC2/AC3; R2-1, R2-2; R3-1, R3-2, R3-3). Justin, 2026-11-12: "Simplify the check".
+
+### The rule
+
+It replaces `wrong_pairs()` outright; none of the three readings is kept. A **sentence** is a line (with its indented continuation lines) cut at `;`, `→` and `. `; a table row is one sentence. Commas and parentheses cut nothing, and a date hides nothing. Taken out first: the pinned statements (the routing sentence and every `prose()` line), marked history (`*Why …*`, `*(Superseded …)*`, "supersedes the <date> table (…)") and this story's three names. Then, in lower case:
+
+- **a.** A sentence that says `fable` must say `plan` (planner, plan, re-plan) and name no other role.
+- **b.** A sentence that says `xhigh` must name the builder, the AC auditor or round 1, and no other role (a reviewer only beside round 1).
+- **c.** A sentence that names round 1 must not hold the word `high`.
+
+Role words: review, round <n>, later round, delta, audit, finisher, builder, fixer(s), fixes, verifier, main session, and for b also planner.
+
+A right sentence the rule refuses has three simple fixes, all in the rule's doc comment and in the failure message:
+1. Reword it so it names only its own role: "Every later round runs on Opus 5.5 high." (not "Every round after round 1 …"; R3-3), "The verifier runs on Opus 5.5 high." (not "The verifier, unlike round 1, …"; R2-1), "Fable 5.2 high is the planner's model, and no other role's." (not "Only the planner, not the builder or a reviewer, …"; R2-2).
+2. Move history into a `*Why …*` note: `*Why (2026-11-11): Justin: "round 1 on opus xhigh, not fable".*`
+3. Pin it word for word in `prose()` (a list of models, a board example, a statement that names two roles).
+
+**Why this one.** A reader can tell the result by looking for three words; no phrasing has to be understood. It is fail-closed: a sentence that says Fable or xhigh passes only when it is about the right role and nobody else, so asides, "like X" remarks, dates, quotes, capitals, synonyms and pronouns ("it runs on Fable") are all refused without a special case. Weighed and dropped: "names no wrong role" alone (2 pins instead of 12, but "The verifier is fresh; it runs on Fable 5.2 high." passes), and whole lines instead of sentences (a `CLAUDE.md` step is one 2,000-character line, so a right statement would be refused for a role named anywhere else in the step).
+
+**What it gives up.**
+- Right sentences that name two roles are refused until fixed as above. That includes R2-1's, R2-2's and R3-3's lines; they are now cases the test expects to be refused, each with its rewording as a case that passes.
+- A new mention of Fable or xhigh as a model with no role ("the Fable sample is 8 runs") needs the word plan, a `*Why …*` note or a pin.
+- Not covered (the amended ACs say so): a statement split over two sentences or two unindented lines ("Round 1 is the full review. It runs on Opus 5.5 high."), round 1 named by another word ("The first review runs on Opus 5.5 high."), a bare "Reviewers run on Opus 5.5 high.", and a role named by another word in a sentence the rule allows ("The blind check of the plan runs on Fable 5.2 high.", "The verifier is new; like the builder it runs on Opus 5.5 xhigh.").
+
+### Today's files: 12 pins, no rewording
+
+Run on a scratch copy of `9f6d93b8`, the rule refused 12 sentences in the 13 rule files (the Codex header among them) and the 9 project `CLAUDE.md` copies. None is a wrong pairing: ten name Fable or xhigh as a model (a model list, a board example, the Sol history), one is the heading that states both halves of this story, one is the AC auditor row ("never saw the build or the verifier's report"). All 12 are pinned in `prose()` (fix 3 above), so **no rule file is edited** and the commit is the test file alone. The heading pin also closes follow-up R1-3's unpinned heading. One new `file_of` key, `route`, for `model-routing.md`.
+
+| File:line | Pinned text |
+|---|---|
+| `CLAUDE.md`:98 | `(Fable and Opus share the Claude subscription)` |
+| `SKILL.md`:83 | ``**Fable 5.2** (`claude-fable-5-2`; added 2026-11-09`` |
+| `SKILL.md`:83 | `three xhigh Sol agents` |
+| `SKILL.md`:89 | `2026-11-11: Fable only plans, and round 1 is reviewed on Opus 5.5 xhigh` |
+| `SKILL.md`:99 | the whole `AC auditor (blind)` row |
+| `SKILL.md`:104 | `the held Claude (Opus or Fable) roles` |
+| `SKILL.md`:109 | the three board examples, ``(`model="fable-5.2 high"`, … `model="gpt sol-6.1 high"`)`` |
+| `SKILL.md`:114 | ``or `'claude-fable-5-2'` for a Fable role`` |
+| `mini-pipeline.md`:32 | the three board examples, `` `fable-5.2 high (mini)`, … `` |
+| `mini-pipeline.md`:44 | `(applies to every Mini role on Claude, Fable or Opus)` |
+| `model-routing.md`:6 | `(small → whole pipeline on Sol; in-between → Opus medium; big → Opus xhigh)` |
+| `model-routing.md`:9 | `(Opus or Fable: any role in the table)` |
+
+The exact lines are in the second diff block at the end of this file.
+
+### Acceptance criteria, amended
+
+The first criterion (`routing_text_agrees`) is unchanged. The two below replace the 2026-11-11 wording; the test names are the same. Each is worded by the shapes the rule covers.
+
+- AC2 (amended, Justin approves): Given a copy of the story's head with Fable written onto a role other than the planner in one of these shapes, when the routing check runs on that copy, then it fails and names the file and line; an unchanged copy passes. The shapes: (1) a pinned statement changed (the routing sentence, the `CLAUDE.md` pipeline paragraph, a role-table row, a pinned step); (2) a new one-line statement, in a rule file or a project `CLAUDE.md` copy, that says Fable and names the role by one of the rule's role words, written as a numbered step `N. **Role (Fable 5.2 high).**` with or without a date in the parenthesis, a table row, a plain sentence, a sentence with a comma or parenthesis aside, or a "like the planner" remark, in any letter case; (3) a new sentence that says Fable without the word plan. By design a right sentence that says Fable beside another role's word is refused too, until it is reworded, moved into a `*Why …*` note or pinned. Not covered: a statement split over two sentences or two unindented lines, and a role named by another word in a sentence that says plan. Test: `fable_only_plans`
+- AC3 (amended, Justin approves): Given the new wording, when check 7 reads the pinned "round 1 on Opus 5.5 xhigh" statements and every role with its own effort in the shapes below, then it passes; and given a copy of the story's head that, in one of those shapes, puts xhigh beside the word for a role routed to high (a later round, round 2 or later, a delta review, a fixer, the verifier, the finisher, the planner, the main session, or a reviewer with no round 1 named), says xhigh in a sentence that names none of the builder, the AC auditor and round 1, or holds the word high in a sentence that names round 1, when the routing check runs on that copy, then it fails and names the file and line. The shapes: a pinned statement changed (a role-table row, `CLAUDE.md` step 5), and a new one-line statement written as a numbered step `N. **Role (Opus 5.5 xhigh).**` with or without a date in the parenthesis, a list item, a table row, a plain sentence, a sentence with a comma or parenthesis aside, or a "like the AC auditor" remark. By design a right sentence that names round 1 with the word high, or says xhigh beside a second role's word, is refused too, until it is reworded, moved into a `*Why …*` note or pinned. Not covered: a statement split over two sentences or two unindented lines, round 1 named by another word ("the first review"), and plain high on a reviewer with no round named. Test: `xhigh_only_where_routed`
+
+Old → new, in one line each:
+- The second criterion: "Fable written onto any role but the planner (… or a new sentence about a review, round 1, the AC auditor or the finisher)" → "Fable beside any other role's word in a listed shape, or Fable with no plan word; right two-role sentences are refused by design; split statements and synonyms are not covered".
+- The third criterion: "xhigh on a later round, a fixer, the verifier or the main session, or plain high on round 1" → "xhigh beside any role's word but the builder, the AC auditor and round 1, xhigh with none of those three named, or the word high in a sentence naming round 1, in a listed shape; right two-role sentences are refused by design; split statements and synonyms are not covered".
+
+On the base (`bcfeb5fe` with head's test copied over it) all three tests still fail as before: the routing sentence is missing there.
+
+### Test cases: what stays, goes and changes
+
+- **Stay, unchanged (all 96 refusals on a changed copy):** the 57 of `fable_only_plans` (8 pinned-statement swaps, 4 new sentences, 5 one-line shapes, 10 roles × step/row/comma/paren) and the 39 of `xhigh_only_where_routed` (4 new sentences, 3 swaps, 4 one-line shapes, 5 roles × 4 shapes on xhigh, 2 round-1 names × 4 shapes on plain high), with the place check on every added line; `copy_passes`; the three `passes_each` controls; `right.md`'s 8 lines; fix 1's and fix 2's `wrong-fable.md` (7 lines) and `wrong-effort.md` (9 lines).
+- **New refusals on a changed copy (5):** R3-1's "The AC auditor, like the planner, runs on Fable 5.2 high.", "The verifier, like the AC auditor, runs on Opus 5.5 xhigh." and "Round 1, like every later round, runs on Opus 5.5 high."; R3-2's shape as `7. **Finisher (Fable 5.2 high, 2026-11-12).**` and `6. **Verifier (Opus 5.5 xhigh, 2026-11-12).**`.
+- **New wrong lines read by check 7 directly:** `wrong-fable.md` grows from 7 to 17 lines and `wrong-effort.md` from 9 to 25: every R3-1 and R3-2 line, R2-3's "Every reviewer" as "The builder and every reviewer run on Opus 5.5 xhigh.", R3-4's "Round 1 runs on high." and quoted Fable, capitals, a role with no role word ("The hand-over agent …"), a pronoun ("…; it runs on Fable 5.2 high."), a model inside a parenthesis that names a right role ("The verifier (on the builder's Opus 5.5 xhigh) …"), and one line for each role word that otherwise only shows beside "review" (round 2, later rounds, the delta pass). Two new shapes, `like` and `dated`, run for every role: 20 Fable lines, 14 xhigh lines and 4 plain-high lines refused; 16 lines with each role's own effort pass.
+- **Go:** fix 2's must-pass controls `right-fable.md` (11 lines) and `right-effort.md` (16 lines). 25 of the 27 are refused by the new rule: they name two roles, hold a dated parenthesis or a quote, or come from plans, which the test never scans.
+- **Change:** in their place, `right-fable.md` (9 lines) and `right-effort.md` (12 lines) hold what the rule allows, the rewordings first; `reword-fable.md` (7 lines) and `reword-effort.md` (7 lines) hold the right-but-refused originals (R2-1, R2-2, R3-3 and the two dated-quote rows) and must be refused. So the test shows both halves: the refusal is by design, and the documented fix passes.
+
+**Mutations of the test the fixer must show are caught** (each in a fresh scratch copy of the worktree's files, never in the worktree; under the memory cap; all were caught on the planner's prototype):
+
+| Id | Change to `pipeline-rules.test.sh` | Caught by |
+|---|---|---|
+| M1 | Rule a without "names no other role" | `fable_only_plans` (wrong-fable.md: the "like the planner" lines pass) |
+| M2 | Rule a without "must say plan" | `fable_only_plans` (the hand-over agent, the pronoun line) |
+| M3 | Rule b without "names no other role" | `xhigh_only_where_routed` |
+| M4 | Rule b without "must name the builder, the AC auditor or round 1" | `xhigh_only_where_routed` (the "It runs on" line) |
+| M5 | Rule b without "a reviewer only beside round 1" | `xhigh_only_where_routed` ("The builder and every reviewer …") |
+| M6 | Rule c removed | `xhigh_only_where_routed` |
+| M7 | Sentences also cut at `,` `(` `)` | both tests (the parenthesis that names a right role) |
+| M8 | Pinned text is not taken out | both tests ("an unchanged copy of this checkout fails") |
+| M9 | A parenthesis holding a date is dropped again (fix 2's skip) | both tests (the `dated` shape) |
+| M10 | No lower-casing | `fable_only_plans` |
+| M11 | The story's names are not taken out | both tests (the lesson line, the "Red first" line) |
+| M12 | `*Why …*` notes are not taken out | `fable_only_plans` (the two rows with a Why note) |
+| M13 | The refusal prints no `<file>:<line>` | both tests (no refused line is found at its place) |
+| M14 | The AC auditor row's pin removed | `fable_only_plans` ("an unchanged copy of this checkout fails") |
+| Tc, Td, Te, Tf | As in "The test, first" below (checks 2, 3 and 5, unchanged) | as listed there |
+
+The exact old and new text of each is in `mutate.py`, the `python` block at the end of this file: `python3 mutate.py <id> <test file>` changes one place and fails unless its old text is there exactly once.
+
+### Fixer tasks (Opus 5.5 high; test-first; from `9f6d93b8`; one commit)
+
+Skills: `engineering-best-practices`, `receiving-code-review`, `test-driven-development`, `mutation-testing-discipline`. About 20 minutes. Evidence folder `E` = `~/.hermes/plans/claude-setup/evidence/fable-planner-only/fix-3/`. `TMPDIR=~/.cache/fable-planner-only-fixer3`. `$T` and the run command are as in "Acceptance criteria" below. If a diff does not apply cleanly or a result differs from what a step says, stop and report; do not adapt the rule.
+
+1. **Start.** `git -C ~/.claude-setup-wt/fable-planner-only rev-parse HEAD` is `9f6d93b8…` and `status --porcelain --untracked-files=all` is empty. Pull the two diff blocks out of this plan with the first command under "Commands" (it writes `$TMPDIR/amend1-1.diff` and `$TMPDIR/amend1-2.diff` and fails unless it finds exactly two).
+2. **Red.** In the worktree: `patch -p1 --dry-run < "$TMPDIR/amend1-1.diff"`, then `patch -p1 < "$TMPDIR/amend1-1.diff"` (the cases only). Run the three tests: `ok 1 - routing_text_agrees`, then two `not ok`: `fable_only_plans` with "check 7 should refuse lines [1 … 17 ] of …/wrong-fable.md, refused [1 2 3 4 5 6 7 11 16 17 ]", `xhigh_only_where_routed` with "check 7 should refuse lines [1 … 25 ] of …/wrong-effort.md, refused [1 2 3 4 5 6 7 8 9 ]". Capture to `E/red.log`.
+3. **Green.** `patch -p1 < "$TMPDIR/amend1-2.diff"` (the rule and the 12 pins). Run the three tests: three `ok` (about 90 s; 101 "refused" lines).
+4. **Scope gate and commit.** `status --porcelain --untracked-files=all` shows `pipeline-rules.test.sh` and nothing else. One commit: `fable-planner-only: check 7 reads no grammar: Fable beside the planner alone, xhigh beside its three roles, no plain high beside round 1`. Plain `git commit`, no author override, no AI trailer. `git diff --name-only 9f6d93b8 HEAD` lists that one file.
+5. **Mutations and evidence, on the new head.** Pull `mutate.py` out of this plan with the second command under "Commands". For each of M1 to M14 and Tc to Tf: a fresh scratch copy (`git -C <worktree> archive HEAD | tar -x -C <copy>`), `python3 "$TMPDIR/mutate.py" <id> <copy>/$T`, then the test that catches it, under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`; each must print `not ok`. Capture to `E/mutations.log`. A mutation that survives is a stop: report it, do not patch around it. Then one log and one terminal-capture image per criterion on the new head, into `E`. Stop at `ready-for-review` with the new head. No merge, sync or push.
+
+**Commands** (tasks 1 and 5):
+
+```bash
+PLAN=~/.hermes/plans/claude-setup/fable-planner-only.md
+awk -v d="$TMPDIR" '/^## Amendment 1: the two test diffs/ { on = 1 } on && /^```diff$/ { n++; f = d "/amend1-" n ".diff"; w = 1; next } w && /^```$/ { w = 0; next } w { print > f } END { exit n == 2 ? 0 : 1 }' "$PLAN"
+awk '/^## Amendment 1: the two test diffs/ { on = 1 } on && /^```python$/ { w = 1; next } w && /^```$/ { exit } w' "$PLAN" > "$TMPDIR/mutate.py"
+```
+
+### Then the loop, unchanged
+
+On Justin's go the main session reinstalls the approved copy (`install -m 444 <plan> <evidence>/plan-approved.md`). After the fixer: a fresh review of the fix commit (`9f6d93b8..HEAD`, Opus 5.5 high) → `review-check.sh` → verifier → blind AC auditor → `ac-check.sh … --reviews`. For the reviewer, verifier and auditor: a right sentence that the rule refuses and that one of the three fixes repairs, and anything in "Not covered", are the amended criteria's terms, not findings. A finding is a wrong line in a covered shape that passes, a right line none of the three fixes repairs, or a line of today's files that is refused.
+
+### Proof (planner's prototype, 2026-11-12)
+
+In scratch copies under `~/.cache/fable-planner-only-planner2/` (never the worktree). The two diff blocks and `mutate.py` were pulled from this file with task 1's and task 4's commands; they are byte for byte the files the runs below used.
+- **Red** (`git archive 9f6d93b8`, first diff only): `ok 1 - routing_text_agrees`; `fable_only_plans` not ok, refused [1 2 3 4 5 6 7 11 16 17] of `wrong-fable.md`'s 17; `xhigh_only_where_routed` not ok, refused [1 to 9] of `wrong-effort.md`'s 25.
+- **Green** (both diffs): three `ok`, 101 refusals on changed copies, 80 s.
+- **Green on today's `main`:** the story rebased in a scratch clone onto `415c114d` (no conflict) with both diffs: three `ok`, 101 refusals. `main` is `dbd8e2e5` at hand-off; `415c114d..dbd8e2e5` touches no scanned file.
+- **Mutations:** M1 to M14 and Tc to Tf, 18 of 18 caught by the test the table names. Dropping any single role word from rule a or rule b is caught too (18 of 18, by the lines check 7 reads directly).
+- **Probes:** the 38 wrong lines of the auditor and of reviews 1 to 3 (F1 to F4, F8, C12, E1 to E7, R1-2's, R2-3's, R3-1's, R3-2's, R3-4's) are all refused; 22 reworded right lines all pass; the 5 lines of "Not covered" pass, as stated.
+- Head's rule (`9f6d93b8`) also refuses a right lesson line that cites `fable-planner-only` beside the word review: its clause reading takes the story's name for the model. The new rule takes the three names out first.
+- No earlyoom kill during the runs.
 
 ## Playback
 
@@ -15,6 +140,8 @@ The routing sentence, word for word in every file that states it:
 > planner Fable 5.2 high; builder Opus 5.5 xhigh; reviewer round 1 Opus 5.5 xhigh, later rounds Opus 5.5 high; fixer Opus 5.5 high; verifier Opus 5.5 high; AC auditor Opus 5.5 xhigh; finisher Opus 5.5 high; pipeline main session Opus 5.5 high
 
 ## Acceptance criteria (all proposed: the request gave none)
+
+*Amended 2026-11-12: the wording of the second and third criteria below is replaced by Amendment 1's, above; the first is unchanged.*
 
 The three tests live in `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/pipeline-rules.test.sh` (below: `$T`). Each is run as `bash <worktree>/$T <test name>` and passes when it prints `ok 1 - <test name>`. Nothing here is visual, so the evidence for each is the terminal capture of that run. No `(live)` ACs.
 
@@ -462,4 +589,438 @@ Apply from the worktree root with `patch -p1`.
  # ---- the regression run: every existing suite passes on head as it did on the base, test by test ----
  oknames() { sed -nE 's/^ok( [0-9]+)? +- (.*)$/\2/p' "$@" | LC_ALL=C sort -u; }   # the tests a log shows passing
  last_of() { awk 'NF { l = $0 } END { print l }' "$1"; }
+```
+
+## Amendment 1: the two test diffs
+
+Both apply from the worktree root with `patch -p1`, on top of `9f6d93b8`: the first holds the cases (red), the second the rule and the 12 pins (green).
+
+```diff
+--- a/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/pipeline-rules.test.sh
++++ b/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/pipeline-rules.test.sh
+@@ -419,8 +419,14 @@
+     row) printf '| %s (a fresh one) | **%s** | **%s** |' "$2" "${3% *}" "${3##* }" ;;
+     comma) printf 'The %s, a fresh agent, runs on %s.' "$2" "$3" ;;
+     paren) printf 'The %s (a fresh agent) runs on %s.' "$2" "$3" ;;
++    like) printf 'The %s, like the %s, runs on %s.' "$2" "$4" "$3" ;;        # shape like <role> <model> <other role>
++    dated) printf '9. **%s (%s, 2026-11-12).** Does its part.' "$2" "$3" ;;
+   esac
+ }
++each_shape() { # each_shape <model> <other role> <role>…: the like and dated shapes of every role with <model>, one a line
++  local m=$1 o=$2 r; shift 2
++  for r in "$@"; do shape like "$r" "$m" "$o"; echo; shape dated "$r" "$m"; echo; done
++}
+ SHAPES='step row comma paren'
+ # files a new line is added to, one a case in turn (rule files and a project copy)
+ ADD_TO="$FD/references/mini-pipeline.md $FD/SKILL.md $FD/references/review-loop.md $SD/review-fix-cadence/SKILL.md $SD/leorna/SKILL.md $CLAUDE_MD .claude/project-docs/figma-to-bricks/CLAUDE.md"
+@@ -455,23 +461,8 @@
+ 
+ fable_only_plans() { # AC2: Fable on any role but the planner is refused, wherever it is written
+   S=$(mktemp -d "${TMPDIR:-/tmp}/pipeline-rules-test.XXXXXX") || { fail "mktemp"; return 1; }
+-  # right: Fable named beside a role it is not bound to (review 2, R2-2: a contrast, Fable naming the planner,
+-  # a quote or dated history in a role row; the rows and the last two lines come from plans this pipeline wrote)
+-  cat >"$S/right-fable.md" <<'EOF'
+-Only the planner, not the builder or a reviewer, runs on Fable 5.2 high.
+-If the review finds the plan wrong, a fresh Fable planner re-plans.
+-The builder uses the plan from the Fable planner.
+-After review, Fable 5.2 high re-plans the story.
+-The builder, never a Fable agent, writes the code.
+-| Reviewer, round 1 (the whole story; separate, fresh) | **Opus 5.5** (Justin, 2026-11-11: "round 1 on opus xhigh, not fable") | **xhigh** |
+-| Verifier (Agent Defect Loop) | **Opus 5.5**, fresh (it ran on Fable until 2026-11-10) | **high** |
+-The verifier runs on Opus 5.5 high (Justin: "Fable 5.2 high costs twice as much").
+-| M2 | Verifier: Opus high (Q4) | 1.7 x ($20.02 - $9.26): 10.6% (Fable sample is 8 runs) |   | same |
+-+fd|Mini (Fable plan, Opus build, one full fresh Opus review, then the same loop of reviews of the fixes)
+-- Lines about the planner: "The Fable planner does the architecture and design" (`SKILL.md` 105), "Preserve Fable planning" (`review-fix-cadence` 23), "Fable plan → …" in the cadence lines, `1. **Planner (Fable 5.2 high).**` and the Planner rows.
+-EOF
+-  none_refused "$S/right-fable.md" || return 1
+-  # wrong: the same words, but Fable bound to a role all the same (a contrast cuts only what follows it)
++  # wrong: Fable on another role, as a plain sentence, with a comma or parenthesis aside, a "like the planner"
++  # remark, a date, a table row, in capitals, in quotes, or with no role word at all
+   cat >"$S/wrong-fable.md" <<'EOF'
+ The planner and the builder run on Fable 5.2 high.
+ The builder, not the planner, runs on Fable 5.2 high.
+@@ -480,9 +471,47 @@
+ The builder runs on Fable 5.2 high, the planner too.
+ | Finisher (the hand-over) | **Fable 5.2** (2026-11-12) | **high** |
+ The builder gets `model: "fable"`.
++The AC auditor, like the planner, runs on Fable 5.2 high.
++The verifier, who checks the planner's ACs, runs on Fable 5.2 high.
++The finisher (on the planner's Fable 5.2 high) rebases.
++The AC auditor runs on FABLE 5.2 high.
++The builder runs on "Fable 5.2 high".
++The hand-over agent runs on Fable 5.2 high.
++The verifier is a fresh agent; it runs on Fable 5.2 high.
++Round 2 runs on the planner's Fable 5.2 high.
++Later rounds run on the planner's Fable 5.2 high.
++The delta pass runs on the planner's Fable 5.2 high.
+ EOF
+   all_refused "$S/wrong-fable.md" || return 1
+-  echo "# check 7 passes Fable beside a role it is not bound to, and refuses it bound to one"
++  each_shape 'Fable 5.2 high' planner 'round-1 reviewer' reviewer 'later-round reviewer' 'delta reviewer' fixer verifier \
++    'AC auditor' finisher builder 'pipeline main session' >"$S/wrong-fable-shapes.md"
++  all_refused "$S/wrong-fable-shapes.md" || return 1
++  # right: Fable where the rule allows it (the planner alone, history in a *Why …* note, this story's names); the
++  # first four lines and the two rows are the rewordings of reword-fable.md's lines, in the same order
++  cat >"$S/right-fable.md" <<'EOF'
++Fable 5.2 high is the planner's model, and no other role's.
++A wrong plan goes back to a fresh Fable planner.
++Fable 5.2 high re-plans the story.
++The builder works from the planner's plan.
++| Reviewer, round 1 (the whole story; separate, fresh) | **Opus 5.5** *Why (2026-11-11): Justin: "round 1 on opus xhigh, not fable".* | **xhigh** |
++| Verifier (Agent Defect Loop) | **Opus 5.5**, fresh *Why (2026-11-10): it ran on Fable until then.* | **high** |
++9. **Planner (Fable 5.2 high, 2026-11-12).** Writes the plan.
++The verifier reruns the gates. Fable 5.2 high writes the plan.
++- A lesson of fable-planner-only review 3: an aside can name a second role (fable_only_plans has the cases).
++EOF
++  none_refused "$S/right-fable.md" || return 1
++  # right too, but refused by the rule (by design: check 7 reads no grammar); each is fixed as right-fable.md shows
++  cat >"$S/reword-fable.md" <<'EOF'
++Only the planner, not the builder or a reviewer, runs on Fable 5.2 high.
++If the review finds the plan wrong, a fresh Fable planner re-plans.
++After review, Fable 5.2 high re-plans the story.
++The builder uses the plan from the Fable planner.
++| Reviewer, round 1 (the whole story; separate, fresh) | **Opus 5.5** (Justin, 2026-11-11: "round 1 on opus xhigh, not fable") | **xhigh** |
++| Verifier (Agent Defect Loop) | **Opus 5.5**, fresh (it ran on Fable until 2026-11-10) | **high** |
++- A lesson: the Fable sample is 8 runs.
++EOF
++  all_refused "$S/reword-fable.md" || return 1
++  echo "# check 7 passes Fable on the planner alone, and refuses it beside any other role or with no plan word"
+   copy_passes || return 1
+   refuses sentence 'lacks the routing sentence' swap $SD/leorna/SKILL.md \
+     'reviewer round 1 Opus 5.5 xhigh, later rounds' 'reviewer round 1 Fable 5.2 high, later rounds' || return 1
+@@ -512,6 +541,8 @@
+   refuses comma-auditor "$WRONG" add $FD/references/mini-pipeline.md 'The AC auditor, a fresh agent, runs on Fable 5.2 high.' || return 1
+   refuses paren-finisher "$WRONG" add $SD/review-fix-cadence/SKILL.md 'The finisher (a fresh agent) runs on Fable 5.2 high.' || return 1
+   refuses comma-round1 "$WRONG" add $FD/references/review-loop.md '- Round 1, the full review, runs on Fable 5.2 high.' || return 1
++  refuses like-auditor "$WRONG" add $FD/references/mini-pipeline.md 'The AC auditor, like the planner, runs on Fable 5.2 high.' || return 1
++  refuses dated-finisher "$WRONG" add $SD/review-fix-cadence/SKILL.md '7. **Finisher (Fable 5.2 high, 2026-11-12).** Rebases and merges.' || return 1
+   passes_each 'Fable 5.2 high' planner || return 1
+   refuses_each fable 'Fable 5.2 high' 'round-1 reviewer' reviewer 'later-round reviewer' 'delta reviewer' fixer verifier \
+     'AC auditor' finisher builder 'pipeline main session' || return 1
+@@ -528,28 +559,8 @@
+     'The verifier reruns the gates. Fable 5.2 high writes the plan.' 'The fixer fixes the findings; Fable 5.2 high writes the plan.' \
+     'The verifier checks → Fable 5.2 high re-plans.' >"$S/right.md"
+   p=$(wrong_pairs "$S/right.md"); [ -z "$p" ] || { fail "check 7 refuses the round-1 xhigh wording: $p"; return 1; }
+-  # right: round 1 beside high or xhigh it is not bound to (review 2, R2-1: a contrast, a later role between,
+-  # high that is no effort), and lines of the plans this pipeline writes that name several roles
+-  cat >"$S/right-effort.md" <<'EOF'
+-The verifier, unlike round 1, runs on Opus 5.5 high.
+-Round 1 is the expensive one, so later rounds drop to high.
+-The round-1 reviewer is the one exception to high: it runs on xhigh.
+-Round 1 sets a high bar for the later rounds.
+-The fixer runs on Opus 5.5 high, not xhigh.
+-Round 1 (Opus 5.5 xhigh) covers the whole story, round 2 and later (Opus 5.5 high) only the fixes.
+-- The running main session still has the old `CLAUDE.md` loaded: from the merge on it dispatches every round-1 reviewer with `model: "opus"`, `effort: "xhigh"`.
+-| M3. Effort of builder, fixer, auditor | Changed by you the same day: only the **fixers** drop to Opus 5.5 high. Builder and AC auditor stay on Opus 5.5 xhigh |
+-- Red first: the builder adds the cases to fable_only_plans.
+-The verifier, except in round 1, runs on Opus 5.5 high.
+-The verifier, one exception to round 1, runs on Opus 5.5 high.
+-Round 1 runs on Opus 5.5 xhigh instead of Opus 5.5 high.
+-Round 1 runs on Opus 5.5 xhigh rather than Opus 5.5 high.
+-## B4 equal-card-fixes: in-between, Opus 5.5 medium, Opus xhigh reviewer
+-| D2 | Reviewer Opus high in round 1 too | ($10.21 - $4.42) x 1: 3% | the only Fable read of the story | routing files |
+-3. Then the full path: a fresh **review** of the resolution (later-round reviewer: Opus 5.5 high), `review-check.sh`, then a fresh **verifier** (Opus 5.5 high; brief from `briefs/dream-pass-verifier-1.md`), a fresh blind **auditor** (Opus 5.5 xhigh; `briefs/dream-pass-auditor-1.md`), then `ac-check.sh … --reviews`.
+-EOF
+-  none_refused "$S/right-effort.md" || return 1
+-  # wrong: the same words, but the effort bound to a role it is not routed to
++  # wrong: xhigh on a role routed to high, or plain high on round 1, as a plain sentence, with a comma or
++  # parenthesis aside, a "like the AC auditor" remark, a date, a table row, or with no role word at all
+   cat >"$S/wrong-effort.md" <<'EOF'
+ The verifier, not the planner, runs on Opus 5.5 xhigh.
+ Round 1 runs at high effort.
+@@ -560,9 +571,59 @@
+ | Fixer (one per round) | **Opus 5.5**, fresh, never the builder | **xhigh** |
+ | Note | the verifier runs on Opus 5.5 xhigh |
+ The round-1 reviewer gets `model: "opus"`, `effort: "high"`.
++The verifier, like the AC auditor, runs on Opus 5.5 xhigh.
++The fixer, after the builder, runs on Opus 5.5 xhigh.
++The verifier, a fresh agent that reads the builder's report, runs on Opus 5.5 xhigh.
++The verifier (on the builder's Opus 5.5 xhigh) reruns the gates.
++Round 1, like every later round, runs on Opus 5.5 high.
++Round 1 and every later round run on Opus 5.5 high.
++Round 1 and the AC auditor run on Opus 5.5 high.
++6. **Verifier (Opus 5.5 xhigh, 2026-11-12).** Runs the gates again.
++3. **Reviewer, round 1 (Opus 5.5 high since 2026-11-12).**
++The fixer (Opus 5.5 xhigh since 2026-11-12) fixes the findings.
++The builder and every reviewer run on Opus 5.5 xhigh.
++The verifier is a fresh agent. It runs on Opus 5.5 xhigh.
++Round 1 runs on high.
++Round 2, like the builder, runs on Opus 5.5 xhigh.
++Later rounds, like the builder, run on Opus 5.5 xhigh.
++The delta pass, like the builder, runs on Opus 5.5 xhigh.
+ EOF
+   all_refused "$S/wrong-effort.md" || return 1
+-  echo "# check 7 passes round 1 beside an effort it is not bound to, and refuses an effort bound to the wrong role"
++  { each_shape 'Opus 5.5 xhigh' 'AC auditor' 'later-round reviewer' 'delta reviewer' fixer verifier finisher planner 'pipeline main session'
++    each_shape 'Opus 5.5 high' 'later-round reviewer' 'round-1 reviewer' 'Reviewer, round 1'; } >"$S/wrong-effort-shapes.md"
++  all_refused "$S/wrong-effort-shapes.md" || return 1
++  # right: each role with its own effort; the first seven lines are the rewordings of reword-effort.md's lines,
++  # in the same order
++  cat >"$S/right-effort.md" <<'EOF'
++Every later round runs on Opus 5.5 high.
++The verifier runs on Opus 5.5 high.
++The fixer runs on Opus 5.5 high.
++Later rounds drop to high.
++The round-1 reviewer runs on Opus 5.5 xhigh.
++Round 1 sets the bar for the later rounds.
++Round 1 covers the whole story on Opus 5.5 xhigh. Round 2 and later cover only the fixes, on Opus 5.5 high.
++The builder and the AC auditor run on Opus 5.5 xhigh.
++The AC auditor, like the builder, runs on Opus 5.5 xhigh.
++The fixer, like the verifier, runs on Opus 5.5 high.
++3. **Reviewer, round 1 (Opus 5.5 xhigh, 2026-11-12).** Reviews the whole story.
++- Red first: the fixer adds the cases to xhigh_only_where_routed.
++EOF
++  none_refused "$S/right-effort.md" || return 1
++  # right too, but refused by the rule (by design: check 7 reads no grammar); each is fixed as right-effort.md shows
++  cat >"$S/reword-effort.md" <<'EOF'
++Every round after round 1 runs on Opus 5.5 high.
++The verifier, unlike round 1, runs on Opus 5.5 high.
++After round 1, the fixer runs on Opus 5.5 high.
++Round 1 is the expensive one, so later rounds drop to high.
++The round-1 reviewer is the one exception to high: it runs on xhigh.
++Round 1 sets a high bar for the later rounds.
++Round 1 (Opus 5.5 xhigh) covers the whole story, round 2 and later (Opus 5.5 high) only the fixes.
++EOF
++  all_refused "$S/reword-effort.md" || return 1
++  { each_shape 'Opus 5.5 xhigh' builder 'round-1 reviewer' 'AC auditor'; each_shape 'Opus 5.5 xhigh' 'AC auditor' builder
++    each_shape 'Opus 5.5 high' fixer 'later-round reviewer' verifier finisher 'pipeline main session'; } >"$S/right-effort-shapes.md"
++  none_refused "$S/right-effort-shapes.md" || return 1
++  echo "# check 7 passes each role with its own effort, and refuses xhigh beside a role routed to high and plain high beside round 1"
+   printf '%s\n' 'report only; round 1 on Opus 5.5 high, every later round on Opus 5.5 xhigh)' >"$S/wrong.md"
+   p=$(wrong_pairs "$S/wrong.md"); [ -n "$p" ] || { fail "check 7 lets a later round on xhigh pass"; return 1; }
+   echo "# check 7 passes round 1 on xhigh and refuses: $p"
+@@ -582,6 +643,9 @@
+   refuses list-fixer "$WRONG" add $SD/review-fix-cadence/SKILL.md '- Fixer (Opus 5.5 xhigh): fixes the listed findings.' || return 1
+   refuses new-round1-high "$WRONG" add $SD/review-fix-cadence/SKILL.md 'Round 1 is reviewed on Opus 5.5 high.' || return 1
+   refuses step-round1-high "$WRONG" add $FD/references/mini-pipeline.md '9. **Reviewer, round 1 (Opus 5.5 high).**' || return 1
++  refuses like-verifier "$WRONG" add $FD/references/review-loop.md 'The verifier, like the AC auditor, runs on Opus 5.5 xhigh.' || return 1
++  refuses dated-verifier "$WRONG" add $FD/references/mini-pipeline.md '6. **Verifier (Opus 5.5 xhigh, 2026-11-12).** Runs the gates again.' || return 1
++  refuses like-round1 "$WRONG" add $SD/review-fix-cadence/SKILL.md 'Round 1, like every later round, runs on Opus 5.5 high.' || return 1
+   passes_each 'Opus 5.5 xhigh' 'round-1 reviewer' builder 'AC auditor' || return 1
+   passes_each 'Opus 5.5 high' 'later-round reviewer' fixer verifier finisher 'pipeline main session' planner || return 1
+   refuses_each xhigh 'Opus 5.5 xhigh' 'later-round reviewer' 'delta reviewer' fixer verifier 'pipeline main session' || return 1
+```
+
+```diff
+--- a/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/pipeline-rules.test.sh
++++ b/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/pipeline-rules.test.sh
+@@ -16,6 +16,10 @@
+ # planner only, and round 1 is reviewed on Opus 5.5 xhigh. Its two tests, fable_only_plans and
+ # xhigh_only_where_routed, change one thing in a copy of this checkout and want routing_text_agrees to refuse
+ # it. Their changes name today's wording, so they run only when named.
++# Amendment 1 (2026-11-12): check 7 reads no grammar. Outside the pinned statements, a sentence that says Fable is
++# about the planner alone, a sentence that says xhigh is about the builder, the AC auditor or round 1 alone, and a
++# sentence that names round 1 holds no plain high. wrong_pairs() has the rule and the three ways to fix a right
++# sentence it refuses (reword, *Why …* note, pin).
+ set -uo pipefail
+ HERE=$(cd "$(dirname "$0")" && pwd)
+ SRC=$(cd "$HERE/../../../../.." && pwd)     # the checkout root ($HOME-relative layout)
+@@ -92,13 +96,16 @@
+     acv) echo "$FD/references/ac-verification.md" ;;  house) echo "$FD/references/main-chat-housekeeping.md" ;;
+     away) echo "$FD/references/away-and-recovery.md" ;;
+     leorna) echo "$SD/leorna/SKILL.md" ;;  rfc) echo "$SD/review-fix-cadence/SKILL.md" ;;
++    route) echo "$FD/references/model-routing.md" ;;
+     f2b) echo "$SD/figma-to-bricks/SKILL.md" ;;  header) echo ".claude/setup/codex/agents-header.md" ;;
+     figma) echo "$FIGMA_DOCS" ;;   # wrapped text: its statements are compared flat (one space for each run)
+     *) return 1 ;;
+   esac
+ }
+ prose() { # <key>|<text>: every prose statement of a role's model or effort, and of the changed rules, outside the
+-          # routing sentence and the role tables, word for word (a wrong model, effort or rule in any of them fails)
++          # routing sentence and the role tables, word for word (a wrong model, effort or rule in any of them fails),
++          # and every other mention of Fable or xhigh that check 7's rule would refuse (a list of models, a board
++          # example, a statement naming two roles): check 7 takes pinned text out of a line before it reads it
+   cat <<'EOF'
+ claude|The pipeline main session itself runs on Opus 5.5 high (step 1 checks it).
+ claude|past 300k with nothing running, asks once per quiet spell for a fresh session
+@@ -158,85 +165,66 @@
+ figma|Then two fresh full reviews, each on the model and effort the global routing gives its round (global CLAUDE.md "Agent models")
+ figma|If HEAD now differs from the head `ac-check.sh` accepted, global CLAUDE.md step 7 decides what runs before step 2
+ figma|a rebase receipt carries the earlier reports only when HEAD is a pure rebase of the accepted head. The ledger commit made here before the rebase is a patch that head lacks, so HEAD is not a pure rebase of it and the session takes step 7's full path on the new head: a fresh review of what the accepted head lacks, then verifier → auditor → `ac-check.sh`.
++claude|(Fable and Opus share the Claude subscription)
++fd|**Fable 5.2** (`claude-fable-5-2`; added 2026-11-09
++fd|three xhigh Sol agents
++fd|2026-11-11: Fable only plans, and round 1 is reviewed on Opus 5.5 xhigh
++fd|| AC auditor (blind) | **Opus 5.5**, fresh, never saw the build or the verifier's report | **xhigh** |
++fd|the held Claude (Opus or Fable) roles
++fd|(`model="fable-5.2 high"`, `model="opus-5.5 xhigh"`, `model="gpt sol-6.1 high"`)
++fd|or `'claude-fable-5-2'` for a Fable role
++mini|`fable-5.2 high (mini)`, `opus-5.5 xhigh (mini)`, `gpt sol-6.1 high (mini)`
++mini|(applies to every Mini role on Claude, Fable or Opus)
++route|(small → whole pipeline on Sol; in-between → Opus medium; big → Opus xhigh)
++route|(Opus or Fable: any role in the table)
+ header|| The per-role Claude models and efforts, and the pipeline main session on Opus 5.5 high (`/model opus`, `/effort high`); "Sol 6.1 only as a substitute at a Claude limit" | Claude Code only.
+ EOF
+ }
+-wrong_pairs() { # wrong_pairs <file>…: each place that pairs a later round, a delta review, a fixer, the verifier or
+-                # the main session with Fable or xhigh, a review, round 1, the auditor, the finisher or the builder
+-                # with Fable (the planner is Fable's only role), or round 1 with plain high. Dated history is left
+-                # out: *Why …* notes, *(Superseded …)* notes and "supersedes the <date> table (…)". Two readings:
+-                # 1. a clause (ending at ; , ( ) | → or ". ") naming a role and a wrong model: "A Fable finisher …";
+-                # 2. a sentence (ending at ; → or ". "; a table row is one sentence) where each model or effort word
+-                #    belongs to the nearest role named before it, in a table row the nearest in its own cell or else
+-                #    the role of the row's first cell (with the role words joined to it by "and", "or",
+-                #    a comma or a space: "round-1 reviewer", "Reviewer, round 1"), so an aside or a table cell between
+-                #    them doesn't hide the pairing: "The AC auditor, a fresh agent, runs on Fable",
+-                #    "| Second reviewer (…) | **Fable 5.2** |", "9. **Reviewer, round 1 (Opus 5.5 high).**". It skips
+-                #    what a contrast (not, never, unlike, except, exception, instead, than) leads, to the end of its
+-                #    clause; a quote with a space in it and a parenthesis holding a date (history); a model followed
+-                #    by a plan word ("Fable planner", "Fable 5.2 high re-plans"); "reviewed", a verb that names no
+-                #    role ("Round 1 is reviewed on Opus 5.5 high" is round 1's); a word inside a name (site-reviews,
+-                #    fable-planner-only, xhigh_only_where_routed); and plain high that is no effort
+-                #    (an effort follows a model, sits beside "effort" or alone in a table cell: not "a high bar").
+-  # A wrapped line (indented, not a list item or table row) is read with the line it continues.
+-  awk 'function bad(role, m) { # role: l (later round, delta, round 2, fixer, verifier, main session), f (review,
+-                               # auditor, finisher, builder), 1 (round 1) or p (planner); m: fable, xhigh or high
+-    return (m == "fable" && role != "p") || (m == "xhigh" && role == "l") || (m == "high" && role == "1")
+-  }
+-  function word(c) { return c ~ /[a-z0-9_-]/ }
+-  function effort(s, at,   pre, post) { # plain high at offset at of s is an effort
+-    pre = substr(s, 1, at - 1); post = substr(s, at + 4)
+-    return pre ~ /(opus|fable)( [0-9.]+)?,? $/ || pre ~ /effort:? ?"?$/ || post ~ /^"? effort/ || (pre ~ /\| *$/ && post ~ /^ *\|/)
+-  }
+-  function unquote(l,   out, i, j, q) { # drops each "…" holding a space (a quote), pairing the marks in order
+-    out = ""
+-    while ((i = index(l, "\"")) > 0 && (j = index(substr(l, i + 1), "\"")) > 0) {
+-      q = substr(l, i + 1, j - 1)
+-      out = out substr(l, 1, i - 1) (q ~ / / ? "" : "\"" q "\""); l = substr(l, i + j + 1)
+-    }
+-    return out l
+-  }
+-  function sentence(s, at, row,   rest, t, p0, pos, b, a, cut, grp, gend, i, n, gap, cells, first) {
+-    s = tolower(s); rest = s; pos = 0; cut = 0; grp = ""; gend = 0; cells = 0
+-    while (match(rest, /later[ -]rounds?|delta|round[ -]?[12]|fixe[rs]|verifier|main session|review|auditor|finisher|builder|planner|exception|except|unlike|instead|never|than|not|fable|xhigh|high|[,():;|]|\. /)) {
+-      t = substr(rest, RSTART, RLENGTH); p0 = pos + RSTART; pos = p0 + RLENGTH - 1; rest = substr(rest, RSTART + RLENGTH)
+-      b = p0 > 1 ? substr(s, p0 - 1, 1) : ""; a = substr(s, pos + 1, 1)
+-      if (row && t == "|" && ++cells >= 2) {                                # a table cell ends: the next one starts
+-        if (cells == 2) first = grp; grp = first; gend = 0                  # from the first cell of the row (its role)
+-      }
+-      if (t ~ /^([,():;|]|\. )$/) { cut = 0; continue }                    # a clause ends, and with it a contrast
+-      if (t ~ /^(exception|except|unlike|instead|never|than|not)$/) { if (!word(b) && !word(a)) cut = 1; continue }
+-      if (cut) continue                                                     # "unlike round 1", "not xhigh"
+-      if (t ~ /^(fable|xhigh|high)$/) {
+-        if (word(b) || word(a)) continue                    # highest, high-risk, fable-planner-only, xhigh_only_where_routed
+-        if (t == "high" && !effort(s, p0)) continue                         # a high bar
+-        if (substr(s, pos + 1) ~ /^( [0-9.]+)?( x?high)? (re-?)?plan/) continue   # the Fable planner, Fable re-plans
+-        n = length(grp)
+-        for (i = 1; i <= n; i++)
+-          if (bad(substr(grp, i, 1), t)) { print at ": [" s "] (" t " for a role it is not routed to)"; return }
+-        continue
+-      }
+-      if (word(b) || (t ~ /^round[ -]?[12]$/ && a ~ /[0-9]/)) continue      # preview, site-reviews, pipeline_fixer, round 12
+-      if (t == "review" && substr(s, pos + 1, 2) == "ed") continue          # "round 1 is reviewed on": a verb
+-      gap = substr(s, gend + 1, p0 - gend - 1)
+-      if (gend == 0 || gap !~ /^([ ,-]|and |or |the |a )*$/) grp = ""       # a role not joined to the last one
+-      grp = grp (t ~ /^round[ -]?1$/ ? "1" : t ~ /^(review|auditor|finisher|builder)$/ ? "f" : t == "planner" ? "p" : "l")
+-      gend = pos
+-    }
++pins() { # the statements pinned word for word (check 1's routing sentence, check 6's prose()): check 7 takes them
++         # out of a line before it reads it, so a pinned statement may name any roles and models
++  printf '%s\n' "$ROUTING"; prose | sed 's/^[^|]*|//'
++}
++wrong_pairs() { # wrong_pairs <file>…: each sentence that breaks check 7's rule, as <file>:<line>: [<sentence>] (<why>)
++  # The rule reads no grammar. A sentence is a line (with its indented continuation lines) cut at ; → and ". ";
++  # a table row is one sentence. Taken out first: the pinned statements (pins), marked history (*Why …* notes,
++  # *(Superseded …)* notes, "supersedes the <date> table (…)") and this story's own names. Then, in lower case:
++  #   a. a sentence that says fable must say plan (planner, plan, re-plan) and name no other role;
++  #   b. a sentence that says xhigh must name the builder, the AC auditor or round 1, and no other role
++  #      (a reviewer only beside round 1);
++  #   c. a sentence that names round 1 must not hold the word high.
++  # Role words: review, round <n>, later round, delta, audit, finisher, builder, fixer(s), fixes, verifier,
++  # main session, and for b also planner.
++  # A right sentence the rule refuses is fixed in one of three ways:
++  #   - reword it so it names only its own role: "Every later round runs on Opus 5.5 high." (not "Every round
++  #     after round 1 …"), "The verifier runs on Opus 5.5 high." (not "The verifier, unlike round 1, …"),
++  #     "Fable 5.2 high is the planner's model, and no other role's." (not "Only the planner, not the builder …");
++  #   - move history into a *Why …* note: *Why (2026-11-11): Justin: "round 1 on opus xhigh, not fable".*;
++  #   - pin it word for word in prose() (a list of models, a board example, a statement naming two roles).
++  # Not covered: a statement split over two sentences or two unindented lines ("Round 1 is the full review. It
++  # runs on Opus 5.5 high."), and a role named by another word in a sentence the rule allows ("The first review
++  # runs on Opus 5.5 high.", "The blind check of the plan runs on Fable 5.2 high.").
++  PINS=$(pins) awk 'BEGIN { np = split(ENVIRON["PINS"], pin, "\n") }
++  function judge(s, at,   u, t, r1, why) {
++    u = tolower(s); t = u; r1 = gsub(/round[ -]?1([^0-9]|$)/, " ", t)        # t: the sentence without its round 1
++    why = ""
++    if (u ~ /fable/ && (u !~ /plan/ || u ~ /review|round[ -]?[0-9]|later[ -]round|delta|audit|finisher|builder|fixe[rs]|verifier|main session/))
++      why = "a. Fable is for the planner alone: say plan and name no other role"
++    else if (u ~ /xhigh/ && ((u !~ /builder|auditor/ && !r1) || (u ~ /review/ && !r1) || t ~ /planner|round[ -]?[0-9]|later[ -]round|delta|fixe[rs]|verifier|finisher|main session/))
++      why = "b. xhigh is for the builder, the AC auditor and round 1: name one of them and no other role"
++    else if (r1 && u ~ /(^|[^a-z0-9_-])high([^a-z0-9_-]|$)/)
++      why = "c. round 1 is on xhigh: no plain high in a sentence that names round 1"
++    if (why != "") print at ": [" s "] (" why ")"
+   }
+-  function check(l, at,   c, n, i) {
+-    gsub(/\*Why[^*]*\*/, "", l); gsub(/\*\(Superseded[^)]*\)\*/, "", l)
+-    gsub(/supersedes the [0-9-]+ table \([^)]*\)/, "", l)
+-    n = split(l, c, /[;,()|]|→|\. /)
+-    for (i = 1; i <= n; i++)
+-      if ((c[i] ~ /[Ll]ater[ -]rounds?|[Dd]elta|round 2|[Ff]ixe[rs]|[Vv]erifier|main session/ && c[i] ~ /[Ff]able|xhigh/) ||
+-          (c[i] ~ /[Rr]eview|[Rr]ound[ -]?1|[Aa]uditor|[Ff]inisher/ && c[i] ~ /[Ff]able/)) {
+-        print at ": [" c[i] "]"; return
+-      }
+-    l = unquote(l); gsub(/\([^()]*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][^()]*\)/, "", l); gsub(/[*`]/, "", l)
+-    if (l ~ /^[ \t]*\|/) { sentence(l, at, 1); return }                      # a table row
++  function check(l, at,   i, k, n, c) {
++    gsub(/\*Why[^*]*\*/, " ", l); gsub(/\*\(Superseded[^)]*\)\*/, " ", l)
++    gsub(/supersedes the [0-9-]+ table \([^)]*\)/, " ", l)
++    gsub(/fable-planner-only|fable_only_plans|xhigh_only_where_routed/, " ", l)
++    for (k = 1; k <= np; k++) if (pin[k] != "")
++      while ((i = index(l, pin[k])) > 0) l = substr(l, 1, i - 1) " " substr(l, i + length(pin[k]))
++    if (l ~ /^[ \t]*\|/) { judge(l, at); return }                            # a table row
++    gsub(/[*`]/, "", l)
+     n = split(l, c, /;|→|\. /)
+-    for (i = 1; i <= n; i++) sentence(c[i], at, 0)
++    for (i = 1; i <= n; i++) judge(c[i], at)
+   }
+   FNR == 1 { if (buf != "") check(buf, at); buf = "" }
+   {
+@@ -344,11 +332,12 @@
+ EOF
+   [ $bad = 0 ] || return 1
+   echo "# 6. the $(prose | grep -c '^') prose statements of a role's model, effort or changed rule read as pinned"
+-  # 7. no clause anywhere else pairs a later round, a fixer, the verifier or the main session with Fable or xhigh,
+-  #    or a review, round 1, the auditor or the finisher with Fable
++  # 7. outside the pinned statements, every sentence that says Fable is about the planner alone, every sentence
++  #    that says xhigh is about the builder, the AC auditor or round 1 alone, and none names round 1 with plain high
+   p=$(cd "$SRC" && wrong_pairs $(scan_files))
+-  [ -z "$p" ] || { fail "a role paired with the wrong model or effort: $p"; return 1; }
+-  echo "# 7. no rule file or project CLAUDE.md copy pairs a later round, a fixer, the verifier or the main session with Fable or xhigh, or a review, round 1, the auditor or the finisher with Fable"
++  [ -z "$p" ] || { fail "a role paired with the wrong model or effort: $p
++# to fix a right sentence: reword it to name only its own role, move history into a *Why …* note, or pin it in prose() (see wrong_pairs)"; return 1; }
++  echo "# 7. outside the pinned statements, no rule file or project CLAUDE.md copy says Fable beside a role other than the planner, xhigh beside a role other than the builder, the AC auditor or round 1, or plain high beside round 1"
+   # 8. the Codex copy, built from this checkout's CLAUDE.md and header
+   S=$(mktemp -d "${TMPDIR:-/tmp}/pipeline-rules-test.XXXXXX") || { fail "mktemp"; return 1; }
+   CODEX_HOME="$S/codex" CODEX_BUILD_RULES="$SRC/$CLAUDE_MD" bash "$SRC/.claude/setup/codex/build-codex.sh" \
+```
+
+`mutate.py`, the mutations of "Mutations of the test the fixer must show are caught":
+
+```python
+#!/usr/bin/env python3
+"""mutate.py <id> <test file>: applies one named mutation in place (each old text must be there exactly once)."""
+import sys, pathlib
+M = {
+ 'M1': (' || u ~ /review|round[ -]?[0-9]|later[ -]round|delta|audit|finisher|builder|fixe[rs]|verifier|main session/))', '))'),
+ 'M2': ('(u !~ /plan/ || u ~ /review', '(u ~ /review'),
+ 'M3': (' || t ~ /planner|round[ -]?[0-9]|later[ -]round|delta|fixe[rs]|verifier|finisher|main session/))', '))'),
+ 'M4': ('((u !~ /builder|auditor/ && !r1) || (u ~ /review/', '((u ~ /review/'),
+ 'M5': (' || (u ~ /review/ && !r1) || t ~', ' || t ~'),
+ 'M6': ('else if (r1 && u ~ /(^|[^a-z0-9_-])high([^a-z0-9_-]|$)/)', 'else if (0)'),
+ 'M7': ('n = split(l, c, /;|→|\\. /)\n    for (i = 1; i <= n; i++) judge(c[i], at)', 'n = split(l, c, /[;,()]|→|\\. /)\n    for (i = 1; i <= n; i++) judge(c[i], at)'),
+ 'M8': ('      while ((i = index(l, pin[k])) > 0) l = substr(l, 1, i - 1) " " substr(l, i + length(pin[k]))', '      ;'),
+ 'M9': ('    if (l ~ /^[ \\t]*\\|/) { judge(l, at); return }', '    gsub(/\\([^()]*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][^()]*\\)/, "", l)\n    if (l ~ /^[ \\t]*\\|/) { judge(l, at); return }'),
+ 'M10': ('u = tolower(s); t = u;', 'u = s; t = u;'),
+ 'M11': ('    gsub(/fable-planner-only|fable_only_plans|xhigh_only_where_routed/, " ", l)\n', ''),
+ 'M12': ('    gsub(/\\*Why[^*]*\\*/, " ", l); gsub(', '    gsub('),
+ 'M13': ('if (why != "") print at ": [" s "] (" why ")"', 'if (why != "") print "[" s "] (" why ")"'),
+ 'M14': ("fd|| AC auditor (blind) | **Opus 5.5**, fresh, never saw the build or the verifier's report | **xhigh** |\n", ''),
+ 'Tc': ("row \"$f\" 'AC auditor' '**Opus 5.5**' '**xhigh**' -- Fable || return 1", "row \"$f\" 'AC auditor' '**Opus 5.5**' '**xhigh**' || return 1"),
+ 'Td': ("grep -o '\"fable\"' | grep -c '^')\" = 1 ]", "grep -o '\"fable\"' | grep -c '^')\" -ge 1 ]"),
+ 'Te': ('round 1 on Fable\n', ''),
+ 'Tf': ("row \"$f\" 'Reviewer, round 1' '**Opus 5.5**' '**xhigh**' -- Fable || return 1", "row \"$f\" 'Reviewer, round 1' '**Opus 5.5**' -- Fable || return 1"),
+}
+mid, path = sys.argv[1], pathlib.Path(sys.argv[2])
+old, new = M[mid]; t = path.read_text()
+assert t.count(old) == 1, '%s: want 1, found %d' % (mid, t.count(old))
+path.write_text(t.replace(old, new))
 ```
