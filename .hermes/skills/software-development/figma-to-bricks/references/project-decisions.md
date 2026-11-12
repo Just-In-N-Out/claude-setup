@@ -395,3 +395,5 @@
     and its ☰); everything else converts exactly as before. A call bar right over a plain nav bar is one header
     ("Both are the header"). Wanted, not built: a picture, four short items and a button right under a call bar is
     the main header too ("Main header, as before", follow-up; HANDOFF header-bar review 8).
+
+- **The panel's two boxes (2026-11-11, plugin-header-footer-ticks):** they read "Leave the header out of the paste (my site already has its own; the page starts below it)" and "Leave the footer out of the paste (my site already has its own)"; a tick still leaves the part out, an empty box keeps it; the line under the boxes says what the next paste does in all four states (`tickName()` in `src/core/normalise/site.ts` holds the names).
