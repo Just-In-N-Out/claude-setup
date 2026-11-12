@@ -259,6 +259,8 @@ metadata:
 
 **Status 2026-11-11 (Claude Code ClickUp check):** PI-1 has no `pi-1` tag and its sprint lists (Sprint 1–5) are empty; PI-1 cards are the untagged `86bbu3x…` cards in the E1–E9 lists. Justin's PI-1 cards: 9 assigned, 9 complete (100%); 7 closed inside PI-1's dates (8/31–10/4), 86bbu3xmt (10/6) and 86bbu3xg8 (10/12) after. 86bccndx6 (custom domain, closed 11/8) is untagged but later work, not counted. PI-2 (`pi-2` tag): 23 assigned, 21 complete, 86bcxnymy and 86bcxnykn in verification.
 
+**Status 2026-11-11 (Claude Code ClickUp check, team share):** Leorna MVP Pilot space, 119 real cards, 100 complete. Completed by assignee, all time: Christian 37, Justin 31, Yan 14, Sonal 12, Youssef 4, unassigned 2. Since 9/21 (Justin's first close 9/22): 80 complete, Christian 34, Justin 31, Yan 14. Since PI-2 start 10/19: 43 complete, Justin 22 (51%), Christian 11, Yan 10. Justin holds 6 of 7 E14 Integrations cards, 8 of 10 E10 Content Library, 5 of 9 E11 Pack Builder. Justin is an intern and wants a return offer (2026-11-11).
+
 ## Other cards
 - **Daily auto-update on startup** (client, "available for interns"): unblocked by #43.
 - **Internal dogfood chat wiring** (optional): blocker unknown without the card.
