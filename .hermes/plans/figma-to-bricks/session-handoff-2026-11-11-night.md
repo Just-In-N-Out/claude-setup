@@ -98,3 +98,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - bricks-icons review 3 clean (MOVE ON 643109e; R3-1 P3). Old verifier/auditor archived as -c78fa0c. Verifier 2 dispatched on 643109ec / base 56b5076b.
 - site-no-div review 1: REVIEW AGAIN (3 P2: R1-1 % sizes fold, R1-2 nested relative font sizes, R1-3 HANDOFF live check words). Fixer 1 dispatched (site-no-div-fix1 from ae288ac8). Shared-styles builder told.
 - site-fonts-match rebased → 45b9c3e0 (source conflicts → full path; AC7 base sums stale). Fixer 2 dispatched (regenerate 3 elementor sums, test-only). Then delta review (resolution + re-pins + sums) → verifier → auditor → ac-check. Repo: 8 empty unreachable objects from 2026-11-10 deleted by the session; fsck clean.
+- bricks-icons verifier 2 handed back 'incomplete' (ACs 6/6 proven; long gates running in background). Told it to finish gates and report final verdict.
