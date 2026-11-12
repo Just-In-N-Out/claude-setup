@@ -104,3 +104,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - site-no-div fixer 1 done: 374ea2ce (R1-1..R1-4 fixed; 11/11 mutants). Dispatched: plan amendment 1 (AC14 words, Fable) + review 2 (delta, Opus high). Shared-styles builder told to rebase onto 374ea2ce.
 - site-no-div: amendment 1 installed (AC14 words). Amendment 2 (AC4 vs builder's Section/Container tag rule) dispatched. AC5 rows (ac5-rows.txt) go to the next fixer step after review 2.
 - site-no-div review 2: REVIEW AGAIN (R2-1 flex-row % exception, R2-2 heading font settings). Fixer 2 dispatched (+ AC5 rows). Round 3 = last review (project cap).
+- site-no-div amendment 2 installed (sha 60206e75, AC4 = head's rule S). AC4 rows sent to fixer 2.
