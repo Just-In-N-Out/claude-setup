@@ -18,6 +18,8 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Progress (2026-11-11, latest first)
 
+- **2026-11-12 02:15 UTC: MERGED** (#128 → 62c6d7d, #36 → 891e652). ClickUp comment 90140280933270 + 9 images posted. Owed: shippable check after main CI, team message.
+
 - **2026-11-12 02:05 UTC: both PRs OPEN, CLEAN, CI green.** CP #128 head `1af966c` (CI 43136623569), client #36 head `d655a73` (CI 43121848966). PR texts refreshed. Waiting on Justin to merge (CP first). Watch: #130 (v0.2.0 close-out) conflicts with #128 in stories.json; whichever merges second needs a bring-in. After merge: shippable check, team message, "post" (images: auditor-3 ACs show loopback download links; verifier-3 hides them).
 
 - Auditor round 3 clean; `ac-check.sh --reviews` READY FOR THE USER on `d655a73` (verifier-3 + auditor-3; AC8 dropped); CP MOVE ON at `1af966c`; mains unchanged (client `6212ae1`, CP `8979bed`). leorna-test-pg starts again; verifier-2's six DBs dropped. PR finisher 2 dispatched (`-pr-finisher-2.md`): push #128 `1af966c`, refresh both PR texts, CI.
