@@ -18,6 +18,8 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Progress (2026-11-11, latest first)
 
+- Verifier round 3 clean (AC1–AC7 on client `d655a73` vs CP `1af966c`). Auditor round 3 dispatched (`-auditor-3.md`). Client main now `6212ae1` (#35, release notes; #36 still CLEAN).
+
 - CP review round 6 clean: MOVE ON at `1af966c` (base `8979bed`); recovery `UPDATE schema_migrations SET version=34 WHERE version=33` proven (`control-plane/review-6/recovery-probe/`). Client #36 CI green (run 43121848966). Verifier round 3 dispatched (`-verifier-3.md`); auditor-3 brief ready. Then ac-check with verifier-3/auditor-3, then PR finisher 2: push #128 (`1af966c`), refresh PR texts (000034, version=34, both bring-ins, recovery line), CI.
 
 - PRs OPEN: CP #128 (pushed `926997e`, BEHIND), client #36 (`d655a73`, CI rerun 43121848966 after close/reopen). #129 merged 23:49 (takes 000033). CP bring-main-2: local head `1af966c` (record `b389a45` + merges `808dad5`, `87a61c1` with main `8979bed` + renumber to 000034), gates green, not pushed. Next: CP review round 6 (brief `-reviewer-cp-6.md`, base `8979bed`) → verifier-3 → auditor-3 (CP `1af966c`, client `d655a73`) → ac-check → push #128 + PR text refresh (main SHA, 000034, version=34, scratch-DB recovery) + CI.
