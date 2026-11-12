@@ -13,7 +13,7 @@ footer-icon-list may have landed). Those jobs touched `src/core/site/`, `src/web
 
 
 ## Do
-1. Your own worktree: `git checkout -B media-avif-alt-final caf9291f…`; `git rebase <main's SHA>`. Record each conflict in
+1. Your own worktree: `git checkout -B media-avif-alt-final2 93e1afcf3aff45334972cfda1c70f3eabd67ed1c` (the head already rebased onto 20ce41a8; receipt-93e1afc.log passed there); `git rebase <main's SHA>`. Record each conflict in
    `/home/justin/.hermes/plans/figma-to-bricks/evidence/media-avif-alt/rebase/conflicts.md` and `range-diff.txt`. HANDOFF/ledger
    only → both sides word for word, this job's section first. Any source/test conflict → keep both sides' meaning, record it, say so.
 2. Main's jobs since 02481763 (media-clickable, site-scroll-lock, site-menu-motion, site-sticky-header, maybe footer-icon-list) may have
