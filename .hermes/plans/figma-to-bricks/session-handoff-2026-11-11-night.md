@@ -81,3 +81,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 ## 2026-11-12 01:15
 - bricks-icons: review 2 clean (MOVE ON c78fa0cf). Amendment 1 installed (M1 only, AC1–AC7; rules 2–5 prose matched to head's stricter code; old copy plan-approved-v1-before-amendment-1.md). Verifier dispatched on c78fa0cf / base 02481763.
 - New job bricks-icons-site (the importer half, AC1–AC5, AC5 live): plan ~/.hermes/plans/figma-to-bricks/bricks-icons-site.md. Full (planner's recommendation; Justin's "go with recommended"). Starts after site-no-div, site-shared-styles and bricks-icons M1 are on main (Task 0 checks).
+- 01:57 site-native-structure: verifier 3 clean (READY FOR THE USER, AC15 live). Auditor 3 dispatched. Merge finisher must re-pin media-avif-untouched and site-import-figma-unchanged (src file set).
