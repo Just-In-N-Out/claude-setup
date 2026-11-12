@@ -7,8 +7,18 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-11)
 
-- **Current build `2026-11-11.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-11.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-11.7 site-sticky-header (website importer):** a header whose bars the site's script keeps at the top (the
+    capture's `web.position: "fixed"` mark, not fixed by the site's own CSS) gets one class `<page>__site-stay-<4>` on
+    the header root: `position: sticky; top: var(--wp-admin--admin-bar--height, 0px); z-index: 100` (also on
+    `#brx-header:has(.N)` for a Header template), `html:root, html:root > body { overflow-x: clip }` and the two
+    `no-scroll` lines, so it stays at the top pasted in the page or in a Header template (Sticky header off or on), with
+    `overflow-x: hidden` in Additional CSS, and while a pop-up holds the page; headers the site's CSS keeps or that
+    scroll away paste as before; Figma designs byte for byte. Q1–Q5 A not yet confirmed. Known limits: a painted
+    `<header>` wrapper isn't marked; a bar fixed only after a strip scrolls away pastes in flow. Paste check **3eb**
+    (AC9, live: remake the pastes from the saved scan, paste into an emptied page, the header stays at the top on
+    desktop and phone in a private window).
   - **2026-11-11.6 site-menu-motion (website importer):** inside a box a button opens (a ☰ drawer, a pop-up), a
     `<details>` list whose own height the site's script animates when its summary is pressed (Elementor's Nested
     Accordion: Web Animations, 400 ms linear on B-Dry) is recorded by the scan (`CodeNode.slide`: duration, easing) and
