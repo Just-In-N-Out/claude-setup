@@ -285,3 +285,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-12 | site-fonts-match | feature-dispatch | script: a post-restart check the orchestrator runs before resuming agents, listing 0-byte files under .git/objects, .git/refs and .git/worktrees with their reachability | offered
 - 2026-11-12 | site-no-div | figma-to-bricks | test: a test/web case with a sticky bar in a same-height wrapper: render the whole-page paste, scroll, assert the bar's top equals the site's | offered
 - 2026-11-12 | site-no-div | figma-to-bricks | test: each part's "kept as Blocks" N is at most its Structure line's Block count, on every fixture and Justin's scan | offered
+- 2026-11-12 | site-shared-styles | figma-to-bricks | test: a web test editing each kind of shared class's size and comparing with the same edit in the carriers' own classes with the switch off, over every text class of a capture | offered
