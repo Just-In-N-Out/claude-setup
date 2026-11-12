@@ -48,3 +48,15 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 ## Done for Justin, owed later
 - Footer paste help: footer.json was on his clipboard; he hasn't sent screenshots.
 - structure-parity audit report: `evidence/structure-parity/report.md`.
+
+## Updates (later the same night)
+- **plugin-header-footer-ticks**: planned (cause: a TICKED box leaves a part out; empty keeps it by design; the panel's words and its
+  "leaves these out" line mislead) → wording-only fix; **builder running** (`briefs/plugin-header-footer-ticks-builder.md`). Ask Justin
+  for a debug file if his boxes were ticked (then it's a recognition bug, its own job).
+- **site-fonts-match** (now **Full**): bdryswi.com's own Roboto 600/ADLaM files 403 → its headings show system sans-serif; the paste
+  shows Google Roboto. ⭐ Q1 A taken (match what visitors see; one-line switch to B). **Builder running** (`briefs/site-fonts-match-builder.md`).
+  Needs Justin's re-scan for the live AC.
+- **site-sticky-header**: verifier-2 clean on dac22907; **auditor-2 running** (`briefs/site-sticky-header-auditor-2.md`). Then rebase onto
+  e61c0ca0 (expect notes-only) → receipt → merge as next build, 3eb.
+- **media-avif-alt**: fixer 1 done (caf9291f); **Full review round 2 running** (`briefs/media-avif-alt-reviewer-2.md`).
+- **site-menu-motion**: merged as 11.6 (3ec).
