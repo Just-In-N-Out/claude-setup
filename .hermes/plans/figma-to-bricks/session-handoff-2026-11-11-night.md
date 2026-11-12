@@ -115,3 +115,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - Build 2026-11-12.2 (site-fonts-match) 6cd6154e pushed; 3eh. Lock released. Next free paste id 3ei.
 - bricks-icons verifier 2 clean (READY 6/7 on 643109ec). Dispatched in parallel: auditor 2 on 643109ec + rebase-2 finisher onto 6cd6154e (branch bricks-icons-final2; notes-only rule if only HANDOFF/pin conflicts).
 - bricks-icons rebase-2: 37687fcb on 6cd6154e, HANDOFF-only conflict, receipt EXIT=0. Short review 4 dispatched; auditor 2 (on 643109ec) still running. Merge on auditor clean + review 4 clean + receipt (notes-only rule).
+- bricks-icons review 4 clean (37687fcb); waiting on auditor 2. site-shared-styles builder done (e124dcda); review 1 (Fable) dispatched. Started early on e124dcda: shared-palette builder, plugin-parity builder. importer-parity waits (same site code as shared-styles' fixes).
