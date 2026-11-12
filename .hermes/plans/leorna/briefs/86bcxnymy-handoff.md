@@ -18,6 +18,8 @@ Story: [Client self-update to the admin-approved version, with staged rollout](h
 
 ## Progress (2026-11-11, latest first)
 
+- Auditor round 3 clean; `ac-check.sh --reviews` READY FOR THE USER on `d655a73` (verifier-3 + auditor-3; AC8 dropped); CP MOVE ON at `1af966c`; mains unchanged (client `6212ae1`, CP `8979bed`). leorna-test-pg starts again; verifier-2's six DBs dropped. PR finisher 2 dispatched (`-pr-finisher-2.md`): push #128 `1af966c`, refresh both PR texts, CI.
+
 - Verifier round 3 clean (AC1–AC7 on client `d655a73` vs CP `1af966c`). Auditor round 3 dispatched (`-auditor-3.md`). Client main now `6212ae1` (#35, release notes; #36 still CLEAN).
 
 - CP review round 6 clean: MOVE ON at `1af966c` (base `8979bed`); recovery `UPDATE schema_migrations SET version=34 WHERE version=33` proven (`control-plane/review-6/recovery-probe/`). Client #36 CI green (run 43121848966). Verifier round 3 dispatched (`-verifier-3.md`); auditor-3 brief ready. Then ac-check with verifier-3/auditor-3, then PR finisher 2: push #128 (`1af966c`), refresh PR texts (000034, version=34, both bring-ins, recovery line), CI.
