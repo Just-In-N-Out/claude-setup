@@ -99,13 +99,14 @@ index d6a2493..76b223d 100644
  
  ## Output Format
 diff --git a/skills/engineering-best-practices/SKILL.md b/skills/engineering-best-practices/SKILL.md
-index 856df40..233aa67 100644
+index 856df40..1e37d3a 100644
 --- a/skills/engineering-best-practices/SKILL.md
 +++ b/skills/engineering-best-practices/SKILL.md
-@@ -420,12 +420,16 @@ enable monitoring, posts or runners; automation needs separate authority/setup.
+@@ -420,12 +420,17 @@ enable monitoring, posts or runners; automation needs separate authority/setup.
  
  ## Pitfalls
  
++- In bash, `tee /dev/stderr` inside a script whose stderr goes to a file reopens that file and truncates it, losing earlier log sections; capture into a variable and echo it instead.
 +- In bash, `jq … | @tsv` read with `IFS=$'\t' read -r a b c` merges empty fields (tab is IFS whitespace), so every later field shifts; use `join("\u001f")` in jq with `IFS=$'\x1f' read` (dream-pass builder: a null `commit` and an empty `agent_id` shifted fields in two hooks). In awk, reading `arr[k]` creates the key, so test `k in arr` before any read of `arr[k]` (dream-trim auditor). A command chained with `;` after `cd <scratch folder>` runs in the session's folder, the user's repo, when the `cd` fails: use `git -C <absolute path>` for every scratch-repo command, above all rebase, reset, checkout and merge (footer-icon-list planner 2: two read-only git commands ran in the main repo).
  - Do not impose GitFlow, a new tracker, extra agents or deployment on a small task.
    The dev/stage/main branch model is a standing team default for Leorna product
