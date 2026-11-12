@@ -119,3 +119,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - bricks-icons M1 ff-merged into main (37687fcb; notes-only rule). After-merge finisher dispatched (BUILD 2026-11-12.3, paste check 3ei). Lock held.
 - Build 2026-11-12.3 (bricks-icons M1) 7f54b0a5 pushed; 3ei. Lock released. Next free paste id 3ej. site-no-div (on 56b5076b) must rebase onto 7f54b0a5 after its auditor.
 - site-shared-styles review 1: REVIEW AGAIN (R1-1 em line heights). Fixer 1 dispatched (+R1-4 next steps, R1-5 HANDOFF). R1-2 (font-family vs fonts rename) to handle at rebase onto main. importer-parity still waits.
+- site-no-div verifier clean (13/14 on 828f7dc0); V-1 sticky-wrapper → follow-up (round cap). Auditor dispatched.
