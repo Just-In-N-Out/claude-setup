@@ -774,6 +774,17 @@ index f2d882d..81e37b0 100644
  `references/mutation-evidence-validation.md` for copy-path checks, delegated
  controller qualification, diagnostic parsing, unittest subTest/exception
  behavior and compiled-function rebinding. Qualify those instruments before
+diff --git a/skills/mutation-testing-discipline/references/blind-test-patterns.md b/skills/mutation-testing-discipline/references/blind-test-patterns.md
+index a536548..4a7f805 100644
+--- a/skills/mutation-testing-discipline/references/blind-test-patterns.md
++++ b/skills/mutation-testing-discipline/references/blind-test-patterns.md
+@@ -332,3 +332,6 @@ a once-only decision can still authorize the wrong queued request.
+    core evidence only; every native adapter with an unexecuted or failing
+    callback path remains unverified. Synthetic card selections establish local
+    integration behavior, not actual human consent or remote delivery.
++
++## A keep-set built inline in a large function
++A set of "keep this" members gathered inline from many sources inside one big function leaves each member's drop-it mutant reachable only through large fixtures, and most survive. Pull the builder into its own exported function and assert it member by member, plus each guard alone through the pure step: site-no-div rule N went from 15 of 31 survivors to 37 of 37 killed (`foldKeep`).
 diff --git a/skills/security-best-practices/SKILL.md b/skills/security-best-practices/SKILL.md
 index 6f12e3e..f64ec71 100644
 --- a/skills/security-best-practices/SKILL.md

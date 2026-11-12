@@ -279,3 +279,6 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-11 | bricks-icons | figma-to-bricks | test: a test/browser helper that refuses a uniform (one-colour) region in any pixel compare | offered
 - 2026-11-12 | bricks-icons | figma-to-bricks | test: in test/unit/render.test.ts, for each element-specific CSS printer, a payload whose desktop control and _width:<bp> differ shows the breakpoint value in the narrower window in the default order | offered
 - 2026-11-12 | bricks-icons | implementation-planning | script: an amendment's regex.sh prints grep -n '^#' for the old and new plan and fails on a heading that appears twice in the new one | offered
+- 2026-11-12 | site-no-div | figma-to-bricks | test: a unit test feeding every new element-by-shape rule a word box holding one link and a box painted by a `border` shorthand only | offered
+- 2026-11-12 | site-no-div | figma-to-bricks | lint: a test/web check that every PartPaste literal and every readSection call on a part paste passes `lifted`/PART | offered
+- 2026-11-12 | site-no-div | figma-to-bricks | script: the golden regenerator refuses to write unless its run on the base archive reproduces the base's goldens | offered
