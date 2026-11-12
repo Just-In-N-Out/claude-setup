@@ -5,10 +5,23 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-11)
+## Status (2026-11-12)
 
-- **Current build `2026-11-11.10`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-12.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-12.1 site-native-structure (website importer):** with `--elementor` the paste is Bricks' own elements:
+    every top-level Elementor container a Section, a boxed container's inner a Container, nested containers Blocks
+    (Row, Column, Grid, Box); Elementor buttons Bricks Buttons (words in Text, link in Link to, no Style, an svg icon as
+    the Button's ::before/::after), dividers Dividers, a linked picture or logo one Image with Link to, each standing
+    alone where the site's box only holds it, else kept in one labelled box, named; a part's root that draws nothing is
+    left out, its top Sections carrying the reset, scroll-lock and fonts (else one Block "Header"/"Page"/"Footer",
+    named); a header kept at the top keeps its root as one Block "Header" only where two pasted top Sections show at one
+    captured width (B-Dry's desktop and phone bars lift, each with the stay class); Sections labelled by their first
+    words, kept widgets by their Elementor type; the plain route and Figma designs byte for byte as before. Q1–Q11 A and
+    the builder's rulings (a button whose place can't be proved keeps a Div "Button" around it) not yet confirmed.
+    Paste check **3eg** (AC15, live: a capture made with Build 2026-11-11.2 or later, paste B-Dry's home on staging: two
+    top Sections, the bar for each width stays at the top at 1440 and 390, ☰ opens, one pop-up opens as on
+    bdryswi.com).
   - **2026-11-11.10 media-avif-alt (website importer uploader):** `site:upload`/`site:import` make every still JPEG,
     PNG and WebP a `.avif` before the typed yes (the panel's pinned encoder in an offline Chrome of the tool's own; own
     size up to 2560 px, upright, alpha kept; SVG, GIFs, moving pictures and AVIF stay as served, named; a picture that
