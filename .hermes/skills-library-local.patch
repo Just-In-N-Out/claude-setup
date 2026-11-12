@@ -227,7 +227,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..bad8aa2 100644
+index f2d882d..6e59ce9 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,71 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -711,7 +711,7 @@ index f2d882d..bad8aa2 100644
 +    subtests ran: assign each such line to the `=== RUN` or `=== NAME` block it
 +    follows (a parent's own lines print under `=== NAME <parent>` after its
 +    subtests; 86bccndx6 verifier 4; a `t.Fatal` inside `t.Helper` functions is
-+    reported at the first non-helper caller's line, so expect that line; 86bccndx6 auditor 4)
++    reported at the first non-helper caller's line, so expect that line; 86bccndx6 auditor 4; elsewhere expect the `t.Fatal*` line itself, never the `if` above it: `grep -n 't\.Fatal'` the test file; 86bcxnykn auditor 2)
 +    (`awk '/^=== (RUN|NAME)/{run=$3} /_test.go:[0-9]+:/{print run, $0}'`) and match the
 +    expected failure text (902a verifier: V12/V20/V22 first graded on a log line;
 +    902a auditor: "last line before `--- FAIL`" named the last failing subtest).
