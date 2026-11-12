@@ -227,10 +227,10 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..6e59ce9 100644
+index f2d882d..81e37b0 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
-@@ -31,12 +31,71 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
+@@ -31,12 +31,72 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
  
  - A critical permission/identity/data-integrity guard needs targeted sensitivity proof.
  - A changed caller/refactor may bypass an assertion, or a supposed regression test
@@ -286,7 +286,8 @@ index f2d882d..6e59ce9 100644
 +  first, and have the fake exit when `"$REAL" = "$0"`. Never kill strays with
 +  `pkill -f`: it also matches the Bash tool's own `bash -c` wrapper, even with the
 +  `[x]yz` trick, so list PIDs with `pgrep -f`, drop shells and kill the rest
-+  (`ac-verification.md`). A Bash-tool background run sits in its own process group,
++  (`ac-verification.md`); for the same reason `until ! pgrep -f <name>` never ends when the
++  waiter's own command holds the name: wait on a pid file or the run's output (fable-planner-only fixer 2). A Bash-tool background run sits in its own process group,
 +  so `kill -- -<pgid>` can miss it: kill by session (`ps -eo pid,pgid,sid`) and confirm
 +  none of that session is left before restarting. A harness started with
 +  `setsid` can outlive its background task's "completed" notice, so wait on its PID
@@ -303,7 +304,7 @@ index f2d882d..6e59ce9 100644
  
  ## The Core Rule
  
-@@ -46,9 +105,31 @@ apply its owned causal mutation, re-run unchanged tests, require intended RED,
+@@ -46,9 +106,31 @@ apply its owned causal mutation, re-run unchanged tests, require intended RED,
  then restore exact candidate bytes and verify the relevant GREEN.
  ```
  
@@ -338,7 +339,7 @@ index f2d882d..6e59ce9 100644
  
  ## Procedure
  
-@@ -82,15 +163,83 @@ itself prove that the entire test is worthless.
+@@ -82,15 +164,83 @@ itself prove that the entire test is worthless.
     unaffected controls.
     Before registering a mutation, grep every call site of the guarded helper
     and list every other mechanism that yields the same observable, such as a
@@ -428,7 +429,7 @@ index f2d882d..6e59ce9 100644
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
     unchanged across its green baseline, mutation and restored run. A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -99,14 +248,33 @@ itself prove that the entire test is worthless.
+@@ -99,14 +249,33 @@ itself prove that the entire test is worthless.
     leave mutated source behind. After a mid-cycle crash, compare the working
     file with the saved green bytes and restore before launching another probe.
  4. **Require the intended failure for every mutation.** A nonzero exit from
@@ -465,7 +466,7 @@ index f2d882d..6e59ce9 100644
     Validate evidence against the exact intentional variant and actual process
     return, not pristine-only assumptions or attempted-publication flags.
     Repair diagnostic readers offline against retained output; preserve their
-@@ -142,12 +310,22 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -142,12 +311,22 @@ transcripts in `references/blind-test-patterns.md`.
  1. **The assertion matched a comment.** A test regexed a window of source and
     found its keyword inside an explanatory comment, not the code. Parse the
     *construct* (e.g. just the set literal) and strip comments before matching.
@@ -489,7 +490,7 @@ index f2d882d..6e59ce9 100644
  4. **A different guard masked the one under test.** A per-person cap test
     passed because a dedup guard fired first; deleting the cap entirely stayed
     green. Build fixtures that isolate the guard under test, and add a
-@@ -155,12 +333,33 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -155,12 +334,33 @@ transcripts in `references/blind-test-patterns.md`.
   `assert result == []` passes trivially. The same masking happens inside a
   single bad-input case: a non-loopback host given an out-of-range port is
   rejected by the port check, so widening the host check survives. Make each
@@ -524,7 +525,7 @@ index f2d882d..6e59ce9 100644
     Execute the real producer-to-consumer path with inert external transport,
     keep the decision backend real, and assert its state change. For added
     identity fields, observe the actual published object and fail on an
-@@ -170,16 +369,29 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -170,16 +370,29 @@ transcripts in `references/blind-test-patterns.md`.
     `references/blind-test-patterns.md` for concurrent callback paths.
  6. **A redundant fallback masked the primary path.** Two mechanisms resolved
     the same input, so either could be deleted invisibly. Test each path with a
@@ -556,7 +557,7 @@ index f2d882d..6e59ce9 100644
     Preserve literal routing values in SDK fakes and assert the intended branch
     was reached: a MagicMock callback string can make `.startswith()` truthy
     and divert the test into an unrelated handler. Fake transport, not the
-@@ -189,7 +401,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -189,7 +402,11 @@ transcripts in `references/blind-test-patterns.md`.
     legitimately empty ones. A test filtered to a cfg-gated family lists zero
     tests when the cfg is off; a fake that returns a non-empty listing hides a
     parser that rejects that correct output. The cost lands where a run cannot
@@ -569,7 +570,7 @@ index f2d882d..6e59ce9 100644
  9. **The assertion was satisfied by the ambient config, not the logic.** A
     clamp/floor test asserting only `scope["floor"] >= 200000` against the live
     config passes even when the clamp is deleted, because the config already
-@@ -197,7 +413,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -197,7 +414,10 @@ transcripts in `references/blind-test-patterns.md`.
     hostile input — point the loader at a temp config that tries to *lower* the
     floor, then assert the clamped value exactly — plus a separate
     missing-config case asserting the defaults. Rule: a guard that normalizes a
@@ -581,7 +582,7 @@ index f2d882d..6e59ce9 100644
  10. **The test never ran.** Dependency-gated tests that early-`return` when an
      env var (a DB URL, a service endpoint, an API key) is unset report as
      PASSES, so "N passed" can mean "N minus the important ones". The suite
-@@ -208,6 +427,10 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -208,6 +428,10 @@ transcripts in `references/blind-test-patterns.md`.
      distinction is selected and authorized within the remaining allowance.
      Missing or skipped required cases block acceptance; report permitted optional
      or platform skips with reasons instead of failing every skip message.
@@ -592,7 +593,7 @@ index f2d882d..6e59ce9 100644
      Full transcript in `references/blind-test-patterns.md`.
  
  11. **Check-then-act races are invisible to sequential tests.** A publisher that
-@@ -215,17 +438,29 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -215,17 +439,29 @@ transcripts in `references/blind-test-patterns.md`.
      `os.replace` passes every "existing target refused" test, yet a mutation
      from `os.link` to `os.replace` survives, because the check fires first.
      Kill it by patching the pre-check to report "absent" over a real foreign
@@ -625,7 +626,7 @@ index f2d882d..6e59ce9 100644
  2. **Mutate the source the tests import.** If tests read one copy and the
     deployed service loads another, sabotaging one proves only file parity.
     Confirm which path is under test first.
-@@ -240,7 +475,15 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -240,7 +476,15 @@ transcripts in `references/blind-test-patterns.md`.
     check" is the obvious mutation; "accept MORE than intended" is the one that
     finds authorization and identity bugs — e.g. matching a shared parent ID
     instead of the specific resource binds an arbitrary sibling, and accepting
@@ -633,7 +634,7 @@ index f2d882d..6e59ce9 100644
 +   any host honors attacker-supplied links. A guard over a set (a
 +   `ContainsAny` of CR and LF, a denylist) needs one mutant per member: a test
 +   usually pins one member, so dropping another survives (901b review 2:
-+   dropping CR from a description's one-line check survived 24 tests). A docs-agree test built from required sentences plus a denylist of the old exact phrases can't fail on a wrong value in new words: probe one differently worded wrong value per prose statement, beside controls on the pinned places (pipeline-token-diet review 1: 26 of 26 survived); read hard-wrapped files flat for the phrase check (`tr '\n\t' '  ' | tr -s ' '`), because a line grep misses a phrase split over two lines, and kill it with a mutant that wraps the phrase (fixer 1); to prove the whole test, swap every model/effort word one at a time in every file it reads and sort the survivors, probe text added in the files' own shapes ("Role (Model effort)", a table row), and check the scanner's exit status, since `p=$(scanner); [ -z "$p" ]` passes when the scanner crashes (review 2). A guard that matches an anchor at the start of a line needs a fixture where the anchor's text also sits mid-line in another line, or `startswith` → `in` survives (dream-trim M9). When re-porting an earlier round's mutants to rewritten code, re-derive which test should kill each (case folding off on an upper-case name list now fails the lower-case witnesses) and confirm the mutant still builds: dropping one side of an `||` can leave an unused variable, a build failure, not a kill (901j fixer 2). Rewriting an older test's fixture also drops the kills registered against that test: rerun its mutants before committing, and pin the behaviour with an explicit boundary case and its control, not a set property over a large fixture (dream-pass fixer 4, F9b). For a
++   dropping CR from a description's one-line check survived 24 tests). A member that is a prefix of another (`except`/`exception`) needs a control where that member alone decides the case, or dropping it survives (fable-planner-only fixer 2). A docs-agree test built from required sentences plus a denylist of the old exact phrases can't fail on a wrong value in new words: probe one differently worded wrong value per prose statement, beside controls on the pinned places (pipeline-token-diet review 1: 26 of 26 survived); read hard-wrapped files flat for the phrase check (`tr '\n\t' '  ' | tr -s ' '`), because a line grep misses a phrase split over two lines, and kill it with a mutant that wraps the phrase (fixer 1); to prove the whole test, swap every model/effort word one at a time in every file it reads and sort the survivors, probe text added in the files' own shapes ("Role (Model effort)", a table row), and check the scanner's exit status, since `p=$(scanner); [ -z "$p" ]` passes when the scanner crashes (review 2). A guard that matches an anchor at the start of a line needs a fixture where the anchor's text also sits mid-line in another line, or `startswith` → `in` survives (dream-trim M9). When re-porting an earlier round's mutants to rewritten code, re-derive which test should kill each (case folding off on an upper-case name list now fails the lower-case witnesses) and confirm the mutant still builds: dropping one side of an `||` can leave an unused variable, a build failure, not a kill (901j fixer 2). Rewriting an older test's fixture also drops the kills registered against that test: rerun its mutants before committing, and pin the behaviour with an explicit boundary case and its control, not a set property over a large fixture (dream-pass fixer 4, F9b). For a
 +   path rule built as prefix + name + suffix (`commands/<name>.toml`), the
 +   widening mutant per part makes that part optional (strip it before the
 +   check); setting the prefix or suffix to "" narrows instead, because the
@@ -642,7 +643,7 @@ index f2d882d..6e59ce9 100644
  5. **A long-failing test may be stale, not a real defect.** Before "fixing"
     code to satisfy it, check whether the test seeds state the code stopped
     reading: `git log -S'<key>'` on the key the fixture writes. A test can
-@@ -261,7 +504,11 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -261,7 +505,11 @@ transcripts in `references/blind-test-patterns.md`.
     very edits being tested. Stale mutated bytecode can fake either red or green
     despite correct-looking source.
  8. **Distrust an ad-hoc probe before distrusting the code.** When a quick
@@ -655,7 +656,7 @@ index f2d882d..6e59ce9 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,13 +537,115 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,13 +538,115 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
