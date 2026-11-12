@@ -277,3 +277,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-11 | media-avif-alt | feature-dispatch | script: ac-check.sh/review-check.sh (or the receipt writer) refuse a receipt or test log with '# skipped N>0' for an AC's named test or the text 'Google Chrome not installed' | offered
 - 2026-11-11 | site-native-structure | feature-dispatch | script: ac-check.sh (or a receipt builder) runs bash -n on each ac.json row's command and flags a single-quoted --test-name-pattern containing an apostrophe | offered
 - 2026-11-11 | bricks-icons | figma-to-bricks | test: a test/browser helper that refuses a uniform (one-colour) region in any pixel compare | offered
+- 2026-11-12 | bricks-icons | figma-to-bricks | test: in test/unit/render.test.ts, for each element-specific CSS printer, a payload whose desktop control and _width:<bp> differ shows the breakpoint value in the narrower window in the default order | offered
