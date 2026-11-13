@@ -21,3 +21,5 @@ stay true (exact wins over clean). The six points are in the repo `CLAUDE.md`, t
 and auditor brief asks "would a Bricks pro find this logical and easy to change?". Class names: a short site prefix
 (`bd-heading-1`), replacing the 2026-11-07 `<page>__` rule (my recommendation, which he asked for). Related:
 [[importer-native-structure]], [[plugin-first]].
+
+**Grouping by identity (Justin, 2026-11-13):** "if it is the same button like call me all call me buttons should change it should identify them by name": copies of the same button (heading, card) share one class even when one copy differs a little — identity from the Figma component, the site's own class names, or the same words and link; the shared class holds the common look and a copy's real difference stays on its own class (nothing moves). Job look-grouping.

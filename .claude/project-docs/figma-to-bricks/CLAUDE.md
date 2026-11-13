@@ -651,6 +651,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
      the element; names read by purpose with a short site prefix (`bd-heading-1`, `bd-button-primary`, `bd-card`; Justin
      asked for "easy for a Bricks pro", 2026-11-13, replacing the `<page>__` names), the same name and id on every page
      of a site; never two classes writing one property; no class per element where a shared one fits.
+     **The same button shares one class** (Justin, 2026-11-13: "all call me buttons should change … identify them by name"):
+     copies of one button, heading or card (the same Figma component, the site's own class names, or the same words and link)
+     share one class even if a copy differs a little; that copy's real difference stays on its own class, so nothing moves.
   3. **Settings before custom CSS:** a value with a Bricks control goes in that control; Custom CSS only where Bricks has
      none, short and on the class that owns it. Colours come from the palette (Style Manager → Colors), sizes on a clean
      scale where that moves nothing visibly (within 0.5 px; else the exact value stays).
