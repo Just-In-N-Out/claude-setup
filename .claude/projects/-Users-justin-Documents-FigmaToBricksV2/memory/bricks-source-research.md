@@ -56,3 +56,5 @@ on the root (assets.php L2596-2640), fill or stroke adds class `fill`/`stroke` (
 staging's 2.4.2 link matches): whenever any rule's `font-family` starts with a Google family name (quotes stripped, cut at the first
 comma) — a paste's own `@font-face` rule included — Bricks loads all that family's variants; only a Bricks Custom Font of the same
 name or "Disable Google Fonts" stops it. A paste that must draw a site's own font file uses a family name Google doesn't have.
+
+**Class ids on paste (short-class-names planner, 2026-11-13):** after Reject in Import classes an element keeps a class id the site holds, and a rejected name clash maps to the site's id; Class manager → Export writes every class as `bricks-css-classes`. The plugin's class ids come from the class key, so renaming a plugin class without a new id reads "Conflict: ID" on a site holding the old name.

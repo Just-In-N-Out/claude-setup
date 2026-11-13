@@ -128,3 +128,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-13: Justin's standard written (CLAUDE.md top of Decisions; memory bricks-pro-standard; project skill). 4 planners dispatched (Fable high): clean-values, fewer-kept-boxes, native-widgets, short-class-names (short site prefix bd-…). Running builders told about the standard.
 - look-grouping planner dispatched (identity grouping: component / site class / words+link; shared + per-copy tweak). Rule added to CLAUDE.md standard point 2 + memory.
 - 2026-11-13 night: Justin asleep. Keep all jobs moving; stuck agents research first, else best judgment recorded as a ruling (told all 8 running agents). Take ⭐ answers; plans go to builders once their base code merges. Full report on return.
+- short-class-names plan done (17 ACs, ⭐ taken; installed plan-approved). Build first of the five, after in-flight jobs merge.
