@@ -122,3 +122,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - site-no-div verifier clean (13/14 on 828f7dc0); V-1 sticky-wrapper → follow-up (round cap). Auditor dispatched.
 - site-shared-styles fixer 1 done (7b7501bd). Review 2 (delta) dispatched. shared-palette and plugin-parity builders to be told the new head after review 2.
 - site-shared-styles review 2 MOVE ON (7b7501bd); waits for site-no-div merge, then rebase onto main with R1-2 (fonts rename) + R2-1/R2-2 wording → review → verifier → auditor. importer-parity builder started early on 7b7501bd. shared-palette, plugin-parity told to rebase onto 7b7501bd.
+- 2026-11-13 18:2x: weekly limit reset; autoCompactWindow 400000 set in ~/.claude/settings.json. Resumed 4 agents: site-no-div auditor, importer-parity, plugin-parity, shared-palette builders. site-shared-styles waits for site-no-div merge (no agent running).
