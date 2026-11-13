@@ -637,6 +637,29 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Decisions the user made (don't reverse without asking)
 
+- **THE STANDARD FOR EVERY PASTE: built like a skilled Bricks builder made it by hand** (Justin, 2026-11-13: "make it
+  easy for someone who is really good at Bricks to come in and do changes to a site … the pastes are built in a logical
+  way as if someone manually built it with Bricks, with logic in regards to classes, containers and everything"). It
+  applies to **both tools** (the Figma plugin and the website importer), which follow the same rules and make the same
+  shapes. Every plan says how its output meets it; every reviewer and auditor asks "would a Bricks pro find this
+  logical and easy to change?" and reports where it isn't.
+  1. **Structure:** Section → Container → Blocks, one Container per section, a shallow tree; Bricks' own elements for
+     what they are (Heading, Rich Text, Button, Image, Icon, Divider, Slider, Accordion, Offcanvas, Nav, Form, Video),
+     never a Div; no wrapper that does nothing; every Section and Block labelled by its purpose or first words.
+  2. **Classes:** looks that repeat live in shared purpose-named classes (text styles, buttons, cards and boxes,
+     spacing and layout); same-looking elements share one, different-looking ones get their own; a one-off tweak sits on
+     the element; names read by purpose with a short site prefix (`bd-heading-1`, `bd-button-primary`, `bd-card`; Justin
+     asked for "easy for a Bricks pro", 2026-11-13, replacing the `<page>__` names), the same name and id on every page
+     of a site; never two classes writing one property; no class per element where a shared one fits.
+  3. **Settings before custom CSS:** a value with a Bricks control goes in that control; Custom CSS only where Bricks has
+     none, short and on the class that owns it. Colours come from the palette (Style Manager → Colors), sizes on a clean
+     scale where that moves nothing visibly (within 0.5 px; else the exact value stays).
+  4. **Bricks' own behaviour:** Interactions, Offcanvas, Slider, Accordion before Code elements; Code only for a
+     third-party widget that needs it, labelled and named in the notes.
+  5. **Editable content:** words in the text fields, links in Link to, pictures and SVGs in the media library, icons in
+     the Icon element, nothing baked into CSS that a person would expect in a field.
+  6. **Looks stay true:** the importer stays one to one with the site and the plugin exact at the design width; where
+     "clean" and "exact" conflict, exact wins and the paste notes say why.
 - **Interactions use native Bricks elements** (2026-10-06, replaces v1's radio/`:has()` CSS approach).
   - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → "Interactions use native Bricks elements".
 - **On tablets, a grid of cards stays on one row rather than leave one card alone below the others** (user,
@@ -780,7 +803,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   passes.
 - **Code-method class names start with the page's name** (Justin, 2026-11-07, "Never use bare names", then "Prefix
   every name"): `<page>__<name>`, only `site-reset-<4>`, `site-scroll-lock-<4>`, `site-fonts`, `site-text`, `site-flat` keep
-  theirs; a static slider keeps all its slides ("Keep all its slides").
+  theirs; a static slider keeps all its slides ("Keep all its slides"). **Being replaced (2026-11-13)** by a short site
+  prefix read by purpose (`bd-heading-1`), shared across a site's pages: the standard at the top of this section; the
+  job short-class-names carries it out, and `<page>__` stays until it merges.
 - **A scanned page's pictures go to WordPress from the command line** (Justin, 2026-11-10, "From the command
   line", Full pipeline; ⭐ not yet confirmed, Q12 open, HANDOFF "A scanned page's pictures go to WordPress's media
   library"): its own command `site:upload` (Q1 A), and one command `site:import` that asks for WordPress first, then
