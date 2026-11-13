@@ -53,6 +53,7 @@ Justin's test control plane is where client stories get proven end to end; insta
   - The body is `tool`, `sessionId` and `events`, each event with `seq`, `role`, `content` and `at`.
   - The server keeps messages in ClickHouse and the pack and summary in Mongo. A fetch could read the session immediately (368 ms).
 - **Server behaviour to expect:**
+  - **Dev-mode demo setup (2026-11-13):** the client sign-in route uses Dev Admin (`internal/web/client_auth.go`, `clientLogin`). The Teams picker reads the configured directory and may omit that synthetic account (`internal/web/teams_view.go`); do not tell Justin to select Dev Admin there or switch to his work identity to unblock setup. Admins can list every project in their own tenant without team membership (`internal/store/postgres/projects.go`, `ListProjects`; also used by `ListClientProjects`). Create a project under the existing demo team with a future expiry, then Refresh in the desktop client. Assign a pack separately for Sync. Proven from the deployed-source checkout and Justin's screenshots in the demo rehearsal.
   - An unknown session returns 200 with no messages, which `handoff.Fetch` reports as `ErrNoMessages`.
   - The server silently turns unknown roles into "user".
   - A 403 means the account lacks access. Stop and ask Justin; the admin side may need a team.
