@@ -5,10 +5,22 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-12)
+## Status (2026-11-14)
 
-- **Current build `2026-11-12.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-14.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-14.1 site-no-div (website importer, both routes):** no paste the importer makes holds a Div (`site`,
+    `site:upload`, `site:import`, with `--elementor` and without, the boxes a button opens): a box Bricks has no element
+    for is a Block with the site's tag and a label by what it is ("Row", "List", "Link", "Icon"…); a part's top boxes
+    are Sections and a Section's only `div` its Container on any site (rule S); a painted word link a Button, a plain
+    one a Text link, a link around one picture an Image with Link to, a `span` of words one Rich Text, a `button` tag a
+    Block keeping its tag; a `div` that adds nothing around its one element is folded (rule N, its refusals counted in
+    the notes); every Block and Code element labelled; `structure.txt` beside the pastes and a `Structure:` note per
+    part; still 1:1 with the site (B-Dry's home within 1.09 px at 38 widths); `ConvertOptions.native: false` and Figma
+    designs byte for byte as before. Q1–Q11 A and the builder's rulings (a Section only for a `div`/`section` box, a
+    menu's `li > a` its own element) not yet confirmed. Paste check **3ej** (AC14, live: rescan bdryswi.com, import
+    with `--elementor`, paste B-Dry's home on staging /homev2/: Structure shows Sections, Containers, labelled Blocks
+    and Bricks' own elements with no Div; looks as before at 1440 and 390; ☰ and one pop-up open).
   - **2026-11-12.3 bricks-icons (Figma plugin panel):** with "Pictures go: to WordPress", a connected site and "Icons
     as: SVG", a drawn icon of one flat colour (vector-only, at most 96 px, drawn all filled or all stroked, no link,
     description, hover redraw or other special role) pastes as Bricks' Icon element showing its SVG from the media
@@ -584,6 +596,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   with pictures to WordPress and Icons as SVG, and an Icon's drawing holds no ids. **An Icon's box rules never
   out-weigh its own Width and Height controls:** its floor is `overflow: clip`, its shape `height: auto` under
   `:where()` (`Style.weightless`), never a `min-width` floor or an `aspect-ratio` (`style/icon.ts`).
+- **A website paste never holds a Div** (site-no-div; `test/unit/site-no-div.test.ts`: add every new element producer
+  to it). The native step is on for every importer paste; `ConvertOptions.native: false` is a test and diagnosis
+  switch only.
 - **Words elements hold a `<p>` since rich-text** (`div.brxe-text > p`): browser tests measure the inner `p`
   (`el.querySelector(':scope > p') || el`); `Range.selectNodeContents(el).getClientRects()` also returns the `p`'s own
   box (one line too many) and `el.firstChild` is the `p`, not the text node.
@@ -806,6 +821,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   `~/.hermes/plans/figma-to-bricks/evidence/method-review/report.md`): a site's elements, classes and CSS rules go into
   Bricks as they are; the measured-box route through the Figma converter is retired for websites once the whole page
   passes.
+- **An importer box Bricks has no element for is a labelled Block** (Justin, 2026-11-11; site-no-div Q1 A, not yet
+  confirmed): never a Div; its label says what it is.
 - **Code-method class names start with the page's name** (Justin, 2026-11-07, "Never use bare names", then "Prefix
   every name"): `<page>__<name>`, only `site-reset-<4>`, `site-scroll-lock-<4>`, `site-fonts`, `site-text`, `site-flat` keep
   theirs; a static slider keeps all its slides ("Keep all its slides"). **Being replaced (2026-11-13)** by a short site
