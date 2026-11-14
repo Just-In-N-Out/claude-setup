@@ -17,5 +17,7 @@ session records the review, the receipt and this rule in the job's follow-ups an
 
 **Extended (Justin, 2026-11-11, site-menu-motion):** the same short path (a short review of the change + an AC test re-run) also covers a **test-only pin update** a merged feature forces after a rebase (e.g. a byte-for-byte pin compared without site-scroll-lock's lock class), when no source changes.
 
-**How to apply:** any conflict or change in a source file, or a test change beyond such a pin, still takes the full path (review → verifier → auditor →
+**Extended again (Justin, 2026-11-14, importer-app, "Review + re-run (Recommended)"):** also covers a test-only change to an AC's own test that a merged job forces (the test had faked that job's output by hand), when no source changes: a delta review checks the test keeps the plan's meaning and still fails on app mutants, plus the full AC re-run.
+
+**How to apply:** any conflict or change in a source file, or a test change beyond such a pin or forced AC-test update, still takes the full path (review → verifier → auditor →
 ac-check). Related: [[review-round-cap]], [[run-without-stopping]].

@@ -29,7 +29,7 @@
 - [Importer native structure](importer-native-structure.md) — Justin wants the importer paste to be Section/Container/Block, Heading, Button… like the Figma plugin, not div div div (2026-11-09)
 - [Importer media upload](importer-media-upload.md) — command-line upload of scanned pictures to his WordPress media (2026-11-10); only he runs it; he expects ONE command that asks WordPress details first, then scans and uploads (job site-one-command)
 - [alttext.ai API source](alttext-ai-api-source.md) — docs unfetchable; read its WP plugin on plugins.svn; plugin describes every upload itself
-- [Notes-only rebase rule](notes-only-rebase-rule.md) — HANDOFF-only rebase conflict: delta review + AC test re-run, no new verifier/auditor (2026-11-11; also test-only pin updates)
+- [Notes-only rebase rule](notes-only-rebase-rule.md) — HANDOFF-only rebase conflict: delta review + AC test re-run, no new verifier/auditor (2026-11-11; also test-only pin updates; 2026-11-14 also AC tests a merged job forces to change)
 - [Bricks pro standard](bricks-pro-standard.md) — every paste, both tools, built like a skilled Bricks builder by hand; 6 points at the top of CLAUDE.md Decisions (2026-11-13)
 - [WPForms source](wpforms-source-reference.md) — read WPForms Lite zip; import gives new form id, read-only forms route, theme CSS vars; Bricks shows forms via Shortcode
 - [Subagent .md writes](subagent-md-write.md) — background agents' Write refuses .md files; ask for .txt/.json evidence summaries (2026-11-14)
