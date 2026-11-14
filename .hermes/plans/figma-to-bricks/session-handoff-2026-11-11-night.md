@@ -139,3 +139,8 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - bdry-pages-motion research done; report saved at evidence/bdry-pages-motion/report.md. Gaps: stacking sticky cards (7 pages), Sump Pump FAQ in page, form (his answer), headline circle. Suggested jobs site-sticky-cards, page-faq-slide; ask Justin.
 - plugin-parity builder done (89e41a0d on 7b7501bd; 5 real files Divs → 0, labels → all, classes 8→51 GRO etc., 0 moved). Review 1 (Fable, full) dispatched.
 - 2026-11-13: Justin: yes to site-sticky-cards and page-faq-slide; form → WPForms (CLAUDE.md 'Waiting on the user' updated). Planners dispatched: site-sticky-cards, page-faq-slide, forms-wpforms (Full, Fable).
+
+## 2026-11-13 ~20:40: after Justin's disk clean-up
+- Checked: git fsck clean, 0 empty objects, all job branches at last SHAs, worktrees + node_modules, plans/briefs/evidence, saved scan, Chrome cache: nothing lost.
+- Resumed: site-no-div rebase finisher a57b7ba, plugin-parity review-1 a6637ab, importer-parity builder a8c81b2, planners importer-app ab6e398, site-sticky-cards a8ed706, page-faq-slide a7a0768, forms-wpforms afb8732.
+- shared-palette review 1 = REVIEW AGAIN (R1-1, R1-2 P2); follow-ups recorded; fixer 1 dispatched (aba6830, brief shared-palette-fixer-1.md, branch shared-palette-fix1 from 9070c50f).
