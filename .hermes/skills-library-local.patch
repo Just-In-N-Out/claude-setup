@@ -775,10 +775,10 @@ index f2d882d..81e37b0 100644
  controller qualification, diagnostic parsing, unittest subTest/exception
  behavior and compiled-function rebinding. Qualify those instruments before
 diff --git a/skills/mutation-testing-discipline/references/blind-test-patterns.md b/skills/mutation-testing-discipline/references/blind-test-patterns.md
-index a536548..b89e8ec 100644
+index a536548..d4c804f 100644
 --- a/skills/mutation-testing-discipline/references/blind-test-patterns.md
 +++ b/skills/mutation-testing-discipline/references/blind-test-patterns.md
-@@ -332,3 +332,9 @@ a once-only decision can still authorize the wrong queued request.
+@@ -332,3 +332,10 @@ a once-only decision can still authorize the wrong queued request.
     core evidence only; every native adapter with an unexecuted or failing
     callback path remains unverified. Synthetic card selections establish local
     integration behavior, not actual human consent or remote delivery.
@@ -788,6 +788,7 @@ index a536548..b89e8ec 100644
 +
 +## A count-based refusal row masked by its own fixture change
 +A row asserting "the reason count rose over the base" is masked when the case's patch changes the shared fixture (making the parent a flex row) so other elements are refused for the same reason: read the count against a per-case control holding the same fixture change, and check the control itself folds (site-no-div fixer 2: the first R2-1 row passed on the pre-fix code until it had its own control).
++- **A round-trip criterion (write a file, read it back as input, expect no additions) is proven on a real user file, not only a fixture:** shared-palette's fixtures held no see-through colours, so the AC tests and all their mutants passed while Justin's page-1 file re-listed 73 of its own colours on the round trip (verifier F1, 2026-11-14).
 diff --git a/skills/security-best-practices/SKILL.md b/skills/security-best-practices/SKILL.md
 index 6f12e3e..ca1fa27 100644
 --- a/skills/security-best-practices/SKILL.md
