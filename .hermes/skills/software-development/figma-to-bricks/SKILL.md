@@ -82,6 +82,7 @@ Builders, reviewers and fixers read `figma-to-bricks/references/repeat-mistakes.
     - ledger moved by the finisher to `docs/plans/<plan>-ledger.md` before the final premerge commit/rebase;
     - `docs/HANDOFF.md` updated, with the paste check owed (the next free id; parallel copies pick ids alone, so the second to merge renumbers a clash: keep the old id through the rebase's conflict and renumber in its own commit afterwards, so the branch's later HANDOFF commits replay cleanly). A new section goes above the previous top `## ` heading, and its end-of-run entry at the top of "End-of-run check list" (not beside the base's last entry; web-code-page found 3dh mid-list), and never replaces that line (a builder's commit replaced closing-cta's heading unnoticed through two reviews);
     - `BUILD` bumped;
+    - CLAUDE.md rule lines a plan gives "word for word": diff the docs plan copy against `plan-approved.md` first; a reviewed fix may have corrected the wording the read-only copy keeps (importer-app R1-9).
     - main `CLAUDE.md` **Status** updated after the merge: current build and one feature line/paste check only; details/rulings go in HANDOFF and the ledger, with only new standing rules, decisions or shared gotchas in CLAUDE.md (Step 4 item 6);
     - any new `CLAUDE.md` rule the fix creates.
   - Name any other open feature that touches the same files, so the dispatcher can build them in parallel or in sequence.

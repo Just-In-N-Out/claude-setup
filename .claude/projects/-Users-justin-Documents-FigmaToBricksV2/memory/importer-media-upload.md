@@ -14,4 +14,6 @@ Justin, 2026-11-10, after asking how alt text is handled for a scanned page (on 
 
 **Why:** he pastes scanned pages from `npm run site`, and wants the pictures and their alt text in his own Media library as with Figma designs, not hotlinked from the old site.
 
+**Also from the importer app (Build 2026-11-14.3):** `npm run importer`, step 3, started from his own terminal: the app runs the same `site:upload` and passes the password only to its input.
+
 **How to apply:** this is the one tool allowed to write to WordPress, and only when **he** runs it with his own Application Password. His rule "Never write to any WordPress site; GET/read only, and ask me before using any login" still binds every agent and every other tool: agents test the upload only against a local WordPress stand-in, never hold or see his password, and never run it against his staging or any live site (the live check is his). The password must never reach a file, the paste, a log or a command-line argument. Related: [[importer-test-steps]], [[importer-whole-page-paste]], [[site-and-team]].
