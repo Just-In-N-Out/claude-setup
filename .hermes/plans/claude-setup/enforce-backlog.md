@@ -319,3 +319,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | fewer-kept-boxes | feature-dispatch | PreToolUse Bash hook for agents whose brief forbids it: refuse heredoc-into-file / python - writes, naming Edit or Write | offered
 - 2026-11-14 | plugin-parity | figma-to-bricks | browser lint test: a row wider than the window under html, body { overflow-x: clip } must still give an overflow-x finding | offered
 - 2026-11-14 | plugin-parity | feature-dispatch | ac-check.sh runs bash -n on each row's command and flags a \$ outside double quotes | offered
+- 2026-11-14 | importer-app | figma-to-bricks | unit test: every story pin states its base commit in one machine-readable line and checks F2B_BASE_TREE's archive comment against it, refusing on mismatch instead of hanging | offered
