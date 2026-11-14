@@ -286,3 +286,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-12 | site-no-div | figma-to-bricks | test: a test/web case with a sticky bar in a same-height wrapper: render the whole-page paste, scroll, assert the bar's top equals the site's | offered
 - 2026-11-12 | site-no-div | figma-to-bricks | test: each part's "kept as Blocks" N is at most its Structure line's Block count, on every fixture and Justin's scan | offered
 - 2026-11-12 | site-shared-styles | figma-to-bricks | test: a web test editing each kind of shared class's size and comparing with the same edit in the carriers' own classes with the switch off, over every text class of a capture | offered
+- 2026-11-13 | fewer-kept-boxes | claude-setup | script: sync.sh links (or the SessionStart pull hook) fails when a skill a project CLAUDE.md or the briefs name has no link in ~/.claude/skills (figma-to-bricks isn't linked on the desktop) | offered
+- 2026-11-13 | fewer-kept-boxes | figma-to-bricks | test: a row in site-fold-moves that a no-layer wrapper around a negative-margin element in a flex parent stays | offered

@@ -130,3 +130,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-13 night: Justin asleep. Keep all jobs moving; stuck agents research first, else best judgment recorded as a ruling (told all 8 running agents). Take ⭐ answers; plans go to builders once their base code merges. Full report on return.
 - short-class-names plan done (17 ACs, ⭐ taken; installed plan-approved). Build first of the five, after in-flight jobs merge.
 - native-widgets plan done (10 ACs, ⭐ taken, installed). Only the menu slide becomes native (Accordion Nestable); rest stays Code, labelled + named. Q7 card arrows stay script (B would reverse his 'Sideways scroll' decisions) — tell Justin.
+- fewer-kept-boxes plan done (16 ACs, ⭐ taken, installed): importer -33 Blocks elementor / -114 plain on his scan, 0 px; plugin frames that only lay out one layer left out (hydraulics -51). Boxes in menus/pop-ups stay (capture measured no size: follow-up).
