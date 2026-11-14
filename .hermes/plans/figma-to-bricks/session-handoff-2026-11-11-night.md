@@ -138,3 +138,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - shared-palette builder done (9070c50f on 7b7501bd). Review 1 (Fable, full) dispatched.
 - bdry-pages-motion research done; report saved at evidence/bdry-pages-motion/report.md. Gaps: stacking sticky cards (7 pages), Sump Pump FAQ in page, form (his answer), headline circle. Suggested jobs site-sticky-cards, page-faq-slide; ask Justin.
 - plugin-parity builder done (89e41a0d on 7b7501bd; 5 real files Divs → 0, labels → all, classes 8→51 GRO etc., 0 moved). Review 1 (Fable, full) dispatched.
+- 2026-11-13: Justin: yes to site-sticky-cards and page-faq-slide; form → WPForms (CLAUDE.md 'Waiting on the user' updated). Planners dispatched: site-sticky-cards, page-faq-slide, forms-wpforms (Full, Fable).

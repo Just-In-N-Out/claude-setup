@@ -253,8 +253,9 @@ header spacer) the user runs Bricks → Settings → Custom code → **Regenerat
 
 **Waiting on the user (don't guess these):**
 - **Should headings keep Figma's case** when the site theme uppercases them?
-- **WPForms:** whether the plugin gets a "Forms become: Bricks form / WPForms" option, and which starts selected. It
-  needs their WPForms export file.
+- **WPForms:** decided 2026-11-13 for the website importer: a scanned site's form (B-Dry's WPForms contact form) pastes as a
+  **WPForms** form, not a Bricks Form (Justin: "wpform"; job forms-wpforms). Whether the Figma plugin gets a "Forms become:
+  Bricks form / WPForms" option too, and which starts selected, the job's plan proposes; it may need his WPForms export file.
 - **Rulings to confirm:** the list rules (HANDOFF "Searchable lists"), the form rulings, and every "not yet
   confirmed" ruling in each feature's HANDOFF section.
 - **Bricks samples:** Nav (Nestable) for the phone menu (the right copy contains `nav-nested`; a researched sample,
