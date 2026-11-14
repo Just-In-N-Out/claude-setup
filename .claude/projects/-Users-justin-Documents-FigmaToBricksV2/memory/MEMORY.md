@@ -33,3 +33,4 @@
 - [Bricks pro standard](bricks-pro-standard.md) — every paste, both tools, built like a skilled Bricks builder by hand; 6 points at the top of CLAUDE.md Decisions (2026-11-13)
 - [WPForms source](wpforms-source-reference.md) — read WPForms Lite zip; import gives new form id, read-only forms route, theme CSS vars; Bricks shows forms via Shortcode
 - [Subagent .md writes](subagent-md-write.md) — background agents' Write refuses .md files; ask for .txt/.json evidence summaries (2026-11-14)
+- [Finish before starting](finish-before-starting.md) — 2026-11-14: 17 agents at load 60–80 + builds stacked on unmerged heads = 1 merge in 12 h; near-merge jobs first, hold new starts above load ~40, no builds on unaccepted heads
