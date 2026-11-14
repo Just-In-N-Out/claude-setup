@@ -186,3 +186,11 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 06:02 forms-wpforms review 1 REVIEW AGAIN (R1-1 fieldset border from stale longhands on B-Dry's real scan, 1 px; R1-2 form_desc empty). Fixer brief written (forms-wpforms-fixer-1.md) but HELD: load 42 > 40 and 5 verifiers running (new rule finish-before-starting); dispatch when load < 40 or a verifier returns. Lesson: testing-pitfalls (raw-text order; two-names winner).
 - 06:04 short-class-names review 1 REVIEW AGAIN (R1-1 key digest holds media address; R1-2 look-class tests can't fail). Fix HELD until site-shared-styles + plugin-parity merge (its fix needs emit/looks.ts; no build on unaccepted heads). Lessons: code-review-practice digest keys; testing-pitfalls per-property compare, git archive ~.
 - 06:12 importer-app fixer 1 done f2399d4e (R1-1,3,4,6,7,9 fixed; rulings 1-3). Review 2 a37bbf2 dispatched (near-merge: base is merged main). ~/Downloads dir mtime moved 06:02:20 from outside importer-app (no entry added) - tell Justin. forms-wpforms fixer still HELD (behind unaccepted importer-parity). Lesson: mutation-testing (only-when-X guard fixture).
+
+## 2026-11-14 ~13:10
+- importer-app: Justin "Fix now" for R2-1 → review-2/justin.json; fixer 2 dispatched from f2399d4e (briefs/importer-app-fixer-2.md).
+- shared-palette verifier 2 clean (f47a20d7; AC11 live) → blind auditor dispatched (briefs/shared-palette-auditor.md).
+- bricks-icons-site verifier clean (a06ed92d; AC5 live) → blind auditor dispatched (briefs/bricks-icons-site-auditor.md).
+- plugin-parity verifier 2 NOT clean: AC9/AC10 cited tests pass on rejected 89e41a0d → test-only fixer 2 dispatched from beeacc8f (briefs/plugin-parity-fixer-2.md); then a fresh review of the fix → verifier 3.
+- Still running: site-shared-styles verifier (7977b8f8), importer-parity verifier (b232c9de; interim: AC13 NOT accepted, Splide arrows draw no chevron), builders native-widgets, site-sticky-cards, fewer-kept-boxes.
+- Lessons folded: ac-verification (cited test on rejected head), mutation-testing (once-clause duplicate fixture), rendering-validation (flex keys on display:block), testing-pitfalls (forced-state transition wait). 3 enforce offers added.

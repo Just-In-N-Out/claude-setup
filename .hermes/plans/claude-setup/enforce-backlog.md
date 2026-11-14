@@ -304,3 +304,6 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | importer-app | figma-to-bricks | test: test/browser/chrome.ts launches every test Chrome with HOME (or XDG_DOWNLOAD_DIR) inside the test's temp root; a unit test asserts the launcher env never carries the real HOME's Downloads (npm run check) | offered
 - 2026-11-14 | forms-wpforms | figma-to-bricks | test: payloadProblems (or a unit test over every fixture's classes) refuses a _cssCustom rule whose selector list has a member not starting with the class's own selector (npm run check) | offered
 - 2026-11-14 | forms-wpforms | figma-to-bricks | script: gate runners flag a file whose log shows '# cancelled' > 0 as 'timed out, unknown', never pass or fail | offered
+- 2026-11-14 | bricks-icons-site | mutation-testing-discipline | test: a fixture lint in test/fixtures failing when an AC test whose name says "once" or "never twice" has no duplicate input | offered
+- 2026-11-14 | plugin-parity | feature-dispatch | script: ac-check.sh --prev-head <sha> runs each cited AC test on the last NOT ACCEPTED head and flags every AC whose cited test passes there | offered
+- 2026-11-14 | site-shared-styles | figma-to-bricks | test: test/web/lib/style-equal.ts's forced-state reader waits max(transition-duration+delay)+100 ms read from computed style, not a fixed 450 ms | offered
