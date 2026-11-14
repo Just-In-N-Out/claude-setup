@@ -317,3 +317,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | fewer-kept-boxes | figma-to-bricks testing-pitfalls | milestone-gate script: for each test file calling convert twice with different asBefore objects, list any ConvertOptions.asBefore key missing on one side | offered
 - 2026-11-14 | fewer-kept-boxes | feature-dispatch | builder milestone-gate script: run by name every test file the plan's "tests that may change" section lists, writing a receipt | offered
 - 2026-11-14 | fewer-kept-boxes | feature-dispatch | PreToolUse Bash hook for agents whose brief forbids it: refuse heredoc-into-file / python - writes, naming Edit or Write | offered
+- 2026-11-14 | plugin-parity | figma-to-bricks | browser lint test: a row wider than the window under html, body { overflow-x: clip } must still give an overflow-x finding | offered
+- 2026-11-14 | plugin-parity | feature-dispatch | ac-check.sh runs bash -n on each row's command and flags a \$ outside double quotes | offered
