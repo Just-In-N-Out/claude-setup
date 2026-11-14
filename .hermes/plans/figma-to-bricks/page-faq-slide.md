@@ -5,7 +5,9 @@ real-bug review per job, edge cases to follow-ups).
 **Base: `main` once these have merged:** site-no-div, site-shared-styles, plugin-parity, importer-parity,
 shared-palette **and native-widgets** (this job reuses its Accordion parts; order below). Today `main` is `7f54b0a5`
 (Build 2026-11-12.3). Every importer file:line below is from `importer-parity-build` `48fe133c` (the newest importer
-head, tasks 12 to 15 landed; the planner's tree `~/.cache/pfs-pl/ip`); native-widgets is approved and not built, so its
+head when measured, tasks 12 to 15 landed; the planner's tree `~/.cache/pfs-pl/ip`; the branch has since moved to
+`0585042a`, tasks 16 to 19, the Nav, which among this plan's files changed only `convert.ts`, `tree.ts` and
+`test/browser/render.ts`, none of the lines cited here); native-widgets is approved and not built, so its
 parts are cited from its plan (`~/.hermes/plans/figma-to-bricks/evidence/native-widgets/plan-approved.md`). The builder
 re-reads every line on its real base before editing (Task 1).
 Evidence (`<P>` below): `~/.hermes/plans/figma-to-bricks/evidence/page-faq-slide/planner/` (`README.md` lists every
@@ -272,7 +274,7 @@ wanted": Justin's own Accordion with Transition, Independent toggle and two Expa
 
 | Job (state) | Shared files | What this plan assumes or does |
 |---|---|---|
-| importer-parity (builder running, `importer-parity-build` `48fe133c`) | `plain-natives.ts`, `elementor-accordion.ts`, `elementor-fold.ts`, `convert.ts`, `snapshot/web.ts` (`keeps`), `test/unit/site-plain-natives.test.ts` | its section D makes page lists Accordions and refuses flex or grid answers, single items, a shown triangle, lists in opened boxes; `web.code.keeps` holds "open", "aria-expanded", "aria-controls". This job changes one refusal (R1), adds one (R2) and adds settings; everything else of `questionsAt` and `accordionShape` is reused as is. **Finding for that job** (not fixed there): an aria list whose answers are hidden by height 0 pastes with every answer open (`<P>/probe-lists-page-faq-plain.log`, last row) |
+| importer-parity (builder running, `importer-parity-build` `48fe133c` measured, now `0585042a`) | `plain-natives.ts`, `elementor-accordion.ts`, `elementor-fold.ts`, `convert.ts`, `snapshot/web.ts` (`keeps`), `test/unit/site-plain-natives.test.ts` | its section D makes page lists Accordions and refuses flex or grid answers, single items, a shown triangle, lists in opened boxes; `web.code.keeps` holds "open", "aria-expanded", "aria-controls". This job changes one refusal (R1), adds one (R2) and adds settings; everything else of `questionsAt` and `accordionShape` is reused as is. **Finding for that job** (not fixed there): an aria list whose answers are hidden by height 0 pastes with every answer open (`<P>/probe-lists-page-faq-plain.log`, last row) |
 | native-widgets (approved, not built; base importer-parity `33a73f41`) | `tree.ts` (`TreePick.rest`), `slide.ts` (`cssCurve`, `listSlideClass`, `usable`), `classes.ts`, `natives.ts` (`ROLES` "Content"), `test/browser/render.ts` (the two attributes), `reference/bricks/accordion-nested-schema.json`, `frontend-2.4.2/accordion-fn.js`, `open-paste.ts`, `list-accordion.ts` | all of these exist on the base and are reused, never forked. Its lists (inside an opened box) stay its own: always `independentToggle`, no reading of "one at a time" (its follow-up; this job doesn't change it). If `listSlideClass` takes a slide, this job passes `{ duration, easing: curve, frameEasing: "linear" }` |
 | site-no-div (`site-no-div-final` `cf4f887d`, moving onto main) | `elementor-accordion.ts`, `elementor-fold.ts`, `natives.ts`, `tree.ts` | no Div; every Block labelled; this job adds no element kind |
 | site-shared-styles (`site-shared-styles-fix1` `7b7501bd`) | `classes.ts`, `convert.ts` | a class family is named through `classes.ts` by a fingerprint of its rules: the slide class is native-widgets' |
