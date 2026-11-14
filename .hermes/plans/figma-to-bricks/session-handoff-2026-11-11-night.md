@@ -168,3 +168,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 02:36 site-shared-styles rebase+R1-2/R2-1/R2-2 fixer a8db8ba dispatched (waits for Build 2026-11-14 commit on main, rebase --onto main d915f7dc, branch site-shared-styles-final) -> then review round 3 (last under the cap).
 - 02:39 shared-palette fixer 4 done f47a20d7 (test+docs only; 14/14 mutants killed; check EXIT=0). Short test-only review 5 ab0cef8 dispatched -> then verifier 2 -> auditor 2.
 - 02:39 site-no-div released Build 2026-11-14.1 (84722938, pushed; 3ej; CLAUDE.md Status written). Merge lock released. site-shared-styles fixer will rebase onto 84722938.
+- 02:42 shared-palette review 5 MOVE ON at f47a20d (test-only, no findings). Verifier 2 a2ef57e dispatched (folder verifier-2, amended plan) -> then blind auditor 2.
