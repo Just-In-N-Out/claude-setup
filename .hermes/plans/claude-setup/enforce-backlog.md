@@ -326,3 +326,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | site-shared-styles | feature-dispatch | runner script: after each Chrome step, sweep chrome processes whose user-data-dir is under the agent's TMPDIR and close them by PID | offered
 - 2026-11-14 | site-tests-offline | code-review-practice | guard test fails a drawing file whose captureSite call passes no fetcher | offered
 - 2026-11-14 | plugin-parity | git-commit-rules | git hook: pre-commit in ~/.claude/githooks runs `git diff --cached --check` and refuses staged conflict markers (also during a rebase) | offered
+- 2026-11-14 | plugin-parity | figma-to-bricks testing-pitfalls | script: the finisher's rebase receipt lists test/browser files added on main since the old base and requires a FILE_EXIT per file on main and on head | offered
