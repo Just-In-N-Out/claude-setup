@@ -307,3 +307,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | bricks-icons-site | mutation-testing-discipline | test: a fixture lint in test/fixtures failing when an AC test whose name says "once" or "never twice" has no duplicate input | offered
 - 2026-11-14 | plugin-parity | feature-dispatch | script: ac-check.sh --prev-head <sha> runs each cited AC test on the last NOT ACCEPTED head and flags every AC whose cited test passes there | offered
 - 2026-11-14 | site-shared-styles | figma-to-bricks | test: test/web/lib/style-equal.ts's forced-state reader waits max(transition-duration+delay)+100 ms read from computed style, not a fixed 450 ms | offered
+- 2026-11-14 | importer-parity | feature-dispatch | test: test/web/lib/site-page-check.ts also compares the drawn size of each ::before/::after and svg inside compared elements, site vs paste, failing when one visible on the site is 0x0 in the paste | offered
+- 2026-11-14 | importer-parity | figma-to-bricks | test: site-parity-invariants (or payloadProblems) refuses a bare non-zero number for width/height in any _cssCustom | offered
