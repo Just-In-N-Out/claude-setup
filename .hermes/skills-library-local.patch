@@ -227,7 +227,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..0c9c0aa 100644
+index f2d882d..51f6fb9 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,72 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -280,7 +280,7 @@ index f2d882d..0c9c0aa 100644
 +  before mutation work. Do not change services or global settings or drop the cap.
 +  A guard over two sets (event types × places) needs every place reached by a fixture
 +  whose event stays in the set: after narrowing either set, re-run the other set's
-+  per-member mutants (dropping touchstart left `body` unreached; fixer 8 P4). A fake tool put first on
++  per-member mutants (dropping touchstart left `body` unreached; fixer 8 P4). A layered request guard needs a request only each layer can stop: a streamed byte cap a chunked body with no Content-Length, a method split a change route asked for by GET (importer-app builder, g8/g10). A fake tool put first on
 +  PATH loops too when it looks up the real one after PATH changed (bash applies an
 +  earlier prefix assignment before expanding a later one): resolve the real path
 +  first, and have the fake exit when `"$REAL" = "$0"`. Never kill strays with
@@ -793,7 +793,7 @@ index a536548..d4c804f 100644
 +A row asserting "the reason count rose over the base" is masked when the case's patch changes the shared fixture (making the parent a flex row) so other elements are refused for the same reason: read the count against a per-case control holding the same fixture change, and check the control itself folds (site-no-div fixer 2: the first R2-1 row passed on the pre-fix code until it had its own control).
 +- **A round-trip criterion (write a file, read it back as input, expect no additions) is proven on a real user file, not only a fixture:** shared-palette's fixtures held no see-through colours, so the AC tests and all their mutants passed while Justin's page-1 file re-listed 73 of its own colours on the round trip (verifier F1, 2026-11-14).
 diff --git a/skills/security-best-practices/SKILL.md b/skills/security-best-practices/SKILL.md
-index 6f12e3e..ca1fa27 100644
+index 6f12e3e..31cd8c9 100644
 --- a/skills/security-best-practices/SKILL.md
 +++ b/skills/security-best-practices/SKILL.md
 @@ -87,3 +87,21 @@ When assigning an ID for some resource, which will then be used by exposed to th
@@ -809,7 +809,7 @@ index 6f12e3e..ca1fa27 100644
 +
 +### Local app pages under a strict CSP
 +
-+Under `style-src 'self'` inline `style="…"` attributes are silently dropped (the layout collapses and a browser test's coordinate click lands elsewhere): use a stylesheet and CSSOM. A link clicked inside a sandboxed `allow-scripts` preview frame the app serves loads the app's own `/` in that frame unless the preview cancels link clicks and form submits (importer-app planner, 2026-11-13: the server logged `GET / dest=iframe sfs=cross-site`).
++Under `style-src 'self'` inline `style="…"` attributes are silently dropped (the layout collapses and a browser test's coordinate click lands elsewhere): use a stylesheet and CSSOM. A link clicked inside a sandboxed `allow-scripts` preview frame the app serves loads the app's own `/` in that frame unless the preview cancels link clicks and form submits (importer-app planner, 2026-11-13: the server logged `GET / dest=iframe sfs=cross-site`). A preview frame sandboxed without `allow-forms` refuses a submit before the submit event fires (a submit guard there is defence in depth; its mutant is equivalent); prove a link guard with a window listener recording `defaultPrevented`, so a click that misses the link can't hide a removed guard (importer-app builder).
 +
 +### Scanning untrusted trees with gitleaks
 +
