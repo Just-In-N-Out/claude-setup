@@ -300,3 +300,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | importer-parity | figma-to-bricks | lint (test/ grep): flag CSS.forcePseudoState followed within ~3 lines by a fixed setTimeout wait in test/web and test/browser | offered
 - 2026-11-14 | importer-parity | feature-dispatch | script: pin-attribution helper running a failing story pin on the base tree and diffing miss lists ('same as base' or the new misses) | offered
 - 2026-11-14 | site-shared-styles | requesting-code-review | script: a rebase-receipt / ac-check step refusing a web gate folder whose head summary lacks DONE or has fewer files than the main summary it is compared with | offered
+- 2026-11-14 | short-class-names | feature-dispatch | Claude Code PreToolUse hook on Bash (agent sessions whose brief forbids it): refuse a command holding '<<' with a file write (>, >>, tee, open(...,'w')) | offered
