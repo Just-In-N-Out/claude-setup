@@ -7,8 +7,21 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-14)
 
-- **Current build `2026-11-14.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-14.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-14.4 site-shared-styles (website importer):** every code-method paste (no flag) gives words, buttons,
+    cards and boxes and rows that look the same (equal as written at every range and state, counted over header, page
+    and footer) one shared purpose-named class each (`<page>__text-<4>`, `button`, `box`, `layout`; placed before the
+    element's own), where an element sits staying on its own class, a one-off tweak on the element, never two classes
+    writing one property; every solid colour one palette colour `--color-<hex>` (id from the hex, as the Figma plugin's),
+    linked as `var(--color-<hex>, <as written>)` and written to `palette.json` beside the pastes (Style Manager →
+    Colors → Import, **import the page's file first**), with `styles.txt` listing the classes; an unpainted plain link
+    is a Block `a` holding a Rich Text (every text Rich Text); looks stay true (every element the same off and on at
+    every width, Bricks 2.4.2 and 2.3.9); the switch off (`palette: false`) and Figma designs byte for byte as before.
+    Q1–Q3, Q5–Q7 A and the builder's rulings not yet confirmed; ruling 5 (a section paste's own text classes on a site
+    serving its own fonts) open for Justin. Paste check **3ep** (AC15, live: convert bdryswi.com's scan, import
+    `palette.json` on B-Dry staging, paste /homev2/, change one text class and one palette colour in Bricks and see
+    every carrier change).
   - **2026-11-14.3 importer-app (website importer):** `npm run importer` opens a page on 127.0.0.1 only (this run's
     key in the address, Host/Origin checks, changes only by POST) that runs `capture`, `capture:check`, `site` and
     `site:upload` as typed and shows what they write (pastes byte for byte the command line's): Scan a page, the saved
