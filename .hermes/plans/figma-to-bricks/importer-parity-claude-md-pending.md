@@ -3,7 +3,7 @@
 - Standing rule: **The importer and the plugin write a Nav, a Form's fields and a Video's keys through `emit/nav-shape.ts`, `form-shape.ts`, `video-shape.ts`.**
 - Standing rule: **A top element's position stays custom CSS on the importer** (page-wide classes meet it at class weight).
 - Standing rule (importer-parity builder, 2026-11-13): **the site-route renderer prints only Bricks' own layered CSS for Bricks' elements** (`renderPage` with `bricksCss`): never the Figma route's unlayered helper CSS (`navCss`'s `revert-layer` lines, `FORM_BASE_CSS`), which beats `site-flat` and the site reset (a bare-link Nav drew 31 px off); `test/browser/render-site-nav.test.ts` and `render-site-form.test.ts` assert it.
-- Decision: **a scanned site's form is a Bricks Form that emails the admin; the old site's form address is never posted to** (importer-parity Q7 A, not yet confirmed).
-- Decision: **a Swiper or Splide slider outside Elementor is a Bricks Slider** (replaces "Keep all its slides" for those; importer-parity Q10 A).
+- Decision: **a scanned site's simple form is a Bricks Form that emails the admin; the old site's form address is never posted to** (importer-parity Q7 A, not yet confirmed; Justin's 2026-11-13 "wpform" ruling comes first: a WPForms form is the job forms-wpforms', whose pick runs before this job's `formShape`, so merge that line beside this one, never over it).
+- Decision: **a Swiper or Splide slider outside Elementor is a Bricks Slider** when the capture read it running (its settings); one whose library the capture read nothing of stays static with all its slides, named (replaces "Keep all its slides" for the running ones; importer-parity Q10 A).
 - Decision: **a painted importer Button has Style: Primary** (replaces site-native-structure Q6 A; importer-parity Q14 A).
 - "Waiting on the user → Bricks samples" loses nothing (the Nav and Offcanvas stand-ins stay owed as copies).
