@@ -2,8 +2,8 @@
 
 Planner: 2026-11-13. Pipeline: Full. Base: `main` once site-no-div, site-shared-styles, importer-parity, plugin-parity
 and shared-palette have merged (today `main` is `7f54b0a5`, Build 2026-11-12.3). Measured on a `git archive` of
-`importer-parity-build` `48fe133c` (the newest importer head) and on Justin's 2026-11-11 scan of bdryswi.com's home
-(read-only copy). Evidence: `~/.hermes/plans/figma-to-bricks/evidence/forms-wpforms/planner/` (`<P>` below).
+`importer-parity-build` `48fe133c` (the importer head while measuring; its site code read again at `0585042a`, where
+its Form wave is built) and on Justin's 2026-11-11 scan of bdryswi.com's home (read-only copy). Evidence: `~/.hermes/plans/figma-to-bricks/evidence/forms-wpforms/planner/` (`<P>` below).
 The builder copies this file to `docs/plans/<date>-forms-wpforms.md`.
 
 ## Playback
@@ -95,7 +95,7 @@ By WPForms' own markup, on any site: an element whose classes hold `wpforms-cont
 hold `wpforms-form`, holding at least one element with the class `wpforms-field`. Shown at some width, or inside a box
 a button opens (importer-parity's rule F1 leaves forms in opened boxes alone; W1 takes them). Nothing is keyed on a
 site, a form id, a label or a word. The pick runs in `prepare`, before importer-parity's `formShape`, never over
-another pick; a form W1 takes never reaches `formShape`.
+another pick; a form W1 takes never reaches `formShape` (on the head read, `formPicks`, `convert.ts:237`).
 
 ### 2. Reading the form (W2) — `src/core/site/wpform-read.ts`
 
@@ -175,7 +175,9 @@ carry **what the old site changed**:
   values WPForms derives from them, ported from `CSSVars.php`) doesn't give is a leftover. Leftovers go into the
   form's **one class** as custom CSS, grouped by part, under WPForms' own class names behind the class
   (`.cls div.wpforms-container-full .wpforms-form .wpforms-field-label { … }`), a single field's difference under
-  `[data-field-id="<id>"]` (never an element id: the form's id changes on import). Width ranges go out as bounded
+  `[data-field-id="<id>"]` (WPForms prints it on every field's box, `src/Frontend/Classic.php:149`; never an element
+  id: the form's id changes on import; Justin's scan didn't keep that mark, so the reader takes the id from the box's
+  `id`). Width ranges go out as bounded
   media runs (`blocks.ts`), never `revert`. The class's selector must out-weigh WPForms' own rule for that property;
   the browser test proves each written value wins.
 - **W8, the box around it.** The class sits on `div.brxe-shortcode`; WPForms draws its own container inside it, so
@@ -357,7 +359,8 @@ Before Task 1: `npm run check`, `npm run corpus`, and the whole unit suite on th
 **M2 — the importer makes the element and the file (usable at once with a typed number).**
 - Task 6 (first criterion). `wpform-read.ts` on `site-wpform-code.ts` (`wpformCode(over?)`: the form, and one case per
   field type, per left-out type, classic markup, the spam traps) and on `real-form.json`.
-- Task 7 (fifth criterion). `wpform.ts` W1 and the pick; `convert.ts`; the opened-box case. **Stop condition:** if a
+- Task 7 (fifth criterion). `wpform.ts` W1 and the pick; `convert.ts` (beside `formPicks`, which already runs for an
+  opened box); the opened-box case. **Stop condition:** if a
   pick can't be made inside an opened box's tree without changing how opened boxes paste, stop and report with the
   code lines (the pop-up is where B-Dry's home holds the form).
 - Task 8 (eleventh criterion). The unchanged-bytes test against the base's sums, the switch off included.
@@ -409,15 +412,16 @@ SIGTERM, 137 or 143 is checked against earlyoom before it is read as a result.
 ## Overlaps and order
 
 Heads read on 2026-11-13: `main` 7f54b0a5; `site-no-div-final` cf4f887d (on main); `site-shared-styles-fix1`
-7b7501bd; `importer-parity-build` 48fe133c (at its Task 15, video; its Form wave, Tasks 17–18, not built yet);
-`plugin-parity-build` 89e41a0d; `shared-palette-build` 9070c50f and `shared-palette-fix1` fc32008b. The builder reads
+7b7501bd; `importer-parity-build` 0585042a (Tasks 16–19 done: its Form wave is built, `formPicks` called in `prepare` at
+`convert.ts:237` for a part's root and for an opened box, the drawn-form note at `:360`);
+`plugin-parity-build` 89e41a0d; `shared-palette-build` 9070c50f and `shared-palette-fix1` 83c9e07e. The builder reads
 them again before Task 1 and builds on `main` after all five have merged.
 
 | Job | Shared files | What this job assumes from it |
 |---|---|---|
 | site-no-div | `site/convert.ts`, `tree.ts`, `kinds.ts`, the no-Div and label tests | every box is a Section, Container or Block with a label; this job's element adds "shortcode" to the labelled natives and never makes a Div |
 | site-shared-styles | `site/classes.ts`, `convert.ts` (shared looks, `site-text`) | inherited text reaches the form through its ancestors' classes as today; the absorbed parts take no shared class |
-| importer-parity | `site/convert.ts` (`prepare`'s order, the `natives` switch, `Natives:` line), `site/form.ts`, `emit/form-shape.ts`, `render-form.ts`, the isolation allow-list, the capture's kept attributes | rule F1 as approved (a simple form outside opened boxes is Bricks' Form); W1 runs before it. If its Form wave falls out (its own stop condition), non-WPForms forms stay drawn with today's note and the eleventh criterion compares with that base |
+| importer-parity | `site/convert.ts` (`prepare`'s order, the `natives` switch, `Natives:` line), `site/form.ts`, `emit/form-shape.ts`, `render-form.ts`, the isolation allow-list, the capture's kept attributes | rule F1 as built in `site/form.ts` (a simple form is Bricks' Form; a form holding a captcha, rows or tick boxes is refused and stays drawn, named); W1 runs just before `formPicks` and adds its path to `taken`, so a WPForms form never reaches it; `prepare` already runs inside an opened box, which is where this job's pick goes too |
 | plugin-parity | `emit/form.ts`, `nav.ts`, `video.ts` moved into shape modules | its final file layout; M5's branch in `emit/form.ts` is added after it |
 | shared-palette | colours in settings and custom CSS, `palette.json`, `site:import`'s next steps (`next.ts`) | the class's custom CSS writes colours as that job writes them; the WPForms theme holds plain colour values (WPForms can't read Bricks' palette) |
 | short-class-names (planned) | class names | the form's class is named through its naming function (`bd-form`); until it merges, `<page>__form` |

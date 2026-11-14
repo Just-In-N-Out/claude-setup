@@ -41,3 +41,5 @@ unchanged; nothing to configure. Test from WSL with Windows' own `/mnt/c/Windows
 Compare base/head test logs by name with `grep -a`: Chrome output makes plain grep print "binary file matches" and return nothing, so a "same failures by name" diff passes falsely (icon-buttons builder, 2026-11-04).
 Extract `git archive` trees into a fresh, role-and-round-named folder: the scratchpad is shared and an old `head/` keeps stale files (5 false failures, element-link review 3, 2026-11-04).
 Under WSL never `env PATH=$PATH …`: the inherited PATH has Windows folders with spaces, so every command exits 127; `systemd-run --user --scope` inherits the environment anyway (icon-buttons verifier 2, 2026-11-04).
+
+Docker Desktop's WSL integration can be gone after a session restart (2026-11-13: "docker could not be found in this WSL 2 distro") and no PHP is installed, so a plan can't count on running WordPress or plugin PHP locally (port the PHP logic, or prove against a real render in a scan).

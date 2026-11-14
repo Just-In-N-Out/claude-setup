@@ -31,3 +31,4 @@
 - [alttext.ai API source](alttext-ai-api-source.md) — docs unfetchable; read its WP plugin on plugins.svn; plugin describes every upload itself
 - [Notes-only rebase rule](notes-only-rebase-rule.md) — HANDOFF-only rebase conflict: delta review + AC test re-run, no new verifier/auditor (2026-11-11; also test-only pin updates)
 - [Bricks pro standard](bricks-pro-standard.md) — every paste, both tools, built like a skilled Bricks builder by hand; 6 points at the top of CLAUDE.md Decisions (2026-11-13)
+- [WPForms source](wpforms-source-reference.md) — read WPForms Lite zip; import gives new form id, read-only forms route, theme CSS vars; Bricks shows forms via Shortcode
