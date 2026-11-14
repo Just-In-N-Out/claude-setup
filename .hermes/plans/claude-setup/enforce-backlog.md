@@ -325,3 +325,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | site-shared-styles | figma-to-bricks | test: compare a section's palette.json with the page's on a fixture capture holding an opened box | offered
 - 2026-11-14 | site-shared-styles | feature-dispatch | runner script: after each Chrome step, sweep chrome processes whose user-data-dir is under the agent's TMPDIR and close them by PID | offered
 - 2026-11-14 | site-tests-offline | code-review-practice | guard test fails a drawing file whose captureSite call passes no fetcher | offered
+- 2026-11-14 | plugin-parity | git-commit-rules | git hook: pre-commit in ~/.claude/githooks runs `git diff --cached --check` and refuses staged conflict markers (also during a rebase) | offered

@@ -71,7 +71,7 @@ The merge is local only, into Justin's local `main` (the main folder his app or 
 
 Hermes has no Claude Code worktree isolation, so run main-folder commands directly with `terminal(workdir=<main folder>)`. Find the main folder as the first entry of `git worktree list`.
 
-1. In the worktree: commit everything (per the commit procedure), then `git rebase main` against local `main` as it is now. On conflicts keep both sides' meaning, then re-run the project's tests on the rebased branch. Done when the rebase is complete and tests pass.
+1. In the worktree: commit everything (per the commit procedure), then `git rebase main` against local `main` as it is now. On conflicts keep both sides' meaning, and run `git diff --check` on the resolved files before `git add` and `git rebase --continue` (a failed edit leaves the markers and `--continue` commits them silently; if it did, check out that commit, fix it, `commit --amend`, cherry-pick the later ones), then re-run the project's tests on the rebased branch. Done when the rebase is complete and tests pass.
 2. In the main folder: `git merge --ff-only worktree-<name>`.
    - Uncommitted changes there (e.g. a debug file Justin re-saved) don't block the merge if it doesn't touch them. Leave them alone; never commit, stash, or discard them.
    - If git refuses because of them, stop and tell Justin.
