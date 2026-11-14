@@ -137,3 +137,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-13: new job importer-app (Full): local browser page (npm run importer, 127.0.0.1): scan + preview at 4 widths + copy header/body/footer/all, saved scans, WordPress upload with password box, alttext.ai key section. Planner dispatched. Rule change owed: password 'typed at the hidden prompt' → app box (planner proposes wording).
 - shared-palette builder done (9070c50f on 7b7501bd). Review 1 (Fable, full) dispatched.
 - bdry-pages-motion research done; report saved at evidence/bdry-pages-motion/report.md. Gaps: stacking sticky cards (7 pages), Sump Pump FAQ in page, form (his answer), headline circle. Suggested jobs site-sticky-cards, page-faq-slide; ask Justin.
+- plugin-parity builder done (89e41a0d on 7b7501bd; 5 real files Divs → 0, labels → all, classes 8→51 GRO etc., 0 moved). Review 1 (Fable, full) dispatched.
