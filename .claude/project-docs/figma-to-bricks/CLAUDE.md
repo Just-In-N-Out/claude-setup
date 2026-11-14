@@ -7,8 +7,19 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-14)
 
-- **Current build `2026-11-14.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-14.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-14.2 bricks-icons-site (website importer):** with `--svg` on `site:upload`/`site:import`, a site's own
+    `<svg>` drawing (one root with a `viewBox`, no script, style sheet, `<use>`, `#`-link or part id, not drawn by
+    another company's script, not a live widget's) pastes as Bricks' Icon element showing its SVG file from the media
+    library (`settings.icon`, `library: "svg"`; its look on its class, so a Fill, Width or Height typed in the Icon
+    wins), drawing exactly as its Code element did; every other drawing stays a Code element, counted by reason in the
+    notes; each distinct drawing goes up once after the typed yes as `icon-<8>-image.svg`, as served, never made AVIF
+    and never sent to alttext.ai; a site that refuses SVG keeps Code elements, named; without `--svg`, pastes without
+    a drawing in the map and Figma designs byte for byte as before. Q1, Q4–Q8 ⭐ A and the builder's rulings R1–R10 not
+    yet confirmed. Paste check **3en** (AC5, live: `site:import … --elementor --svg` on bdryswi.com against B-Dry
+    staging, paste on /homev2/, Structure shows Icons, the looks as on the site at desktop, tablet and phone, a typed
+    Fill recolours).
   - **2026-11-14.1 site-no-div (website importer, both routes):** no paste the importer makes holds a Div (`site`,
     `site:upload`, `site:import`, with `--elementor` and without, the boxes a button opens): a box Bricks has no element
     for is a Block with the site's tag and a label by what it is ("Row", "List", "Link", "Icon"…); a part's top boxes
