@@ -95,3 +95,4 @@ When Justin decides something mid-build that changes an approved AC, a planner a
 Tests for the script: `scripts/ac-check.test.sh` (fixtures follow real go, node, pytest and jest output).
 
 - **A rebase receipt's finisher re-reads `git rev-parse main` after the receipt and gates, before handing back:** main can land a build while the gates run, leaving a receipt on a head that won't fast-forward (media-avif-alt, 2026-11-11: main moved 9f75e8ac → 20ce41a8 mid-gates; rebased and re-ran). When another session's merge is imminent, hold the move until it lands rather than receipt twice.
+- A recorded `ac.json` command with `--test-name-pattern='^…$'` breaks when the test name holds an apostrophe ("Bricks' own elements"): write the pattern in double quotes with `\$`, and put any env the run needed (`F2B_STORY_PINS=1`) on the command, or the finisher's rebase-receipt rerun can't run it (plugin-parity verifier).
