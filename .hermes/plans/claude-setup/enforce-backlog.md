@@ -311,3 +311,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | importer-parity | figma-to-bricks | test: site-parity-invariants (or payloadProblems) refuses a bare non-zero number for width/height in any _cssCustom | offered
 - 2026-11-14 | bricks-icons-site | figma-to-bricks | test: a unit test asserting importEnv/env() in test/fixtures/site-import.ts forward F2B_ENCODER_CACHE when the parent has it, so upload tests run under unshare -rn (npm run check) | offered
 - 2026-11-14 | site-sticky-cards | code-review-practice | test: in test/unit/site-sticky-boxes.test.ts a capture with breakpoints [] and Sticky On [desktop] pastes bare(on) === bare(off) with the NAMES note (npm run check) | offered
+- 2026-11-14 | bricks-icons-site | figma-to-bricks | test: media-avif-untouched / site-import-figma-unchanged build each tree in its own mkdtemp copy so parallel runs can't race on dist/ (npm run check with F2B_STORY_PINS=1) | offered
