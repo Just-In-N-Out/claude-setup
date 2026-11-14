@@ -322,3 +322,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | importer-app | figma-to-bricks | unit test: every story pin states its base commit in one machine-readable line and checks F2B_BASE_TREE's archive comment against it, refusing on mismatch instead of hanging | offered
 - 2026-11-14 | importer-parity | figma-to-bricks | unit test: class-names.ts PLUGIN∪STEP_SHARED equals site-parity-invariants FIXED (one exported list), in npm run check | offered
 - 2026-11-14 | importer-parity | feature-dispatch | suite summary lists named-only skips per env var; importer verifier report must cite a run with each set | offered
+- 2026-11-14 | site-shared-styles | figma-to-bricks | test: compare a section's palette.json with the page's on a fixture capture holding an opened box | offered
