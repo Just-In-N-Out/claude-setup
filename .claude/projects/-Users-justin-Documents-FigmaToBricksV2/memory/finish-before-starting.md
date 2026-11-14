@@ -22,3 +22,5 @@ queue with rebases at each step.
 - **Don't build on an unmerged head** unless the job underneath is already accepted (verifier and auditor clean); otherwise wait for its
   merge. Plans that say "base: main once X merges" mean that.
 - "No agent cap" (Justin, 2026-11-11) still stands; this is about order and load, not a fixed number. Related: [[keep-agents-busy]].
+
+**Asked and declined (2026-11-14 ~08:15):** letting the blind auditor skip the full gate suites the verifier already ran on the same head (saves ~1.5–2 h per job). Justin chose "Keep both full runs". Don't offer it again unasked; look for speed elsewhere (fewer jobs in flight, near-merge first).
