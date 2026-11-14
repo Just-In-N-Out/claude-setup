@@ -144,3 +144,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - Checked: git fsck clean, 0 empty objects, all job branches at last SHAs, worktrees + node_modules, plans/briefs/evidence, saved scan, Chrome cache: nothing lost.
 - Resumed: site-no-div rebase finisher a57b7ba, plugin-parity review-1 a6637ab, importer-parity builder a8c81b2, planners importer-app ab6e398, site-sticky-cards a8ed706, page-faq-slide a7a0768, forms-wpforms afb8732.
 - shared-palette review 1 = REVIEW AGAIN (R1-1, R1-2 P2); follow-ups recorded; fixer 1 dispatched (aba6830, brief shared-palette-fixer-1.md, branch shared-palette-fix1 from 9070c50f).
+- 21:51 Justin asleep again: keep all jobs running, take ⭐ recommended answers, full report on return.
