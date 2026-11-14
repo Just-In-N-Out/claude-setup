@@ -26,13 +26,13 @@ rule lines this job changes".
   (`tools/lib/site-upload/`): the app starts `site:upload` itself and has no uploader of its own."
 - Password: "The Application Password is typed at the hidden prompt (`site:import` asks it before the scan and
   keeps it only in its own memory through it), or in the app's password box, which sends it once in a request
-  body to the app on 127.0.0.1, which writes it once to the upload command's input and keeps it nowhere; it never
-  goes in an argument, an environment variable, an address, a file, the record, the capture, the paste, a log, a
-  printed line, the page's storage or the scan's Chrome."
+  body to the app on 127.0.0.1, which writes it once to the upload command's input and holds it only in its own
+  memory, never on disk; it never goes in an argument, a shell or environment variable, an address, a file, the
+  record, the capture, the paste, a log, a printed line, the page's storage or the scan's Chrome."
 - Key: "The alttext.ai key is asked once (at the prompt or in the app's key section, which shows a saved key only
   as its last four characters) and saved only in `~/.config/figma-to-bricks/alttext-key` (0600); it never goes in
-  an argument, an environment variable, an address, the record, the capture, the paste, a log, a printed line or
-  Chrome's storage, and is sent only to alttext.ai."
+  an argument, a shell or environment variable, an address, the record, the capture, the paste, a log, a printed
+  line, a Chrome the tools start, or the page's storage, and is sent only to alttext.ai."
 - Who: "Only Justin runs any of them against his own site: the commands in his own terminal, the app started from
   his own terminal and used in his own browser. Agents never run them against his site or any live site, never
   ask for, hold or type his password, and test them only against `test/fixtures/wp-standin.ts`, the alttext.ai
