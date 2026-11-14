@@ -323,3 +323,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | importer-parity | figma-to-bricks | unit test: class-names.ts PLUGIN∪STEP_SHARED equals site-parity-invariants FIXED (one exported list), in npm run check | offered
 - 2026-11-14 | importer-parity | feature-dispatch | suite summary lists named-only skips per env var; importer verifier report must cite a run with each set | offered
 - 2026-11-14 | site-shared-styles | figma-to-bricks | test: compare a section's palette.json with the page's on a fixture capture holding an opened box | offered
+- 2026-11-14 | site-shared-styles | feature-dispatch | runner script: after each Chrome step, sweep chrome processes whose user-data-dir is under the agent's TMPDIR and close them by PID | offered
