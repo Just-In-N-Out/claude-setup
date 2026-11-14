@@ -320,3 +320,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | plugin-parity | figma-to-bricks | browser lint test: a row wider than the window under html, body { overflow-x: clip } must still give an overflow-x finding | offered
 - 2026-11-14 | plugin-parity | feature-dispatch | ac-check.sh runs bash -n on each row's command and flags a \$ outside double quotes | offered
 - 2026-11-14 | importer-app | figma-to-bricks | unit test: every story pin states its base commit in one machine-readable line and checks F2B_BASE_TREE's archive comment against it, refusing on mismatch instead of hanging | offered
+- 2026-11-14 | importer-parity | figma-to-bricks | unit test: class-names.ts PLUGIN∪STEP_SHARED equals site-parity-invariants FIXED (one exported list), in npm run check | offered
+- 2026-11-14 | importer-parity | feature-dispatch | suite summary lists named-only skips per env var; importer verifier report must cite a run with each set | offered
