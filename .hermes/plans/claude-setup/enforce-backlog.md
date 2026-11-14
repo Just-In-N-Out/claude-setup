@@ -289,3 +289,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-13 | fewer-kept-boxes | claude-setup | script: sync.sh links (or the SessionStart pull hook) fails when a skill a project CLAUDE.md or the briefs name has no link in ~/.claude/skills (figma-to-bricks isn't linked on the desktop) | offered
 - 2026-11-13 | fewer-kept-boxes | figma-to-bricks | test: a row in site-fold-moves that a no-layer wrapper around a negative-margin element in a flex parent stays | offered
 - 2026-11-13 | look-grouping | feature-dispatch | script: before an Agent call that names a brief file, grep it for a '## ' heading marker not at line start and for a numbered list that skips a number (orchestrator dispatch step or a PreToolUse hook on Agent) | offered
+- 2026-11-13 | shared-palette | figma-to-bricks | script: the suite driver writes FILE_EXIT only after a TAP '# tests' line (else FILE_INCOMPLETE) and the resume skips only complete logs | offered
