@@ -82,7 +82,7 @@ The builder copies this file to `docs/plans/<date>-site-sticky-cards.md`.
 - **Bricks 2.2** (`<E>/bricks-2.2/base.php` L488-523): `_position` is a select (`setup.php` L1098-1104: static,
   relative, absolute, fixed, sticky) writing `position`; when it is `sticky` Bricks shows 'Set "Top" value to make
   this element "sticky".'; `_top` writes `top`; `_zIndex` (L567) writes `z-index`. No sample in `reference/bricks/`
-  holds `sticky` (13 hold `relative` or `absolute`); the renderer prints all three keys already
+  holds `sticky` (they hold only `relative` and `absolute`); the renderer prints all three keys already
   (`test/browser/render.ts:26-28`).
 - **Elementor Pro** (`sticky-handler.js`): the script runs when the current device is in `sticky_on`; the offset is
   the device's `sticky_offset` (a device with none takes the next wider one's, Elementor's `getDeviceSetting`) plus
@@ -124,7 +124,7 @@ only at 120 px in a column with 20 px padding; three boxes the rule leaves (no S
 | `site:check --whole --elementor` on the fixture, rule on vs off | the same report byte for byte | `check/site-check-*.log` |
 | Justin's 2026-11-11 home scan, both routes, rule on vs off | byte for byte the same (its only pinned elements are the header's bars) | `check/home-equal.txt` |
 | The 608 hand-made pastes (site-no-div's list), rule on vs off | 0 differ | `check/pins-both.txt` |
-| `npm run build` (the Figma plugin and panel), rule on vs off | `dist/code.js` and `dist/ui.html` byte for byte the same | sums in the README's run |
+| `npm run build` (the Figma plugin and panel), rule on vs off | `dist/code.js` and `dist/ui.html` byte for byte the same | `check/dist-sums.txt` |
 | Unit suite with the prototype | 3723 pass, 1 fails: the list of Elementor files in `test/unit/site-elementor-unchanged.test.ts:78` (it gains the new file) | `check/unit-proto.log` |
 | `structure.txt` of the fixture, rule on vs off | the same | `check/fixture-paste-*` |
 
