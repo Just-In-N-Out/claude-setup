@@ -3,9 +3,11 @@
 Planner: clean-values (Fable 5.2, high). Pipeline: **Full** (Justin, 2026-11-13). Both tools: the website importer
 (`src/core/site/`, the `site*` commands) and the Figma plugin (`src/core/style`, `adapt`, `emit`).
 **Base: `main` once these have merged** (they change the same code; today `main` is `7f54b0a5`, Build 2026-11-12.3):
-site-no-div (`site-no-div-fix3` `828f7dc0`, being moved onto main), site-shared-styles (`site-shared-styles-fix1`
-`7b7501bd`), plugin-parity (`plugin-parity-build` `fcdec6e2`), importer-parity (`importer-parity-build` `33a73f41`),
-shared-palette (`shared-palette-build` `738e300a`). Every file:line below is from a `git archive` of one of those heads
+site-no-div (`site-no-div-fix3` `828f7dc0`; moved onto main as `site-no-div-final` `cf4f887d` while this was
+planned), site-shared-styles (`site-shared-styles-fix1` `7b7501bd`), plugin-parity (`plugin-parity-build` `fcdec6e2`),
+importer-parity (`importer-parity-build`, read at `33a73f41`; at `1f407006` when this plan was saved, with its
+settings, renderer and hover keys built: `controls-more.ts`, `control-values.ts`), shared-palette
+(`shared-palette-build` `738e300a`). Every file:line below is from a `git archive` of one of those heads
 (named where it matters); the builder re-reads each on its real base before editing.
 Evidence (`<P>` below): `~/.hermes/plans/figma-to-bricks/evidence/clean-values/planner/` (`README.md` lists every file;
 the prototype's sources are in `<P>/proto/`, sums in `<P>/SHA256SUMS`).
@@ -101,13 +103,22 @@ No live site was loaded, nothing was sent anywhere, nothing in the repo or `~/Do
 - **Nothing moves** (`<P>/style-diff-*.log`): the same scan converted with the prototype off and on, both drawn as
   `site:check` draws them (Bricks 2.4.2's front-end CSS, offline), every computed property of every element, its
   `::before` and `::after` and its box: first prototype 15,360 readings at 15 widths (his scan), 8,736 at 12 widths
-  (stand-in), 4,568 (plain route) and 4,096 (site-no-div's head) at 4 widths: **0 differ**; final prototype: see
-  `<P>/batch2-run.log` (the same runs again).
+  (stand-in), 4,568 (plain route) and 4,096 (site-no-div's head) at 4 widths: **0 differ**. The final prototype, the
+  same runs again (`<P>/batch2-run.log`): the stand-in, the plain route and site-no-div's head 0 differ; his scan 2
+  of 15,360: one Section's entrance animation caught mid-play (its `animation-name` on at 672 in one drawing and at
+  528 in the other); those two widths drawn twice more: 0 differ (`<P>/batch3-run.log`).
 - **What stays Custom CSS and why** (his scan, by where it sits): 2,166 on parts of an element (its words' inline
   elements, a flat wrapper's inside), 663 on `::before`/`::after`, about 1,700 at widths Bricks has no breakpoint for,
   about 350 under a state, and properties Bricks has no setting for (`box-sizing` 521, `outline` 667, `text-shadow`
   116, `vertical-align` 115, `word-break` 102 …). The notes say this in one line per kind.
-- **Rounding** (`<P>/round-probe-*.txt`): see "V" below for the measured list.
+- **Rounding** (`<P>/round-probe-justin-el.txt`, 15 widths): his scan writes 24 px sizes with a fraction; 18 are
+  candidates by rule V1. 16 round to the whole pixel with no box moving more than 0.5 px, alone and together (worst
+  0.453 px, at 672): 7.25px → 7px and fifteen widths a script had measured (596.75px → 597px, 160.328px → 160px …).
+  2 stay exact: the font size 14.592px (38 uses; as 15px its lines grow and boxes down the page move by up to 78 px)
+  and a line height of 75.6px (2.8 px). The 6 left alone by rule: letter spacings (−0.4px, 0.5px, −1.1px, −1.3px:
+  three of them moved boxes by 10 to 164 px when tried) and two hairlines (1.5px, 1.3px). The stand-in
+  (`<P>/round-probe-standin-el.txt`, 12 widths): 21 fractions, 17 candidates, 16 round (worst 0.453 px), the 75.6px
+  line height stays.
 - **Distinct size values** (settings and Custom CSS together, `<P>/distinct-sizes.txt`): his scan 158 → 156, the
   stand-in 140 → 139 from the settings alone (two spellings of one side merge); the rounding takes off what "V"
   lists. The scale stays the site's own (see "The scale").
@@ -135,11 +146,12 @@ No live site was loaded, nothing was sent anywhere, nothing in the repo or `~/Do
 
 ## What is true today (file:line)
 
-- **Importer.** One function decides (`src/core/site/controls.ts:97-130`, identical on all five heads): a property is
+- **Importer.** One function decides (`src/core/site/controls.ts:97-130` on `main` and on every head read; importer-parity's newest head has it at
+  `controls.ts:86-124`): a property is
   a setting when it is in `RULES` (L66-90: display, flex, gaps, sizes, padding, margin, typography, colour,
   background colour), every value is "plain" (L20: a number with px, %, em, vw or vh), every change falls on Bricks'
   breakpoints and no state changes it (`keep`). Everything else is the class's Custom CSS (`classes.ts:152`
-  `customCss`). importer-parity (in flight) adds position, offsets, z-index, order, overflow, flex item, opacity,
+  `customCss`). importer-parity (in flight; built on its branch at `1f407006`) adds position, offsets, z-index, order, overflow, flex item, opacity,
   cursor, object-fit, corners, border, one box shadow and hover-only state keys (its plan's section E, criteria five
   to eight). After it: formulas, transitions, gradients, the rest of the table below, focus and pressed looks, logical
   sides and the keywords still stay Custom CSS.
@@ -259,11 +271,12 @@ the one call both tools use for a length they write.
 
 ### V. Clean values, measured (importer)
 
-- **V1 Candidates.** Every px number with a fraction that the paste writes as the whole value (or one side) of
-  `font-size`, `line-height`, `letter-spacing`, a padding, margin or gap, a corner, a border width, a width or height
-  (and their min and max) or an offset, in a setting or in Custom CSS. Never inside a formula, a shadow, a transform or
-  a gradient; never a percentage, an `em`, a plain number, a time or a colour. The clean value is the nearest whole
-  pixel (a half rounds up).
+- **V1 Candidates.** Every px number with a fraction, 4 px or more, that the paste writes as the whole value (or one
+  side) of `font-size`, `line-height`, a padding, margin or gap, a corner, a width or height (and their min and max)
+  or an offset, in a setting or in Custom CSS. Never a letter spacing or a border width (a fraction there is the
+  design: a hairline, a tracking), never a value under 4 px (rounding 0.4px gives nothing, 1.5px gives a third more);
+  never inside a formula, a shadow, a transform or a gradient; never a percentage, an `em`, a plain number, a time or
+  a colour. The clean value is the nearest whole pixel (a half rounds up).
 - **V2 The pure part.** `ConvertOptions.clean.rounded: Record<string, string>` (`{ "7.25px": "7px" }`): `rewrite`
   writes the clean value wherever V1's rule finds that exact value, through the typed tokens (`value.ts`); nothing
   else of the paste changes. Without it nothing is rounded.
@@ -279,10 +292,15 @@ the one call both tools use for a length they write.
   `site:import` and `site:upload` measure by default (`--no-round`: none) and write it; `npm run site` takes `--clean
   <clean.json>` (reuse, offline, byte for byte the same pastes) or `--round` (measure now); with neither it rounds
   nothing. Chrome not found: nothing is rounded, one note says so. `--no-clean` switches the whole job off.
+  `site:check` and `site:live` take the same `--clean <clean.json>` and `--no-clean`, so they draw and map the paste
+  that was really pasted (their class names are made from the classes' rules, so a page pasted before this job is
+  checked with `--no-clean`).
 - **V5 The notes.** `Values: <n> px sizes rounded to whole pixels (7.25px → 7px ×1, …); <k> kept exact because a box
   would move more than 0.5 px (14.592px → 15px: 2.8 px at 1440, …)`.
-- Measured on his scan and the stand-in: `<P>/round-probe-justin-el.txt`, `<P>/round-probe-standin-el.txt` (the list
-  of fractions, each one's move alone, and the set that passes together).
+- Measured (`<P>/round-probe-justin-el.txt`, `<P>/round-probe-standin-el.txt`: every fraction, its move alone, the
+  set that passes together): on his scan 16 of 18 candidates round, worst move 0.453 px; `14.592px` and `75.6px` stay.
+  The probe tried every fraction, also the ones V1 leaves alone: rounding a letter spacing of 0.5px to 1px moved a box
+  by 164 px, which is why V1 never takes one.
 
 ### The scale: where a step lives
 
@@ -357,7 +375,7 @@ scale: each font size and each spacing value with its uses and the shared class 
 |---|---|---|
 | site-no-div | every box a Block, words Rich Text, natives by shape; nothing of it changes | `src/core/site/convert.ts`, `test/browser/render.ts` |
 | site-shared-styles | one place writes a class (`class-source.ts` `fromStates`); looks split by property (`looks.ts`); `inked` links colours; `test/web/lib/style-equal.ts`, the computed-style oracle | `class-source.ts`, `looks.ts`, `share.ts`, `colours.ts`, `convert.ts`, `parts.ts` |
-| importer-parity | `controls-more.ts` (its table, `borderOf`, `shadowOf`, the hover keys), `ControlOptions.more`, `hover`, `onlyHover`, the keep lists K1–K4, the renderer printing Border and Box shadow as `assets.php` does, the notes' `Settings:` line, `test/unit/lib/site-pins.ts` | `controls.ts`, `controls-more.ts`, `convert.ts`, `states.ts`, `test/browser/render.ts`, `tools/lib/site-write.ts` |
+| importer-parity | `controls-more.ts` (`MORE_RULES`, `moreGroups`, `hoverOk`, `hoverKeys`, `anotherWrites`, `POSITION`: as built at `1f407006`), `control-values.ts`, `ControlOptions.more`, `hover`, `onlyHover` and `Split.hovered` (`controls.ts:85-116` there), the keep lists K1–K4, the renderer printing Border and Box shadow as `assets.php` does, the notes' `Settings:` line, `test/unit/lib/site-pins.ts` | `controls.ts`, `controls-more.ts`, `convert.ts`, `states.ts`, `test/browser/render.ts`, `tools/lib/site-write.ts` |
 | shared-palette | a colour's one name per site (`model/shared-colour.ts`), `--colours` | `colours.ts`, `tools/site.ts`, `tools/lib/site-write.ts` |
 | plugin-parity | `emit/looks.ts` (`TAKES`), `ConvertOptions.asBefore`, `Scene.capture`, `test/fixtures/drawn.ts`, `tools/lib/styles-text.ts` | `src/core/emit/settings.ts`, `emit/elements.ts`, `emit/looks.ts`, `style/types.ts`, `convert.ts` |
 | bricks-icons (merged) | an Icon's box rules stay weightless Custom CSS | `style/icon.ts`, `emit/settings.ts` |
@@ -378,14 +396,14 @@ and are **not** built; they are in the prototype only so its numbers and drawing
 - AC6 (proposed): Given a payload holding Gradient, Transform, Transition, Aspect ratio, Visibility, Isolation, Pointer events, a Background position and the hover, focus and active keys, the test renderer prints for each what Bricks 2.2's `assets.php` prints (the gradient's angle and stops, a transform's parts in key order, a state's rule after the normal one in key order), and `unknownSettingKeys` lists none of them. Test `test/unit/render-clean-keys.test.ts` "the renderer prints Gradient, Transform, Transition, the text settings and the three state keys as Bricks' assets.php does".
 - AC7 (proposed): Given the fixture sites `clean-values` (new), `parity-controls`, `shared-looks`, `plain-natives`, `elementor-natives`, `site-menu`, `elementor-faq` and `elementor-slider`, each captured and converted with `clean: false` and with the settings on and no rounding, both routes, drawn with Bricks 2.4.2 and with 2.3.9 at every width the capture read: every computed property of every element, its `::before` and `::after` and its box are equal, and a hovered, a focused and a pressed button of `clean-values` each draw as with the switch off. Test `test/web/site-clean-settings.test.ts` "with the settings on and no rounding every element of every fixture site draws as before at every width, hovered, focused and pressed too".
 - AC8 (proposed): Given every code fixture and this job's fixtures, both routes and both text modes: no property a class holds as a setting is written for that element by the class's own custom CSS or by another class it carries at any width, and what stays in a class's own custom CSS is refused again when the rules are run on it a second time (nothing that fits a setting is left). Test `test/unit/site-clean-one-writer.test.ts` "a property that is a setting is written nowhere else for its element, and nothing that fits a setting stays custom CSS".
-- AC9 (proposed): Given a rounding map, the paste differs from the exact one only where V1 finds exactly a listed px value as a whole size (a setting's value, a side, a custom CSS declaration); a listed value inside a formula, a shadow, a transform or a gradient, a percentage, an `em`, a plain number and every unlisted value are untouched; an empty map or none gives the exact paste byte for byte. Test `test/unit/site-clean-round.test.ts` "a rounding map changes exactly the px sizes it lists and nothing else of the paste".
+- AC9 (proposed): Given a rounding map, the paste differs from the exact one only where V1 finds exactly a listed px value as a whole size (a setting's value, a side, a custom CSS declaration); a listed value inside a formula, a shadow, a transform or a gradient, a letter spacing, a border width, a value under 4 px, a percentage, an `em`, a plain number and every unlisted value are untouched; an empty map or none gives the exact paste byte for byte. Test `test/unit/site-clean-round.test.ts` "a rounding map changes exactly the px sizes it lists and nothing else of the paste".
 - AC10 (proposed): Given the fixture site `clean-values` (a 7.6px padding that moves nothing, a 17.6px font size whose line moves, twelve stacked boxes of 0.3px each that pass alone and fail together), `site:import` on the local stand-in WordPress writes `clean.json` with the first rounded, the second kept exact with its move and place, as many of the twelve as stay within 0.5 px together, and `worst` at most 0.5; the pastes' boxes drawn at every width differ from the exact pastes' by at most 0.5 px; `npm run site … --clean <that file>` writes the same pastes byte for byte with no Chrome; `--no-round` and a missing Chrome round nothing and say so in one note. Test `test/web/site-clean-values.test.ts` "a fraction rounds only where no box moves more than half a pixel at any width, alone and together, and the notes name each value kept exact".
 - AC11 (proposed): Given B-Dry's saved 2026-10-29 home served on 127.0.0.1 (never the live site; the base's stand-in capture), with the Elementor step and without it, settings and rounding on: every box is within 0.5 px of the `clean: false` paste's at one width per range (Bricks 2.4.2 and 2.3.9), every computed property is equal except the rounded sizes' own and a simplified formula's own text, no `site:check` row is worse than the base's by more than 0.5 px, and the pastes hold at least 20% fewer custom CSS declarations than with `clean: false`. Test `test/web/site-clean-bdry.test.ts` "B-Dry's stand-in keeps every box within half a pixel with the settings and the rounding on, and its custom CSS shrinks".
 - AC12 (proposed): Given `npm run site`, each part's notes hold, after the earlier jobs' lines, `Clean settings: …`, `Values: …` (when a `clean.json` is used) and `Custom CSS that stays: …` with the kinds the paste holds, and the out folder holds `sizes.txt`; with `--no-clean` none of the three lines and no `sizes.txt`. Test `test/web/site-cli.test.ts` "site writes the clean settings, values and staying custom CSS lines and sizes.txt, and none of them with --no-clean".
 - AC13 (proposed): Given a Figma design, a layer's pointer events, aspect ratio, isolation, visibility, a link's text decoration and a layer painted with one linear gradient are Bricks settings on the element or its look class at the design width and at each tier a rule writes them; several paints, a radial paint, a part's rules and a look that follows another element stay custom CSS; and no `css` string of any element's or class's own style names a property that has a typed field. Test `test/unit/emit-clean-settings.test.ts` "pointer events, aspect ratio, isolation, visibility, text decoration and one linear gradient are Bricks settings, and no custom CSS of the element names a property that has a setting".
 - AC14 (proposed): Given the five real files and every zero-argument fixture, every length the plugin writes in a setting is already its simplest form (`cleanLen` of it is itself), no px number in one has more than two decimals, and each changed formula gives its old value for every unit size tried. Test `test/unit/emit-clean-values.test.ts` "every formula in a paste is its simplest form with the old value, and no px number has more than two decimals".
 - AC15 (proposed): Given the five real files, both picture modes, and the fixtures `landingPage`, `clean` (new: a gradient box, a hidden layer, a see-through overlay, a kept-ratio picture) and `pairPage`, converted with `asBefore: { clean: true }` and without, drawn with Bricks 2.3.9's front-end CSS at the design width, 1200, 1024, 991, 768, 478 and 390: every element's box is within 0.01 px and every computed property is equal, a painted gradient's `background-position` and `background-repeat` aside where its picture is pixel for pixel the same. Test `test/browser/clean-values-figma.test.ts` "every Figma design draws as before with the settings and clean values on".
-- AC16 (proposed): Given the switch off (`clean: false` in the importer, `asBefore.clean` in the plugin), every paste of every code fixture and of the five real files is byte-identical to the base's; and with it on, the Figma panel's website route, a website capture converted by the plugin, `capture`, `capture:check`, `site:check` and `site:live` write what the base writes. Test `test/unit/clean-values-off.test.ts` "with clean values off every paste of both tools is byte for byte as before" (named-only: `F2B_PIN_BASE=1`, a story-time pin).
+- AC16 (proposed): Given the switch off (`clean: false` in the importer and `--no-clean` in `site`, `site:check` and `site:live`, `asBefore.clean` in the plugin), every paste of every code fixture and of the five real files, and what `site:check` writes for the code fixtures, is byte-identical to the base's; and with it on, a paste the rules find nothing to change in (one fixture of each tool), the Figma panel's website route, a website capture converted by the plugin, `capture` and `capture:check` write what the base writes. Test `test/unit/clean-values-off.test.ts` "with clean values off every paste of both tools is byte for byte as before" (named-only: `F2B_PIN_BASE=1`, a story-time pin).
 - AC17 (proposed) (live): Justin scans bdryswi.com again with the new build (`npm run site:import -- … --elementor`), imports `palette.json`, empties B-Dry staging `/homev2/` and pastes header, page and footer: the page looks as before at 1440 and at 390; clicking a hero button and its class shows Background → Color filled and, with Bricks' state menu on `:hover`, the hover colour; changing that hover colour and saving changes the button on the live page; the blue band's class shows Style → Gradient with its colours; `notes.txt` lists the sizes rounded and those kept exact. In Figma (darksalmon): he converts a design holding a gradient box with Pictures to WordPress, pastes it, the box shows Style → Gradient with its colours, and changing one colour there changes the page.
 
 Each cited test fails on the base for its criterion's reason (the first and fourth: proven, `<P>/red-green.txt`: 2 of 2
@@ -431,7 +449,9 @@ of what it imports):
   `<P>/round-probe.ts`, with the style-swap instead of a reload), `readClean(file)`, `CleanFile`.
 - `tools/lib/site-write.ts`: `writePastes(…, { clean })` writes `clean.json` and `sizes.txt`; `tools/site.ts`:
   `--clean <file>`, `--round`, `--no-clean`; `tools/site-upload.ts`, `tools/site-import.ts`: measure unless
-  `--no-round` or `--no-clean`, after the media map is known; the usage lines and the next steps name `clean.json`.
+  `--no-round` or `--no-clean`, after the media map is known; the usage lines and the next steps name `clean.json`;
+  `tools/site-check.ts`, `tools/site-live.ts`: `--clean <file>`, `--no-clean` (read only as before: nothing else of
+  either changes).
 
 **Plugin:**
 - `src/core/style/types.ts`: the fields of P1; `merge` treats them as plain values; `Gradient` type.
@@ -455,11 +475,12 @@ New: `src/core/model/css-math.ts`, `src/core/emit/gradient-shape.ts`, `src/core/
 clean-values-pins.json` (the story pin's sums).
 Changed: `src/shared/breakpoints.ts`, `src/core/site/controls.ts`, `convert.ts`, `class-source.ts`, `states.ts`,
 `parts.ts`, `src/core/style/types.ts` and the producers of P1, `style/paint.ts`, `src/core/emit/settings.ts`,
-`css.ts`, `src/core/convert.ts`, `tools/site.ts`, `site-upload.ts`, `site-import.ts`, `tools/lib/site-write.ts`,
+`css.ts`, `src/core/convert.ts`, `tools/site.ts`, `site-upload.ts`, `site-import.ts`, `site-check.ts`, `site-live.ts`,
+`tools/lib/site-write.ts`,
 `test/browser/render.ts`, `test/unit/site-isolation.test.ts` (the allow-list), `reference/bricks/README.md`,
 `docs/HANDOFF.md`, the plan copy and ledger.
-Not touched: `src/ui/**`, `src/plugin/**`, `src/web/**` (the capture), `tools/capture*.ts`, `tools/site-check.ts`,
-`tools/site-live.ts`, `src/core/understand/**`, `src/core/normalise/**`, `reference/bricks/*.json`, `BUILD`.
+Not touched: `src/ui/**`, `src/plugin/**`, `src/web/**` (the capture), `tools/capture*.ts`, `tools/lib/read-only.ts`,
+`src/core/understand/**`, `src/core/normalise/**`, `reference/bricks/*.json`, `BUILD`.
 
 ## Tests that pin today's output (the builder may edit these, and only as said)
 
@@ -476,6 +497,7 @@ weaken it):
 | lists the setting keys the renderer can't draw (`render.test.ts` "settings the renderer can't draw are listed…") | the keys this job draws leave the list |
 | compares with a golden or a sum of the default suite (`site-slider-base/`, `site-motion-base/`, `site-no-revert-main.json` through `node tools/site-no-revert-golden.ts .`, `site-basic-golden.json`, the earlier jobs' pins the default suite runs) | made again through its own generator **only after** the sixteenth criterion's pin is green on that commit, reason "clean values" |
 | a plugin golden (`test/golden/files/convert-sample.json`, `cta-names-base.json`) or a test reading `style.css` for a property that is now a typed field | the golden regenerated after the pin is green; the test reads the typed field or `_aspectRatio` … in the settings |
+| an earlier job's pin of `src` files or of a tool's output that the default suite runs (`media-avif-untouched`, `site-import-figma-unchanged`, `site-scroll-lock-base`, `site-ticks-base`, `panel-embed-unchanged`, `site-figma-unchanged`, `site-elementor-unchanged`, `site-native-unchanged`, `site-media-unchanged`, `site-upload-panel-unchanged`, `shared-colour-base`) | re-pinned for this job's files, test-only, in the task that changes them, as the merges before did (bricks-icons `37687fcb`); the ledger names each sum and why |
 
 Story pins of merged jobs (env-gated, named-only) are not regenerated.
 
@@ -519,7 +541,9 @@ login, nothing sent anywhere: `site:import` and `site:upload` run only against `
 11. States (the third criterion): focus and active keys, the site's order, `looksOf`'s `keep`.
 12. The one-writer test over every fixture (the eighth criterion); the fixture site `clean-values` captured; the
     seventh criterion's test over all eight sites, both Bricks versions, both routes. A difference is a stop: find
-    the other writer (a keep list is missing a property) or the setting's print, never widen the oracle.
+    the other writer (a keep list is missing a property) or the setting's print, never widen the oracle. The test
+    reads a page only once no animation is running on it (an entrance caught mid-play shows as `animation-name`
+    differing in opposite directions at two widths: the planner's final run); it never leaves a property out.
 
 ### Milestone 3: the importer's values
 

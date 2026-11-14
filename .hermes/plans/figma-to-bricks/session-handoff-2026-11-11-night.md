@@ -131,3 +131,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - short-class-names plan done (17 ACs, ⭐ taken; installed plan-approved). Build first of the five, after in-flight jobs merge.
 - native-widgets plan done (10 ACs, ⭐ taken, installed). Only the menu slide becomes native (Accordion Nestable); rest stays Code, labelled + named. Q7 card arrows stay script (B would reverse his 'Sideways scroll' decisions) — tell Justin.
 - fewer-kept-boxes plan done (16 ACs, ⭐ taken, installed): importer -33 Blocks elementor / -114 plain on his scan, 0 px; plugin frames that only lay out one layer left out (hydraulics -51). Boxes in menus/pop-ups stay (capture measured no size: follow-up).
+- clean-values plan done (17 ACs, ⭐ taken, installed): importer Custom CSS declarations 11,515 → 8,978 on his scan (after importer-parity), 0 moved; 16 of 18 fractional px sizes round within 0.5 px; plugin ~500 declarations get settings + formula simplifier.
