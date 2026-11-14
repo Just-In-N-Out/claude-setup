@@ -309,3 +309,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | site-shared-styles | figma-to-bricks | test: test/web/lib/style-equal.ts's forced-state reader waits max(transition-duration+delay)+100 ms read from computed style, not a fixed 450 ms | offered
 - 2026-11-14 | importer-parity | feature-dispatch | test: test/web/lib/site-page-check.ts also compares the drawn size of each ::before/::after and svg inside compared elements, site vs paste, failing when one visible on the site is 0x0 in the paste | offered
 - 2026-11-14 | importer-parity | figma-to-bricks | test: site-parity-invariants (or payloadProblems) refuses a bare non-zero number for width/height in any _cssCustom | offered
+- 2026-11-14 | bricks-icons-site | figma-to-bricks | test: a unit test asserting importEnv/env() in test/fixtures/site-import.ts forward F2B_ENCODER_CACHE when the parent has it, so upload tests run under unshare -rn (npm run check) | offered
