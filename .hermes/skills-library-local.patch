@@ -227,7 +227,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..0d8ba3e 100644
+index f2d882d..ec1677c 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -31,12 +31,72 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
@@ -311,7 +311,7 @@ index f2d882d..0d8ba3e 100644
 -An unexpected survivor needs diagnosis: equivalent/duplicate guards, an unreached
 -fixture, a weak assertion or the wrong layer. It is not a pass and does not by
 -itself prove that the entire test is worthless.
-+An unexpected survivor needs diagnosis (a "once per distinct item" clause needs a fixture holding two alike items, or a cache further down hides the de-duplication mutant; bricks-icons-site verifier): equivalent/duplicate guards (when one
++An unexpected survivor needs diagnosis (a check measuring a still page can't see a change only scrolling shows, such as a sticky Top: prove its sensitivity with a mutant visible where it measures and kill the scroll-only mutant at the unit layer that writes it, site-sticky-cards builder; a "once per distinct item" clause needs a fixture holding two alike items, or a cache further down hides the de-duplication mutant; bricks-icons-site verifier): equivalent/duplicate guards (when one
 +end-to-end fixture trips two conditions of a guard at once, each single-condition
 +mutant survives there: give every condition its own small case around a part that
 +passes all the others, have the test name each wrongly accepted case so the grader
