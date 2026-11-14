@@ -11,3 +11,5 @@ WPForms' code is readable from the **Lite zip on wordpress.org** (2.0.4 read 202
 - A shortcode form prints its own `settings.themes` as CSS variables on `#wpforms-<id>` (modern markup + "Base and form theme styling" only).
 - The front end prints `data-field-id` on each field box; Lite's CSS lacks the Smart phone picker's CSS (Pro only).
 Evidence: `~/.hermes/plans/figma-to-bricks/evidence/forms-wpforms/planner/wpforms-source-lines.txt`. Related: [[bricks-source-research]], [[site-and-team]].
+
+- WPForms full stylesheet resets every descendant (`div.wpforms-container-full *{visibility:visible…}`): a part hidden with `visibility: hidden` still shows its children (the required mark); hide it with `display: none` or hide the part and its descendants (forms-wpforms builder, 2026-11-14).
