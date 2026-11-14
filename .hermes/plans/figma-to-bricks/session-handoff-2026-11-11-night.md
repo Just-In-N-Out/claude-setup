@@ -146,3 +146,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - shared-palette review 1 = REVIEW AGAIN (R1-1, R1-2 P2); follow-ups recorded; fixer 1 dispatched (aba6830, brief shared-palette-fixer-1.md, branch shared-palette-fix1 from 9070c50f).
 - 21:51 Justin asleep again: keep all jobs running, take ⭐ recommended answers, full report on return.
 - 22:05 importer-app plan done (20 ACs, AC20 live; Q1–Q9 ⭐ A); plan-approved installed; lessons saved (testing-pitfalls, security-best-practices); builder af04930 dispatched on 7f54b0a5 (brief importer-app-builder.md).
+- 22:12 shared-palette fixer 1 done: head 83c9e07e (code 8fa6ddb7), R1-1/R1-2 fixed RED→GREEN, 20 mutants killed, R1-3/5/6/7 taken; no lessons. Review 2 (fix scope from 9070c50f) dispatched a360b9b.
