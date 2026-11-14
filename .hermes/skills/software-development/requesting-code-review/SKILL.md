@@ -93,6 +93,9 @@ tracker, automatic publication or a competing agent lifecycle.
    before any filtering, truncation or log-copying pipeline; a final success marker
    or successful receipt writer cannot establish a passing test. Inspect saved
    output with `read_file` and `search_files` only after capturing that result.
+   A by-name compare of two suite runs (main vs head) counts only when both runs
+   finished (a DONE marker, the same file count): a compare taken mid-run reads
+   like a gate with most files "MAIN ONLY" (site-shared-styles review 3).
 3. Require the expected cases to execute. Do not add `--passWithNoTests`, a no-op
    target or an early test return to obtain green. For dependency-backed claims,
    supply the admitted dependency and verify exact test identities and intended
