@@ -276,3 +276,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - ~05:2x EST: page-faq-slide review 1 REVIEW AGAIN (R1-1 P2: R2 too wide kills a working Accordion; restore base behaviour, AC3 amended by fixer); fixer 1 dispatched. 6 P3 to follow-ups. Lessons: rendering-validation bringToFront before clicks, implementation-planning re-measure premises on the real base.
 - ~05:4x EST: forms-wpforms fixer 1 done: 4348d16e on importer-parity 34e02b90 (R1-1, R1-2 fixed; pins re-recorded). Review 2 brief written; HELD (load 55). Lesson folded (wpforms-defaults table); enforce offer added.
 - load under 40: forms-wpforms review 2 dispatched (10 running).
+- ~06:0x EST: site-headline-marker fixer 1 (move) done: e37e4c06 on 34e02b90, AC1-AC13 green. Review 2 brief written; HELD (load 62). Lesson folded; enforce offer.
