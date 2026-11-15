@@ -340,3 +340,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 16:30 EST: headline review 5 clean (e7224f62). forms review 7 clean (full from 4addaf46, MOVE ON at 82f5395f) -> briefs forms-wpforms-verifier-4/auditor-4 READY, held (load 60); dispatch when load < 40.
 - 2026-11-15 16:37 EST: pfs fixer 2 done (a867375f, test-only AC2 rows; verifier-2 + auditor-2 both NOT ACCEPTED only AC2 on 05b0a79e) -> review 4 delta. forms verifier-4 + auditor-4 dispatched on 82f5395f.
 - 2026-11-15 16:43 EST: pfs review 4 clean (a867375f); AC2 bracket reworded (Justin 'Yes, reword'; v3 old copy) -> pfs verifier-3 + auditor-3 dispatched on a867375f.
+- 2026-11-15 16:47 EST: ip auditor-4 READY 21/22 on 4addaf46. Waiting: verifier-6 (4addaf46), fixer 9 (test-only pins).
