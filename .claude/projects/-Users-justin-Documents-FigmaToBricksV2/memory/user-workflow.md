@@ -37,3 +37,5 @@ post-paste steps are in [[site-and-team]].
 Screenshots Justin sends may be taken at browser zoom (on 2026-10-29 two were at about 75%, a ~2560px CSS window): before measuring sizes from a shot, solve the zoom from two or three known sizes in it.
 
 After a new build, tell him to close the plugin panel (X) and reopen it, and to check the panel's "Figma to Bricks v2 build …" line before Convert: on 2026-10-30 his first Convert after build 30.1 still ran 29.3 (Figma loads `\\wsl.localhost\Ubuntu\home\justin\Documents\FigmaToBricksV2\manifest.json`, but only on reopen).
+
+A technical trade-off question needs a concrete "what you would see" example before the options (2026-11-15): asked whether shared button classes losing to a site's Theme Style should be fixed now, he answered "Wait I didn't get it" and then "What do you mean beat that class"; he chose only after an example ("your navy Figma button shows the theme's orange"). Never use words like "beat", "outweigh" or "specificity" without such an example.
