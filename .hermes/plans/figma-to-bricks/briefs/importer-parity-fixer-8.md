@@ -1,0 +1,16 @@
+# Role: fixer 8 (review 10: R10-1, Justin "Fix now"): importer-parity
+
+You are a fresh fixer (**Opus 5.5, high**). Load `receiving-code-review` (verify the finding first), `engineering-best-practices`, `test-driven-development`, `mutation-testing-discipline`, `git-commit-rules`; the project skill `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` with `references/testing-pitfalls.md`. Read both `repeat-mistakes.md` files first. Follow the machine and safety rules in `/home/justin/.hermes/plans/figma-to-bricks/briefs/_reviewer-common-2026-11-15.md` (its review.json part doesn't apply; you do write code). Commit to your branch only (plain `git commit -m`, no author override, no AI or Co-Authored-By lines, never CLAUDE.md); don't push; don't bump BUILD; don't edit the main folder or CLAUDE.md; never bare `git stash`. Plain `git` in your own worktree, each command alone; files only with Write/Edit, never heredocs, python heredocs or `sed -i`; scripts run as `bash <file>`, with names unique to you (`ipf8-*.sh`). `git diff --check` before every `git add`. TMPDIR ~/.cache/ipf8/t1. **Deadline:** Monday 2026-11-16 09:00 on this computer; this is a one-sentence fix: about 45 minutes, no gold-plating.
+
+## State
+- Approved plan (read-only): `/home/justin/.hermes/plans/figma-to-bricks/evidence/importer-parity/plan-approved.md` (AC1–AC22; AC22 live).
+- Work on top of **`f422c625f6ea1b8d152b92cdeb465c37c8950ba2`** (branch `importer-parity-fix7`, fixer 7, on 32c9d7b3 on main 201218fa): `git checkout -B importer-parity-fix8 f422c625…`. Add commits on top; never rewrite it.
+- Review 10: `/home/justin/.hermes/plans/figma-to-bricks/evidence/importer-parity/review-10/review.json`, R10-1 (P2). Justin chose "Fix now". R10-2 and R10-3 are follow-ups: don't fix them.
+
+## Do
+1. **R10-1:** with the old companion note gone, a form that stays as it is says only "a form stays as it is (<why>): <path>", which reads as "the site's form still works". Make the one line say it sends nothing: "a form stays as it is and sends nothing (<why>): <path>" (`src/core/site/form.ts:393`). RED first in AC16's test (`test/unit/site-form.test.ts`) and in site-kinds; then update the two pageCode goldens (site-motion-base, site-slider-base) with their own generator, proving every changed byte is that line.
+2. A mutant (the old wording back) fails the tests; restore by hash.
+3. Gates on the new head: both typechecks, `npm run check` (8G scope, committed tree), main's guard `test/unit/site-tests-offline.test.ts`, every AC test by plan name into `/home/justin/.hermes/plans/figma-to-bricks/evidence/importer-parity/fixer-8/receipt-<head7>.log` (`HEAD=` first, `EXIT=` last; B-Dry files in the no-network namespace; under `env -u GIT_DIR`); Justin's B-Dry scan both routes byte for byte f422c625's except that note line (name each changed line). Ledger: a "Fixer 8" section; HANDOFF one line. Stop at `ready-for-review`.
+
+## Report (as text)
+New head (full SHA) and its base; the finding's verdict, RED, GREEN, mutant; gates; `ac_status`; `skill_lessons[{skill, lesson, evidence, enforce}]` (never edit skills or memory; empty is normal), ending with: `MAIN SESSION: check and save these skill_lessons now.`
