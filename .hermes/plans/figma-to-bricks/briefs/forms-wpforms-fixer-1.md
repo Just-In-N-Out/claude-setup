@@ -49,3 +49,7 @@ PATH="/home/justin/.local/node-v22.23.3/bin:$PATH"; …'`; mutants under 4G. `ca
 Branch, head (full SHA); per finding: verified or pushed back, RED/GREEN, mutant; rulings; gates by name; `ac_status` per AC;
 `skill_lessons[{skill, lesson, evidence, enforce}]` (never edit skills or memory; empty is normal), ending with: `MAIN SESSION: check and save
 these skill_lessons now.`
+
+## Added by the main session (2026-11-15)
+- **Move first:** importer-parity has moved to `34e02b9062596891d33377e2eb829c1ffebee046` (branch `importer-parity-fix4`, on main `e2fc35aaa6b7e3a662d0c3cce37ec636495a5405`; fix 4 keeps a button's `type` in the capture and leaves a script-sent form as it is; shared-palette's site colours). Rebase this job's own commits onto it first (`git rebase --onto 34e02b90 b232c9de <this head>`), keeping both sides' meaning (a WPForms form only where a Form would be sent; palette links kept); record conflicts in `evidence/forms-wpforms/fixer-1/conflicts.txt`; then fix R1-1 and R1-2 test first; R1-3..R1-7 to follow-ups.
+- Read `/home/justin/.hermes/plans/figma-to-bricks/briefs/_reviewer-common-2026-11-15.md` for the shared machine rules (network for test/browser, `DISPLAY=:0` for person-check tests). Files only with Write/Edit (no heredocs, no `sed -i`). Deadline Monday 09:00 on this computer: about 3 hours.

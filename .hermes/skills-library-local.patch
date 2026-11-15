@@ -230,7 +230,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..921c27f 100644
+index f2d882d..56e4618 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -668,7 +668,7 @@ index f2d882d..921c27f 100644
     a probe that calls the function twice on one connection (easy to do via an
     `or`-fallback expression) double-applies a stateful operation and reports
     impossible results. Reproduce through the actual test before concluding the
-@@ -290,13 +538,118 @@ transcripts in `references/blind-test-patterns.md`.
+@@ -290,13 +538,120 @@ transcripts in `references/blind-test-patterns.md`.
      another discovery test failing does not establish this method's sensitivity.
      Preserve the old and strengthened oracles, apply the identical production
      mutation to each, and report their distinct outcomes without retroactively
@@ -689,7 +689,9 @@ index f2d882d..921c27f 100644
 +    run as not reached (86bcxnymy builder 2, M16). A disk copy has no repo: a
 +    test reading a fixture from history (`git show <rev>:<file>`) fails there at
 +    setup, so set `GIT_DIR=<the worktree's gitdir>` inside the mutant runner
-+    (plugin-parity fixer 1). On Windows, `OpenProcess`
++    (plugin-parity fixer 1), and `cd` out of a copy before removing it: a
++    shell left in a deleted folder can't start the next mutant, which comes back
++    "NOT APPLIED" rather than killed (look-grouping). On Windows, `OpenProcess`
 +    fails once the last handle to a finished process closes, so a STILL_ACTIVE
 +    check's mutant needs a test holding a `SYNCHRONIZE` handle (M8w-v2).
 +    `-overlay` reaches files the go command compiles, including `//go:embed`
