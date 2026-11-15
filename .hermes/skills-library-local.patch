@@ -141,7 +141,7 @@ index 8d8968a..f0855d3 100644
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..f6d7970 100644
+index c509c64..55446f6 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,12 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -158,7 +158,7 @@ index c509c64..f6d7970 100644
  
  ## Procedure
  
-@@ -36,7 +38,9 @@ Produce a saved, finite software plan that a context-free implementer can follow
+@@ -36,13 +38,15 @@ Produce a saved, finite software plan that a context-free implementer can follow
  
  Extract the goal, included work, exclusions, acceptance and allowed side effects from the current request. Resolve an obvious interpretation autonomously; ask one brief question only when genuinely different interpretations change the plan.
  
@@ -168,6 +168,13 @@ index c509c64..f6d7970 100644
 +**Done:** one-sentence goal, a finite scope and numbered acceptance criteria (stated or proposed); historical work is not silently resumed or called incomplete.
  
  ### 2. Refresh the baseline and ownership
+ 
+ Use `read_file` and `search_files` for project rules, real source paths, manifests and tests. For GitHub work, inspect current main, full owning threads, open PRs and affected file sets with read-only `terminal` commands such as `gh issue view N --json title,body,comments,assignees,state`, `gh pr list` and `git status --short --branch`; `--comments` alone is not a body read.
+ 
+-Inspect changes since the proposal's immutable base, not just its old CI result. Separate stale/shared checkout state from remote main, and account for newly merged checkers, changed fixture requirements, reservations and newer owner-held documentation work. Do not promise to merge or replace a draft that a newer work item intentionally preserves as reference.
++Inspect changes since the proposal's immutable base, not just its old CI result. Separate stale/shared checkout state from remote main, and account for newly merged checkers, changed fixture requirements, reservations and newer owner-held documentation work. Do not promise to merge or replace a draft that a newer work item intentionally preserves as reference. A ruling whose premise was measured on an older head of work still in flight ("stays as it is: base shows 43.5 px off") is re-measured on the real base before the plan relies on it, and the builder runs the base's own behaviour for each "stays as it is" rule before removing coverage (page-faq-slide review 1: the base had since become a working Accordion).
+ 
+ **Done:** current source identity, instruction placement, ownership and conflicts are explicit; facts unavailable through failed reads remain unknown.
  
 @@ -50,7 +54,7 @@ Inspect changes since the proposal's immutable base, not just its old CI result.
  

@@ -273,3 +273,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 
 - 2026-11-15 ~04:4x EST: look-grouping review 1 REVIEW AGAIN (R1-1 names by words split one look across pages; R1-4 AC7 flaky fixed wait). Justin ruled "By look, same everywhere" (review-1/justin.json, replaces Q5 A/C4). Fixer brief written; HELD: load 82. fewer-kept-boxes fixer dispatched.
 - ~05:0x EST: load fell to 39.6; look-grouping fixer 1 dispatched. 10 agents running.
+- ~05:2x EST: page-faq-slide review 1 REVIEW AGAIN (R1-1 P2: R2 too wide kills a working Accordion; restore base behaviour, AC3 amended by fixer); fixer 1 dispatched. 6 P3 to follow-ups. Lessons: rendering-validation bringToFront before clicks, implementation-planning re-measure premises on the real base.
