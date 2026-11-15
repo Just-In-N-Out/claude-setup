@@ -351,3 +351,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | importer-parity | figma-to-bricks | script: the finisher's rebase step runs main's guard tests (site-tests-offline) before any other gate | offered
 - 2026-11-15 | plugin-parity | figma-to-bricks | test: plugin-looks palette check also converts each real design (F2B_DJTREES too) with its own saved colours record | offered (fixer 4 doing it in AC7's test)
 - 2026-11-15 | site-headline-marker | figma-to-bricks | test: widen site-tests-offline's DRAWS so a file importing test/fixtures/web/capture.ts or calling captureSite is checked too | offered
+- 2026-11-15 | plugin-parity | figma-to-bricks | test: an ungated unit test compares git diff --name-status main...HEAD -- src with the current job's later-jobs.ts sets, in npm run check | offered
