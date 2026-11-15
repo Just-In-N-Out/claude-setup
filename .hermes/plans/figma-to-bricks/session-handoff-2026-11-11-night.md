@@ -280,3 +280,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - load under 40: site-headline-marker review 2 dispatched (10 running).
 - ~06:2x EST: forms-wpforms review 2 MOVE ON at 4348d16e (1 P3). Verifier + auditor HELD until one agent returns (9 running; both side by side = 11). Lesson folded into code-review-practice.
 - forms-wpforms blind auditor dispatched (10 running); its verifier (briefs/forms-wpforms-verifier.md) goes at the next return.
+- ~06:4x EST: site-headline-marker review 2 MOVE ON at e37e4c06 (1 P3). forms-wpforms verifier dispatched (10 running). headline verifier+auditor briefs written; dispatch at next two returns.
