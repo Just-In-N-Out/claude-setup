@@ -252,3 +252,7 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-14 native-widgets review 1 MOVE ON at f8807e60 (3 P3 -> follow-ups + rebase notes). Verifier/auditor HELD until importer-parity + plugin-parity merge and native-widgets is rebased (source clashes expected -> review of resolution + verifier + auditor then; checking now would be redone). Lesson folded (details flex gap). page-faq-slide builder told the TreePick.rest notes.
 
 - 2026-11-15 ~00:2x EST: shared-palette after-merge done: Build 2026-11-15.1, commit e2fc35aa pushed (origin/main = main), paste check 3er (3eq stays reserved for plugin-parity), CLAUDE.md Status written. Merge lock released. Lesson skipped (SKILL.md line 124 already greps ~/.hermes/plans recursively); enforce offer (next-id helper) added. Justin asked "What do you mean beat that class" on the Theme Style buttons question: re-explaining.
+
+- 2026-11-15 01:3x EST: site-tests-offline review 3 (delta) MOVE ON at 29a7f6c1; P3s to follow-ups. Main e2fc35aa changed test/web/site-cli.test.ts (this job edits it too): rebase first (fixer), then full review on new base, then verifier+auditor side by side. Load 46 at the time: dispatch held until under 40.
+
+- 2026-11-15 ~01:4x EST: load back to 31; dispatched site-tests-offline fixer 3 (rebase onto e2fc35aa, briefs/site-tests-offline-fixer-3-rebase.md). Next: full review on new base -> verifier+auditor side by side -> ac-check -> merge.
