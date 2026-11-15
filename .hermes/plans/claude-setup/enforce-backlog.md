@@ -337,3 +337,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | look-grouping | figma-to-bricks | script: planner prototype check runs F2B_PIN_BASE=1 F2B_STORY_PINS=1 on every pin file, base vs prototype, diffs names | offered
 - 2026-11-15 | look-grouping | figma-to-bricks | script: base-run wrapper refuses unless pwd is the copy and every listed test file exists at <base> | offered
 - 2026-11-15 | fewer-kept-boxes | figma-to-bricks | test: the kept-boxes fixture site holds a section per move the AC names (a padded wrapper around a positioned element with a placed child; an element with browser margins); a unit test fails when a move in fold-moves.ts has no w-* box in the fixture's gone list | offered
+- 2026-11-15 | look-grouping | code-review-practice | test: copies-names.test.ts converts a second page whose call class also holds a Button of other words and asserts the class id and name equal the first page's | offered

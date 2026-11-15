@@ -33,7 +33,7 @@ index d8e25dc..545b2f9 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..17afd33 100644
+index d6a2493..d40f8d2 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,30 +60,42 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -87,7 +87,7 @@ index d6a2493..17afd33 100644
  - Readiness budgets: reject nonfinite and negative numeric timeouts before resource or persistent-state claims, including direct API callers. Preserve zero only when it is the documented immediate-timeout control; use bounded fake-clock regressions rather than launching an infinite wait.
  - Maintainability: simple design, local conventions, names, duplication, abstraction fit.
  - Docs and rollout: README, changelog, feature flags, migration notes, operator impact.
-@@ -95,6 +107,13 @@ Use this as a scan order, not a rigid form:
+@@ -95,7 +107,15 @@ Use this as a scan order, not a rigid form:
  - Safety metadata: compare explicit canonical status/date/approval fields across human-readable docs and machine manifests. Keyword presence is not agreement; retain full-entrypoint negative fixtures where one field contradicts the manifest while unrelated caveats remain, and reject missing/duplicate/conflicting fields without treating the checker as release authorization.
  - Execution provenance: require contemporaneous complete consumed-source hashes or a dirty patch before and after dirty-tree runs. HEAD plus a dirty flag or one wrapper hash does not bind every helper, test or workflow; inherit only demonstrated unchanged bytes/consumed fields rather than fabricating retrospective attestation.
  - Scanner coverage: inspect the exact resolved packaged implementation and its actual revision-range, pagination and merge filtering. Full checkout depth only supplies history; it does not prove all relevant commits were scanned, and a mutable-tag source snapshot does not authenticate the future packaged runtime.
@@ -99,8 +99,10 @@ index d6a2493..17afd33 100644
 +- A Windows launcher that runs `powershell -Command <tool>`: run that exact command read-only once on the Windows side (`powershell -NoLogo -Command '<tool> --version'`). npm-installed CLIs resolve to their `.ps1` shim first, and Windows' default Restricted policy refuses it (PSSecurityException), while a launch test that swaps the program for its test binary stays green. Also check the tool is found from the PATH the app inherited at start, not only after a later install (86bcm928h review 1). When a fix swaps that lookup for hard-coded install paths, probe each common install method (npm under nvm-windows/Volta/scoop or a custom prefix, WinGet, the vendor's standalone installer, an x64 build on ARM64), check the user-facing error keeps the "not found where it looks" reason, and compare any imitated shim environment with everything the installed shim version sets (86bcm928h review 2).
 +- A UI panel that shares one `generation` counter between reload and action, and clears `busy` only when the generation still matches, locks itself when a document event reloads it mid-action: fire the panel's reload events while a bridge promise is pending, then check the buttons are enabled again (86bcm928h review 1).
  - Scanner target containment: prove the exact Git repository root before history traversal. A nonrepository directory can discover an ancestor repository through `git -C`; use initialized, wholly owned synthetic repos for error controls and an explicit discovery ceiling for raw nonrepo probes. Preserve any escaped execution as an excluded scope incident, and do not infer no sensitive exposure merely from zero findings. Distinguish reachable graph size from patch-bearing scanner commit counts and verify expected canary commit identities.
++- A name or id that gains a part read from content (its elements' words) must stay the same wherever the same rules hold: probe a second input where those rules hold other content too. A "same on two pages" test built from two pages of the same content passes while one site ends with two classes of equal settings (look-grouping review 1).
  
  ## Output Format
+ 
 diff --git a/skills/engineering-best-practices/SKILL.md b/skills/engineering-best-practices/SKILL.md
 index 856df40..1e37d3a 100644
 --- a/skills/engineering-best-practices/SKILL.md
