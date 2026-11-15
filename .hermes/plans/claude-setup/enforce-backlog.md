@@ -327,3 +327,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-14 | site-tests-offline | code-review-practice | guard test fails a drawing file whose captureSite call passes no fetcher | offered
 - 2026-11-14 | plugin-parity | git-commit-rules | git hook: pre-commit in ~/.claude/githooks runs `git diff --cached --check` and refuses staged conflict markers (also during a rebase) | offered
 - 2026-11-14 | plugin-parity | figma-to-bricks testing-pitfalls | script: the finisher's rebase receipt lists test/browser files added on main since the old base and requires a FILE_EXIT per file on main and on head | offered
+- 2026-11-14 | importer-parity | figma-to-bricks testing-pitfalls | script: one shared no-network wrapper (tools/ or test/) with the dummy-interface namespace, named by every B-Dry brief instead of each agent hand-writing the unshare line | offered
+- 2026-11-14 | importer-parity | figma-to-bricks testing-pitfalls | test: site-upload-icons passes a loopback encoder source or cache dir into the tool's env so it never needs the network | offered
