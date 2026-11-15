@@ -347,3 +347,6 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | importer-parity | ac-verification | test: AC20-style pin asserts its inputs make at least one element from every shared emit/*-shape.ts module | offered
 - 2026-11-15 | page-faq-slide | feature-dispatch | script: ac-check.sh (or an amendment-install lint) fails when an amendment quotes a cited test name split over two lines | offered
 - 2026-11-15 | page-faq-slide | feature-dispatch | script: in the verifier/auditor step, when main is not an ancestor of --base, run main's guard unit tests against the head tree and report what they list | offered
+- 2026-11-15 | plugin-parity | figma-to-bricks | script: tools/story-pins.ts lists every test/unit test gated by a process.env.F2B_* switch, prints each run command, fails when a gated file is missing from a checked-in registry; finishers and verifiers run it at rebase | offered
+- 2026-11-15 | importer-parity | figma-to-bricks | script: the finisher's rebase step runs main's guard tests (site-tests-offline) before any other gate | offered
+- 2026-11-15 | plugin-parity | figma-to-bricks | test: plugin-looks palette check also converts each real design (F2B_DJTREES too) with its own saved colours record | offered (fixer 4 doing it in AC7's test)
