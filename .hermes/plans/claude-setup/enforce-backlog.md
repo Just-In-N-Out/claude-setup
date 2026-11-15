@@ -366,3 +366,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | site-headline-marker | figma-to-bricks | pins reading F2B_BASE_TREE assert its src/ and package.json exist first ('F2B_BASE_TREE <path> is not an unpacked tree') | offered
 - 2026-11-15 | importer-parity | figma-to-bricks | fixer receipt runs every F2B_STORY_PINS/F2B_PIN_BASE file and fails on a red not red on main; site-icons-golden.ts --site-only | offered
 - 2026-11-15 | page-faq-slide | implementation-planning | plan lint at step 3 / in ac-check.sh flags a cited test name split over two plan lines (amendments too) | offered
+- 2026-11-15 | importer-parity | figma-to-bricks | lint verifier lane scripts: a pgrep -f pattern on a TMPDIR lane path must end in '/' | offered
