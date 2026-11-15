@@ -361,3 +361,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | importer-parity | figma-to-bricks | test: every name in src/core/site/names.ts BY_ID and NAMEABLE is in src/web/read/code.ts KEPT (or a written exception list) | offered
 - 2026-11-15 | importer-parity | feature-dispatch | Claude Code hook: refuse pkill -f / pgrep -f whose pattern is a bare generic script name (queue*.sh, run*.sh) | offered
 - 2026-11-15 | forms-wpforms | figma-to-bricks | test: plugin-parity-pin.test.ts reads test/fixtures/later-jobs.ts for later jobs' added fixture files, as the other story pins do | offered
+- 2026-11-15 | page-faq-slide | code-review-practice | reviewer brief or ac-check.sh lists AC ids whose tests a rebase/resolution commit edited, so the orchestrator asks for an amendment before the verifier | offered
+- 2026-11-15 | native-widgets | mutation-testing-discipline | mutation harness refuses a replacement matching /=\s*(\[\]|\{\})\s*&&/ | offered
