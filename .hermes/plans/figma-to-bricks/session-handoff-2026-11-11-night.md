@@ -268,3 +268,5 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 ~03:5x EST: site-headline-marker review 1 MOVE ON at 75392d9d (5 P3 to follow-ups). Fixer 1 dispatched to move it onto importer-parity 34e02b90 (3 known keep-both conflicts + pin re-records); then delta review -> verifier+auditor. Lessons folded: live-site-reading (animationend bubbles), rendering-validation (deviceScaleFactor 1 pin; run ratios).
 
 - 2026-11-15 ~04:1x EST: importer-parity review 5 MOVE ON at 34e02b90 (after adding words+accept to review-4/justin.json; 2 P3 to follow-ups) -> verifier 4 + blind auditor 2 side by side. 11 agents now (over the 10 guideline by one; the site-tests-offline pair finishes first).
+
+- 2026-11-15 ~04:2x EST: fewer-kept-boxes review 1 REVIEW AGAIN (4 P2: padding onto a containing block of absolute children; browser-default margins overwritten; inline-picture frames dropped; AC8 fixture lacks the moves). Fixer brief written (briefs/fewer-kept-boxes-fixer-1.md); dispatch HELD until an agent returns (10 running).
