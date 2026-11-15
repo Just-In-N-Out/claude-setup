@@ -281,3 +281,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - ~06:2x EST: forms-wpforms review 2 MOVE ON at 4348d16e (1 P3). Verifier + auditor HELD until one agent returns (9 running; both side by side = 11). Lesson folded into code-review-practice.
 - forms-wpforms blind auditor dispatched (10 running); its verifier (briefs/forms-wpforms-verifier.md) goes at the next return.
 - ~06:4x EST: site-headline-marker review 2 MOVE ON at e37e4c06 (1 P3). forms-wpforms verifier dispatched (10 running). headline verifier+auditor briefs written; dispatch at next two returns.
+- ~07:0x EST: page-faq-slide fixer 1 done 09e3c128 (R1-1 fixed; AC3/AC6 amendment pending Justin approval; re-issue was refused by the auto-mode guard). headline auditor dispatched (10 running). Pending: page-faq-slide review 2, headline verifier.

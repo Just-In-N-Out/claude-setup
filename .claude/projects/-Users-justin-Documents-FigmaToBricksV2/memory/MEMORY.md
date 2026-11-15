@@ -36,3 +36,4 @@
 - [Finish before starting](finish-before-starting.md) — 2026-11-14: 17 agents at load 60–80 + builds stacked on unmerged heads = 1 merge in 12 h; near-merge jobs first, hold new starts above load ~40, no builds on unaccepted heads
 - [Verifier and auditor side by side](verifier-auditor-parallel.md) — 2026-11-14: start the blind auditor with the verifier, not after (Justin's 'Checks side by side'); merge queue and narrower audits declined
 - [Deadline Monday 16:00 Lebanon](deadline-2026-11-16.md) — = 09:00 EST Mon 2026-11-16; all in-flight jobs + site-headline-marker, page-faq-slide, look-grouping; clean-values after; builds start now, up to 10 agents
+- [Plan amendments need his go](plan-amendments-need-go.md) — a fixer's AC amendment is re-issued into plan-approved.md only after Justin approves it (guard refused it 2026-11-15)
