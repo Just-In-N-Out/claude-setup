@@ -346,3 +346,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | importer-parity | figma-to-bricks | test: a unit test building every plain-native shape (Accordion, Slider, Divider, Video, Nav, Form) as its Section's only box and asserting the native element is made; in npm run check | offered
 - 2026-11-15 | importer-parity | ac-verification | test: AC20-style pin asserts its inputs make at least one element from every shared emit/*-shape.ts module | offered
 - 2026-11-15 | page-faq-slide | feature-dispatch | script: ac-check.sh (or an amendment-install lint) fails when an amendment quotes a cited test name split over two lines | offered
+- 2026-11-15 | page-faq-slide | feature-dispatch | script: in the verifier/auditor step, when main is not an ancestor of --base, run main's guard unit tests against the head tree and report what they list | offered
