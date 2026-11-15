@@ -272,3 +272,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 ~04:2x EST: fewer-kept-boxes review 1 REVIEW AGAIN (4 P2: padding onto a containing block of absolute children; browser-default margins overwritten; inline-picture frames dropped; AC8 fixture lacks the moves). Fixer brief written (briefs/fewer-kept-boxes-fixer-1.md); dispatch HELD until an agent returns (10 running).
 
 - 2026-11-15 ~04:4x EST: look-grouping review 1 REVIEW AGAIN (R1-1 names by words split one look across pages; R1-4 AC7 flaky fixed wait). Justin ruled "By look, same everywhere" (review-1/justin.json, replaces Q5 A/C4). Fixer brief written; HELD: load 82. fewer-kept-boxes fixer dispatched.
+- ~05:0x EST: load fell to 39.6; look-grouping fixer 1 dispatched. 10 agents running.
