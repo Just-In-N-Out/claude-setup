@@ -9,6 +9,10 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 - **Current build `2026-11-15.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **site-tests-offline (tests only, no build):** every test Chrome launches through `launchOffline` (a host rule
+    mapping every non-loopback name to nothing) and every Node fetch through `offlineFetch`, so test runs never reach
+    the internet; `test/unit/site-tests-offline.test.ts` refuses a drawing file that names a plain launcher;
+    `site:live`'s own Chrome is the named exception.
   - **2026-11-15.1 shared-palette (both tools):** a colour Figma doesn't name is one palette colour `--color-<hex>`
     (id from the hex) from the plugin and the importer alike, so one colour is one id and one variable across pages and
     both tools; given the site's own palette exports (Style Manager → Colors → Export, or the `palette.json` imported
@@ -425,6 +429,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **Test runs never reach the internet** (site-tests-offline): a test that draws a site capture or paste launches
+  Chrome through `test/web/lib/offline-chrome.ts` `launchOffline` and fetches through `offlineFetch`; the guard test
+  fails on a plain `launchChrome` in a drawing file.
 - **A size change made after Figma must reach the layout plan as a planned width.** Shares and row shapes read
   drawn widths unless the earlier pass records growth (`IRNode.giveWay`, `grownAlong`, `plannedWidth`, `rowGapAt`).
   Counting grown words only in `least()` can make laptops wrap rows tablets keep (label-floor, GRO's hero).
