@@ -1,0 +1,20 @@
+# Role: blind AC auditor (**Opus 5.5, xhigh**): forms-wpforms
+First read and follow the machine and safety rules in /home/justin/.hermes/plans/figma-to-bricks/briefs/_reviewer-common-2026-11-15.md (ignore its review.json part). Change no source or test, commit nothing, start no
+agents. Load `engineering-best-practices`, `mutation-testing-discipline` and
+`/home/justin/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` (how ACs are proven; your ac.json format).
+About 2 hours (Justin's deadline Monday 09:00 on this computer). TMPDIR ~/.cache/fw-auditor-2/t1. Never import into or write to any WordPress
+site; the WPForms file is only written locally and drawn with the stand-in.
+You never saw the build. A verifier works on the same head at the same time: read nothing under `/home/justin/.hermes/plans/figma-to-bricks/evidence/forms-wpforms/` but `plan-approved.md` and your own folder (no review, verifier, builder or fixer folder or report). Prove every AC yourself from the plan and the code, with your own cases (a WPForms form of your own with a title, a description, several field kinds, a shown separator line; Justin's B-Dry scan in the namespace).
+- Plan (read-only): /home/justin/.hermes/plans/figma-to-bricks/evidence/forms-wpforms/plan-approved.md (AC1–AC18; AC17, AC18 live: `not_run`): a scanned site's WPForms form pastes as a WPForms form (a
+  WPForms import file plus a Shortcode element), not a Bricks Form; the Figma plugin's "Forms become" option.
+- Head **311a7419215df7a21e9ed19606edeb129ecb86fc** (branch `forms-wpforms-fix2`), base **c45266415f6e54766e9447d9ee7dd9cc375bddba**
+  (importer-parity's reviewed head on main 9942df18; not merged yet). `git checkout --detach 311a7419`.
+- Known not this job's: site-upload-stop's "R1-1 the next run never takes another file of the same name" flakes under load (passes alone);
+  standing story-pin reds panel-embed-unchanged, site-scroll-lock-base, site-media-unchanged; importer-app-notes.
+- Each AC: a test or terminal-captured check on head and on the old code, plus one picture per AC (a drawing, or a terminal capture as .txt).
+- Write `/home/justin/.hermes/plans/figma-to-bricks/evidence/forms-wpforms/auditor-2/ac.json` (with `verdict` and `ac_status`) and its logs in `/home/justin/.hermes/plans/figma-to-bricks/evidence/forms-wpforms/auditor-2/` (create it; it must be empty); self-check:
+  `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh --repo <your worktree> --base c45266415f6e54766e9447d9ee7dd9cc375bddba
+  --plan /home/justin/.hermes/plans/figma-to-bricks/evidence/forms-wpforms/plan-approved.md <copy 1 of your ac.json in its own folder> <copy 2 in a second folder>` (it refuses one file passed twice); quote its last line.
+Report (as text): per AC accepted or not with the evidence path; gates; `verdict`; `ac_status`; `skill_lessons[{skill, lesson, evidence,
+enforce}]` (never edit skills or memory; empty is normal), ending with: `MAIN SESSION: check and save these skill_lessons now.`
+- **New since the first checks (2026-11-15):** the job moved twice onto newer importer-parity heads (now c4526641 on main 9942df18, with the site-tests-offline guard `test/unit/site-tests-offline.test.ts`, which must pass on head), the job's tests launch Chrome through `launchOffline` and fetch through `offlineFetch`, the story pins list this job's files in `test/fixtures/later-jobs.ts`, and fixer 2 fixed R4-1: on the plain route a WPForms form box that is a Section's only box, or itself a part's Section, now pastes as one labelled "WPForms form" Shortcode (Section > Shortcode flat, as importer-parity's "Keep it flat"), with the `forms` result, the import file and the notes. Prove AC5 with your own case of those shapes too (plain route, at least 3 top-level sections in the page part, or rule S makes no Sections). Story pins run with `F2B_BASE_TREE` an archive of 56b5076b with main 9942df18's `src/shared/build.ts`, `F2B_SERVICES_FILE` set.
