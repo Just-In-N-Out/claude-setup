@@ -162,6 +162,9 @@ Confirm:
 - The unchanged test passes for the expected reason and actually executed.
 - Affected regression and required project checks pass at their proper boundary;
   do not run every expensive suite after every line or silently omit a required gate.
+  Run the quick whole suite (e.g. `npm run check`) right after the targeted tests go
+  GREEN and before ledger commits or long gates: targeted ACs can pass while other unit
+  tests are red (plugin-parity fixer 3: 11 reds found only at the long gate, two restarts).
 - Preserve baseline/new failures, skips/xfails, warnings and retries; exit zero
   or zero executed cases alone is not proof.
 
