@@ -7,8 +7,22 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-15)
 
-- **Current build `2026-11-15.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-15.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-15.2 plugin-parity (Figma plugin):** a Figma paste holds no Div (only a picture carried inside the
+    paste stays one): every frame and shape is a Block; every Section and Block is labelled by the designer's name,
+    else a Section by its first words and a Block "Row", "Column", "Grid", "Box", "Shape", "Photo", "Spacer" or "Link";
+    looks that repeat (text, button, box, layout) live in shared purpose-named classes (`text-…`, `button-…`, `card-…`,
+    `row-…`…; `<purpose>-<4>`, id from the settings as written), decided in emit after adapt; a Button look keeps its
+    font, colours, background, border, corners, shadow and padding in its class's Custom CSS at `html:root
+    .<class>.brxe-button.bricks-button`, every opaque colour a palette link `var(--color-<hex>, …)`, a colour the palette
+    lacks added to the palette file (the site's own colour where the export holds it); the sticky header stays with
+    `overflow-x: hidden` in Additional CSS and in a Header template; looks the same with and without a Theme Style;
+    the plugin = replay; website captures in the panel byte for byte as before. Q1–Q8 ⭐ A, the builder's rulings and
+    Justin's "Class Custom CSS" and "Add them to palette" (2026-11-15) as HANDOFF names them; R7-1 (should every element
+    painting a palette colour link to it?) a question for Justin. Paste check **3eq** (AC18, live: convert a page with
+    Pictures to WordPress, paste on darksalmon, Import classes, Structure shows Sections, Containers and labelled
+    Blocks with no Div; change one shared text or Button class and every element carrying it changes).
   - **site-tests-offline (tests only, no build):** every test Chrome launches through `launchOffline` (a host rule
     mapping every non-loopback name to nothing) and every Node fetch through `offlineFetch`, so test runs never reach
     the internet; `test/unit/site-tests-offline.test.ts` refuses a drawing file that names a plain launcher;
@@ -429,6 +443,12 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **Every frame and shape of a Figma paste is a Block; only an inlined picture is a Div; a Block that was a Div writes
+  `_width: auto`, `_display: block` or `_flexWrap: nowrap` where a Div had no default (`IRNode.leaf`)** (plugin-parity).
+- **Shared looks are decided in emit after adapt (`emit/looks.ts`): a class carries a path completely, at every tier,
+  or not at all; tests read an element's drawn settings through `test/fixtures/drawn.ts`** (plugin-parity).
+- **A Button look class keeps its look in its own Custom CSS at `html:root .<class>.brxe-button.bricks-button`
+  (0,4,1), above Bricks' Theme Style button rules; renaming that class in Bricks drops the look** (plugin-parity).
 - **Test runs never reach the internet** (site-tests-offline): a test that draws a site capture or paste launches
   Chrome through `test/web/lib/offline-chrome.ts` `launchOffline` and fetches through `offlineFetch`; the guard test
   fails on a plain `launchChrome` in a drawing file.
