@@ -358,3 +358,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | plugin-parity | figma-to-bricks | test: offline-tally-compare compares a fixed temp repo instead of the live working tree, so an uncommitted BUILD bump cannot fail it | offered
 - 2026-11-15 | look-grouping | feature-dispatch | script: feature-dispatch/scripts/stack-check.sh <head> <main> lists merge second parents in <fork>..<head> not on main and non-merge commits outside the job, run before any rebase finisher | offered
 - 2026-11-15 | site-headline-marker | figma-to-bricks | test: media-avif-untouched and site-import-figma-unchanged build the head in their own temp copy, never REPO/dist | offered
+- 2026-11-15 | importer-parity | figma-to-bricks | test: every name in src/core/site/names.ts BY_ID and NAMEABLE is in src/web/read/code.ts KEPT (or a written exception list) | offered
+- 2026-11-15 | importer-parity | feature-dispatch | Claude Code hook: refuse pkill -f / pgrep -f whose pattern is a bare generic script name (queue*.sh, run*.sh) | offered
