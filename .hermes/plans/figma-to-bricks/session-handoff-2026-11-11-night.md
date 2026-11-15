@@ -279,3 +279,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - ~06:0x EST: site-headline-marker fixer 1 (move) done: e37e4c06 on 34e02b90, AC1-AC13 green. Review 2 brief written; HELD (load 62). Lesson folded; enforce offer.
 - load under 40: site-headline-marker review 2 dispatched (10 running).
 - ~06:2x EST: forms-wpforms review 2 MOVE ON at 4348d16e (1 P3). Verifier + auditor HELD until one agent returns (9 running; both side by side = 11). Lesson folded into code-review-practice.
+- forms-wpforms blind auditor dispatched (10 running); its verifier (briefs/forms-wpforms-verifier.md) goes at the next return.
