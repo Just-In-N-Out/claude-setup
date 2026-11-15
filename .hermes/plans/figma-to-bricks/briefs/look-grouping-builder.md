@@ -1,0 +1,61 @@
+# Role: builder: look-grouping (copies of the same button, heading or card share one class, in both tools)
+
+You are the builder (**Opus 5.5, xhigh**). Load `engineering-best-practices`, `test-driven-development`, `mutation-testing-discipline`,
+the project skill `/home/justin/.hermes/skills/software-development/figma-to-bricks/SKILL.md` (with `references/testing-pitfalls.md`,
+`references/planning-checks.md`, `references/live-site-reading.md` "Code-route paste traps", `references/rendering-validation.md`,
+`reference/bricks/README.md` — element shapes only from `reference/bricks/` samples or Bricks' GPL code, never from memory). Read
+`/home/justin/.hermes/skills/software-development/figma-to-bricks/references/repeat-mistakes.md` and
+`~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/repeat-mistakes.md` first. Never load bdryswi.com, B-Dry staging or any
+live site; no logins; never write to any WordPress site (the uploader only against `test/fixtures/wp-standin.ts`); never ask for or hold
+Justin's password or key; touch nothing under `~/Downloads` (Justin's scan: the read-only copy
+`~/.hermes/plans/figma-to-bricks/evidence/media-clickable/run/bdryswi-com-home.f2b-capture.json`). Every Chrome that draws a site capture or
+paste launches with `SITE_OFFLINE` (`tools/lib/site-chrome.ts`); run any test that captures the B-Dry stand-in or draws Justin's scan only
+inside a no-network namespace (`unshare -rn sh -c 'ip link set lo up && ip link add d0 type dummy && ip addr add 10.255.0.2/24 dev d0 && ip
+link set d0 up && ip route add unreachable default && exec unshare --user --map-user=1000 --map-group=1000 <cmd>'`, inside the memory scope;
+`site-upload-icons` alone needs the network for its AVIF encoder, local fixtures only). Keep to the standard at the top of the repo CLAUDE.md
+"Decisions the user made" (built like a skilled Bricks builder by hand). **Deadline:** Justin needs this merged by Monday 2026-11-16 09:00 on
+this computer's clock: work steadily to `ready-for-review` without gold-plating; edge cases a real paste doesn't hit go to follow-ups. Away
+rule: if you need to figure something out, research it; if nothing is found, take your best-reasoned answer and record it as a ruling in the
+ledger and HANDOFF.
+
+## The plan (approved under Justin's standing auto-go and "go with recommended": every ⭐ answer)
+`/home/justin/.hermes/plans/figma-to-bricks/evidence/look-grouping/plan-approved.md` (read-only; AC1–AC23; its live AC `not_run`). Copy it to the `docs/plans/` name
+the plan gives. Planner evidence: `~/.hermes/plans/figma-to-bricks/evidence/look-grouping/planner/` — a head start, not proof. Pipeline: Full. short-class-names (fix round pending, branch `short-class-names-build`) owns every class name; clean-values (not built) owns values: don't do their work; read their plans in `~/.hermes/plans/figma-to-bricks/` (`short-class-names.md`) only to keep out of their way. Justin's ruling (CLAUDE.md, 2026-11-13, look-grouping Q3 A): copies of one button, heading or card share one class even if a copy differs a little; the copy's real difference stays on the element itself, so nothing moves and no two classes write one property.
+
+## Base (built early on purpose — Justin, 2026-11-14: "Start builds now" for the Monday deadline)
+The plan's base is main once site-no-div, site-shared-styles, plugin-parity, importer-parity and shared-palette merge. The first two are on main `fe29b65d`; the other three are in their final checks, each rebased onto `fe29b65d`: importer-parity `a049bb4baa7329b8184cb3777e3ffabf47e1252a`, plugin-parity `2fe8bb52fac3d49689f580c6a504070356147dd1`, shared-palette `00aff255cdd2d0b6b6210ecf4e72ec6e925f44fb`. In your own worktree: `git checkout -B look-grouping-build a049bb4baa7329b8184cb3777e3ffabf47e1252a`, then `git merge --no-edit 2fe8bb52fac3d49689f580c6a504070356147dd1`, then `git merge --no-edit 00aff255cdd2d0b6b6210ecf4e72ec6e925f44fb`. If a merge conflicts, resolve keeping both sides' meaning, run `npm run check` on the merge, and record each resolution in the ledger (`git diff --check` before committing); if it can't be made green, abort that merge, build on what merged, and say which half waits for a rebase. The plan measured on `plugin-parity-build` `fcdec6e2`: re-read every file:line it cites on your base before editing.
+Every RED is measured against your base commit (record its SHA). Don't edit other jobs' own files beyond what this plan names; when told,
+rebase onto their newer heads or main at a clean task boundary. Before every `git add` / `rebase --continue` in a conflict, `git diff
+--check` the resolved files.
+
+## Rules
+`npm run check` (8G scope) before Task 1 and at the close; `npm run corpus` measures nothing on this desktop: compare replays of
+`corpus/files/*` and `figma-to-bricks-debug-page-1.json` base vs head byte for byte (Figma pastes change only where the plan says). The whole
+unit suite (goldens of merged jobs move only by design, each regenerated by its own generator, with an exact allowance and the old oracle kept
+with the switch off); the pins by name with `F2B_PIN_BASE=1` and `F2B_STORY_PINS=1`; the full `test:web` and `test:browser` file by file at the
+close under 4G scopes (B-Dry files 8G), compared with the base by name (known failing on main: composition-clipping, fonts, hero-pair,
+peer-sides, pill-holder, site-live 3 of 6, icon-elements renderer@600/390, site-motion-bdry's Elementor hover-look test, site-media-unchanged's
+308 misses; flaky under load: capture-opens-guards' service-worker cases, render-site-motion, strips' carousel, site-check-cli `--whole`: rerun
+alone). Named-only ACs by name with their variables. Ledger in `.superpowers/sdd/<the plan's date and name>/progress.md`; HANDOFF section
+(newest first, `Build <set at merge>`, paste check `<id at merge>`). Commit after each passing task (plain `git commit -m`, no author override,
+no AI lines, never CLAUDE.md); don't push; don't bump BUILD; don't edit the main folder; never bare `git stash`. Work through the plan's
+milestones, commit each, and keep going to `ready-for-review`.
+
+## Machine
+Node `/home/justin/.local/node-v22.23.3/bin` first on PATH; `TMPDIR` about 24 characters (`~/.cache/lgb/t1`); scripts and progress under
+`~/.cache/lgb/s/`. `CHROME_PATH=/home/justin/.cache/chrome-for-testing/chrome-f2b`. Close every Chrome **you** start by PID (a
+`user-data-dir=` pattern ends in `/`; never `pkill -f`/`pgrep -f` with a pattern in your own command line); **one Chrome suite at a time**;
+before each Chrome suite check `/proc/loadavg` (other agents share the machine; above ~40, do unit work first); memory scopes as `systemd-run
+--user --scope -p MemoryMax=<n>G -p MemorySwapMax=0 /bin/bash -c 'export PATH="/home/justin/.local/node-v22.23.3/bin:$PATH"; …'` (systemd-run
+expands `$VAR`: use a script file). Write scripts with the Write tool, run as plain `bash <file>`; plain `git` in your own worktree (never `git
+-C` the main folder; no git piped into another command; no heredocs that write files; a commit message with backslashes or colons in
+parentheses goes in a file for `git commit -F`). Use `tail -n 3`. Foreground Bash moves to the background after about 180 s: long drivers with
+`setsid --fork`, waiting on `^EXIT=` in foreground polls of 160 s or less (never end your turn to wait). In an archive tree: a `tsc` wrapper
+first on PATH, `GIT_DIR` set, `F2B_SERVICES_FILE` for the Services save. SIGTERM/143/137/"Killed" may be earlyoom: check `journalctl -u
+earlyoom --since "-30 min" -o short-iso | grep -E 'sending SIG[A-Z]* to process'` first and rerun alone under a cap. Background agents' Write
+refuses `.md` evidence files: write evidence summaries as .txt/.json (the plan copy and HANDOFF/ledger in the repo are fine).
+
+## Report (as text), stop at `ready-for-review`
+Branch, head and base; per AC: test, RED evidence, GREEN, picture (Structure-panel dumps before/after; site | paste at 1440 and 390); the
+counts the plan asks for; gates by name; `found_else`; `skill_lessons[{skill, lesson, evidence, enforce}]` (never edit skills or memory; empty
+is normal), ending with: `MAIN SESSION: check and save these skill_lessons now.`
