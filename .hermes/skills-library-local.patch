@@ -230,9 +230,18 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..de3a204 100644
+index f2d882d..921c27f 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
+@@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
+ regression. Selected causal reverts/guard mutations show that unchanged tests
+ reject the intended defect. A correctly observed intended RED in
+ `test-driven-development` can already establish that regression's sensitivity;
+-add mutation where assertion/guard coverage remains doubtful or high-risk.
++add mutation where assertion/guard coverage remains doubtful or high-risk. A test comparing a switch-on run with a switch-off run of the same tree can't see a mutant in code the switch leaves on (both sides carry it): an "X is unchanged" clause needs a comparison against the base's own output (a pin or a main-vs-head run) (plugin-parity auditor 3).
+ 
+ Reusable harness: `scripts/mutation_probe.py`.
+ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
 @@ -31,12 +31,72 @@ Worked catalogue of real blind tests: `references/blind-test-patterns.md`.
  
  - A critical permission/identity/data-integrity guard needs targeted sensitivity proof.

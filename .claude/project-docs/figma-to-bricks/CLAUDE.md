@@ -5,10 +5,22 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-14)
+## Status (2026-11-15)
 
-- **Current build `2026-11-14.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-15.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-15.1 shared-palette (both tools):** a colour Figma doesn't name is one palette colour `--color-<hex>`
+    (id from the hex) from the plugin and the importer alike, so one colour is one id and one variable across pages and
+    both tools; given the site's own palette exports (Style Manager → Colors → Export, or the `palette.json` imported
+    before) with `--colours a.json,b.json` on `site`/`site:upload`/`site:import`/`replay` or the panel's "Colours
+    already on the site…", a colour the site holds is written as the site's (its id and variable) and the palette file
+    holds only what the site lacks (a `--colours` file is never overwritten: new colours go to `palette-2.json`); the
+    importer app has no colours option yet (R6-3, a question for Justin); without site colours every paste byte for byte
+    as before. Q1–Q4 A, fixes 1–3's rulings (the plugin keeps a design value the site changed as `<name>-2` with a note,
+    the importer links it; see-through site colours link) and plan amendment 2 not yet confirmed. Paste check **3er**
+    (AC11, live: export B-Dry staging's palettes, `site:import … --elementor --colours <files>`, paste: a blue heading's
+    colour control shows the site's colour, import the new `palette.json`: nothing listed twice; then the panel's
+    Colours already on the site with the same files).
   - **2026-11-14.4 site-shared-styles (website importer):** every code-method paste (no flag) gives words, buttons,
     cards and boxes and rows that look the same (equal as written at every range and state, counted over header, page
     and footer) one shared purpose-named class each (`<page>__text-<4>`, `button`, `box`, `layout`; placed before the
