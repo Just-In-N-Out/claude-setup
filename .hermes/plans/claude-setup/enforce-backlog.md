@@ -340,3 +340,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | look-grouping | code-review-practice | test: copies-names.test.ts converts a second page whose call class also holds a Button of other words and asserts the class id and name equal the first page's | offered
 - 2026-11-15 | forms-wpforms | figma-to-bricks | test: test/web/wpforms-defaults.test.ts asserts every part key of the rendered reference form (title, description included) is in the generated table | offered
 - 2026-11-15 | site-headline-marker | figma-to-bricks | test: build the head into a mkdtemp copy (as overlayBuild does) instead of the repo's dist/ in media-avif-untouched and site-import-figma-unchanged | offered
+- 2026-11-15 | forms-wpforms review 2, shared-palette verifier 3 | figma-to-bricks | test: a unit test that drops icons from the plugin's optionsOf fails (today it survives 107/107 plugin-importing tests, head and main) | offered
