@@ -364,3 +364,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | page-faq-slide | code-review-practice | reviewer brief or ac-check.sh lists AC ids whose tests a rebase/resolution commit edited, so the orchestrator asks for an amendment before the verifier | offered
 - 2026-11-15 | native-widgets | mutation-testing-discipline | mutation harness refuses a replacement matching /=\s*(\[\]|\{\})\s*&&/ | offered
 - 2026-11-15 | site-headline-marker | figma-to-bricks | pins reading F2B_BASE_TREE assert its src/ and package.json exist first ('F2B_BASE_TREE <path> is not an unpacked tree') | offered
+- 2026-11-15 | importer-parity | figma-to-bricks | fixer receipt runs every F2B_STORY_PINS/F2B_PIN_BASE file and fails on a red not red on main; site-icons-golden.ts --site-only | offered
