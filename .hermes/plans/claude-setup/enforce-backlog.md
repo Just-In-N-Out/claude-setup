@@ -350,3 +350,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | plugin-parity | figma-to-bricks | script: tools/story-pins.ts lists every test/unit test gated by a process.env.F2B_* switch, prints each run command, fails when a gated file is missing from a checked-in registry; finishers and verifiers run it at rebase | offered
 - 2026-11-15 | importer-parity | figma-to-bricks | script: the finisher's rebase step runs main's guard tests (site-tests-offline) before any other gate | offered
 - 2026-11-15 | plugin-parity | figma-to-bricks | test: plugin-looks palette check also converts each real design (F2B_DJTREES too) with its own saved colours record | offered (fixer 4 doing it in AC7's test)
+- 2026-11-15 | site-headline-marker | figma-to-bricks | test: widen site-tests-offline's DRAWS so a file importing test/fixtures/web/capture.ts or calling captureSite is checked too | offered
