@@ -15,6 +15,6 @@ You never saw the build. A verifier works on the same head at the same time: rea
 - Each AC: a test or terminal-captured check on head and on the old code, plus one picture per AC (a drawing, or a terminal capture as .txt).
 - Write `/home/justin/.hermes/plans/figma-to-bricks/evidence/site-headline-marker/auditor/ac.json` (with `verdict` and `ac_status`) and its logs in `/home/justin/.hermes/plans/figma-to-bricks/evidence/site-headline-marker/auditor/` (create it; it must be empty); self-check:
   `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/scripts/ac-check.sh --repo <your worktree> --base 34e02b9062596891d33377e2eb829c1ffebee046
-  --plan /home/justin/.hermes/plans/figma-to-bricks/evidence/site-headline-marker/plan-approved.md <a copy of your ac.json> <the same copy>`; quote its last line.
+  --plan /home/justin/.hermes/plans/figma-to-bricks/evidence/site-headline-marker/plan-approved.md <copy 1 of your ac.json in its own folder> <copy 2 in a second folder>` (it refuses one file passed twice); quote its last line.
 Report (as text): per AC accepted or not with the evidence path; gates; `verdict`; `ac_status`; `skill_lessons[{skill, lesson, evidence,
 enforce}]` (never edit skills or memory; empty is normal), ending with: `MAIN SESSION: check and save these skill_lessons now.`

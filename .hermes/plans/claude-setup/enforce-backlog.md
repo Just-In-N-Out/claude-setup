@@ -342,3 +342,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | site-headline-marker | figma-to-bricks | test: build the head into a mkdtemp copy (as overlayBuild does) instead of the repo's dist/ in media-avif-untouched and site-import-figma-unchanged | offered
 - 2026-11-15 | forms-wpforms review 2, shared-palette verifier 3 | figma-to-bricks | test: a unit test that drops icons from the plugin's optionsOf fails (today it survives 107/107 plugin-importing tests, head and main) | offered
 - 2026-11-15 | plugin-parity | test-driven-development | script: a fixer/builder gate script runs the quick whole suite (npm run check) first and stops before receipt, pins and corpus if it fails | offered
+- 2026-11-15 | site-headline-marker | figma-to-bricks | test: a below-the-fold reduced-motion case in test/browser/render-site-headline.test.ts (C3 mutant survives AC7 today) | offered
