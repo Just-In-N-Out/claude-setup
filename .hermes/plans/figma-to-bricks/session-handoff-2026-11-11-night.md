@@ -256,3 +256,5 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 01:3x EST: site-tests-offline review 3 (delta) MOVE ON at 29a7f6c1; P3s to follow-ups. Main e2fc35aa changed test/web/site-cli.test.ts (this job edits it too): rebase first (fixer), then full review on new base, then verifier+auditor side by side. Load 46 at the time: dispatch held until under 40.
 
 - 2026-11-15 ~01:4x EST: load back to 31; dispatched site-tests-offline fixer 3 (rebase onto e2fc35aa, briefs/site-tests-offline-fixer-3-rebase.md). Next: full review on new base -> verifier+auditor side by side -> ac-check -> merge.
+
+- 2026-11-15 ~02:xx EST: importer-parity verifier 3 PASS 21/22 on a049bb4 (superseded: auditor NOT ACCEPTED AC2/AC13; fixer 4 running). Forwarded to fixer 4. Lesson folded into testing-pitfalls (browser suite needs network; person-check tests need DISPLAY=:0; helper-windows outside the namespace); archive tsc + site-live 5.09 already there.
