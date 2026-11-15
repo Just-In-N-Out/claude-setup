@@ -23,7 +23,7 @@ evidence folder>`; quote its last line.
 
 Machine: Node `/home/justin/.local/node-v22.23.3/bin` first on PATH; `TMPDIR` about 24 characters (your brief names it); scripts beside it;
 **`CHROME_PATH=/home/justin/.cache/chrome-for-testing/chrome-f2b`**; close every Chrome you start by PID (a `user-data-dir=` pattern ends in
-`/`; never `pkill -f`/`pgrep -f` with a pattern in your own command line; give your own scripts names with your role and job in them, never a bare `queue2.sh`/`run.sh`, since another agent's process sweep can match it); before each Chrome suite check `/proc/loadavg` (several agents
+`/`; never `pkill -f`/`pgrep -f` with a pattern in your own command line; give your own scripts names with your role and job in them, never a bare `queue2.sh`/`run.sh`, since another agent's process sweep can match it; never run another agent's script copy before `grep`-ing it for that agent's id and cache folder (0 matches): a copy keeps their worktree paths); before each Chrome suite check `/proc/loadavg` (several agents
 share the machine; above ~40 read first); memory scopes `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 …` outside the
 namespace (B-Dry files 8G). An archive tree has no `node_modules/.bin` (a `tsc` wrapper first on PATH) and no repo (set `GIT_DIR`,
 `F2B_SERVICES_FILE`); check a base run's file list lacks the job's new test files. Use `tail -n 3`. Foreground Bash moves to the background
