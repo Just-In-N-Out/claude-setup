@@ -277,3 +277,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - ~05:4x EST: forms-wpforms fixer 1 done: 4348d16e on importer-parity 34e02b90 (R1-1, R1-2 fixed; pins re-recorded). Review 2 brief written; HELD (load 55). Lesson folded (wpforms-defaults table); enforce offer added.
 - load under 40: forms-wpforms review 2 dispatched (10 running).
 - ~06:0x EST: site-headline-marker fixer 1 (move) done: e37e4c06 on 34e02b90, AC1-AC13 green. Review 2 brief written; HELD (load 62). Lesson folded; enforce offer.
+- load under 40: site-headline-marker review 2 dispatched (10 running).
