@@ -258,3 +258,5 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 ~01:4x EST: load back to 31; dispatched site-tests-offline fixer 3 (rebase onto e2fc35aa, briefs/site-tests-offline-fixer-3-rebase.md). Next: full review on new base -> verifier+auditor side by side -> ac-check -> merge.
 
 - 2026-11-15 ~02:xx EST: importer-parity verifier 3 PASS 21/22 on a049bb4 (superseded: auditor NOT ACCEPTED AC2/AC13; fixer 4 running). Forwarded to fixer 4. Lesson folded into testing-pitfalls (browser suite needs network; person-check tests need DISPLAY=:0; helper-windows outside the namespace); archive tsc + site-live 5.09 already there.
+
+- 2026-11-15 ~02:3x EST: plugin-parity fixer 3: moved onto e2fc35aa (head 033e870b, source conflicts), AC14 pin; Theme Style fix NOT built (every fix needs an AC7 amendment or an unproven Bricks shape). Cause proven (Bricks 2.2 assets.php). Options F (class selectors :is(), needs Justin paste round trip), A (class Custom CSS), C (keep on each Button). Asking Justin. Dispatched review 5 (full on e2fc35aa) in parallel. Lesson folded into testing-pitfalls L163.
