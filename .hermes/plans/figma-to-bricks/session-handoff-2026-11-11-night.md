@@ -295,3 +295,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15T08:24-05:00 fewer-kept-boxes review 2 clean (MOVE ON 61caa59, base 46c1696a). HELD checks: its base is older importer-parity + plugin-parity heads; after both merge -> rebase (conflicts expected), delta review, verifier+auditor.
 - 2026-11-15T08:32-05:00 importer-parity verifier 4 clean (21/22 on 34e02b9); forwarded to fixer 5; notes to follow-ups; lesson folded ac-verification L52.
 - 2026-11-15T08:33-05:00 page-faq-slide verifier clean (READY 8/9 on 09e3c12); auditor still running. Lesson folded ac-verification L24; enforce offered.
+- 2026-11-15T08:36-05:00 plugin-parity verifier 5 clean (READY 17/18 on cbbf3eb); auditor 4 running. Lessons folded rendering-validation L66, testing-pitfalls L95.
