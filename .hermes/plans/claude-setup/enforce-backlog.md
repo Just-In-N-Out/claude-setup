@@ -343,3 +343,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | forms-wpforms review 2, shared-palette verifier 3 | figma-to-bricks | test: a unit test that drops icons from the plugin's optionsOf fails (today it survives 107/107 plugin-importing tests, head and main) | offered
 - 2026-11-15 | plugin-parity | test-driven-development | script: a fixer/builder gate script runs the quick whole suite (npm run check) first and stops before receipt, pins and corpus if it fails | offered
 - 2026-11-15 | site-headline-marker | figma-to-bricks | test: a below-the-fold reduced-motion case in test/browser/render-site-headline.test.ts (C3 mutant survives AC7 today) | offered
+- 2026-11-15 | importer-parity | figma-to-bricks | test: a unit test building every plain-native shape (Accordion, Slider, Divider, Video, Nav, Form) as its Section's only box and asserting the native element is made; in npm run check | offered
+- 2026-11-15 | importer-parity | ac-verification | test: AC20-style pin asserts its inputs make at least one element from every shared emit/*-shape.ts module | offered
