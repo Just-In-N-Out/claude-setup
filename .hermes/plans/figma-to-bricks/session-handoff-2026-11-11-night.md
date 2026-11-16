@@ -393,3 +393,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 03:04 EST: lg auditor-3 ACCEPTED 22/23 on 3e357cd. Waiting lg verifier-3.
 - 2026-11-16 03:08 EST: lg ac-check READY 22/23 on 3e357cd; MERGED ff (main 3e357cde, lock held); finisher -> Build .6, paste check 3eu. nw/pfs ids 3ev/3ew. nw mover waiting for build to restack (main6) + rebase receipts.
 - 2026-11-16 03:12 EST: Build 2026-11-15.6 look-grouping pushed (d08c6a62), 3eu. Lock released. nw mover restacking nw+pfs onto d08c6a62 (main6) + rebase receipts.
+- 2026-11-16 03:20 EST: nw main6 bde709b9 (HANDOFF-context-only change), pfs main6 1ed7092d (pure on bde709b9); receipts EXIT=0. ac-check refused rebase receipts (base under them changed: lg G3) -> one reviewer for both (nw review-5 delta, pfs review-7 full by change sets). Then notes-only rule: merge with receipts, record in follow-ups.
