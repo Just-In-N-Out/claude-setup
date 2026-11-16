@@ -259,7 +259,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..c4c24ce 100644
+index f2d882d..a1309c8 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -406,7 +406,7 @@ index f2d882d..c4c24ce 100644
 +   test can kill, unless the guards answer differently: then assert the outer
 +   guard's own code (a route's `ADMIN_REQUIRED`, not just the store's 403) and
 +   the deletion is killable (86bcm902w M6); when both answer the same code, send a request that also fails a check between them (a wrong CSRF token, invalid input): the outer guard must answer first, its mutant gets the middle check's code (86bcxnykn M01). It is equivalent only if the other site rejects every input class the deleted one does: enumerate them (a route gate stopping only states where `Status` errors left a still-`creating` binding, or none, to the manager's `PhaseReady` gate alone; three rounds had called it equivalent, 86bccndx6 verifier 3), plus a transient failure hitting only the first call: the outer gate can be the only path to a side guard (an acknowledgement field) the inner one never checks (86bccndx6 review 9). Mutate all sites (or the shared helper) together, and record
-+   the single-site variants as documented equivalents. A mutant that only widens an id list whose unused entries are never emitted is equivalent too: make it reach the output (put the class on a root); and an on/off comparison can't see a mutant acting on both sides, so kill the "always on" variant against the base pin (site-sticky-cards auditor, M14/M14b/M14c). Ignoring a write's error
++   the single-site variants as documented equivalents. A lookup-side mutant against a set that stores normalised keys (lower-cased) is equivalent unless the fixture's later item differs in case: mutate the add side too (site-fonts-import M10/M10b). A mutant that only widens an id list whose unused entries are never emitted is equivalent too: make it reach the output (put the class on a root); and an on/off comparison can't see a mutant acting on both sides, so kill the "always on" variant against the base pin (site-sticky-cards auditor, M14/M14b/M14c). Ignoring a write's error
 +   inside a Postgres transaction (`_ = appendAudit(...)`) is equivalent too: the
 +   failed statement aborts the transaction and Commit fails; prove atomicity by
 +   moving the write to a second transaction after commit (901w M6/M6b), and

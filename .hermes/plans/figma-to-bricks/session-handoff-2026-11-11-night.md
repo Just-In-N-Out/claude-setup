@@ -466,3 +466,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 14:58 EST: internal-links planner done (plan-approved copied; base c7abf6d5; AC1–AC12, AC12 live 3fg; Q1 widens the uploader's read list with GET wp/v2/pages + index homepage fields). Builder HELD: load 81. Lessons saved: memory bricks-source-research (Internal link shape/paste rule), testing-pitfalls (wp-src refetch).
 - 2026-11-16 15:02 EST: Build 2026-11-16.4 pushed (main 81d53b53; logo-media, 3fe; CLAUDE.md status + rule written).
 - 2026-11-16 15:03 EST: fonts review-2 clean (MOVE ON at 1c809d3; 4 P3 → follow-ups). internal-links builder dispatched on 81d53b53 (load fell to 36).
+- 2026-11-16 15:08 EST: fonts verifier clean (READY, AC11/AC12 live). Waiting on auditor. Lesson saved: mutation-testing-discipline (normalised-set lookup mutant).

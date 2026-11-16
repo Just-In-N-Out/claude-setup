@@ -31,8 +31,8 @@ it should and the Style tab shows the values that width draws, so they can be ch
   1024, 921 and 1366; Bricks: 991, 767, 478). The Tablet tab then holds what 991 draws, Phone sideways what 767 draws,
   Phone what 478 draws.
   A ⭐: the site's look stays everywhere: between the breakpoints (992–1024, 768–921, 1025–1366) one short Custom
-  CSS line on the same class keeps the old value (home: 107 lines on 475 classes, 57 of them a font size), named in
-  the notes. Changing a tab's value changes what the breakpoint button shows; inside such a stretch the line holds
+  CSS line on the same class keeps the old value (home: 107 lines on 86 of its 451 classes, 57 of them a font
+  size), named in the notes. Changing a tab's value changes what the breakpoint button shows; inside such a stretch the line holds
   until it is deleted. **B:** no such lines: the paste follows Bricks' three breakpoints only; an iPad held sideways
   (1024) shows the desktop look and an upright iPad (768–834) the look of 991, not the old site's. **C:** set the new
   site's Bricks breakpoints to the old site's (Bricks' custom breakpoints): a later job, it changes the whole site.
@@ -68,7 +68,7 @@ Importer:
 - AC8 (proposed): Given the switch off (`ConvertOptions.tiers: false`, a test and diagnosis switch with no flag, as `photoBoxes`), every paste, notes text and `styles.txt` of every code fixture, both routes and both text modes, is byte for byte the base's. Test: `test/unit/site-tier-off.test.ts` "with the tier settings off every code fixture pastes byte for byte as on the base".
 - AC9 (proposed): Given `npm run site`, each part's notes hold one `Breakpoints:` line saying how many values sit in the Tablet, Phone sideways and Phone settings, how many lines keep the site's look between Bricks' breakpoints and at which widths, and what to delete to follow the tabs alone; `styles.txt` lists each class's such lines; a part with none has no such line. Test: `test/unit/site-tier-notes.test.ts` "the notes count the tab values and the lines between Bricks' breakpoints".
 - AC10 (proposed): Given an importer paste of the fixture site and a Figma paste of `landingPage`, drawn at 991, 767 and 478 with what Bricks' builder canvas adds to nestable elements (`brx-draggable` and its 90 px minimum for an empty one), no element's box differs from the front end's by more than 0.5 px; a pin: it passes on the base too, and fails for the importer paste when its reset class is left out. Test: `test/web/site-tier-editor.test.ts` "Bricks' editor canvas draws both tools' pastes as the front end does at each breakpoint".
-- AC11 (proposed): Given copies of Justin's three scans named by `F2B_TIER_SCANS` (run only when named; the Elementor route, Bricks 2.4.2), every Section and Container whose padding is plain at every width shows it in its Padding setting, the Tablet and Phone sideways tabs hold values (the prototype's counts are in "What Justin will see"), the spacing left in Custom CSS is only what AC5 names plus the bands, and no element differs from the switch-off paste by more than 0.5 px at the 36 widths of `<P>/cmp-proto-home.txt`. Test: `test/web/site-tier-scans.test.ts` "on the named scans the Padding boxes are filled, the tabs hold the breakpoints' values and nothing moves".
+- AC11 (proposed): Given copies of Justin's three scans named by `F2B_TIER_SCANS` (run only when named; the Elementor route, Bricks 2.4.2), every Section and Container whose padding is plain at every width shows it in its Padding setting, the Tablet and Phone sideways tabs hold values (the prototype's counts are in "What Justin will see"), the spacing left in Custom CSS is only what AC5 names plus the bands, and no element differs from the switch-off paste by more than 0.5 px at the 36 widths of `<P>/cmp-root-home.txt`. Test: `test/web/site-tier-scans.test.ts` "on the named scans the Padding boxes are filled, the tabs hold the breakpoints' values and nothing moves".
 
 Plugin:
 
@@ -81,7 +81,9 @@ Live:
 
 Each unit test above is written first and fails on the base for its criterion's reason. Three are pins instead: the
 editor one (the tenth) passes on the base by design, and the eighth and thirteenth are named-only story pins
-(`F2B_STORY_PINS`), made by their generator on a `git archive` of the base.
+(`F2B_STORY_PINS`), made by their generator on a `git archive` of the base. The planner wrote no test: what is proven
+is the prototype (no element moves, the counts, the unit suite's pins); every RED is the builder's, recorded in the
+ledger before its fix.
 
 ## What Justin will see (the planner's prototype, his three scans, Elementor route, Bricks 2.4.2)
 
@@ -97,7 +99,10 @@ editor one (the tenth) passes on the base by design, and the eighth and thirteen
 | elements that move, base against prototype | 0 of 623 at 36 widths | 0 of 229 at 22 | 0 of 290 at 22 |
 
 The Phone tab stays empty on these three pages because B-Dry changes nothing at or under 478; a site that does fills
-it (AC3's cases). Files: `<P>/census-base-*.txt`, `census-proto-*.txt`, `cmp-proto-*.txt`, `proto/` (the code).
+it (the tier plan's cases). Files: `<P>/census-base-*.txt` and `census-root-*.txt` (today and prototype),
+`cmp-root-*.txt` (every element, base against prototype, per width), `bands-root.txt`, `shots/` (both tools at 991,
+767 and 478), `proto/apply.cjs` and `proto/tiers.ts` (the code; the band selector was proven both as `html:root
+.<class>`, the plan's, and as the class's name three times, `cmp-proto-*.txt`).
 
 Plugin, four pages (hydraulics home, GRO home, repairs, services): spacing already sits in the tabs at every tier
 (hydraulics: 442 Desktop, 40 Tablet, 23 Phone sideways, 93 Phone), every Section and Container has its Padding, the
@@ -229,7 +234,28 @@ fixtures' own shape, `test/fixtures/site-code.ts`), `test/unit/lib/site-tier-pin
 
 ## Tests that pin today's output
 
-UNIT_SUITE_SECTION
+The whole unit suite on the prototype tree (`<P>/unit-proto.tap`: 4065 tests, 3920 pass, 123 skipped, 22 fail in 20
+top-level tests) against the same files on the base's bare `git archive` tree. Six of the 20 fail on the base tree
+too (they need what an archive doesn't hold; not this job's): `emit-class-paste`, `emit-code-inventory`,
+`offline-tally-compare` (3), `plugin-looks-resolve`. The other 14, in 9 files, pin where a declaration sits today; the
+builder changes each only as said, and names it in the ledger:
+
+| File (`test/unit/`) | Test | What changes |
+|---|---|---|
+| `site-code-ranges.test.ts` | "through the converter: the narrower range's changes go out at the merged range's upper end, one block" | the padding is the tab settings plus one band; the test's point (one block per merged range) is kept for a property R3 leaves (a non-plain value) |
+| `site-css.test.ts` | "controls, custom CSS, media blocks, pseudo and inline rules; rem in px; a background picture inside the paste" | the expected settings and blocks of its fixture, by R1 and R3 |
+| `site-inline-own.test.ts` | both tests ("…carries those widths in its own class…", "…at every depth") | the widths stay in the element's own class, now as its settings and bands; the parent's rule is untouched (the assertion that matters) |
+| `site-motion.test.ts` | "F1 an element that plays an entrance keeps a box of its own; one that plays none stays as before" | the lead's margins move to settings; the entrance's own rule stays |
+| `site-motion-old.test.ts` | "AC9 a capture made before this build pastes as before, with one note" | converts with `tiers: false` (the pin is about motion) |
+| `site-slider-unchanged.test.ts` | "pastes without an Elementor slider are byte-identical" | converts with `tiers: false` |
+| `site-p-box.test.ts` | the four "a site p that is a box…" and "a p box's own margin wins…" tests, both text modes | the p's spacing is read from the Margin setting where it now sits |
+| `site-text-looks.test.ts` | "a size that changes at a width that isn't Bricks' is in the text class's CSS" | this is the rule R3 replaces: the size is the text class's tab settings and one band; rename the test to say so |
+| `site-no-revert.test.ts` | both tests | `test/fixtures/site-no-revert-main.json` made again on the job's tree (CLAUDE.md); no `revert` is added (the hash differs because the blocks do) |
+
+Named-only story pins of merged jobs (`F2B_STORY_PINS`, 123 skipped) hash whole pastes and are stale after any job
+that changes a paste on purpose; they are not run by `npm run check` and are not edited. The browser and web suites
+were not run on the prototype (machine load); the builder runs them file by file and treats a failure there the same
+way: a pin of where a value sits is updated and named, anything that moves on screen stops the task.
 
 ## Tasks (test-first; one commit per passing task, files by name; never commit CLAUDE.md; no `BUILD` bump)
 
@@ -309,6 +335,10 @@ rule covers the test-only case).
 - **A rule of the paste that sat between the class's Custom CSS and its settings in weight** (heavier than `.cls`,
   lighter than `.cls.brxe-<el>`) would now lose to a tab's setting where it used to win. None on the three scans (0
   elements move); AC6 and AC7 guard it; a case found stays Custom CSS by `keep`, never by a heavier selector.
+- **A paragraph that is a box** (`site-p-box`: "a p box's own margin wins over the p's spacing"): its margins move
+  from the class's rule to the Margin setting, which Bricks prints later and heavier. The unit tests there only pin
+  where the margin sits; the builder runs that fixture's drawing test before changing them, and a margin that draws
+  differently stays Custom CSS through `keep`.
 - **`html:root` and Bricks' own Theme Style rules:** a band out-weighs them too, as the old Custom CSS line did
   through the class's settings. Unverified live: part of 3fh.
 - **`_margin: auto` in Bricks' builder field** is read from Bricks 2.2's PHP, not from a copy out of Justin's Bricks
