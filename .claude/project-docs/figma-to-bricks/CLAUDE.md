@@ -7,8 +7,20 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-15)
 
-- **Current build `2026-11-15.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-15.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-15.6 look-grouping (both tools):** copies of one button, heading, text, card or box share one class (by
+    the same Figma component or the site's own class names where they tell, the same words and link, or the same look
+    at the design width; at most two kinds of setting differ) even where a copy differs a little; the copy's real
+    difference stays on itself (its own setting or `#brxe-<id>` Custom CSS), never a second class, so changing the
+    class changes every copy and every element draws as before; a class is named by its look (`button-<4>`,
+    `home__button-<4>`), the same on every page; a copy's own library background photo is its element's Background →
+    Image setting; `npm run replay` and `styles.txt` list the copies and what each keeps; copies off
+    (`ConvertOptions.copies: false`, `asBefore.copies`) byte for byte as before. Q3 A is Justin's; Q1, Q2, Q4, Q6, Q7
+    ⭐ A, the builder's and fixer G3's rulings not yet confirmed (Q5 replaced by his "By look, same everywhere"). Paste
+    check **3eu** (AC23, live: B-Dry's home with `--elementor` on staging, the three "Schedule An Inspection" Buttons
+    follow one class's padding, the copy keeps its gradient; hydraulics from Figma on darksalmon, every "Call Us Now"
+    follows its class's background at 1440 and 390).
   - **2026-11-15.5 forms-wpforms (website importer and Figma plugin):** a scanned page's WPForms form (shown or inside a
     box a button opens) pastes as one Bricks Shortcode element "WPForms form" (`[wpforms id="N"]`, one class) and the
     importer writes `wpforms-<title>.json` beside the pastes (the form's fields with the site's own ids, send text, a
@@ -498,6 +510,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   or not at all; tests read an element's drawn settings through `test/fixtures/drawn.ts`** (plugin-parity).
 - **A Button look class keeps its look in its own Custom CSS at `html:root .<class>.brxe-button.bricks-button`
   (0,4,1), above Bricks' Theme Style button rules; renaming that class in Bricks drops the look** (plugin-parity).
+- **A copy's own value sits on the element (its own setting or `#brxe-<id>` rule), never in a second class; a tool that
+  reads a paste's rules reads an element's own too** (look-grouping).
 - **Test runs never reach the internet** (site-tests-offline): a test that draws a site capture or paste launches
   Chrome through `test/web/lib/offline-chrome.ts` `launchOffline` and fetches through `offlineFetch`; the guard test
   fails on a plain `launchChrome` in a drawing file.
@@ -832,6 +846,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
      the Icon element, nothing baked into CSS that a person would expect in a field.
   6. **Looks stay true:** the importer stays one to one with the site and the plugin exact at the design width; where
      "clean" and "exact" conflict, exact wins and the paste notes say why.
+- **Copies of one thing share one class** (Justin's 2026-11-13 rule, look-grouping; Q1 A and Q2 A not yet confirmed):
+  a leftover look is a copy of a class by three signs (the same words and link; the same name where it was made: the
+  same Figma component or the site's own class names, where the name tells; the same look at the design width), and at
+  most two kinds of setting may differ; its difference stays on the element.
 - **Interactions use native Bricks elements** (2026-10-06, replaces v1's radio/`:has()` CSS approach).
   - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → "Interactions use native Bricks elements".
 - **On tablets, a grid of cards stays on one row rather than leave one card alone below the others** (user,

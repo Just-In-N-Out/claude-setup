@@ -392,3 +392,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 02:01 EST: nw main5 11b1b835 (pure on 3e357cde), pfs main5 c655b476 (pure on 11b1b835), receipts EXIT=0, check green. After lg merge+build: pure restack onto build commit + receipts -> ac-check --rebase-receipt.
 - 2026-11-16 03:04 EST: lg auditor-3 ACCEPTED 22/23 on 3e357cd. Waiting lg verifier-3.
 - 2026-11-16 03:08 EST: lg ac-check READY 22/23 on 3e357cd; MERGED ff (main 3e357cde, lock held); finisher -> Build .6, paste check 3eu. nw/pfs ids 3ev/3ew. nw mover waiting for build to restack (main6) + rebase receipts.
+- 2026-11-16 03:12 EST: Build 2026-11-15.6 look-grouping pushed (d08c6a62), 3eu. Lock released. nw mover restacking nw+pfs onto d08c6a62 (main6) + rebase receipts.
