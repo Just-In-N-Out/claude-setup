@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-16)
 
-- **Current build `2026-11-16.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.3 site-sticky-cards (website importer):** boxes Elementor's sticky setting pins while the page
+    scrolls (B-Dry's service-page cards that stack) paste with Bricks' own Position: Sticky, Top and z-index on the
+    card's class at the widths the site pins them (no Code element); a page-wide guard class keeps the document from
+    clipping them; the last card of a stack lets go by its parent's bottom padding sooner (50 px on B-Dry), named;
+    cards that are copies share one class (Top on the element moves one); a box under a wrapper that hides overflow
+    stays as before, named; pastes without such boxes byte for byte as before. Q1–Q8 ⭐ A and the builder's rulings
+    not yet confirmed. Paste check **3fi** (AC13, live: scan a service page such as Basement Waterproofing again, Make
+    pastes, paste on B-Dry staging; at 1440 and 991 the cards stop at the top one after another as on bdryswi.com; on
+    a phone they scroll).
   - **2026-11-16.2 photo-box-image (website importer):** a box whose only content is its own library background photo
     (B-Dry's truck, About's "Who We Are", the drawer photo) pastes as Bricks' Image (`figure`) showing that Media item
     under Content → Image with the library's alt, drawn as the box did; a box that paints, holds words, a hover or
@@ -547,6 +556,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A box the old site pins while scrolling is Bricks' Position: Sticky on its own class** (site-sticky-cards,
+  `src/core/site/elementor-sticky.ts`); never a Code element; the guard class `<page>__site-pinned-<4>` keeps html/body
+  from clipping it.
 - **A box that only shows its own library photo is a Bricks Image (`tag: figure`)** (photo-box-image,
   `src/core/site/photo-box.ts`); looks, palette and names around it are decided with the photo step off, so nothing
   else in a paste moves.
