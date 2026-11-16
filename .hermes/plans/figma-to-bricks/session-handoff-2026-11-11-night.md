@@ -351,3 +351,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 18:52 EST: Justin 'why are we running one agent' -> 4 early movers onto ip de4f05df: headline (-on-fix10), forms (-on-fix10), look-grouping (-on-fix10), native-widgets+pfs (-on-fix10). Fixer 11 at 370a0083 running gates.
 - 2026-11-15 19:03 EST: forms moved clean onto de4f05df: 9bc95c55 (forms-wpforms-on-fix10), 45/45 '=' range-diff, receipt EXIT=0. Pure move -> carries verifier-4/auditor-4.
 - 2026-11-15 19:13 EST: headline moved clean onto de4f05df: 9cbf9609 (site-headline-marker-on-fix10), 21/21 '=', receipt EXIT=0. Scripts ~/.cache/hmf10/ reusable for pure rebase onto final ip.
+- 2026-11-15 19:14 EST: nw moved onto de4f05df: 53664c06 (golden conflict resolved + 2 test-only helper commits) -> review 3 delta. pfs pure on top: 06340de4 (page-faq-slide-on-fix10), receipt EXIT=0.

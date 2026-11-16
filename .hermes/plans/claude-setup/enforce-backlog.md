@@ -368,3 +368,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | page-faq-slide | implementation-planning | plan lint at step 3 / in ac-check.sh flags a cited test name split over two plan lines (amendments too) | offered
 - 2026-11-15 | importer-parity | figma-to-bricks | lint verifier lane scripts: a pgrep -f pattern on a TMPDIR lane path must end in '/' | offered
 - 2026-11-15 | forms-wpforms | figma-to-bricks | movers' pin runner stops with one line when $F2B_BASE_TREE/node_modules/esbuild is missing | offered
+- 2026-11-15 | native-widgets | figma-to-bricks | move pin runner builds its list by grep on each tree and fails if a found file wasn't run | offered
