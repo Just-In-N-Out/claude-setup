@@ -7,8 +7,21 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-15)
 
-- **Current build `2026-11-15.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-15.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-15.5 forms-wpforms (website importer and Figma plugin):** a scanned page's WPForms form (shown or inside a
+    box a button opens) pastes as one Bricks Shortcode element "WPForms form" (`[wpforms id="N"]`, one class) and the
+    importer writes `wpforms-<title>.json` beside the pastes (the form's fields with the site's own ids, send text, a
+    notification to `{admin_email}`, reCAPTCHA where it had one, its look as WPForms' theme, the rest on the class);
+    Justin imports it (WPForms → Tools → Import); `site:upload`/`site:import` read the site's WPForms form list (GET
+    only) for the number and write `forms.json` (`npm run site … --forms` remakes offline); the Figma panel's "Forms
+    become: Bricks form / WPForms" (starts on Bricks form, byte for byte as before) makes the same element and file from
+    a drawn form, with "Save WPForms file" and "WPForms form number"; pastes without a WPForms form byte for byte as
+    before. Q1–Q10 ⭐ A and the builder's and fixers' rulings not yet confirmed (the AC6 textarea line-height amendment
+    Justin approved). Paste checks **3ek** (AC17, live: `site:import` a bdryswi.com page with the contact form against
+    B-Dry staging, import the file when asked, paste, compare on desktop and phone, send a test message) and **3el**
+    (AC18, live: in Figma "Forms become: WPForms", save and import the file on darksalmon, paste, compare at the design
+    width, send a test message).
   - **2026-11-15.4 site-headline-marker (website importer):** with `--elementor`, an Elementor Pro Animated Headline of
     style Highlight (B-Dry's red circle round "60 Years") pastes as one Bricks Heading, its words in the Text field with
     the marked words in `span.f2b-mark`, and one purpose-named class (`<page>__marker-<4>`) drawing the site's own
@@ -357,9 +370,10 @@ header spacer) the user runs Bricks → Settings → Custom code → **Regenerat
 
 **Waiting on the user (don't guess these):**
 - **Should headings keep Figma's case** when the site theme uppercases them?
-- **WPForms:** decided 2026-11-13 for the website importer: a scanned site's form (B-Dry's WPForms contact form) pastes as a
-  **WPForms** form, not a Bricks Form (Justin: "wpform"; job forms-wpforms). Whether the Figma plugin gets a "Forms become:
-  Bricks form / WPForms" option too, and which starts selected, the job's plan proposes; it may need his WPForms export file.
+- **WPForms:** decided for both tools (forms-wpforms): a scanned site's WPForms form and, with "Forms become: WPForms", a
+  drawn form paste as a WPForms form. Still wanted (neither blocks): his own copy of the Shortcode element that shows
+  form 559 on darksalmon (replaces `reference/bricks/shortcode-researched.json`) and his export of form 559 (WPForms →
+  Tools → Export) to pin the file's shape.
 - **Rulings to confirm:** the list rules (HANDOFF "Searchable lists"), the form rulings, and every "not yet
   confirmed" ruling in each feature's HANDOFF section.
 - **Bricks samples:** Nav (Nestable) for the phone menu (the right copy contains `nav-nested`; a researched sample,
@@ -469,6 +483,12 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A WPForms form is shown by Bricks' Shortcode element** (Bricks has no WPForms element; `reference/bricks/README.md`
+  "There is no WPForms element"): both tools write it through `src/core/emit/shortcode-shape.ts` and the import file
+  through `src/core/wpforms/file.ts`, one code for both.
+- **No tool writes a form to WordPress:** the tools write an import file Justin imports himself; the only WPForms
+  request any tool or the panel sends is the read of its form list (`GET wpforms/v1/forms`), tested only against
+  `test/fixtures/wp-standin.ts`.
 - **An importer animation that isn't an entrance takes a type with no 'in' in it** (site-headline-marker): a Bricks
   Start animation whose type holds "in" in any letter case makes Bricks hide its element until it plays
   (`reference/bricks/README.md`); the marker's type is `f2bMarkDraw`.
@@ -593,7 +613,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   then the scan, the upload and the paste; Justin, 2026-11-13: "a simple UI for the importer … plus a section where we
   can put the API for alt text"). All three run the same code (`tools/lib/site-upload/`): the app starts `site:upload`
   itself and has no uploader of its own. It only adds media items and fills the empty alt text of an
-  item it uploaded itself whose file still matches (never changes, moves or deletes one; never touches pages, posts or settings), only on the site whose address was typed, after reading that site and
+  item it uploaded itself whose file still matches (never changes, moves or deletes one; never touches pages, posts or settings; besides the media routes it reads only the site's WPForms form list (GET
+  `wpforms/v1/forms`) to put a form's number in the paste), only on the site whose address was typed, after reading that site and
   a typed `yes` asked after everything it found is shown (no flag skips it; `site:import` takes only a yes typed after
   that question). The Application Password is typed at the hidden prompt (`site:import` asks it before the scan and
   keeps it only in its own memory through it), or in the app's password box, which sends it once in a request body to
@@ -957,6 +978,13 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **A scanned site's simple form is a Bricks Form that emails the admin; the old site's form address is never posted
   to** (importer-parity Q7 A, not yet confirmed). Justin's 2026-11-13 "wpform" ruling comes first: a WPForms form is
   the job forms-wpforms', whose pick runs before importer-parity's `formShape` (keep both lines when it merges).
+- **Forms on a scanned site that are WPForms forms** (Justin, 2026-11-13, "wpform"; job forms-wpforms, ⭐ answers not
+  yet confirmed): a WPForms form pastes as a WPForms form (Shortcode element plus an import file he imports), its look
+  WPForms' theme plus one class, messages to the new site's admin address, nothing of the old site's sending copied;
+  a field type the job can't write is left out and named; reCAPTCHA on in the file, shown once his own keys are in.
+- **"Forms become: Bricks form / WPForms" in the Figma panel** (forms-wpforms Q5 A, not yet confirmed): starts on
+  Bricks form (every conversion byte for byte as before); on WPForms a drawn form is the importer's Shortcode element
+  and file.
 - **A Swiper or Splide slider outside Elementor is a Bricks Slider** when the capture read it running (its settings);
   one whose library the capture read nothing of stays static with all its slides, named (replaces "Keep all its
   slides" for the running ones; importer-parity Q10 A, not yet confirmed).

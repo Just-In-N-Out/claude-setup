@@ -372,3 +372,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 21:39 EST: forms auditor-5 ACCEPTED 16/18 on 33c650c2. Waiting: forms verifier-5, lg main3, nw+pfs main3.
 - 2026-11-15 21:44 EST: forms MERGED ff (main 33c650c2; lock held); finisher running (BUILD .5). lg main3 (f13eab6) and nw main3 (c7edb198) both had SOURCE conflicts with headline -> plan: stack lg on forms build (look-grouping-on-main4), nw+pfs on lg, then reviews/verifiers/auditors for lg and nw+pfs in parallel; merges after are near-pure.
 - 2026-11-15 21:45 EST: nw mover stopped; main3 resolutions kept (nw: convert.ts prepare; pfs: convert.ts foldElementor + elementor-fold.ts FoldOptions/result; + test-only c7edb198 headline AC11 withoutCodeLine). Waiting: forms finisher, then lg main4.
+- 2026-11-15 21:52 EST: Build 2026-11-15.5 forms-wpforms pushed (cc3fa0af), 3ek+3el. Lock released. lg mover polling for it -> main4.
