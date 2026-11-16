@@ -390,3 +390,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 01:47 EST: lg fixer-g3 done, head 3e357cde (copyBackground: copy photo -> element _background), receipt EXIT=0. Review 6 running (delta 6c605464..3e357cde). nw+pfs mover restacking onto 3e357cde (main5).
 - 2026-11-16 01:58 EST: lg review 6 clean (delta to 3e357cde). verifier-2 agent -> verifier-3, auditor-2 agent -> auditor-3 on 3e357cde.
 - 2026-11-16 02:01 EST: nw main5 11b1b835 (pure on 3e357cde), pfs main5 c655b476 (pure on 11b1b835), receipts EXIT=0, check green. After lg merge+build: pure restack onto build commit + receipts -> ac-check --rebase-receipt.
+- 2026-11-16 03:04 EST: lg auditor-3 ACCEPTED 22/23 on 3e357cd. Waiting lg verifier-3.
