@@ -373,3 +373,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | look-grouping | figma-to-bricks | test guard in npm run check: every test file holding a recorded sha256/golden of a Figma paste converts with asBefore for every AsBefore switch (verifier-2 G2) | offered
 - 2026-11-15 | native-widgets | figma-to-bricks | unit test: every test/unit/lib/*-pins.ts helper hashing a site result or Figma warnings goes through withoutCodeLine/withoutCodeNotes (nw mover main4) | offered
 - 2026-11-16 | look-grouping | feature-dispatch | ac-check.sh: a base_log holding 'fatal: not a git repository' counts as the test not run on old code (never_re) (auditor-2) | offered
+- 2026-11-16 | site-sticky-cards | feature-dispatch | mover-brief check: git cherry main <first parent> <upstream> refuses an upstream holding another job's commits | offered
