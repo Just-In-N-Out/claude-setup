@@ -33,7 +33,7 @@ index d8e25dc..545b2f9 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..30f6be5 100644
+index d6a2493..ca9b86d 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,30 +60,44 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -108,7 +108,7 @@ index d6a2493..30f6be5 100644
  
  ## Output Format
  
-@@ -124,3 +149,8 @@ No blocking issues found.
+@@ -124,3 +149,9 @@ No blocking issues found.
  - Tests inspected/run:
  - Residual risk:
  ```
@@ -117,6 +117,7 @@ index d6a2493..30f6be5 100644
 +- **A fix in a shared helper for one caller's case:** grep the helper's other callers and run it with their argument shapes on base and head (about-form: Elementor's `merge` is also rule N's, so a plain wrapper's output moved too).
 +- **Figma-to-Bricks: `site:check` draws every box a button opens closed**, so a changed class inside an Offcanvas is compared as bytes only; to draw it, render both pastes with `renderSitePaste`, add `brx-open` to every `.brxe-offcanvas`, compare boxes by Bricks id.
 +- Comparing a job's change set across two bases where a merged job regroups classes: key by element and read it as drawn (its classes merged in order, class names masked, plus its own settings), and compare notes as sets; raw class-id keys put every regrouped class in the diff (site-sticky-cards review 2: 397 false differences of 976, 0 real once read as drawn).
++- Figma-to-Bricks: a job that adds a line naming a file by `npm run site`'s out folder, or a step to `site:import`'s next steps, also runs through the importer app's chain (`tools/lib/importer-app/chains.ts` pastesChain): the app runs site.ts into `<scan>/.f2b-pastes-XXXXXX` and moves the files up (the printed path dies), and shows `nextSteps` with no options after an upload (site-fonts-import review 1, R1-1).
 diff --git a/skills/engineering-best-practices/SKILL.md b/skills/engineering-best-practices/SKILL.md
 index 856df40..1e37d3a 100644
 --- a/skills/engineering-best-practices/SKILL.md
@@ -258,7 +259,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..a6aeff2 100644
+index f2d882d..c4c24ce 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -405,7 +406,7 @@ index f2d882d..a6aeff2 100644
 +   test can kill, unless the guards answer differently: then assert the outer
 +   guard's own code (a route's `ADMIN_REQUIRED`, not just the store's 403) and
 +   the deletion is killable (86bcm902w M6); when both answer the same code, send a request that also fails a check between them (a wrong CSRF token, invalid input): the outer guard must answer first, its mutant gets the middle check's code (86bcxnykn M01). It is equivalent only if the other site rejects every input class the deleted one does: enumerate them (a route gate stopping only states where `Status` errors left a still-`creating` binding, or none, to the manager's `PhaseReady` gate alone; three rounds had called it equivalent, 86bccndx6 verifier 3), plus a transient failure hitting only the first call: the outer gate can be the only path to a side guard (an acknowledgement field) the inner one never checks (86bccndx6 review 9). Mutate all sites (or the shared helper) together, and record
-+   the single-site variants as documented equivalents. Ignoring a write's error
++   the single-site variants as documented equivalents. A mutant that only widens an id list whose unused entries are never emitted is equivalent too: make it reach the output (put the class on a root); and an on/off comparison can't see a mutant acting on both sides, so kill the "always on" variant against the base pin (site-sticky-cards auditor, M14/M14b/M14c). Ignoring a write's error
 +   inside a Postgres transaction (`_ = appendAudit(...)`) is equivalent too: the
 +   failed statement aborts the transaction and Commit fails; prove atomicity by
 +   moving the write to a second transaction after commit (901w M6/M6b), and
