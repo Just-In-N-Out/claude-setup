@@ -243,7 +243,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..91a42c2 100644
+index f2d882d..2c6fbde 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -319,7 +319,7 @@ index f2d882d..91a42c2 100644
 +  (`tail --pid=<pid> -f /dev/null`) before restoring anything. In a bash test whose stub
 +  server is a background job, join parallel calls by their collected `$!` PIDs, never a bare
 +  `wait` (it waits for the server too and hangs), and never edit a bash test while it runs:
-+  bash reads scripts incrementally, so the run's tail is garbled; write a new file and `mv` it (cortexos-memory-hook). Count a mutant run that hits the harness timeout (exit 124) as killed, or an infinite-loop mutant reads as survived (cortexos-memory-hook fixer 2). `grep -F` with a multi-line pattern matches if any one line is present: a "prompt never in a request" probe false-alarmed on 92 of 400 prompts, and as a positive assertion it would pass on one line; match whole multi-line text on parsed data (`jq --arg p "$p" '[.. | strings | select(contains($p))]'`) (cortexos-memory-hook verifier 2). When classifying mutant logs by test name, match the name as a fixed string (`grep -F "✖ <name> ("`): a name escaped for regex and handed to plain grep turns `\(` into a group, so a killed mutant whose name has parentheses reads as survived (staging-fit-renderer auditor, M06). `$!` after
++  bash reads scripts incrementally, so the run's tail is garbled; write a new file and `mv` it (cortexos-memory-hook). Count a mutant run that hits the harness timeout (exit 124) as killed, or an infinite-loop mutant reads as survived (cortexos-memory-hook fixer 2). Never wrap a mutant harness that restores in `finally` in `timeout`: SIGTERM skips the `finally` and leaves the copy mutated (look-grouping verifier 2); run it in the background and wait in bounded steps. A mutant that empties what a test checks first (a 'keep nothing' copy) dies on that precondition, not the drawing clause: prove the drawing with a mutant that keeps the precondition and draws wrong (values at the wrong widths). `grep -F` with a multi-line pattern matches if any one line is present: a "prompt never in a request" probe false-alarmed on 92 of 400 prompts, and as a positive assertion it would pass on one line; match whole multi-line text on parsed data (`jq --arg p "$p" '[.. | strings | select(contains($p))]'`) (cortexos-memory-hook verifier 2). When classifying mutant logs by test name, match the name as a fixed string (`grep -F "✖ <name> ("`): a name escaped for regex and handed to plain grep turns `\(` into a group, so a killed mutant whose name has parentheses reads as survived (staging-fit-renderer auditor, M06). `$!` after
 +  `setsid … &` is setsid's own PID, which may exit at once, so take the real one from
 +  `pgrep -f` or a pid file the run writes itself; `cd "$D" && setsid srv >log 2>&1 &`
 +  even holds the Bash tool until its ~180 s backgrounding (the backgrounded list is a
