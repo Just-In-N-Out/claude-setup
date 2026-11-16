@@ -467,3 +467,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 15:02 EST: Build 2026-11-16.4 pushed (main 81d53b53; logo-media, 3fe; CLAUDE.md status + rule written).
 - 2026-11-16 15:03 EST: fonts review-2 clean (MOVE ON at 1c809d3; 4 P3 → follow-ups). internal-links builder dispatched on 81d53b53 (load fell to 36).
 - 2026-11-16 15:08 EST: fonts verifier clean (READY, AC11/AC12 live). Waiting on auditor. Lesson saved: mutation-testing-discipline (normalised-set lookup mutant).
+- 2026-11-16 15:09 EST: fonts auditor clean; ac-check on 1c809d3 READY FOR THE USER (AC11/AC12 live). Rebase onto 81d53b53 dispatched. Auditor lesson = duplicate of the one saved (skipped).
