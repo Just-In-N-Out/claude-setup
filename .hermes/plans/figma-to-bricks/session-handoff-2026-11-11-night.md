@@ -385,3 +385,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 00:24 EST: nw verifier-2 clean READY 9/10 on 954fb07. Waiting: nw auditor-2, pfs verifier-4/auditor-4, lg fixer-gates.
 - 2026-11-16 00:25 EST: pfs verifier-4 clean READY 8/9 on 5dffa13. Waiting: pfs auditor-4, nw auditor-2, lg fixer-gates.
 - 2026-11-16 00:31 EST: nw auditor-2 clean; ac-check READY 9/10 on 954fb07 (repo = auditor wt at 954fb07f). Ready: lg (6c605464, waiting fixer-gates) -> nw 954fb07f -> pfs (waiting auditor-4).
+- 2026-11-16 00:40 EST: pfs auditor-4 clean. All three (lg, nw, pfs) accepted; only lg fixer-gates (G1-G3) outstanding before merges.
