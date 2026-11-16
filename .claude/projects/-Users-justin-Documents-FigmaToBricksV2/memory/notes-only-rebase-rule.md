@@ -21,3 +21,5 @@ session records the review, the receipt and this rule in the job's follow-ups an
 
 **How to apply:** any conflict or change in a source file, or a test change beyond such a pin or forced AC-test update, still takes the full path (review → verifier → auditor →
 ac-check). Related: [[review-round-cap]], [[run-without-stopping]].
+
+- 2026-11-16: jobs stacked on an unmerged head that later gets a source fix (native-widgets/page-faq-slide on look-grouping before its G3 fix) fail ac-check's rebase-receipt check after the merge even when their own commits are unchanged: budget one delta review (one reviewer can cover both stacked jobs, a review.json each) plus receipts, no new verifier/auditor.
