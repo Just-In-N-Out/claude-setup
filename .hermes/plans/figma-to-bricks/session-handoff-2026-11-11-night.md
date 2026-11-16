@@ -426,3 +426,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 11:15 EST: wave-code verifier CLEAN (4/5, AC5 live). Waiting auditor aeb21933f54a93d79. Lesson saved: ac-verification (.bin; guard heredoc+git).
 - 2026-11-16 11:16 EST: wave-code READY FOR THE USER (AC5 live 3fa); ff-merged into main → c41c795c (not pushed; after-merge finisher batched with offcanvas-wave: ledger move, BUILD bump, build, push, CLAUDE.md Status, HANDOFF). Lesson folded: ac-verification split/join.
 - 2026-11-16 11:21 EST: about-form auditor CLEAN (4/5, AC5 live 3ez). Waiting verifier aa68586e722783585. Lesson skipped (M2 equivalence: story-specific, the builder already recorded it).
+- 2026-11-16 11:23 EST: about-form READY FOR THE USER on 32e8673 (both checks clean). Rebase onto main c41c795c (pure, HANDOFF-only conflict expected; notes-only rule) by a34780de90bef44f6, brief briefs/about-form-rebase.md; then a short delta review + merge.
