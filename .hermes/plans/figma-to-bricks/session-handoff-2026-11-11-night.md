@@ -364,3 +364,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 20:33 EST: lg mover resumed -> look-grouping-on-main2 (from 057b7d11); nw+pfs mover resumed -> -on-main2 (early).
 - 2026-11-15 20:46 EST: forms on main2 5976e041: ac-check READY 16/18 (pure rebase of 82f5395f accepted). Mergeable now; holding for headline (must-have) to merge first unless headline is slow.
 - 2026-11-15 20:47 EST: nw on main2 08ae2b94, pfs on main2 723ecb06 (HANDOFF-only conflicts, receipts EXIT=0). Waiting: headline main2, lg main2.
+- 2026-11-15 20:56 EST: headline MERGED ff-only (main d2b577f0) under forced-pin rule; lock held; finisher running (BUILD .4, 3et, ledger move, push).
