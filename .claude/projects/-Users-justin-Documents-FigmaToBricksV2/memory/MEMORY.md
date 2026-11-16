@@ -37,3 +37,4 @@
 - [Verifier and auditor side by side](verifier-auditor-parallel.md) — 2026-11-14: start the blind auditor with the verifier, not after (Justin's 'Checks side by side'); merge queue and narrower audits declined
 - [Deadline Monday 16:00 Lebanon](deadline-2026-11-16.md) — = 09:00 EST Mon 2026-11-16; all in-flight jobs + site-headline-marker, page-faq-slide, look-grouping; clean-values after; builds start now, up to 10 agents
 - [Plan amendments need his go](plan-amendments-need-go.md) — a fixer's AC amendment is re-issued into plan-approved.md only after Justin approves it (guard refused it 2026-11-15)
+- [Page list format](page-list-format.md) — asked for pages to scan: ALL pages, home first, one table # | Page | full address (2026-11-16)
