@@ -362,3 +362,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 20:28 EST: ip ACCEPTED READY 21/22 on f23ba8d5; MERGED ff-only into main (lock held). After-merge finisher running (BUILD .3, 3es, push). Next: headline pure rebase onto the build commit.
 - 2026-11-15 20:32 EST: Build 2026-11-15.3 importer-parity pushed (ef651f48), 3es. Lock released. Headline mover resumed -> -on-main2 onto ef651f48; forms mover resumed -> -on-main2 (early).
 - 2026-11-15 20:33 EST: lg mover resumed -> look-grouping-on-main2 (from 057b7d11); nw+pfs mover resumed -> -on-main2 (early).
+- 2026-11-15 20:46 EST: forms on main2 5976e041: ac-check READY 16/18 (pure rebase of 82f5395f accepted). Mergeable now; holding for headline (must-have) to merge first unless headline is slow.
