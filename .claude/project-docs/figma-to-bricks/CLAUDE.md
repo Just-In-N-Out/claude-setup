@@ -7,8 +7,14 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-16)
 
-- **Current build `2026-11-16.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.4 logo-media (website importer):** with a media map, the Elementor step's linked pictures (the Site
+    Logo, a linked Image: B-Dry's header logo ×3, the footer logo and the two partner badges) paste as their Media item
+    (id, the library's alt; Custom alt text only where the old site's differs), Link to and new tab as before; pastes
+    without a media map byte for byte as before. Q1 ⭐ A not yet confirmed. Paste check **3fe** (AC7, live: importer
+    app → home scan → Make pastes again → paste the header into B-Dry staging's Header template and the footer; click
+    the logo: Content → Image shows the Media item, Link to still `/`).
   - **2026-11-16.3 site-sticky-cards (website importer):** boxes Elementor's sticky setting pins while the page
     scrolls (B-Dry's service-page cards that stack) paste with Bricks' own Position: Sticky, Top and z-index on the
     card's class at the widths the site pins them (no Code element); a page-wide guard class keeps the document from
@@ -556,6 +562,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **Every Image a site paste makes takes its picture through `media.ts` `imageSettings`** (logo-media): never a
+  hand-written `{ url, external: true }`; add every new Image producer's fixture to
+  `test/unit/site-media-every-image.test.ts`.
 - **A box the old site pins while scrolling is Bricks' Position: Sticky on its own class** (site-sticky-cards,
   `src/core/site/elementor-sticky.ts`); never a Code element; the guard class `<page>__site-pinned-<4>` keeps html/body
   from clipping it.

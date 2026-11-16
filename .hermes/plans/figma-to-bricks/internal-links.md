@@ -1,6 +1,8 @@
 # internal-links: a link to one of the site's own pages is Bricks' Internal link (Mini, both tools)
 
-Planner, 2026-11-16 14:50. Base: main `ebc7b1d9` (Build 2026-11-16.2). Plan only: nothing in the repo was changed.
+Planner, 2026-11-16 15:05. Base: main `c7abf6d5` (Build 2026-11-16.3). Main moved while this was planned (from
+`ebc7b1d9`, Build 2026-11-16.2, the brief's base: site-sticky-cards merged and changed `convert.ts`, `parts.ts` and
+the README); the proofs below were run again on `c7abf6d5`. Plan only: nothing in the repo was changed.
 Evidence: `~/.hermes/plans/figma-to-bricks/evidence/internal-links/planner/` (index at the end).
 
 ## Questions for Justin (⭐ = what the builder takes under the standing auto-go)
@@ -104,32 +106,41 @@ before (measured: the printed HTML of the home scan is the same but for the href
 - AC7 (proposed): The importer's read (Q1 A). Against the stand-in only: `site:upload` and `site:import`'s steps after the scan read the index's homepage fields and the page list after the login (GET only, nothing but those two routes added to what main sends), write `pages.json` beside `media.json`, and the pastes hold Internal links; a capture with no link to a site path sends neither request; `--dry-run` reads nothing; a refused or failed read is one plain line, the pastes keep Custom URL and the run doesn't stop. Test: `test/unit/site-upload-pages.test.ts` "AC7 after the login the page list is read (GET only), pages.json is written beside media.json and the pastes hold Internal links; a dry run reads nothing".
 - AC8 (proposed): The stand-in answers as WordPress 6.8 does (each answer cited to its file and line in `evidence/…/wp-6.8/`): `GET wp/v2/pages` (edit context only for a user with `edit_posts`, statuses, `_fields`, 100 a page, `X-WP-Total`/`X-WP-TotalPages`, `rest_post_invalid_page_number` past the end, a draft's `link` as `?page_id=N`, `permalink_template` and `generated_slug` in the edit context only) and the index's `home`, `page_on_front`, `show_on_front`; any other method on the route is refused. Test: `test/unit/wp-standin-pages.test.ts` "AC8 the stand-in answers the page list and the homepage setting as WordPress 6.8 does".
 - AC9 (proposed): Offline remake. `npm run site -- <capture> <out> --media media.json --pages pages.json` writes the upload's pastes byte for byte; a pages file that isn't one, or names another site than the media map, is refused in one plain line with nothing written; the importer app's "Make pastes again" passes `--pages <folder>/pages.json` when that file is there. Test: `test/unit/site-pages-flag.test.ts` "AC9 npm run site with --pages remakes the upload's pastes offline, a bad or other-site pages file is refused in one line, and the app passes pages.json".
-- AC10 (proposed): Without a pages map nothing moves. Every site paste (both routes, both text modes, with and without a media map, whole and by section), its notes, `structure.txt`, `styles.txt` and palette are the base's (`ebc7b1d9`) byte for byte. Test: `test/unit/internal-links-site-pins.test.ts` "AC10 story pin: without a pages map every site paste, its notes and its files are the base's byte for byte".
+- AC10 (proposed): Without a pages map nothing moves. Every site paste (both routes, both text modes, with and without a media map, whole and by section), its notes, `structure.txt`, `styles.txt` and palette are the base's (`c7abf6d5`) byte for byte. Test: `test/unit/internal-links-site-pins.test.ts` "AC10 story pin: without a pages map every site paste, its notes and its files are the base's byte for byte".
 - AC11 (proposed): Figma, plugin = replay. The plugin's conversion is still a replay's byte for byte (the Internal step lives in the panel, after the conversion), and `src/core` still passes the sandbox typecheck. Test: `test/unit/plugin-convert.test.ts` "the plugin's paste is exactly what a replay of the same snapshot gives".
 - AC12 (proposed) (live): Paste check **3fg**, Justin's own. In the importer app pick the home scan → Pictures to WordPress → Log in and check → yes (nothing already in the library goes up again; `pages.json` is written) → Copy header and Copy body → paste on B-Dry staging. Click a "Contact Us" Button and a drawer menu word: Link to shows Internal → the page; the logo shows Other (URL) `/` (Q2 A); the looks at 1440 and 390 as before. Later "Make pastes again" keeps the Internal links without logging in.
 
 The test of AC11 is green on the base and must stay green (a regression criterion). The pin of AC10 is a story pin: it runs with
-`F2B_STORY_PINS=1`, `F2B_BASE_TREE` (a `git archive` of `ebc7b1d9` with `node_modules` linked) and
+`F2B_STORY_PINS=1`, `F2B_BASE_TREE` (a `git archive` of `c7abf6d5` with `node_modules` linked) and
 `F2B_BDRY_CAPTURE`/`F2B_BDRY_MEDIA` (copies under the builder's own `~/.cache`); a skip is never a pass.
 
-## Proved on a scratch tree (`~/.cache/inl-pl/tree`, a `git archive` of `ebc7b1d9` plus the prototype)
+## Proved on scratch trees (`git archive` of main plus the prototype, `evidence/…/prototype.patch`)
 
-- The test file of AC1 to AC3 (`evidence/…/site-page-links.test.ts`): 3 of 3 pass on the prototype (`ac123-proto.log`),
-  0 of 3 on main (`ac123-base.log`, assertion failures, not import errors: the option is ignored there).
+First on `ebc7b1d9` (`~/.cache/inl-pl/tree`), then again on `c7abf6d5` (`~/.cache/inl-pl/tree-163`; two `convert.ts`
+hunks placed by `wire-163.cjs`, beside site-sticky-cards' own lines). Receipt for `c7abf6d5`: `proto-on-16.3.txt`.
+
+- The test file of AC1 to AC3 (`evidence/…/site-page-links.test.ts`): 3 of 3 pass on the prototype, 0 of 3 on
+  main (three assertion failures, not import errors: main ignores the option), on both bases
+  (`ac123-proto.log`, `ac123-base.log`; `ac123-proto-163.log`, `ac123-base-163.log`).
 - The saved B-Dry home scan with a made-up pages map (`pages-bdry-standin.json`; no site was read): header 2
   Buttons + 11 Headings Internal (3 logo Images kept), page 16 Buttons, footer 1 Button (1 Image, 2 inline links
   kept). The only leaves that differ from main's pastes are `button.link`, `heading.text`, `heading.link`
   (`proto-home-diff.txt`); notes differ only by the `Links:` lines; structure, styles and palette byte for byte;
   the printed HTML the same but the hrefs (`proto-home-render.txt`).
-- Without `--pages` the prototype's whole output folder is main's byte for byte, and main's is Justin's saved
-  paste folder's (`proto-home-off.txt`).
-- `npm run typecheck` (sandbox config included) passes on the prototype (`typecheck-proto.log`).
-- Panel prototype (`wire-plugin.cjs`): `plugin-convert` stays green; **six existing tests pin today's Custom URL
-  through `startRun`** and change on purpose (task 6).
+- Without `--pages` the prototype's whole output folder is main's byte for byte on both bases (`proto-home-off.txt`,
+  `proto-on-16.3.txt`); `ebc7b1d9`'s is Justin's saved paste folder's.
+- `npm run typecheck` (sandbox config included) passes on the prototype on both bases (`typecheck-proto.log`,
+  `typecheck-proto-163.log`).
+- Panel prototype (`wire-plugin.cjs`; run on `ebc7b1d9` only, the merge since touched no panel file):
+  `plugin-convert` stays green; **six existing tests pin today's Custom URL through `startRun`** and change on
+  purpose (task 6).
+- Not run: the browser suites, the whole unit suite and the corpus (the machine was loaded); the builder runs them.
 
 ## Tasks (test first; one commit a task; `npm run check` green after each unless said)
 
-Use the prototype files in the evidence folder as the starting code: they ran green, but read them as drafts.
+Use the prototype in the evidence folder as the starting code (`prototype.patch` is the whole of it against
+`ebc7b1d9`; on `c7abf6d5` its two `convert.ts` hunks go in as `wire-163.cjs` places them). It ran green, but read it
+as a draft: it has no `readPages` check, no upload read, no guard and no app wiring yet.
 
 1. **The shared emitter.** Add `src/core/emit/link-shape.ts` from `evidence/…/link-shape.ts` (`internalLink(link,
    postId, tail)`, `internalOffered(element)`, `isInternal(link)`; imports nothing, sandbox-safe). First confirm
@@ -145,7 +156,7 @@ Use the prototype files in the evidence folder as the starting code: they ran gr
    reads a link after it), in `convert.ts` for a section paste after `parityNotes`. RED/GREEN:
    `node --test test/unit/site-page-links.test.ts` (copy from the evidence folder; RED = 3 assertion failures).
    The test renderer first: `test/browser/render.ts` prints an Internal link as `href="/?page_id=<postId><urlParams>"`
-   (`linkAttributes`, and the `s.link.url ?` check near L242; patch in the summary of `render-compare.ts`'s tree).
+   (`linkAttributes`, and the `s.link.url ?` check near L242; the hunk is in `prototype.patch`).
    Add the three producers to `test/unit/emit-nested-links.test.ts` (an Internal link is a link) and teach
    `linksOf` (`emit/payload.ts` L151) to count one.
 3. **The guard and Bricks' paste rule.** `payloadProblems`: an Internal link needs `postId` matching `^[1-9]\d*$`,
@@ -226,7 +237,7 @@ earlyoom before it is read as a result.
 - logo-media: `src/core/site/convert.ts`, `elementor-fold.ts`, `natives.ts`, `kinds.ts` (not edited here; its
   linked Images keep Link to `/`, as its check 3fe expects).
 - photo-image-all: `test/browser/render.ts`, `convert.ts`, README. bw-colours: `convert.ts`, `parts.ts`.
-  site-sticky-cards: `render.ts`, `parts.ts`, `convert.ts`, README.
+  site-sticky-cards (merged as Build 2026-11-16.3): `render.ts`, `parts.ts`, `convert.ts`, README.
 - Paused: short-class-names (`test/fixtures/bricks-paste.ts`, `site-write.ts`, `tools/site.ts`, `wp-standin.ts`,
   README), fewer-kept-boxes (`tools/site.ts`, `render.ts`, `convert.ts`), clean-values (`site-write.ts`,
   `render.ts`, `tools/site.ts`, `wp-standin.ts`, `convert.ts`, README), link-keeps-name (`names.ts`: `internalLink`
@@ -250,6 +261,7 @@ moved pins in task 5 are the unknown.
 `bricks-internal-link.txt` (the source reads, with file, line and byte references), `SHA256SUMS.txt`, `bricks-2.2/`,
 `wp-6.8/`, `bricks-paste-links.cjs` + `.txt` (Bricks' own paste function run on four `sourceUrl`s), `link-shape.ts`,
 `page-links.ts`, `site-page-links.test.ts`, `wire.cjs`, `wire-plugin.cjs`, `ac123-proto.log`, `ac123-base.log`,
+`prototype.patch`, `wire-163.cjs`, `proto-on-16.3.txt`, `ac123-*-163.log`, `typecheck-proto-163.log`,
 `proto-home-diff.txt`, `proto-home-notes.txt`, `proto-home-render.txt`, `proto-home-off.txt`,
 `pages-bdry-standin.json` (made-up numbers), `typecheck-proto.log`, `ui-base*.log`, `ui-proto*.log`, the runner
 scripts.
