@@ -7,8 +7,16 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-16)
 
-- **Current build `2026-11-16.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.2 photo-box-image (website importer):** a box whose only content is its own library background photo
+    (B-Dry's truck, About's "Who We Are", the drawer photo) pastes as Bricks' Image (`figure`) showing that Media item
+    under Content → Image with the library's alt, drawn as the box did; a box that paints, holds words, a hover or
+    per-tier photo or a link stays a Block, named; the looks, palette and class names around it are decided as if it
+    were still its box. Q1–Q4 ⭐ A and the builder's rulings not yet confirmed; AC3's one-pixel photo edge amendment
+    Justin approved. Paste check **3ex** (AC9, live: in the importer app pick the home and About scans → Make pastes
+    again → paste on B-Dry staging; click the truck and the "Who We Are" photo: Content → Image shows the Media photo;
+    looks as before at 1440 and 390).
   - **2026-11-16.1 offcanvas-wave (website importer scan):** after each press that opens a box (a ☰ drawer, a pop-up)
     the scan waits while a stylesheet the press asked for is on its way (Elementor's `dialog.min.css`; 0.5 s more per
     opened box per width range, at most 15 s) and reads the box's place again with it, so the ☰ drawer no longer pastes
@@ -539,6 +547,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A box that only shows its own library photo is a Bricks Image (`tag: figure`)** (photo-box-image,
+  `src/core/site/photo-box.ts`); looks, palette and names around it are decided with the photo step off, so nothing
+  else in a paste moves.
 - **Sign pasted code once** (wave-code): Bricks 2.4.2's editor window of unsigned code writes each answer into
   whichever element is active, and Sign all stays pressable while it works; the importer's steps say press it once and
   wait, or save and use Settings → Custom code → Regenerate code signatures.
