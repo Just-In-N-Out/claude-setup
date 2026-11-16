@@ -366,3 +366,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 20:47 EST: nw on main2 08ae2b94, pfs on main2 723ecb06 (HANDOFF-only conflicts, receipts EXIT=0). Waiting: headline main2, lg main2.
 - 2026-11-15 20:56 EST: headline MERGED ff-only (main d2b577f0) under forced-pin rule; lock held; finisher running (BUILD .4, 3et, ledger move, push).
 - 2026-11-15 20:58 EST: lg on main2 98d5f3f6 (HANDOFF-only conflict, receipt EXIT=0).
+- 2026-11-15 21:01 EST: Build 2026-11-15.4 site-headline-marker pushed (4774bb5e), 3et. Lock released. Next: forms rebase onto 4774bb5e.

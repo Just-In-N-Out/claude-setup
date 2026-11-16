@@ -7,8 +7,21 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-15)
 
-- **Current build `2026-11-15.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-15.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-15.4 site-headline-marker (website importer):** with `--elementor`, an Elementor Pro Animated Headline of
+    style Highlight (B-Dry's red circle round "60 Years") pastes as one Bricks Heading, its words in the Text field with
+    the marked words in `span.f2b-mark`, and one purpose-named class (`<page>__marker-<4>`) drawing the site's own
+    drawing round the span and holding Bricks' own Interaction (Enter viewport → Start animation `f2bMarkDraw`), so it
+    draws as the headline comes into view, as on the site (all nine shapes, stroke, colour, duration, second path,
+    loop); its colour one line `--f2b-mark-color: var(--color-<hex>, …)` linked to the palette; whole and still in the
+    builder and under reduced motion; a rotating headline or a drawing the scan can't prove pastes as before with one
+    `not a marked Heading:` note; B-Dry's home 22 Code elements (was 23), everything else byte for byte; without
+    `--elementor`, `marker: false`, the panel's website route and Figma designs byte for byte as before. Q1–Q6 ⭐ A,
+    the planner's R1–R5 and the builder's B1–B11 not yet confirmed. Paste check **3et** (AC14, live: his own
+    `site:import … --elementor` on B-Dry staging, import `palette.json`, paste /homev2/, in a private window the circle
+    draws round "60 Years" as it comes into view at desktop and phone width; change the Heading's words and the
+    marker's colour).
   - **2026-11-15.3 importer-parity (website importer):** every code-method paste keeps the site's accessibility names
     (aria-label, title, role, aria-hidden, aria-current, lang, dir, tabindex, a link's rel; never one that names an
     id), writes border, corners, one shadow, position and offsets, z-index, overflow, the flex item values, opacity,
@@ -456,6 +469,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **An importer animation that isn't an entrance takes a type with no 'in' in it** (site-headline-marker): a Bricks
+  Start animation whose type holds "in" in any letter case makes Bricks hide its element until it plays
+  (`reference/bricks/README.md`); the marker's type is `f2bMarkDraw`.
 - **Every frame and shape of a Figma paste is a Block; only an inlined picture is a Div; a Block that was a Div writes
   `_width: auto`, `_display: block` or `_flexWrap: nowrap` where a Div had no default (`IRNode.leaf`)** (plugin-parity).
 - **Shared looks are decided in emit after adapt (`emit/looks.ts`): a class carries a path completely, at every tier,
