@@ -259,7 +259,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..a1309c8 100644
+index f2d882d..0402595 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -291,7 +291,7 @@ index f2d882d..a1309c8 100644
    the primary workflow's remaining allowance. Missing required proof stays blocked.
 +  Run each test file's unmutated control first and stop if it fails: an already-failing
 +  control reports every mutant as killed while proving nothing (media-clickable: 16/16
-+  "killed" under a failing AC4 control). A refusal case gives only the steps a let-through run would need, with a short timeout:
++  "killed" under a failing AC4 control). A refusal case gives only the steps a let-through run would need, with a short timeout: Before reporting a survivor on real inputs, hash the mutated output there: unchanged output means no test on that input can catch it (photo-image-all M09).
 +  steps answering a prompt only a let-through run shows turn a let-through mutant into a
 +  "hung" timeout instead of an assertion kill (media-avif-alt M3a: 325 s hung, then 13 s by exit code).
 +  A within-tolerance assertion needs a fixture pair that is really apart: assert the
