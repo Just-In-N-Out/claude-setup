@@ -7,8 +7,21 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-15)
 
-- **Current build `2026-11-15.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-15.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-15.3 importer-parity (website importer):** every code-method paste keeps the site's accessibility names
+    (aria-label, title, role, aria-hidden, aria-current, lang, dir, tabindex, a link's rel; never one that names an
+    id), writes border, corners, one shadow, position and offsets, z-index, overflow, the flex item values, opacity,
+    cursor and object fit as Bricks settings (an own hover's change as the `:hover` setting) where every value is plain
+    and on Bricks' breakpoints, gives every painted Button Style: Primary, and makes Bricks' own Nav (Nestable) of a
+    menu list (Mobile menu Never, the site's own phone menu), Form of a simple form (an email to the admin, never the
+    old address), Video of a one-file video or a YouTube/Vimeo frame, Divider, Accordion (details in a row, ARIA lists)
+    and Slider (Swiper, Splide) on any site, a FAQ, Divider or Nav alone in its Section standing in the Container's
+    place (Justin's "Keep it flat"); everything else stays as before, named; every paste draws as before; Figma designs
+    and the panel byte for byte as before. Q1–Q14 ⭐ A and the builder's and fixers' rulings not yet confirmed; one
+    question for Justin (a folded wrapper's aria-label renames its link). Paste check **3es** (AC22, live: rescan
+    bdryswi.com, import with `--elementor`, paste on B-Dry staging: looks as before, a hero button Style Primary,
+    Border and Position in Bricks' fields, the ☰ named "Menu").
   - **2026-11-15.2 plugin-parity (Figma plugin):** a Figma paste holds no Div (only a picture carried inside the
     paste stays one): every frame and shape is a Block; every Section and Block is labelled by the designer's name,
     else a Section by its first words and a Block "Row", "Column", "Grid", "Box", "Shape", "Photo", "Spacer" or "Link";
@@ -688,6 +701,19 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **A website paste never holds a Div** (site-no-div; `test/unit/site-no-div.test.ts`: add every new element producer
   to it). The native step is on for every importer paste; `ConvertOptions.native: false` is a test and diagnosis
   switch only.
+- **A website paste keeps the site's accessibility names** (importer-parity; `test/unit/site-names.test.ts`; never an
+  attribute that names an id).
+- **The importer and the plugin write a Nav, a Form's fields and a Video's keys through `emit/nav-shape.ts`,
+  `form-shape.ts`, `video-shape.ts`** (importer-parity).
+- **A top element's position stays custom CSS on the importer** (importer-parity; page-wide classes meet it at class
+  weight).
+- **The site-route renderer prints only Bricks' own layered CSS for Bricks' elements** (importer-parity builder,
+  2026-11-13; `renderPage` with `bricksCss`): never the Figma route's unlayered helper CSS (`navCss`'s `revert-layer`
+  lines, `FORM_BASE_CSS`), which beats `site-flat` and the site reset (a bare-link Nav drew 31 px off);
+  `test/browser/render-site-nav.test.ts` and `render-site-form.test.ts` assert it.
+- **A site:live test that serves a printed stand-in holds its draw with `parsedFirst`**
+  (`test/web/lib/bricks-printed.ts`; importer-parity fixer 11): Chrome can draw a page before it is parsed to its end
+  and lose a one-space Rich Text between `display: contents` wrappers.
 - **Words elements hold a `<p>` since rich-text** (`div.brxe-text > p`): browser tests measure the inner `p`
   (`el.querySelector(':scope > p') || el`); `Range.selectNodeContents(el).getClientRects()` also returns the `p`'s own
   box (one line too many) and `el.firstChild` is the `p`, not the text node.
@@ -912,6 +938,14 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   passes.
 - **An importer box Bricks has no element for is a labelled Block** (Justin, 2026-11-11; site-no-div Q1 A, not yet
   confirmed): never a Div; its label says what it is.
+- **A scanned site's simple form is a Bricks Form that emails the admin; the old site's form address is never posted
+  to** (importer-parity Q7 A, not yet confirmed). Justin's 2026-11-13 "wpform" ruling comes first: a WPForms form is
+  the job forms-wpforms', whose pick runs before importer-parity's `formShape` (keep both lines when it merges).
+- **A Swiper or Splide slider outside Elementor is a Bricks Slider** when the capture read it running (its settings);
+  one whose library the capture read nothing of stays static with all its slides, named (replaces "Keep all its
+  slides" for the running ones; importer-parity Q10 A, not yet confirmed).
+- **A painted importer Button has Style: Primary** (replaces site-native-structure Q6 A; importer-parity Q14 A, not yet
+  confirmed).
 - **Code-method class names start with the page's name** (Justin, 2026-11-07, "Never use bare names", then "Prefix
   every name"): `<page>__<name>`, only `site-reset-<4>`, `site-scroll-lock-<4>`, `site-fonts`, `site-text`, `site-flat` keep
   theirs; a static slider keeps all its slides ("Keep all its slides"). **Being replaced (2026-11-13)** by a short site

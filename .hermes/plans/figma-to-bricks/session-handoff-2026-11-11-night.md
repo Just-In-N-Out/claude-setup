@@ -360,3 +360,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 20:00 EST: ip verifier-7 CLEAN 21/22 on f23ba8d5. Waiting: auditor 5 (f23ba8d5), lg review 4.
 - 2026-11-15 20:05 EST: lg review 4 clean on 057b7d11. All 5 dependents ready on de4f05df: headline 9cbf9609, forms 9bc95c55, lg 057b7d11, nw 53664c06, pfs 06340de4. Waiting: ip auditor 5.
 - 2026-11-15 20:28 EST: ip ACCEPTED READY 21/22 on f23ba8d5; MERGED ff-only into main (lock held). After-merge finisher running (BUILD .3, 3es, push). Next: headline pure rebase onto the build commit.
+- 2026-11-15 20:32 EST: Build 2026-11-15.3 importer-parity pushed (ef651f48), 3es. Lock released. Headline mover resumed -> -on-main2 onto ef651f48; forms mover resumed -> -on-main2 (early).
