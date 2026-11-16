@@ -23,3 +23,5 @@ session records the review, the receipt and this rule in the job's follow-ups an
 ac-check). Related: [[review-round-cap]], [[run-without-stopping]].
 
 - 2026-11-16: jobs stacked on an unmerged head that later gets a source fix (native-widgets/page-faq-slide on look-grouping before its G3 fix) fail ac-check's rebase-receipt check after the merge even when their own commits are unchanged: budget one delta review (one reviewer can cover both stacked jobs, a review.json each) plus receipts, no new verifier/auditor.
+
+**Code-identity proof detail (logo-media rebase, 2026-11-16):** compare `git diff <oldbase> <oldhead>` and `git diff <newbase> <newhead>` (HANDOFF left out) with `^index ` and `^@@ ` lines removed, plus each touched file's blob: plain cmp fails whenever the other job's lines sit above an unchanged hunk (only the blob hashes and hunk line numbers move); keep the headers-only diff as evidence.
