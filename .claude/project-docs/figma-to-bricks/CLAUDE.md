@@ -7,8 +7,18 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-16)
 
-- **Current build `2026-11-16.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.5 site-fonts-import (website importer):** with `--fonts` (`site`, `site:upload`, `site:import`, the
+    importer app's option) a family the site serves itself is written to `fonts/` with its own bytes and `fonts.txt`
+    steps for Bricks → Custom Fonts (a person adds them; Bricks has no REST route), and every paste names the plain
+    family in Typography (no page-named copy, no font file inside the paste); icon fonts, weight ranges, subsets, otf,
+    angled oblique and older captures stay as before, named; a face that never loaded stays one `@font-face` line in
+    the fonts class, named in `fonts.txt`; without `--fonts` byte for byte as before. Q1–Q8 ⭐ A and the builder's
+    rulings B1–B7 not yet confirmed. Paste checks **3fb** (AC11, live: his own `site:import … --elementor --fonts` on
+    B-Dry staging, add the fonts per `fonts.txt`, reload the builder, paste; Typography shows Roboto; in a private
+    window the words are the site's Roboto, not Google's) and **3fc** (AC12, live: change one shared text class's
+    font and back).
   - **2026-11-16.4 logo-media (website importer):** with a media map, the Elementor step's linked pictures (the Site
     Logo, a linked Image: B-Dry's header logo ×3, the footer logo and the two partner badges) paste as their Media item
     (id, the library's alt; Custom alt text only where the old site's differs), Link to and new tab as before; pastes
@@ -562,6 +572,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A site's own fonts go to Bricks' Custom Fonts by hand; the paste names them by their plain family**
+  (site-fonts-import, `src/core/site/fonts.ts` `bricksFonts`, `tools/lib/site-fonts-out.ts`): Bricks has no REST route
+  for Custom Fonts and skips Google's copy of a family named like a Custom Font; never put a font file in a paste when
+  `--fonts` is on.
 - **Every Image a site paste makes takes its picture through `media.ts` `imageSettings`** (logo-media): never a
   hand-written `{ url, external: true }`; add every new Image producer's fixture to
   `test/unit/site-media-every-image.test.ts`.
