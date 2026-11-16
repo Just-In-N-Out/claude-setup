@@ -244,7 +244,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..2c6fbde 100644
+index f2d882d..f73c31d 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -297,7 +297,7 @@ index f2d882d..2c6fbde 100644
 +  and record its exit 137 (`oom-kill`) as a crash kill. A `--scope` run inherits the
 +  caller's environment: export variables first and pass no `--setenv=PATH=$PATH` (on WSL,
 +  PATH holds Windows folders with spaces: "Failed to find executable Files/Common"; an
-+  unquoted `env PATH=$PATH go test` exits 127 the same way, not a kill, so quote it).
++  unquoted `env PATH=$PATH go test` exits 127 the same way, not a kill, so quote it; so does `PATH=$PATH` passed as an argument to a receipt helper that runs `env "$@"`: export it instead, look-grouping fixer-g3).
 +  If the private user-manager connection fails with `No data available`, first verify
 +  the existing same-user session bus and manager. With that verified
 +  `DBUS_SESSION_BUS_ADDRESS` retained, systemd v259 supports
