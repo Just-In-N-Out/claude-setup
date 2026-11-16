@@ -7,8 +7,20 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-16)
 
-- **Current build `2026-11-16.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.6 bw-colours (website importer):** a scan records the size each background picture came at
+    (`web.natural`: a file fetched as written by its own size, a resized copy such as Jetpack's `?fit=768,1024` measured
+    as the page loads it, an SVG or a picture it can't measure none, named); with a media map a background the site drew
+    at its file's own size pastes at that size, Style → Background → Size **Custom** (`768px 1024px`; a layer or
+    layered value in the class's custom CSS), so B-Dry's Basement Waterproofing band no longer tiles the full-size
+    rafters photo 2.5 times too big; a size the site wrote itself, an opened box's backgrounds and pastes without a
+    media map stay as before; older scans paste byte for byte but one notes line per part naming those photos (scan
+    again); the header bar's changing gradient is the site's own 8 s animation, not a bug. Q1–Q2 ⭐ A, the planner's
+    R1–R4 and the builder's B1–B4 not yet confirmed; AC5 amended with Justin's go ("Compare with main"). Paste check
+    **3ff** (AC6, live: in the importer app scan bdryswi.com/basement-waterproofing/ again, Make pastes, upload, paste
+    on B-Dry staging; at 1440 and 390 the band shows the rafters at the site's size, Background Size Custom
+    `768px 1024px`, the header gradient moves as the site's).
   - **2026-11-16.5 site-fonts-import (website importer):** with `--fonts` (`site`, `site:upload`, `site:import`, the
     importer app's option) a family the site serves itself is written to `fonts/` with its own bytes and `fonts.txt`
     steps for Bricks → Custom Fonts (a person adds them; Bricks has no REST route), and every paste names the plain
@@ -572,6 +584,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A site paste never leans on a library file's own size** (bw-colours, `src/core/site/natural-size.ts`): a
+  background the site drew at its file's own size takes the size the scan recorded (`web.natural`,
+  `src/web/read/natural.ts`), since a resized copy, the uploader's 2560 px limit and WordPress' scaling all make
+  another file.
 - **A site's own fonts go to Bricks' Custom Fonts by hand; the paste names them by their plain family**
   (site-fonts-import, `src/core/site/fonts.ts` `bricksFonts`, `tools/lib/site-fonts-out.ts`): Bricks has no REST route
   for Custom Fonts and skips Google's copy of a family named like a Custom Font; never put a font file in a paste when

@@ -492,3 +492,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 18:25: bw-colours auditor-2 clean on aa014dc (READY, AC6 live). Waiting verifier-2.
 - 2026-11-16 18:36: tier-spacing builder ready-for-review at cb64160 (AC1–13 green, 26/26 mutants). 13 stale pins accepted under plan (follow-up). Review 1 (Fable) dispatched.
 - 2026-11-16 18:46: bw-colours ac-check READY on aa014dc (reviews 1–3, verifier-2, auditor-2 clean); merged ff-only into main aa014dc; after-merge finisher dispatched (BUILD .6, 3ff).
+- 2026-11-16 18:50: Build 2026-11-16.6 (bw-colours) pushed b2a05be9. photo-image-all rebase onto b2a05be9 dispatched.
