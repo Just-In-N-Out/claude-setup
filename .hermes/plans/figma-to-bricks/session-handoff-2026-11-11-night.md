@@ -487,3 +487,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 17:39: photo-image-all verifier: same AC7 gap + B02 survives (pick from output); told fixer. Lessons folded (testing-pitfalls, ac-verification base_log).
 - 2026-11-16 17:40: bw-colours review-2 (delta of rebase) MOVE ON at 5c3a844, no findings. Waiting fixer-ac5 → review-3 delta of its commit → verifier+auditor → ac-check.
 - 2026-11-16 17:58: bw-colours fixer-ac5 → aa014dc (test+docs only). plan-approved re-issued (before copy amend-ac5/plan-approved-before.md); old reports moved to verifier-417c116/auditor-417c116. Dispatching review-3 delta + verifier-2 + auditor-2 side by side (base 09d3e6e2).
+- 2026-11-16 18:03: bw-colours review-3 MOVE ON at aa014dc (P3 R3-1 → follow-ups); told verifier-2/auditor-2 the base tree is 09d3e6e2.
