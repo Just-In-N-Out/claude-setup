@@ -357,3 +357,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 19:27 EST: ip fixer 11 done f23ba8d5 (test-only parsedFirst; site-live root cause = Chrome 1 MiB read split). Running: ip review 13 (delta e68759ce..f23ba8d5), verifier 6 resumed -> verifier-7 folder on f23ba8d5, fresh blind auditor 5 on f23ba8d5; lg fixer-move. Stray 'ignore' message sent to forms auditor-4 (finished) by mistake.
 - 2026-11-15 19:36 EST: ip review 13 clean on f23ba8d5. Waiting: verifier (resumed, verifier-7), auditor 5, lg fixer-move.
 - 2026-11-15 19:58 EST: lg fixer-move done 057b7d11 (test-only shared-colour-base copies off) -> review 4 delta from 8ea19ecd.
+- 2026-11-15 20:00 EST: ip verifier-7 CLEAN 21/22 on f23ba8d5. Waiting: auditor 5 (f23ba8d5), lg review 4.
