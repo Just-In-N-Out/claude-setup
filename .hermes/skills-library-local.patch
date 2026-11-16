@@ -154,7 +154,7 @@ index 8d8968a..f0855d3 100644
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..55446f6 100644
+index c509c64..72b56fc 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,12 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -225,6 +225,11 @@ index c509c64..55446f6 100644
  
  Check embedded code and command syntax without executing the planned work; use `references/plan-validation.md`. Fix failed snippets in the plan itself, and do not mistake the exit of a later status command for validator success.
  
+@@ -118,3 +122,4 @@ Report the verified saved path and covered work briefly. Name genuine gates and
+ - Migration tests preserve independent behavior, not only counts or importability.
+ - The plan is saved in the selected workspace; only allowed state changed.
+ - The final response is concise and does not start implementation.
++- **A timing value in an AC** ("200 ms after the box shows") must be one the old code fails at: probe it on the base before writing it, or the builder swaps in another value and the test no longer names the plan's number (offcanvas-wave: base passed at 200 ms; the test used 400 ms).
 diff --git a/skills/implementation-planning/references/plan-validation.md b/skills/implementation-planning/references/plan-validation.md
 index 03d77c8..b2cd256 100644
 --- a/skills/implementation-planning/references/plan-validation.md
