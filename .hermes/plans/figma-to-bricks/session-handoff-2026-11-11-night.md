@@ -481,3 +481,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 16:05 EST: photo-image-all fixer → d06b1d33 (AC7 amended test; R1-3 note); review-2 (fix commits) + verifier + auditor dispatched. Lessons folded: testing-pitfalls (load timeouts as fake kills), mutation skill (hash mutated output before calling a survivor); enforce offer logged.
 - 2026-11-16 16:09 EST: Build 2026-11-16.5 pushed (main 09d3e6e2; site-fonts-import, 3fb/3fc; CLAUDE.md status + rule written).
 - 2026-11-16 16:24 EST: photo-image-all review-2 clean (MOVE ON at d06b1d3; R2-1 P3 → follow-ups). Verifier + auditor running. Lesson folded: code-review-practice (subset picked by the code's own style).
+- 2026-11-16 17:22 EST: session restarted; resumed tier-spacing builder, photo-image-all verifier+auditor, internal-links builder. bw-colours verifier had finished (ac.json clean): ac-check READY on 417c116 (AC6 live); rebase onto 09d3e6e2 dispatched.
