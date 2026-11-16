@@ -375,3 +375,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-16 | look-grouping | feature-dispatch | ac-check.sh: a base_log holding 'fatal: not a git repository' counts as the test not run on old code (never_re) (auditor-2) | offered
 - 2026-11-16 | site-sticky-cards | feature-dispatch | mover-brief check: git cherry main <first parent> <upstream> refuses an upstream holding another job's commits | offered
 - 2026-11-16 | photo-box-image | mutation-testing-discipline | script: the mutant harness refuses a 'to' text matching /\[\]\s*&&/ and marks a browser kill whose only error is a load timeout as INCONCLUSIVE | offered
+- 2026-11-16 | about-form | mutation-testing-discipline | test: in a two-tree site-check comparison, assert each side's width count equals the capture's before comparing lines | offered
