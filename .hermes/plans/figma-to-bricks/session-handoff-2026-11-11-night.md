@@ -429,3 +429,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 11:23 EST: about-form READY FOR THE USER on 32e8673 (both checks clean). Rebase onto main c41c795c (pure, HANDOFF-only conflict expected; notes-only rule) by a34780de90bef44f6, brief briefs/about-form-rebase.md; then a short delta review + merge.
 - 2026-11-16 11:25 EST: offcanvas-wave verifier CLEAN; ac-check run (see next). Rebase onto main after about-form merges.
 - 2026-11-16 11:25 EST: offcanvas-wave ac-check READY FOR THE USER on d885bd5. Brief briefs/offcanvas-wave-rebase.md ready (swap c41c795c for main's SHA after about-form merges).
+- 2026-11-16 11:28 EST: about-form rebased → cd023428 (about-form-on-main; HANDOFF-only conflict, code identical, receipt green). ac-check NOT ACCEPTED (expected, notes-only rule) → delta review 2 a5b77da730f11b257. offcanvas-wave rebase onto cd023428 by a35f36f5c3bca0162. Lesson skipped (dup of guard lesson).
