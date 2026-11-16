@@ -382,3 +382,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-16 | site-fonts-import | figma-to-bricks | script: gate helpers run npm run check under env -u F2B_BASE_TREE -u F2B_PIN_BASE -u F2B_STORY_PINS, or the check runner warns when any F2B_* is set | offered
 - 2026-11-16 | photo-image-all | mutation-testing-discipline | script: mutation runners refuse 'killed' unless an unmutated control in the same mode exited 0, and mark output holding "didn't finish loading" inconclusive | offered
 - 2026-11-16 | photo-image-all | ac-verification | test lint script in feature-dispatch run by the builder before ready-for-review: run each plan-named AC test on the old code (base + head's test/) and refuse ready-for-review if it passes | offered
+- 2026-11-16 | photo-image-all | ac-verification | in the verifier's mutant step, a script flags a drawing test whose measured set can be empty with no non-empty assertion | offered
