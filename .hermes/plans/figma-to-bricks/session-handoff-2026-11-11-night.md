@@ -374,3 +374,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 21:45 EST: nw mover stopped; main3 resolutions kept (nw: convert.ts prepare; pfs: convert.ts foldElementor + elementor-fold.ts FoldOptions/result; + test-only c7edb198 headline AC11 withoutCodeLine). Waiting: forms finisher, then lg main4.
 - 2026-11-15 21:52 EST: Build 2026-11-15.5 forms-wpforms pushed (cc3fa0af), 3ek+3el. Lock released. lg mover polling for it -> main4.
 - 2026-11-15 22:49 EST: Justin: after lg, nw, pfs merge, run the 4 paused jobs: short-class-names, clean-values, fewer-kept-boxes, site-sticky-cards (no need to ask again).
+- 2026-11-15 22:58 EST: lg main4 head 6c605464 on cc3fa0af, receipt EXIT=0 22/22, 5 source conflicts kept all three jobs. Review 5 (full from cc3fa0af) running; then fresh verifier + auditor. nw+pfs mover stacking on 6c605464 (main4).
