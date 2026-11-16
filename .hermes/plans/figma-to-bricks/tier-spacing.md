@@ -252,6 +252,18 @@ builder changes each only as said, and names it in the ledger:
 | `site-text-looks.test.ts` | "a size that changes at a width that isn't Bricks' is in the text class's CSS" | this is the rule R3 replaces: the size is the text class's tab settings and one band; rename the test to say so |
 | `site-no-revert.test.ts` | both tests | `test/fixtures/site-no-revert-main.json` made again on the job's tree (CLAUDE.md); no `revert` is added (the hash differs because the blocks do) |
 
+**The plugin's grid (R5)**, prototyped alone as the one-line change of `facts.ts:31` (`<P>/unit-grid.tap`: the same
+six base-tree failures plus 13 tests in 6 files): `adapt-facts.test.ts` "spacing steps down to whole pixels, capped
+at 64 for sections and 48 for gaps on phones"; `adapt-rows.test.ts` "a line made across a stacked divided row sits
+midway between two items' words, never under 16px"; `adapt-section-top.test.ts` (4: "a bottom-pinned free section
+keeps its top space as stepped padding", "hills or a wave across the bottom edge stay art.edge's and hold no
+height", "with the site's header and footer ticked, a frozen section still keeps its top space and the hero its own",
+"the space kept beside a left-out site header stays above the words"); `convert.test.ts` "the landing page matches
+its golden file"; `understand-rhythm.test.ts` (its criteria 4, 5, 7 and 8); `understand-site-gaps.test.ts` (its
+criteria 1 and 2). Where such a test pins a tablet number, the number changes to the grid's; where it asserts a
+relation (a line midway, the page's section space under buttons, a kept space), the relation must hold on the new
+numbers: if it doesn't, Milestone 3 stops and the grid is reported as not safe, never forced.
+
 Named-only story pins of merged jobs (`F2B_STORY_PINS`, 123 skipped) hash whole pastes and are stale after any job
 that changes a paste on purpose; they are not run by `npm run check` and are not edited. The browser and web suites
 were not run on the prototype (machine load); the builder runs them file by file and treats a failure there the same

@@ -468,3 +468,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 15:03 EST: fonts review-2 clean (MOVE ON at 1c809d3; 4 P3 → follow-ups). internal-links builder dispatched on 81d53b53 (load fell to 36).
 - 2026-11-16 15:08 EST: fonts verifier clean (READY, AC11/AC12 live). Waiting on auditor. Lesson saved: mutation-testing-discipline (normalised-set lookup mutant).
 - 2026-11-16 15:09 EST: fonts auditor clean; ac-check on 1c809d3 READY FOR THE USER (AC11/AC12 live). Rebase onto 81d53b53 dispatched. Auditor lesson = duplicate of the one saved (skipped).
+- 2026-11-16 15:10 EST: photo-image-all builder ready at fe04a526 (AC1–AC6 met, AC7 pixel clause fails on line art; amendment proposed, asked Justin). Review 1 (Fable) dispatched; verifier/auditor wait for his answer. Lesson folded: testing-pitfalls (load reds rerun alone); line-art lesson already there; reader-cut lesson skipped (TDD base-first covers it).
