@@ -7,8 +7,30 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-16)
 
-- **Current build `2026-11-15.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.1 offcanvas-wave (website importer scan):** after each press that opens a box (a ☰ drawer, a pop-up)
+    the scan waits while a stylesheet the press asked for is on its way (Elementor's `dialog.min.css`; 0.5 s more per
+    opened box per width range, at most 15 s) and reads the box's place again with it, so the ☰ drawer no longer pastes
+    in the top right corner with its × in a strip at laptop widths; a range where the site refused that stylesheet takes
+    the nearest range's reading, named; saved scans paste byte for byte as before (B-Dry's need a new scan). Q2–Q4 ⭐ A
+    and the builder's R1–R5 not yet confirmed; the wave in About's drawer is an open suspicion (Q1, his copy of the
+    Offcanvas wanted). Paste check **3ey** (AC7, live: rescan bdryswi.com's About Us and paste the header, the ☰ drawer
+    sits at the right with its wave at laptop width).
+  - **2026-11-16.1 about-form (website importer):** a folded Elementor text widget (a text editor of two or more
+    paragraphs) no longer takes its holder's `height: 100%`, so its column no longer breaks in two on phones (About Us'
+    "Who We Are" paragraphs sat to the right of the heading, cut off, 563 px off at 767; now under it, as on the site);
+    About Us holds no form (the planner's finding: its scan has no WPForms markup); 4 of About's classes and 5 of
+    home's change only by that height, arriving as new classes on a re-paste. Q2 A not yet confirmed; which thing "the
+    form on the right" was is a question for Justin. Paste check **3ez** (AC5, live: remake About Us, "Who We Are"
+    stacks under its heading at phone width).
+  - **2026-11-16.1 wave-code (website importer, words only):** Bricks 2.4.2's editor window of unsigned code put one Code
+    element's drawing into another when Sign all was pressed again while it worked (About's drawer: close, close, wave,
+    wave, phone); `site:import`'s next steps and the importer app's line under its Copy buttons now say press Sign all
+    one time only and wait, or sign from Bricks → Settings → Custom code → Regenerate code signatures; no paste changes
+    by a byte. Q1 (did he press more than once?) his; Q2–Q4 ⭐ A not yet confirmed; a report to Bricks is ready for him
+    to send (`evidence/wave-code/planner/bricks-bug-report.txt`). Paste check **3fa** (AC5, live: after pasting, sign
+    once and every drawer Code element keeps its own drawing).
   - **2026-11-15.7 native-widgets (website importer and Figma plugin):** inside a box a button opens (a ☰ drawer, a
     pop-up), a box holding only sliding `details` lists of one slide CSS can play (B-Dry's "Services", Elementor's
     Nested Accordion) pastes as Bricks' Accordion (Nestable) › Item › Title / Content, the slide's time in Transition,
@@ -517,6 +539,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **Sign pasted code once** (wave-code): Bricks 2.4.2's editor window of unsigned code writes each answer into
+  whichever element is active, and Sign all stays pressable while it works; the importer's steps say press it once and
+  wait, or save and use Settings → Custom code → Regenerate code signatures.
 - **Every Code element a paste holds is labelled by what it is and named in the notes; add every new Code producer to
   `test/unit/site-code-inventory.test.ts` (importer) or `test/unit/emit-code-inventory.test.ts` (plugin). A sliding
   list in a box a button opens is Bricks' Accordion (Nestable) (`src/core/site/list-accordion.ts`), its time in

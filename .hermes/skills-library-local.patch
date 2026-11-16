@@ -257,7 +257,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..dabeeaa 100644
+index f2d882d..a6aeff2 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -819,11 +819,12 @@ index f2d882d..dabeeaa 100644
  `references/mutation-evidence-validation.md` for copy-path checks, delegated
  controller qualification, diagnostic parsing, unittest subTest/exception
  behavior and compiled-function rebinding. Qualify those instruments before
-@@ -325,3 +680,4 @@ spending another product run; an unreadable report is not a failed product.
+@@ -325,3 +680,5 @@ spending another product run; an unreadable report is not a failed product.
  - Include and catch a widening mutation when permission/identity/input restrictions
    are in scope. Preserve failures and stop/narrow within the primary allowance;
    do not extend execution to make the selected mutation list green.
 +- **Two-tree comparisons (site-check on head vs base):** a load timeout on one side shows as a difference and looks like a kill; assert each side drew its full width count before grading the mutant (about-form M4).
++- **Renaming/regrouping mutants** survive when the changed element sits in another section from the names it could shift: put both in one section, two alike, so a shared and a split class give different answers (photo-box-image fixer 1, F2).
 diff --git a/skills/mutation-testing-discipline/references/blind-test-patterns.md b/skills/mutation-testing-discipline/references/blind-test-patterns.md
 index a536548..d4c804f 100644
 --- a/skills/mutation-testing-discipline/references/blind-test-patterns.md
