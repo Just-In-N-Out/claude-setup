@@ -388,3 +388,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 00:40 EST: pfs auditor-4 clean. All three (lg, nw, pfs) accepted; only lg fixer-gates (G1-G3) outstanding before merges.
 - 2026-11-16 00:51 EST: lg fixer-gates: G1+G2 fixed test-only (head ed60c344); G3 = SOURCE bug (copies move media photos 199/200/203 from Background setting to element CSS on B-Dry's BDry SYSTEM boxes). Source fixer-g3 started on ed60c344 -> then fresh review, verifier-3 + auditor-3, ac-check, merge; then nw+pfs restack (pure if no conflict) + receipts.
 - 2026-11-16 01:47 EST: lg fixer-g3 done, head 3e357cde (copyBackground: copy photo -> element _background), receipt EXIT=0. Review 6 running (delta 6c605464..3e357cde). nw+pfs mover restacking onto 3e357cde (main5).
+- 2026-11-16 01:58 EST: lg review 6 clean (delta to 3e357cde). verifier-2 agent -> verifier-3, auditor-2 agent -> auditor-3 on 3e357cde.
