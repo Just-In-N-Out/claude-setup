@@ -382,3 +382,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 00:02 EST: pfs review 6 clean at 5dffa13 (base 954fb07f). pfs verifier-4 + auditor-4 started on 5dffa135. Running: lg auditor-2, lg fixer-gates (G1-G3), nw review 4.
 - 2026-11-16 00:03 EST: nw review 4 clean at 954fb07. nw verifier-2 + auditor-2 started on 954fb07f. Now 7 agents: lg auditor-2, lg fixer-gates, pfs verifier-4/auditor-4, nw verifier-2/auditor-2.
 - 2026-11-16 00:05 EST: lg auditor-2 ACCEPTED 22/23 on 6c60546; ac-check READY 22/23 on 6c605464. Waiting on lg fixer-gates (G1-G3) -> then delta review + receipt (test-only) or full path if G3 is source.
+- 2026-11-16 00:24 EST: nw verifier-2 clean READY 9/10 on 954fb07. Waiting: nw auditor-2, pfs verifier-4/auditor-4, lg fixer-gates.
