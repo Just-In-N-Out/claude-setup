@@ -425,3 +425,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 11:14 EST: offcanvas-wave auditor CLEAN (6/7, AC7 live). Waiting verifier ae8ccb39111bc0b24. Lessons saved: implementation-planning (timing value), testing-pitfalls (TAP lines).
 - 2026-11-16 11:15 EST: wave-code verifier CLEAN (4/5, AC5 live). Waiting auditor aeb21933f54a93d79. Lesson saved: ac-verification (.bin; guard heredoc+git).
 - 2026-11-16 11:16 EST: wave-code READY FOR THE USER (AC5 live 3fa); ff-merged into main → c41c795c (not pushed; after-merge finisher batched with offcanvas-wave: ledger move, BUILD bump, build, push, CLAUDE.md Status, HANDOFF). Lesson folded: ac-verification split/join.
+- 2026-11-16 11:21 EST: about-form auditor CLEAN (4/5, AC5 live 3ez). Waiting verifier aa68586e722783585. Lesson skipped (M2 equivalence: story-specific, the builder already recorded it).
