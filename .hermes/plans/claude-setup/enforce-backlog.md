@@ -369,3 +369,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-15 | importer-parity | figma-to-bricks | lint verifier lane scripts: a pgrep -f pattern on a TMPDIR lane path must end in '/' | offered
 - 2026-11-15 | forms-wpforms | figma-to-bricks | movers' pin runner stops with one line when $F2B_BASE_TREE/node_modules/esbuild is missing | offered
 - 2026-11-15 | native-widgets | figma-to-bricks | move pin runner builds its list by grep on each tree and fails if a found file wasn't run | offered
+- 2026-11-15 | importer-parity | figma-to-bricks | unit check: every test/web file serving bricksPrinted(...) pages wraps them in parsedFirst | offered

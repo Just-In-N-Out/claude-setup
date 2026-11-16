@@ -354,3 +354,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 19:14 EST: nw moved onto de4f05df: 53664c06 (golden conflict resolved + 2 test-only helper commits) -> review 3 delta. pfs pure on top: 06340de4 (page-faq-slide-on-fix10), receipt EXIT=0.
 - 2026-11-15 19:21 EST: nw review 3 clean on 53664c06 (from 2e02384f). Waiting: ip fixer 11, look-grouping mover.
 - 2026-11-15 19:22 EST: lg moved clean onto de4f05df: fbef9e92 (+test-only AC10 sums). Own red pin shared-colour-base (F2B_PIN=1, also red on 8ea19ecd) -> look-grouping fixer-move (test-only), then delta review of fbef9e92+fix.
+- 2026-11-15 19:27 EST: ip fixer 11 done f23ba8d5 (test-only parsedFirst; site-live root cause = Chrome 1 MiB read split). Running: ip review 13 (delta e68759ce..f23ba8d5), verifier 6 resumed -> verifier-7 folder on f23ba8d5, fresh blind auditor 5 on f23ba8d5; lg fixer-move. Stray 'ignore' message sent to forms auditor-4 (finished) by mistake.
