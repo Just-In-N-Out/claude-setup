@@ -378,3 +378,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-16 | about-form | mutation-testing-discipline | test: in a two-tree site-check comparison, assert each side's width count equals the capture's before comparing lines | offered
 - 2026-11-16 | photo-box-image | figma-to-bricks | script: the pin runner fails when any pin file reports '# skipped' while every F2B_* name is set | offered
 - 2026-11-16 | logo-media | figma-to-bricks | test: site-media-every-image.test.ts sweeps every fixture with a full media map, fails on an Image left on a mapped old address (being built as logo-media AC3) | offered
+- 2026-11-16 | site-fonts-import | figma-to-bricks | script: shared pin runner collects every process.env.F2B_* the pin files read and refuses to start until each is set or named as left out (folds the 3 earlier pin-runner offers) | offered
