@@ -33,7 +33,7 @@ index d8e25dc..545b2f9 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..cb25a8e 100644
+index d6a2493..8d1c6c7 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,30 +60,44 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -108,6 +108,12 @@ index d6a2493..cb25a8e 100644
  
  ## Output Format
  
+@@ -124,3 +149,5 @@ No blocking issues found.
+ - Tests inspected/run:
+ - Residual risk:
+ ```
++
++- **A change that turns a CSS background into an img, or leans on an img's natural size** (`object-fit: none`, auto sizes, aspect ratio): probe the img as WordPress and Bricks print it (`width`, `height`, `srcset`, `sizes`). With `sizes="(max-width: Wpx) 100vw, Wpx"` the natural size is the screen's width below W, so `object-fit: none` draws it smaller; a test renderer's bare `<img src>` hides this (photo-box-image review 1: 79% of pixels off at 390).
 diff --git a/skills/engineering-best-practices/SKILL.md b/skills/engineering-best-practices/SKILL.md
 index 856df40..1e37d3a 100644
 --- a/skills/engineering-best-practices/SKILL.md
