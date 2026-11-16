@@ -246,7 +246,7 @@ If the user is present, show the ranked list before testing. They may have domai
 ### 2. Test Minimally
 
 - Test the highest-ranked hypothesis with the smallest possible probe.
-- Change one variable at a time.
+- Change one variable at a time. When a user's re-test "fixes" a bug, diff the re-test's input against the failing input before accepting the variable they name: it often changed two things (wave-code, 2026-11-16: the remade paste changed its address and had 5 → 1 Code elements; only the count mattered).
 - Don't fix multiple things at once.
 - Prefer debugger/REPL inspection when available; one breakpoint beats ten logs.
 - If you add logs, tag every temporary line with a unique prefix such as `[DEBUG-a4f2]` so cleanup is a single search.
