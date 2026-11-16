@@ -108,13 +108,13 @@ before (measured: the printed HTML of the home scan is the same but for the href
 - AC11 (proposed): Figma, plugin = replay. The plugin's conversion is still a replay's byte for byte (the Internal step lives in the panel, after the conversion), and `src/core` still passes the sandbox typecheck. Test: `test/unit/plugin-convert.test.ts` "the plugin's paste is exactly what a replay of the same snapshot gives".
 - AC12 (proposed) (live): Paste check **3fg**, Justin's own. In the importer app pick the home scan → Pictures to WordPress → Log in and check → yes (nothing already in the library goes up again; `pages.json` is written) → Copy header and Copy body → paste on B-Dry staging. Click a "Contact Us" Button and a drawer menu word: Link to shows Internal → the page; the logo shows Other (URL) `/` (Q2 A); the looks at 1440 and 390 as before. Later "Make pastes again" keeps the Internal links without logging in.
 
-AC11's test is green on the base and must stay green (a regression criterion). AC10 is a story pin: it runs with
+The test of AC11 is green on the base and must stay green (a regression criterion). The pin of AC10 is a story pin: it runs with
 `F2B_STORY_PINS=1`, `F2B_BASE_TREE` (a `git archive` of `ebc7b1d9` with `node_modules` linked) and
 `F2B_BDRY_CAPTURE`/`F2B_BDRY_MEDIA` (copies under the builder's own `~/.cache`); a skip is never a pass.
 
 ## Proved on a scratch tree (`~/.cache/inl-pl/tree`, a `git archive` of `ebc7b1d9` plus the prototype)
 
-- AC1–AC3's test file (`evidence/…/site-page-links.test.ts`): 3 of 3 pass on the prototype (`ac123-proto.log`),
+- The test file of AC1 to AC3 (`evidence/…/site-page-links.test.ts`): 3 of 3 pass on the prototype (`ac123-proto.log`),
   0 of 3 on main (`ac123-base.log`, assertion failures, not import errors: the option is ignored there).
 - The saved B-Dry home scan with a made-up pages map (`pages-bdry-standin.json`; no site was read): header 2
   Buttons + 11 Headings Internal (3 logo Images kept), page 16 Buttons, footer 1 Button (1 Image, 2 inline links
@@ -177,15 +177,16 @@ Use the prototype files in the evidence folder as the starting code: they ran gr
    picture mode too: inline pictures are Divs with no media id, so naming the site moves nothing).
    `src/ui/site-read.ts` `checkLinks` returns `front` (index `_fields=page_on_front,show_on_front`, Q6) and the run
    also starts it when the paste holds an element link to `/`. RED/GREEN: `test/unit/ui-internal-links.test.ts`.
-   These existing tests pin the old shape and change with a one-line reason each:
-   `test/unit/ui-site-read.test.ts` "the run frees the pictures in its upload cache (the plugin's own), only in
-   WordPress picture mode", "connected: the pages are read while the run goes on, the links go to them, and their
-   notes replace the generic ones", "with pictures going to WordPress too, the links are checked as well" (their
-   `urlsOf` helper reads an Internal link as its page's address); `test/unit/editorial-panel.test.ts`
-   "LP6-final-panel-payload"; `test/unit/recognition-panel.test.ts` "recognition-panel-contract: authored footer
-   frames match WordPress and typed URLs stay exact" (typed addresses stay exact); and
-   `test/unit/ui-payload-guard.test.ts` "the final guard runs after relinking, not just on the initial core
-   payload" (keep its meaning: make its element an `image`, whose relinked address stays, or a link inside words).
+   These existing tests pin the old shape and change with a one-line reason each (names whole, one a line):
+   - `test/unit/ui-site-read.test.ts` "the run frees the pictures in its upload cache (the plugin's own), only in WordPress picture mode"
+   - `test/unit/ui-site-read.test.ts` "connected: the pages are read while the run goes on, the links go to them, and their notes replace the generic ones"
+   - `test/unit/ui-site-read.test.ts` "with pictures going to WordPress too, the links are checked as well"
+   - `test/unit/editorial-panel.test.ts` "LP6-final-panel-payload"
+   - `test/unit/recognition-panel.test.ts` "recognition-panel-contract: authored footer frames match WordPress and typed URLs stay exact"
+   - `test/unit/ui-payload-guard.test.ts` "the final guard runs after relinking, not just on the initial core payload"
+   In `ui-site-read` the `urlsOf` helper reads an Internal link as its page's address; typed addresses stay exact;
+   the guard test keeps its meaning (make its element an `image`, whose relinked address stays, or a link inside
+   words).
 7. **Records.** `reference/bricks/link-internal-researched.json` (the shape, marked researched) and a README
    section "An Internal link" (shape, printing, the paste rule, Image); README "Paste rules" gains the link rule.
    HANDOFF section with the rulings, known limits and paste check 3fg. The story pin (AC10), `npm run check`,
