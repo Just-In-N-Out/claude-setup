@@ -367,3 +367,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 20:56 EST: headline MERGED ff-only (main d2b577f0) under forced-pin rule; lock held; finisher running (BUILD .4, 3et, ledger move, push).
 - 2026-11-15 20:58 EST: lg on main2 98d5f3f6 (HANDOFF-only conflict, receipt EXIT=0).
 - 2026-11-15 21:01 EST: Build 2026-11-15.4 site-headline-marker pushed (4774bb5e), 3et. Lock released. Next: forms rebase onto 4774bb5e.
+- 2026-11-15 21:15 EST: forms on main3 33c650c2: SOURCE conflicts (convert.ts ConvertOptions/prepare, render.ts PageOptions, site-isolation, later-jobs) resolved both sides; receipt EXIT=0 -> full path: review 8 running, then verifier 5 + auditor 5. lg and nw+pfs movers resumed onto 4774bb5e (main3); whichever is clean merges first (must-haves lg, pfs first).
