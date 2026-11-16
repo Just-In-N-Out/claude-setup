@@ -5,10 +5,32 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-15)
+## Status (2026-11-16)
 
-- **Current build `2026-11-15.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-15.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-15.7 native-widgets (website importer and Figma plugin):** inside a box a button opens (a ☰ drawer, a
+    pop-up), a box holding only sliding `details` lists of one slide CSS can play (B-Dry's "Services", Elementor's
+    Nested Accordion) pastes as Bricks' Accordion (Nestable) › Item › Title / Content, the slide's time in Transition,
+    Independent toggle on, one class `<page>__list-slide-<4>` with only the curve and reduced motion, no Code element
+    (`src/core/site/list-accordion.ts`, rules R1–R5; any other list keeps its script, one note why); every Code element
+    left is labelled by what it is ("Widget", "List slide (script)", SVG, Embed…) and each part's notes end with one
+    **Code:** line (how many, which hosts, Regenerate code signatures, live page and Preview only); Figma pastes byte
+    for byte as before, its card arrows and lists now named in the notes. Q1–Q10 ⭐ A and the builder's rulings not
+    yet confirmed. Paste check **3ev** (AC10, live: scan bdryswi.com, paste the header on B-Dry staging, Structure
+    shows the Accordion in the menu, "Services" slides as on the site at phone width, Transition 1000 slows it, the
+    footer's reviews a Code element "Widget").
+  - **2026-11-15.7 page-faq-slide (website importer):** a scan presses each list of questions in the page once at its
+    end (under the press guard) and records how it opens (`web.code.lists`: time, curve, or at once, one at a time or
+    not); the paste makes it Bricks' Accordion (Nestable) with that time in Transition, Independent toggle where the
+    site lets several stay open (else from a Nested Accordion's setting, else the details' names), the answers open at
+    load in Expand item indexes, a slide class with the curve and reduced motion (`src/core/site/list-timing.ts`); a flex
+    or grid answer sits whole in Bricks' Content Block; B-Dry's Sump Pump FAQ is now an Accordion, the home FAQ slides
+    at 350 ms; an aria list closed by a height of 0 with no title open, a list with a gap between title and answer
+    (a question for Justin) and a capture saying nothing stay as they are, named; older scans byte for byte but a
+    Nested Accordion on the Elementor route. Q1–Q9 ⭐ A, the builder's rulings and the importer-parity toggle order not
+    yet confirmed. Paste check **3ew** (AC9, live: scan the Sump Pump page, paste on B-Dry staging, the FAQ an
+    Accordion sliding as on bdryswi.com, Transition 1000 slows it; the rescanned home's FAQ Transition reads 350).
   - **2026-11-15.6 look-grouping (both tools):** copies of one button, heading, text, card or box share one class (by
     the same Figma component or the site's own class names where they tell, the same words and link, or the same look
     at the design width; at most two kinds of setting differ) even where a copy differs a little; the copy's real
@@ -495,6 +517,14 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **Every Code element a paste holds is labelled by what it is and named in the notes; add every new Code producer to
+  `test/unit/site-code-inventory.test.ts` (importer) or `test/unit/emit-code-inventory.test.ts` (plugin). A sliding
+  list in a box a button opens is Bricks' Accordion (Nestable) (`src/core/site/list-accordion.ts`), its time in
+  Transition.** (native-widgets)
+- **A scan presses a page's lists of questions once at its end, under the press guard, and records how each opens
+  (`web.code.lists`); a paste's Accordion takes its Transition, Independent toggle and open items from that reading
+  (`src/core/site/list-timing.ts`), never from a plugin's name. A flex or grid answer sits inside Bricks' Content
+  Block, never as it.** (page-faq-slide)
 - **A WPForms form is shown by Bricks' Shortcode element** (Bricks has no WPForms element; `reference/bricks/README.md`
   "There is no WPForms element"): both tools write it through `src/core/emit/shortcode-shape.ts` and the import file
   through `src/core/wpforms/file.ts`, one code for both.
@@ -1003,6 +1033,15 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **"Forms become: Bricks form / WPForms" in the Figma panel** (forms-wpforms Q5 A, not yet confirmed): starts on
   Bricks form (every conversion byte for byte as before); on WPForms a drawn form is the importer's Shortcode element
   and file.
+- **A menu's sliding list and the Code that stays** (native-widgets; ⭐ answers not yet confirmed): Q1 A, a sliding
+  list inside a box a button opens becomes Bricks' Accordion (Nestable) (three known differences from the site's
+  script, HANDOFF); Q7 A, the plugin's card arrows stay a script, now with a note; Q8 A, the header spacer stays a
+  script.
+- **A page's FAQ slides like the site's, as Bricks' Accordion** (Justin, 2026-11-13, yes; page-faq-slide, ⭐ answers not
+  yet confirmed): Q3 A, scans made before this build paste byte for byte, notes included, but a Nested Accordion on the
+  Elementor route (its settings are in the scan); Q4 A, a list that opens at once gets Transition 0; Q5 A, reduced
+  motion opens at once; Q8 A, an aria list whose closed answers are hidden by a height of 0 (not `display: none`)
+  stays as it is while no title is open at load.
 - **A Swiper or Splide slider outside Elementor is a Bricks Slider** when the capture read it running (its settings);
   one whose library the capture read nothing of stays static with all its slides, named (replaces "Keep all its
   slides" for the running ones; importer-parity Q10 A, not yet confirmed).
