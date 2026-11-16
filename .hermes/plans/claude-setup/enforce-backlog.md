@@ -383,3 +383,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-16 | photo-image-all | mutation-testing-discipline | script: mutation runners refuse 'killed' unless an unmutated control in the same mode exited 0, and mark output holding "didn't finish loading" inconclusive | offered
 - 2026-11-16 | photo-image-all | ac-verification | test lint script in feature-dispatch run by the builder before ready-for-review: run each plan-named AC test on the old code (base + head's test/) and refuse ready-for-review if it passes | offered
 - 2026-11-16 | photo-image-all | ac-verification | in the verifier's mutant step, a script flags a drawing test whose measured set can be empty with no non-empty assertion | offered
+- 2026-11-16 | bw-colours | feature-dispatch briefs | brief template builds the auditor/verifier cache folder and script prefix from <job>-<role>-<round>; the agent's first step refuses a non-empty cache folder | offered
