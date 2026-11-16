@@ -381,3 +381,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-15 23:55 EST: nw main4 954fb07f, pfs main4 5dffa135 (on lg 6c605464), receipts EXIT=0, source conflicts -> full path: nw review 4 + pfs review 6 running. site-background-run red is lg's own (G3) -> sent to lg fixer-gates (stop if source). Then restack nw+pfs onto lg fixer head (pure).
 - 2026-11-16 00:02 EST: pfs review 6 clean at 5dffa13 (base 954fb07f). pfs verifier-4 + auditor-4 started on 5dffa135. Running: lg auditor-2, lg fixer-gates (G1-G3), nw review 4.
 - 2026-11-16 00:03 EST: nw review 4 clean at 954fb07. nw verifier-2 + auditor-2 started on 954fb07f. Now 7 agents: lg auditor-2, lg fixer-gates, pfs verifier-4/auditor-4, nw verifier-2/auditor-2.
+- 2026-11-16 00:05 EST: lg auditor-2 ACCEPTED 22/23 on 6c60546; ac-check READY 22/23 on 6c605464. Waiting on lg fixer-gates (G1-G3) -> then delta review + receipt (test-only) or full path if G3 is source.
