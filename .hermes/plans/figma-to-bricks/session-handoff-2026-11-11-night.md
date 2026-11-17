@@ -508,3 +508,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 21:22: tier-spacing fixer 2 → 6a9659b (AC13 amended, R2-1); plan-approved re-issued (before copy amend-ac13/plan-approved-before.md). Rebase onto 22d71de4 dispatched; then delta review 3 + verifier + auditor.
 - 2026-11-16 21:28: internal-links review 2 clean at a15f685 (2 P3 → follow-ups); verifier + auditor dispatched side by side.
 - 2026-11-16 21:36: new job mobile-fit (Full, both tools): B-Dry FAQ not full width on phones, paragraph text running off; planner dispatched (3fl).
+- 2026-11-16 21:43: internal-links READY on a15f685, merged into main; finisher dispatched (Build .8, 3fg).
