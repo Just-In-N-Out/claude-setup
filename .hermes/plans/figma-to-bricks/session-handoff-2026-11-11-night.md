@@ -530,3 +530,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 02:16: mobile-fit fixer 1 → da42437 on 9fbc7a99 (R1-1, R1-2 fixed; AC6 amended, plan-approved re-issued, before copy amend-ac6/). Review 2 (Opus high, full from 9fbc7a99) dispatched.
 - 2026-11-17 02:25: mobile-fit review 2 MOVE ON (R2-1, R2-2 P3 follow-ups); verifier mfv1 (whole test:web) + auditor mfa1 on da42437.
 - 2026-11-17 02:33: saved-password auditor READY (16/17; R-A1, R-A2 P3 follow-ups). Verifier still running.
+- 2026-11-17 02:59: mobile-fit auditor READY (10/11; P3 test gaps to follow-ups). Verifier (whole test:web) still running.
