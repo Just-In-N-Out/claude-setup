@@ -535,3 +535,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 03:11: multi-page-scan delta review 2 MOVE ON; verifier mpsv1 + auditor mpsa1 on 2fb3a40.
 - 2026-11-17 03:50: multi-page-scan auditor READY 17/18; AC17 pin raw-JSON key-order flake to follow-ups. Verifier running.
 - 2026-11-17 03:52: multi-page-scan READY on 2fb3a40, merged (main 2fb3a402); finisher dispatched. saved-password must rebase onto it (shared app files).
+- 2026-11-17 03:55: mobile-fit READY on da42437 (verifier + auditor 10/11). Rebase briefs written for mobile-fit (rebase-2) and saved-password, dispatch after multi-page-scan finisher.
