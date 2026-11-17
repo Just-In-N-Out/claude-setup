@@ -554,3 +554,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 07:55: clean-values-2 review-1 REVIEW AGAIN (R1-1 P2 tidy T2 button inherit; R1-2 AC15 → Justin's Keep as today). Fixer-1 dispatched (also writes AC15 amendment). Saved 2 code-review-practice lessons.
 - 2026-11-17 08:19: clean-values-2 fixer-1 → ff88f49d (R1-1 fixed, AC15 amended w/ Justin's go; plan-approved re-issued, before copy amend-ac15/). Reviewer-2 (full, Opus high) dispatched.
 - 2026-11-17 08:31: clean-values-2 review-2 ASK JUSTIN (R2-1 copy own value tidied) → Justin 'Fix it now'; fixer-2 dispatched; then delta review 3.
+- 2026-11-17 08:42: clean-values-2 fixer-2 → 8792745a (R2-1 fixed, 4 mutants killed). Delta review 3 dispatched.
