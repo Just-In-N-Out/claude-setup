@@ -496,3 +496,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 18:54: tier-spacing review 1 REVIEW AGAIN (R1-1 P2 logical sides renamed in Custom CSS; R1-4 AC13 letter). P3s to follow-ups. Fixer 1 dispatched.
 - 2026-11-16 19:12: tier-spacing fixer 1 → b25632f (R1-1 fixed; AC13 phone spacing exact; GRO phone _widthMin ×4 for Justin: amend AC13 or code). Review 2 (full, Opus) dispatched.
 - 2026-11-16 19:18: photo-image-all rebased → c8f7336 (HANDOFF only; identity proven). Old reports moved aside. Review-3 delta + verifier-2 + auditor-2 dispatched (base b2a05be9).
+- 2026-11-16 19:30: photo-image-all review-3 MOVE ON at c8f7336 (P3 R3-1 → follow-ups). Waiting verifier-2/auditor-2.
