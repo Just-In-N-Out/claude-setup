@@ -498,3 +498,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 19:18: photo-image-all rebased → c8f7336 (HANDOFF only; identity proven). Old reports moved aside. Review-3 delta + verifier-2 + auditor-2 dispatched (base b2a05be9).
 - 2026-11-16 19:30: photo-image-all review-3 MOVE ON at c8f7336 (P3 R3-1 → follow-ups). Waiting verifier-2/auditor-2.
 - 2026-11-16 19:45: internal-links builder ready-for-review 4b51f5b (AC1–11 green, 38/39 mutants). Review 1 (Fable) dispatched.
+- 2026-11-16 19:48: photo-image-all verifier-2 clean on c8f7336 (READY, AC8 live). Waiting auditor-2.
