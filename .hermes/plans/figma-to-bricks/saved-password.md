@@ -202,32 +202,43 @@ login of `test/fixtures/site-import.ts`. A test that expects no password prompt 
 
 ## Base tallies and what the prototype breaks
 
-- Base, `test/unit/importer-app-*`, `site-upload-*`, `site-import-*`: 97 tests, 94 pass, 3 skipped (story pins), 0
-  fail (`base-unit-subset.log`).
-- Prototype (the commands read and save; no app change), same subset (`proto-cli-unit-subset.log`): **7 red, all
-  because a test logs in twice with one HOME and waits for a password prompt that no longer shows, or reads HOME for
-  the password.** The builder edits each in the commit that makes `logIn` save (they can't stay green without it):
+- Base 2c570217, `test/unit/importer-app-*`, `site-upload-*`, `site-import-*`: 98 tests, 95 pass, 3 skipped (story
+  pins), 0 fail (`base2-unit-subset.log`; on c8f73363: 97, 94, 3, 0, `base-unit-subset.log`).
+- Prototype (the commands read and save; no app change), same subset, on both bases (`proto2-cli-unit-subset.log`,
+  `proto-cli-unit-subset.log`): **7 red, all because a test logs in twice with one HOME and waits for a password
+  prompt that no longer shows, or reads HOME for the password.** The builder edits each in the commit that makes
+  `logIn` save (they can't stay green without it):
   - `test/unit/site-upload-cli.test.ts` "AC8 the password reaches no file…" (the wrong-password second run; and
     HOME now holds the saved file: let that one file hold it, as `site-upload-secrets` does for the key's).
   - `test/unit/site-upload-cli.test.ts` "AC9 a second run uploads nothing new…", "AC10 the tool refuses another
-    site…", "AC11 a run stopped half-way…" (second runs: no prompt to answer).
+    site…", "AC11 a run stopped half-way…" (later runs: no prompt to answer).
   - `test/unit/site-upload-forms.test.ts` "the form's number is read…" (the same).
   - `test/unit/site-upload-scrub.test.ts` "R1-2 … no file holds it" (HOME's saved file).
-  - `test/unit/site-upload-stop.test.ts` (the whole file hung with no time limit of its own, killed by hand after
-    13 minutes: its next-run steps wait for the prompt).
-  The usual edit: the second run's steps drop the login (or the run gets `--new-password` where the test is about
-  typing one), and a files check excludes exactly `home/.config/figma-to-bricks/site-passwords.json`, asserting
-  that file holds it. No assertion about requests, files or lines elsewhere is loosened.
-- Web tests that log in (`test/web/site-upload-*`, `site-import-*`, `importer-app-*`) on the prototype and the base:
-  `proto-cli-web-subset.log`, `base-web-subset.log` (see "Evidence": written by `run-web.sh`; the planner's note on
-  them is in `web-findings.txt`). Known before running: `site-upload-secrets.test.ts`, `site-import-secret.test.ts`
-  and `importer-app-secret.test.ts` read every file under HOME and must let the one saved file hold the password;
-  multi-page-scan's base tally names two web tests red on main already (`importer-app-notes.test.ts:46`,
-  `importer-app-page.test.ts:124`), not this job's.
+  - `test/unit/site-upload-stop.test.ts` (its later runs wait for the prompt; the file has no time limit of its
+    own and hung until killed: run it with `--test-timeout` while it is red).
+- Web tests that log in (`test/web/site-upload-*`, `site-import-*`, `importer-app-*`) on the prototype
+  (`proto-cli-web-subset.log`, read in `web-findings.txt`): 67 tests, 52 pass, 15 fail. Two are red on main already
+  and not this job's (`importer-app-notes.test.ts:46`, `importer-app-page.test.ts:124`, as multi-page-scan's base
+  tally names them). **13 are this job's, edited in that same commit:**
+  - a files check finds the password in the saved file: `test/web/importer-app-secret.test.ts:80`,
+    `test/web/site-import-secret.test.ts:22`;
+  - a later run in the same HOME waits for the prompt: `test/web/site-import-stop.test.ts:26` (one subtest),
+    `test/web/site-upload-ai-alt.test.ts:104`, `:157`, `:234`, `:289`, `:354`,
+    `test/web/site-upload-avif.test.ts:199`, `:266`, `test/web/site-upload-icons.test.ts:41`,
+    `test/web/site-upload-secrets.test.ts:53` (then its files check too).
+- The usual edit: the later run's steps drop the login (or the run gets `--new-password` where the test is about
+  typing one), and a files check excludes exactly `home/.config/figma-to-bricks/site-passwords.json`, asserting that
+  file holds it (as `site-upload-secrets.test.ts` lines 102 and 106 do for the key's file). No assertion about
+  requests, files or lines elsewhere is loosened.
+- Not measured: the app's own change (D4) on the page tests (`importer-app-page.test.ts`,
+  `importer-app-page-sources.test.ts`, `importer-app-upload.test.ts`); the builder runs `npm run test:web` after
+  Task 7 and edits what pins step 3's boxes.
 
 ## Tasks (test first; one commit a task, each green)
 
-0. In the copy: `npm run corpus` before Task 1 (the project's rule), and the two base tallies above run again.
+0. In the copy: `npm run corpus` before Task 1 (the project's rule), the unit tally above run again, and a base
+   tally of the web tests that log in (`run-web.sh <copy> <log>`): the planner took none for `site-upload-*` and
+   `site-import-*` (stopped at a desktop load of 37, `base-web-subset-stopped.log`).
 1. **The stand-in can change a password.** `test/fixtures/wp-standin.ts:167`: `users` read at each request
    (`o.users ?? []`), so `configure({ users })` is "the Application Password was revoked and a new one made"
    (WordPress answers the old one 401 `incorrect_password`, as the stand-in already does). No test changes outcome.
@@ -237,7 +248,7 @@ login of `test/fixtures/site-import.ts`. A test that expects no password prompt 
 3. **The login reads and saves.** `flow.ts` `logIn` as in `proto/tools.diff` (the fifth argument; the user-name line
    reworded as D2 step 2 says); `tools/site-upload.ts` and `tools/site-import.ts` pass `{ saved: new SavedLogins() }`.
    RED first on the base's behaviour: the tests of AC1, AC2, AC4, AC5, AC6, AC10, AC14, AC16. In the same commit the
-   seven unit tests above are edited (expected red otherwise). `ask.ts`'s "Nothing is stored" stays true of that
+   seven unit tests and the 13 web tests above are edited (expected red otherwise). `ask.ts`'s "Nothing is stored" stays true of that
    file; the headers of `flow.ts`, `site-upload.ts`, `site-import.ts`, `args.ts` and `site-import/args.ts` say where
    the password is saved.
 4. **The flags.** `tools/lib/site-upload/password-flags.ts`: `PASSWORD_USAGE`, `forgetAsked(argv)` (the
@@ -245,8 +256,7 @@ login of `test/fixtures/site-import.ts`. A test that expects no password prompt 
    `--new-password` a switch in both `args.ts` (`newPassword`), refused with `--dry-run`; both usage lines. RED/GREEN:
    the tests of AC7 and AC8. Existing usage and argument tests (`site-import-args.test.ts`,
    `site-upload-media-flags.test.ts`) take the new usage words.
-5. **site:import.** The web test of AC11; `test/web/site-import-secret.test.ts` and
-   `site-upload-secrets.test.ts` let the one saved file hold the password; every other web test the web run names.
+5. **site:import.** The web test of AC11. (The 13 web tests above are already edited in Task 3's commit.)
 6. **The app's server.** `server.ts` (`Ctx.passwords`, `passwordsFile` option for tests), `routes.ts` (the two
    routes, `startUpload`), `jobs.ts` (`knows`), `commands.ts` (`uploadArgs` `newPassword`), `chains.ts`
    (`UploadPlan.newPassword`). RED/GREEN: the test of AC13; `importer-app-commands.test.ts` takes the new argument.
@@ -308,7 +318,7 @@ writes the copy).
 
 ## Other jobs touching the same files
 
-- **multi-page-scan (being planned):** up to 3 pages scanned in one go, one login and one yes for all. It fits with
+- **multi-page-scan (planned; its builder is at work now):** up to 3 pages scanned in one go, one login and one yes for all. It fits with
   no extra work: a run of several scans still calls `logIn` once, so the one saved password covers all three pages,
   and the app still starts one upload command with at most one typed password. Shared files:
   `tools/lib/importer-app/routes.ts` (`startUpload`: this job changes only the password check and one argument; its
@@ -318,9 +328,10 @@ writes the copy).
   `test/web/importer-app-upload.test.ts`, `importer-app-secret.test.ts`. Whichever merges second rebases; the second
   one's secret test (its AC16, this job's AC15) runs again on the joined head, and its several-scan upload test gets
   one case with the password saved.
-- **internal-links (in review):** adds a pages read after the login (`findPages` beside `findForms`). It reads with
-  `login.wp`, wherever the password came from: nothing to join but lines. Shared: `tools/site-upload.ts`,
-  `tools/lib/site-upload/flow.ts`, `tools/lib/importer-app/commands.ts`, `routes.ts`, `chains.ts`,
+- **internal-links (merged while this was planned, Build 2026-11-16.8, 2c570217):** it added a pages read after the
+  login (`findPages` beside `findForms`). It reads with `login.wp`, wherever the password came from, and touched
+  neither `logIn` nor the two lines that call it: the prototype's diff applies on it with offsets only. It edited:
+  `tools/site-upload.ts`, `tools/lib/site-upload/flow.ts`, `tools/lib/importer-app/commands.ts`, `routes.ts`, `chains.ts`,
   `test/fixtures/wp-standin.ts` (this job: line 167 only), `test/unit/site-upload-cli.test.ts`,
   `test/web/importer-app-upload.test.ts`.
 - **tier-spacing (in review):** `tools/lib/site-write.ts` and `src/core/site` only. No shared file.
@@ -353,8 +364,8 @@ writes the copy).
 6. **A wrong user name is remembered too** (Q5 A): with one saved login the command line uses it without asking;
    `--user` or Forget changes that.
 7. **Two runs saving at the same moment:** the last one wins; the other login is asked again next time.
-8. **Tests:** seven unit tests (and the web tests the web run names) log in twice with one HOME and are edited; none
-   of their checks on requests, files or lines is loosened. The app's page test is slow (Chrome); AC12 and AC15 share
+8. **Tests:** seven unit tests and 13 web tests log in twice with one HOME, or read HOME for the password, and are
+   edited; none of their checks on requests, files or lines is loosened. The app's page test is slow (Chrome); AC12 and AC15 share
    one file to keep it to two page runs.
 9. **Not built:** a "don't save this time" switch (Q3 B would add the question); showing or exporting saved logins;
    an expiry.
@@ -363,11 +374,14 @@ writes the copy).
 
 - `keyring-probe.txt`: what this desktop has (no keyring), the config folder's names, modes and sizes (no contents
   read), the setup repo tracking nothing under `~/.config`.
-- `base-unit-subset.log`, `proto-cli-unit-subset.log`: the unit tallies above.
-- `probe-saved.test.ts`, `probe-base.log` (red by assertion), `probe-proto.log` (green).
+- `base-unit-subset.log`, `proto-cli-unit-subset.log` (c8f73363), `base2-unit-subset.log`,
+  `proto2-cli-unit-subset.log` (2c570217): the unit tallies above.
+- `probe-saved.test.ts`, `probe-base.log` and `probe-base2.log` (red by assertion), `probe-proto.log` and
+  `probe-proto2.log` (green).
 - `proto/saved-login.ts` (the store, whole), `proto/tools.diff` (the prototype's change to `flow.ts`,
   `site-upload.ts`, `site-import.ts`).
-- `run-web.sh`, `proto-cli-web-subset.log`, `base-web-subset.log`, `web-findings.txt`: the web tests that log in.
+- `run-web.sh`, `proto-cli-web-subset.log`, `web-findings.txt`: the web tests that log in, on the prototype;
+  `base-web-subset-stopped.log`: the base run, stopped after 6 tests (load).
 
 ## Report contract
 
