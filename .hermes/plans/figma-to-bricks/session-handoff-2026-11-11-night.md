@@ -540,3 +540,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 04:07: mobile-fit rebased → 221b150 on ab5e375d (HANDOFF-only conflict; receipt EXIT=0); notes-only delta review 3 dispatched.
 - 2026-11-17 04:09: saved-password verifier READY 16/17 on 7d97aba (pre-rebase); rebase onto ab5e375d running (code conflict → full path after).
 - 2026-11-17 04:10: mobile-fit review 3 MOVE ON (code identical); merged 221b150 (notes-only rule); finisher dispatched (Build 2026-11-17.2).
+- 2026-11-17 04:17: Build 2026-11-17.2 (mobile-fit) 01c71fcf pushed; CLAUDE.md status + rule written.

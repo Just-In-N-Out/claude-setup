@@ -7,8 +7,22 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-17)
 
-- **Current build `2026-11-17.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-17.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-17.2 mobile-fit (website importer and Figma plugin):** an importer paste fills a box the old site types
+    short of a column it fills on wider screens (B-Dry's home FAQ, `width: 349px` from 767 down: Width 100% in that
+    Bricks tab on its class, max/min-width kept, named in the part's notes), unless its only-child chain ends in one
+    thing sized by its own content (words, picture, icon, video, field, button or link, a divider's line), which keeps
+    its typed width; `site:check`/`site:live` list a filled box and what it holds as "wider than the site on purpose"
+    and measure what follows from where its holder ends (B-Dry's home equal to main at all 48 widths); the plugin's
+    rule R3 (`normalise/infer-pair.ts`) flows a frame drawn without auto layout whose only two layers are a words frame
+    over a faint decoration (brainstorm's "05 · The alreadys" and "12 · Ready to GRO?" no longer 96 px off the screen);
+    every other paste byte for byte as before (`ConvertOptions.fit: false` too). AC6 amended with Justin's go ("Yes,
+    skip it": a single word the old site itself draws past the window, "Waterproofing", is excepted); Q2–Q3 ⭐ A and the
+    builder's and fixer's rulings (B1–B3, fixes R1-1, R1-2) not yet confirmed. Paste check **3fl** (AC11, live:
+    importer app → home scan → Make pastes again → Copy body → paste on B-Dry staging; at Phone and Phone sideways the
+    FAQ reaches both edges of its column, Width `100%`; on a phone no paragraph runs off; brainstorm from Figma on
+    darksalmon, its two sections' words stay on screen at tablet and phone).
   - **2026-11-17.1 multi-page-scan (website importer):** `npm run capture -- <a> [<b> [<c>]] [--folders]` and the
     importer app's Scan (one address per line) read up to three pages of one site in one run, one after another, the
     person check pressed once, each page in a folder of its own with its pastes; a failed page is named ("scan it again
@@ -633,6 +647,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A site paste fills a box the old site holds short of its column only through `src/core/site/fit-width.ts`**
+  (mobile-fit), on the capture's declarations before any step reads them, never a box whose only-child chain ends in
+  one self-sized thing (a page builder types a widget's width on its wrapper); a checker that excuses a filled box
+  measures what follows from where its holder ends.
 - **A site paste's value at a breakpoint is that tab's setting** (tier-spacing, `src/core/site/tiers.ts` `tierPlan`):
   only a change between Bricks' breakpoints is a bounded `@media (min-width:X) and (max-width:Y)` band printed
   `html:root .<class>` (never holding 991, 767 or 478), named in the notes; a logical side is renamed physical only
