@@ -390,3 +390,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | tier-spacing | mutation-testing-discipline | script: ac-check.sh asks a pin AC's report for a 'pin remade on --base' receipt (HEAD=<base> first line) | offered
 - 2026-11-17 | saved-password | figma-to-bricks | script: a planner/builder checklist grep listing every test spawning site-upload.ts/site-import.ts with login steps, compared with the plan's edited-test list | offered
 - 2026-11-17 | mobile-fit | mutation-testing-discipline | script: mutant harness exits non-zero unless cmp saved file passes after each restore | offered
+- 2026-11-17 | saved-password | figma-to-bricks | test: site-tests-offline.test.ts fails on a test file spawning site-upload.ts/site-import.ts without encoderEnv()/F2B_ENCODER_CACHE, F2B_ENCODER_SOURCE, --as-served or --dry-run (site-upload-icons reaches cdn.jsdelivr.net on main) | offered

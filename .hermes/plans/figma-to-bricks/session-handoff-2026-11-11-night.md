@@ -526,3 +526,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 01:40: Build 2026-11-16.9 (tier-spacing) 9fbc7a99 pushed; CLAUDE.md status + rule written.
 - 2026-11-17 01:50: mobile-fit review 1 REVIEW AGAIN (R1-1 wrapper picture filled, R1-2 site:check fails home); fixer 1 dispatched with rebase onto 9fbc7a99 + AC6 line.
 - 2026-11-17 01:51: multi-page-scan review 1 REVIEW AGAIN (R1-1 paste options lost after a failed page, R1-2 ticks never cleared); fixer 1 dispatched with rebase onto 9fbc7a99.
+- 2026-11-17 01:56: saved-password review 1 MOVE ON (6 P3 follow-ups); verifier spv1 + auditor spa1 dispatched on 7d97aba. Found: site-upload-icons test downloads the AVIF encoder from the CDN on main (enforce offered).
