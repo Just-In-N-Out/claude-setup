@@ -504,3 +504,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 21:00: photo-image-all READY on c8f7336, merged into main c8f73363; finisher (Build .7, 3fd). multi-page-scan planned (18 ACs, auto-go), builder dispatched on c8f7336. saved-password planner (Full). internal-links fixer 1 (R1-1). tier-spacing review 2 clean; fixer 2 (AC13 amended + R2-1).
 - 2026-11-16 21:04: Build 2026-11-16.7 (photo-image-all) pushed 22d71de4.
 - 2026-11-16 21:10: internal-links fixer 1 → 80a56b2 (R1-1 fixed, R1-4 words). Rebase onto 22d71de4 dispatched; then full review 2 on the rebased head.
+- 2026-11-16 21:18: internal-links rebased → a15f685 on 22d71de4 (gates green); review 2 full dispatched.
