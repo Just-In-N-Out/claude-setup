@@ -387,3 +387,6 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-16 | multi-page-scan | figma-to-bricks | unit test (run by npm run check) pins the list of files a scan folder holds, so a job adding an output file fails its own check before merge | offered
 - 2026-11-16 | internal-links | feature-dispatch | ac-check.sh --self <ac.json> mode to judge one report alone (briefs' self-check passing the same ac.json twice is refused) | offered
 - 2026-11-16 | saved-password | figma-to-bricks | unit test (AC10) calling logIn with no store under a temp HOME asserts HOME stays empty | built in-job
+- 2026-11-17 | tier-spacing | mutation-testing-discipline | script: ac-check.sh asks a pin AC's report for a 'pin remade on --base' receipt (HEAD=<base> first line) | offered
+- 2026-11-17 | saved-password | figma-to-bricks | script: a planner/builder checklist grep listing every test spawning site-upload.ts/site-import.ts with login steps, compared with the plan's edited-test list | offered
+- 2026-11-17 | mobile-fit | mutation-testing-discipline | script: mutant harness exits non-zero unless cmp saved file passes after each restore | offered
