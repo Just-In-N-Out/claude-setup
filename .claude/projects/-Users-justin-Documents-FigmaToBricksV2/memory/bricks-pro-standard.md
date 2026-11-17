@@ -23,3 +23,5 @@ and auditor brief asks "would a Bricks pro find this logical and easy to change?
 [[importer-native-structure]], [[plugin-first]].
 
 **Grouping by identity (Justin, 2026-11-13):** "if it is the same button like call me all call me buttons should change it should identify them by name": copies of the same button (heading, card) share one class even when one copy differs a little — identity from the Figma component, the site's own class names, or the same words and link; the shared class holds the common look and a copy's real difference stays on the element itself (its own settings; look-grouping Q3 A), so nothing moves. Job look-grouping.
+
+- 2026-11-16: Justin restarted clean-values (job clean-values-2, Full, both tools) with its focus stated: 'when someone clicks an element in Bricks, it actually shows the number like someone typed it into the Bricks controls on the left, and not the CSS' — the test is the editor's Style tab per breakpoint, not the drawn page.
