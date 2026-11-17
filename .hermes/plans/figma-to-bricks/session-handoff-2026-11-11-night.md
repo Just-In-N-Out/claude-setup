@@ -571,3 +571,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 16:16: link-keeps-name plan done (AC1–AC6 proposed, no live; Q1–Q4 ⭐A); plan-approved.md installed; builder (Opus xhigh) dispatched on 034c5d0d.
 - 2026-11-17 17:40: link-keeps-name builder ready-for-review 7dcf358d (AC1–6 met, gates green vs base). Reviewer 1 (Fable high) dispatched.
 - 2026-11-17 17:51: link-keeps-name review-1 MOVE ON at 7dcf358 (5 P3 → follow-ups; R1-1 a question for Justin). Verifier + auditor dispatched.
+- 2026-11-17 18:03: link-keeps-name auditor ALL ACCEPTED 6/6 on 7dcf358. Waiting verifier.
