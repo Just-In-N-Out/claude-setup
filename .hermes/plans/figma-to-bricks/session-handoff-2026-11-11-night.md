@@ -548,3 +548,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 05:43: saved-password rebase-2 → 8e03e10 on 01c71fcf (HANDOFF-only + notes commit; receipt EXIT=0); notes-only delta review 3 dispatched.
 - 2026-11-17 05:46: saved-password review 3 MOVE ON; merged main 8e03e107 (notes-only rule); finisher dispatched (Build 2026-11-17.3).
 - 2026-11-17 05:52: Build 2026-11-17.3 (saved-password) 8ed77094 pushed; I fixed CLAUDE.md's stale 'never saved (Q2 A)' Decisions line and added the never-read-saved-password-file agent rule.
+- 2026-11-17 07:27: session restart killed the clean-values-2 builder in its close (head d266f4e6); close-only builder dispatched (brief clean-values-2-builder-close.md).
