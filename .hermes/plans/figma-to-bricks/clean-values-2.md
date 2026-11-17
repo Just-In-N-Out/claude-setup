@@ -180,8 +180,10 @@ tier-spacing's plan gives tabs plus bands.
 
 - **T1 keywords that say nothing.** For a property no element inherits and no browser rule sets on the element's tag
   (order, flex-grow, flex-shrink, flex-basis, flex-wrap, flex-direction, align-self, align-items, align-content,
-  justify-content, justify-items, justify-self, row-gap, column-gap; the builder extends the list to min/max sizes,
-  z-index and the offsets only with the drawn proof): where every range says `unset`, `initial` or `revert`, the
+  justify-content, justify-items, justify-self, row-gap, column-gap; and, probed by the planner with 0 of 21,900
+  readings differing and 246 more lines gone (`prototype-more.diff`, `oracle-more-*.txt`): width, height, the min/max
+  sizes, z-index, the offsets, and `text-align` only ever `unset`/`inherit`; the builder keeps each of these only
+  while AC7 and AC9 stay green): where every range says `unset`, `initial` or `revert`, the
   property leaves (the reset's `all: revert` already gives it); where some range says a real value, the keyword is
   written as the value it means (`flex-wrap: unset` → `nowrap`), so the property fits its setting at every tab.
   **Never for a copy's own difference** (`copies.ts`: there the keyword is the copy's value against its class; it is
