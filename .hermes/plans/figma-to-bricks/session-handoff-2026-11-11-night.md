@@ -564,3 +564,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 11:45: clean-values-2 auditor (affaec8) NOT ACCEPTED AC10/AC12/AC16 (shape gradient path; styles.txt switch-off). Stopped verifier-2/auditor-2 on 415585a (same bugs). Fixer-4 dispatched.
 - 2026-11-17 12:15: clean-values-2 fixer-4 → ea82f81 (shape gradients, styles.txt switch-off; receipt EXIT=0). Delta review 6 dispatched; then verifier-3 + auditor-3.
 - 2026-11-17 12:23: clean-values-2 review-6 MOVE ON at ea82f81. Verifier-3 cvv3 + auditor-3 cva3 dispatched.
+- 2026-11-17 13:47: clean-values-2 verifier-3 READY 17/18 on ea82f81 (0 new web reds; 3 P3 to follow-ups). Waiting auditor-3.
