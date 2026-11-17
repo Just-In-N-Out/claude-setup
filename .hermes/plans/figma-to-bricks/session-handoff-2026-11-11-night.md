@@ -567,3 +567,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 13:47: clean-values-2 verifier-3 READY 17/18 on ea82f81 (0 new web reds; 3 P3 to follow-ups). Waiting auditor-3.
 - 2026-11-17 14:35: clean-values-2 ac-check READY 17/18 on ea82f81; MERGED main ea82f81 (ff, lock); finisher dispatched (Build 2026-11-17.4).
 - 2026-11-17 14:40: clean-values-2 RELEASED Build 2026-11-17.4 (034c5d0d, pushed). Live check 3fm owed. No agents running.
+- 2026-11-17 15:34: Justin: 'do 2,3' -> restarted fewer-kept-boxes (mover onto 034c5d0d from a36d569c, branch fewer-kept-boxes-on-main8, brief move-main8) and link-keeps-name (fresh planner, Fable high, base 034c5d0d). short-class-names stays paused.
