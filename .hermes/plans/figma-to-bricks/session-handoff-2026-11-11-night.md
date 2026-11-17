@@ -505,3 +505,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 21:04: Build 2026-11-16.7 (photo-image-all) pushed 22d71de4.
 - 2026-11-16 21:10: internal-links fixer 1 → 80a56b2 (R1-1 fixed, R1-4 words). Rebase onto 22d71de4 dispatched; then full review 2 on the rebased head.
 - 2026-11-16 21:18: internal-links rebased → a15f685 on 22d71de4 (gates green); review 2 full dispatched.
+- 2026-11-16 21:22: tier-spacing fixer 2 → 6a9659b (AC13 amended, R2-1); plan-approved re-issued (before copy amend-ac13/plan-approved-before.md). Rebase onto 22d71de4 dispatched; then delta review 3 + verifier + auditor.
