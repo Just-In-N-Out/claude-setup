@@ -572,3 +572,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 17:40: link-keeps-name builder ready-for-review 7dcf358d (AC1–6 met, gates green vs base). Reviewer 1 (Fable high) dispatched.
 - 2026-11-17 17:51: link-keeps-name review-1 MOVE ON at 7dcf358 (5 P3 → follow-ups; R1-1 a question for Justin). Verifier + auditor dispatched.
 - 2026-11-17 18:03: link-keeps-name auditor ALL ACCEPTED 6/6 on 7dcf358. Waiting verifier.
+- 2026-11-17 18:04: fkb mover 8 → e86f99d2 (rebased on 034c5d0d, 26 commits, 12 test-only fixes). STOP: AC9 red: 87/100 readings text-align left→start (0 px) on one Rich Text, from tier-spacing renaming the kept wrapper's side while the moved value sits in > p Custom CSS. Asking Justin.

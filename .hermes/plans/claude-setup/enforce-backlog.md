@@ -400,3 +400,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | clean-values-2 | testing | test: unit over the five real files with clean on, count elements whose own #brxe rule holds a single linear-gradient background-image with no _gradient setting; expect 0 | offered
 - 2026-11-17 | clean-values-2 | testing | test: site-cli writePastes with sitePage(..., clean:false) compares styles.txt with a base golden | offered
 - 2026-11-17 | link-keeps-name | testing | script: before a pin gate, list each pin file's process.env.F2B_* reads and fail if any file reports skipped or a named-only skip reason in its TAP | offered
+- 2026-11-17 | fewer-kept-boxes | testing | script: receipt-runlist builder dry-runs each name pattern and fails a row matching 0 tests | offered
+- 2026-11-17 | fewer-kept-boxes | testing | test: multi-page-scan AC17 compares the upload record with sorted keys | offered
