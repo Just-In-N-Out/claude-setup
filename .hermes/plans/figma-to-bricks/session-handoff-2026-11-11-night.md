@@ -522,3 +522,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 22:57: clean-values-2 planned (18 ACs; importer 77%→88% clicks in controls in prototype, 0 of 89,041 readings moved). Plan approved under auto-go; builder held until tier-spacing merges (base). Q1 (plugin Buttons) asked.
 - 2026-11-17 01:36: tier-spacing READY on c92cf00, merged; finisher (Build .9, 3fh). clean-values-2 Q1 = B (Buttons in controls).
 - 2026-11-17 01:38: reviews 1 dispatched: multi-page-scan (b381eac), saved-password (7d97aba), mobile-fit (51db417; B3 AC6 amendment asked of Justin). clean-values-2 builder started on c92cf00 (Q1 B). Lessons saved (mutation, TDD, testing-pitfalls).
+- 2026-11-17 01:39: Justin: mobile-fit AC6 B3 amendment yes (amend-ac6/justin.json); line to be written by next fixer.
