@@ -550,3 +550,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 05:52: Build 2026-11-17.3 (saved-password) 8ed77094 pushed; I fixed CLAUDE.md's stale 'never saved (Q2 A)' Decisions line and added the never-read-saved-password-file agent rule.
 - 2026-11-17 07:27: session restart killed the clean-values-2 builder in its close (head d266f4e6); close-only builder dispatched (brief clean-values-2-builder-close.md).
 - 2026-11-17 07:39: clean-values-2 ready-for-review b4505e27 (base c92cf009); AC15 not built (M5 proof failed). Reviewer-1 Fable dispatched; asked Justin about AC15.
+- 2026-11-17 07:40: Justin: clean-values-2 Buttons 'Keep as today' → Q1 A, AC15 skipped with a note per its own words (recorded questions/justin.json Q1-2).
