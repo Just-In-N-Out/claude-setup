@@ -392,3 +392,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | mobile-fit | mutation-testing-discipline | script: mutant harness exits non-zero unless cmp saved file passes after each restore | offered
 - 2026-11-17 | saved-password | figma-to-bricks | test: site-tests-offline.test.ts fails on a test file spawning site-upload.ts/site-import.ts without encoderEnv()/F2B_ENCODER_CACHE, F2B_ENCODER_SOURCE, --as-served or --dry-run (site-upload-icons reaches cdn.jsdelivr.net on main) | offered
 - 2026-11-17 | multi-page-scan | test-driven-development | script: evidence-step check greps the job's evidence folder for the fixture PASS constant (test/fixtures/site-import.ts) and fails on a match | offered
+- 2026-11-17 | multi-page-scan | figma-to-bricks | test: story-pin helpers compare JSON state files (site-uploads.json) parsed with sorted keys, never raw bytes (AC17 pin flaky 4 of 16) | offered
