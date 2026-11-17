@@ -396,3 +396,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | mobile-fit | figma-to-bricks | test: npm run check fails when a merge adds a src/core or src/web module missing from media-avif-untouched / site-import-figma-unchanged file lists | offered
 - 2026-11-17 | clean-values-2 | code-review-practice | test: a tidy unit case per STYLED form tag asserting font-style/letter-spacing inherit stay (test/unit/site-clean-tidy.test.ts) | offered
 - 2026-11-17 | clean-values-2 | code-review-practice | test: a site-clean-tidy case running every drop rule with copy: true expecting the input back unchanged (npm run check) | offered
+- 2026-11-17 | clean-values-2 | code-review-practice | test: site-clean-one-writer also counts state keys (:hover/:focus/:active) held by two classes of one element, on a look-class + placement-class fixture | offered

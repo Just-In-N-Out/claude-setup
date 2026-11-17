@@ -558,3 +558,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 08:45: clean-values-2 review-3 MOVE ON at 8792745 (after fixing my justin.json to {words,continue}); rebaser onto main 8ed77094 dispatched before verifier/auditor.
 - 2026-11-17 09:04: clean-values-2 rebased → affaec8 on 8ed77094 (HANDOFF-only conflict; 2 golden remakes; receipt EXIT=0). Delta review 4 of joins dispatched; then verifier+auditor on affaec8.
 - 2026-11-17 09:10: clean-values-2 review-4 MOVE ON at affaec8 (joins byte-proven). Verifier cvv1 + auditor cva1 dispatched.
+- 2026-11-17 10:48: clean-values-2 verifier: 17/18 READY but 2 P2 (F1 two classes hold one state setting on home scan; stale site-cli palette test). Fixer-3 dispatched on clean-values-2-on-main; auditor still running.
