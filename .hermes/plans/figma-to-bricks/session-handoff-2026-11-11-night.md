@@ -575,3 +575,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 18:04: fkb mover 8 → e86f99d2 (rebased on 034c5d0d, 26 commits, 12 test-only fixes). STOP: AC9 red: 87/100 readings text-align left→start (0 px) on one Rich Text, from tier-spacing renaming the kept wrapper's side while the moved value sits in > p Custom CSS. Asking Justin.
 - 2026-11-17 18:05: Justin AC9: 'Use Bricks' box (Recommended)' → fkb fixer-8 dispatched (moved value into child's own setting). Then full review of move+fix, verifier+auditor.
 - 2026-11-17 18:08: link-keeps-name ac-check ALL ACCEPTED 6/6; MERGED main 7dcf358d (ff, lock); finisher dispatched (Build 2026-11-17.5).
+- 2026-11-17 18:12: link-keeps-name RELEASED Build 2026-11-17.5 (7cd47756, pushed). No paste check. Running: fkb fixer-8 (base 034c5d0d; needs rebase onto 7cd47756 after).

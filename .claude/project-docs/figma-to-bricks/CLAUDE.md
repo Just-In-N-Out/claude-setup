@@ -7,8 +7,16 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-17)
 
-- **Current build `2026-11-17.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-17.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-17.5 link-keeps-name (website importer):** when the importer folds a wrapper box into the one element it
+    holds (rule N, the Elementor fold), a link, button, heading, role named by its words or picture with an alt that has
+    a name of its own at every width it shows in keeps it: the wrapper's `aria-label` lands only where the element has
+    none (an icon-only link, a plain box, a picture with no alt), a wrapper role that would take the words away is left
+    out with it, the wrapper's `title` still goes down (rule L, `src/core/site/names.ts` `handDown`); one notes line per
+    part names what was left out; every other paste byte for byte as before (B-Dry's six scans: 36 parts, 0 differ);
+    the Figma plugin unchanged. Justin's "Link keeps its words" (2026-11-16); Q1–Q4 ⭐ A not yet confirmed. No paste
+    check owed (none of his scans holds the shape).
   - **2026-11-17.4 clean-values-2 (website importer and Figma plugin):** a value a Bricks control holds is that control
     at its tab and state, not Custom CSS: on importer pastes Typography (font style, letter spacing, decoration, one
     text shadow), Layout (visibility, pointer events, isolation, blend mode, aspect ratio, the grid keys), Transform and
@@ -245,8 +253,8 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
     old address), Video of a one-file video or a YouTube/Vimeo frame, Divider, Accordion (details in a row, ARIA lists)
     and Slider (Swiper, Splide) on any site, a FAQ, Divider or Nav alone in its Section standing in the Container's
     place (Justin's "Keep it flat"); everything else stays as before, named; every paste draws as before; Figma designs
-    and the panel byte for byte as before. Q1–Q14 ⭐ A and the builder's and fixers' rulings not yet confirmed; one
-    question for Justin (a folded wrapper's aria-label renames its link). Paste check **3es** (AC22, live: rescan
+    and the panel byte for byte as before. Q1–Q14 ⭐ A and the builder's and fixers' rulings not yet confirmed; answered:
+    a link keeps its own words (link-keeps-name). Paste check **3es** (AC22, live: rescan
     bdryswi.com, import with `--elementor`, paste on B-Dry staging: looks as before, a hero button Style Primary,
     Border and Position in Bricks' fields, the ☰ named "Menu").
   - **2026-11-15.2 plugin-parity (Figma plugin):** a Figma paste holds no Div (only a picture carried inside the
