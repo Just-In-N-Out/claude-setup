@@ -517,3 +517,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 22:10: multi-page-scan built (a31be34, base c8f7336, 12 mutants killed). Rebase onto 2c570217 dispatched before review 1 (4 conflicts; findPages into beforeYes).
 - 2026-11-16 22:22: clean-values resumed as clean-values-2 (Full, both tools; focus: Style tab shows the values); planner dispatched (3fm).
 - 2026-11-16 22:26: tier-spacing verifier NOT ACCEPTED AC13 (16 GRO Tablet rowGap); auditor clean. Justin's 2nd go recorded. Wording fixer found the test's excuse too broad → fixer 3 (test-only + plan line).
+- 2026-11-16 22:41: multi-page-scan rebased → 6a55947 (findPages per scan in beforeYes, join test); AC9-11,14 red only from internal-links' pages.json → same agent told to make the test-only change + 3fj line.
