@@ -509,3 +509,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 21:28: internal-links review 2 clean at a15f685 (2 P3 → follow-ups); verifier + auditor dispatched side by side.
 - 2026-11-16 21:36: new job mobile-fit (Full, both tools): B-Dry FAQ not full width on phones, paragraph text running off; planner dispatched (3fl).
 - 2026-11-16 21:43: internal-links READY on a15f685, merged into main; finisher dispatched (Build .8, 3fg).
+- 2026-11-16 21:44: tier-spacing rebased → 6196ce2 on 22d71de4 (ACs green; bw-colours/fonts pins stale by design → follow-ups). Delta review 3 dispatched. Main moved to a15f685 (internal-links): only HANDOFF conflicts → notes-only rebase after Build .8.
