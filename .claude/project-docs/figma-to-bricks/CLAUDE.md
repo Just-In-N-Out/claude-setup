@@ -7,8 +7,22 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-16)
 
-- **Current build `2026-11-16.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.8`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.8 internal-links (website importer and Figma plugin):** a Button, Text link, Heading (a whole-link
+    Heading carries it in Link to) or linked box whose link goes to one of the new site's pages pastes as Link to →
+    **Internal** → that page, so it follows the page when its address changes; the importer reads the site's page list
+    and homepage setting after the login (`site:upload`, `site:import`, the importer app; GET only, only when a paste
+    links to a path of the site) and writes `pages.json` beside `media.json` (`npm run site … --pages`, "Make pastes
+    again" remake offline); the Figma panel with WordPress connected turns every link relink sends to a matched page
+    into its Internal link (a "Home" link to Settings → Reading's homepage page); a page the site lacks, a link in a
+    sentence's words, another site, `#`, `tel:`/`mailto:` keep their address, named; a linked picture keeps Other (URL)
+    (an Image's Internal link unproven until his copy); every paste with one names its site in `sourceUrl` (Bricks
+    empties an Internal link pasted elsewhere); without a pages map, and the plugin's conversion (= replay), byte for
+    byte as before. Q1–Q6 ⭐ A and the builder's and fixer 1's rulings not yet confirmed; his copy of a Button's
+    Internal link wanted (Q7). Paste check **3fg** (AC12, live: importer app → home scan → Pictures to WordPress → Log
+    in and check → yes → Copy header and body → paste on B-Dry staging; a "Contact Us" Button and a drawer menu word
+    show Link to → Internal → the page, the logo Other (URL) `/`; looks as before at 1440 and 390).
   - **2026-11-16.7 photo-image-all (website importer):** a box whose only content is its own library photo is a Bricks
     Image in two more cases: the site draws the photo at a size of its own (`383px auto`, `50% auto`, `120px 90px`…)
     placed at a side's start, centre or end, or places it in three or four words or with `calc()` on a fit
@@ -609,6 +623,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **A box the old site pins while scrolling is Bricks' Position: Sticky on its own class** (site-sticky-cards,
   `src/core/site/elementor-sticky.ts`); never a Code element; the guard class `<page>__site-pinned-<4>` keeps html/body
   from clipping it.
+- **An Internal link is written only through `emit/link-shape.ts` `internalLink`, by both tools** (internal-links):
+  never on an Image until a copy from Bricks proves it (`payloadProblems` refuses one), and a paste holding one names
+  its site in `sourceUrl`, since Bricks empties an Internal link pasted on another site.
 - **A box that only shows its own library photo is a Bricks Image (`tag: figure`)** (photo-box-image,
   `src/core/site/photo-box.ts`); looks, palette and names around it are decided with the photo step off, so nothing
   else in a paste moves. A photo drawn at a size of its own keeps that size on the class's ` > img`
@@ -758,7 +775,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   can put the API for alt text"). All three run the same code (`tools/lib/site-upload/`): the app starts `site:upload`
   itself and has no uploader of its own. It only adds media items and fills the empty alt text of an
   item it uploaded itself whose file still matches (never changes, moves or deletes one; never touches pages, posts or settings; besides the media routes it reads only the site's WPForms form list (GET
-  `wpforms/v1/forms`) to put a form's number in the paste), only on the site whose address was typed, after reading that site and
+  `wpforms/v1/forms`) to put a form's number in the paste and, after the login, its page list and homepage setting (GET
+  `wp/v2/pages`, internal-links) to write `pages.json`), only on the site whose address was typed, after reading that site and
   a typed `yes` asked after everything it found is shown (no flag skips it; `site:import` takes only a yes typed after
   that question). The Application Password is typed at the hidden prompt (`site:import` asks it before the scan and
   keeps it only in its own memory through it), or in the app's password box, which sends it once in a request body to

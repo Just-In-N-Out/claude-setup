@@ -1,8 +1,9 @@
 # saved-password: the WordPress Application Password is saved, so it isn't typed again
 
-Planner: Fable 5.2 high, 2026-11-16. Base: `main` = c8f73363; checked again on 22d71de4 (Build 2026-11-16.7, one
-commit later: none of the files this job touches changed). Full pipeline, website importer. Plan only: nothing in
-the repo was changed. The builder's copy of this plan goes in `docs/plans/2026-11-16-saved-password.md`. Evidence:
+Planner: Fable 5.2 high, 2026-11-16. Base: `main` = 2c570217 (Build 2026-11-16.8, internal-links merged). The
+plan was first measured on c8f73363; main moved twice while it was written, so the prototype was put on 2c570217
+again (its diff applies with line offsets only, typechecks) and the probe and the unit tally run again there. Full
+pipeline, website importer. Plan only: nothing in the repo was changed. The builder's copy of this plan goes in `docs/plans/2026-11-16-saved-password.md`. Evidence:
 `~/.hermes/plans/figma-to-bricks/evidence/saved-password/planner/` (list at the end).
 
 ## Questions for Justin (⭐ = what the builder takes unless you say otherwise)
@@ -58,21 +59,21 @@ Administrator's on B-Dry staging), not only Media.
 What it lets you do at the end: run "Pictures to WordPress" twice on B-Dry staging; the second time no password is
 asked (paste check **3fk**).
 
-## How the password is handled today (c8f73363)
+## How the password is handled today (2c570217)
 
-- **The prompt.** `tools/lib/site-upload/flow.ts:129-150` `logIn`: reads the site's public index with no password
+- **The prompt.** `tools/lib/site-upload/flow.ts:135-156` `logIn`: reads the site's public index with no password
   (`guard.ts` `readIndex`), asks the user name (`--user` skips that), asks the password at the hidden prompt
   (`ask.ts:84-112` `hidden`: raw mode, nothing echoed; "Nothing is stored", `ask.ts:4`), adds it to the run's
   scrubber (`scrub.ts` `Scrubber.add`: as typed, without spaces, the Basic base64 forms, URL-encoded), and tests it
   with one read (`src/ui/wordpress.ts:86` `testConnection`, `GET wp/v2/users/me`). A refusal is one line, exit 2. The
-  password lives only in the `wp` object in that process's memory (`flow.ts:135-136`).
+  password lives only in the `wp` object in that process's memory (`flow.ts:141-142`).
 - **Only the typed site.** `guard.ts` `guardFetch`: every request goes to the typed site's origin, no redirect
   followed. `siteOf`: https only (plain http for 127.0.0.1 alone), no login inside the address.
-- **site:upload** (`tools/site-upload.ts:61`) and **site:import** (`tools/site-import.ts:51`, before the scan) call
+- **site:upload** (`tools/site-upload.ts:62`) and **site:import** (`tools/site-import.ts:51`, before the scan) call
   that one `logIn`. A dry run asks nothing. With no terminal only 127.0.0.1 is accepted (`person.ts` `personAsks`).
-  The typed yes follows (`site-upload.ts:76-77`, `site-import/after-scan.ts:50-51`).
+  The typed yes follows (`site-upload.ts:79-80`, `site-import/after-scan.ts`, the `yesQuestion` line).
 - **The app.** The page's password box (`page/index.html:81-82`) is sent once in the body of
-  `POST /api/scans/<id>/upload` and emptied (`page/upload.ts:42-45`, `:56`); `routes.ts:139-143` requires it;
+  `POST /api/scans/<id>/upload` and emptied (`page/upload.ts:42-45`, `:56`); `routes.ts:142-146` requires it;
   `jobs.ts:58-61` `Job.login` holds it and adds it to the job's scrubber; `jobs.ts:118-122` writes it once when the
   command shows `PASSWORD_PROMPT` and clears the field in the same tick. The app has no uploader of its own.
 - **What is saved today, and how.** The alttext.ai key: `ai-key.ts` `readKey`/`saveKey`
@@ -99,9 +100,9 @@ asked (paste check **3fk**).
 
 ## The proposal
 
-Prototyped on a copy of c8f73363 (`proto/saved-login.ts`, `proto/tools.diff`): the probe
+Prototyped on a copy of c8f73363 and again on 2c570217 (`proto/saved-login.ts`, `proto/tools.diff`): the probe
 `probe-saved.test.ts` fails on the base by assertion ("the first accepted login is saved") and passes on the
-prototype (`probe-base.log`, `probe-proto.log`).
+prototype, on both bases (`probe-base.log`, `probe-proto.log`; `probe-base2.log`, `probe-proto2.log` on 2c570217).
 
 **D1. The file.** `~/.config/figma-to-bricks/site-passwords.json`, mode 0600, its folder made 0700 when new:
 `{ "version": 1, "logins": { "<site key>": { "<user name>": { "password": "<as typed>", "savedAt": "<ISO time>" } } } }`.
@@ -227,7 +228,7 @@ login of `test/fixtures/site-import.ts`. A test that expects no password prompt 
 ## Tasks (test first; one commit a task, each green)
 
 0. In the copy: `npm run corpus` before Task 1 (the project's rule), and the two base tallies above run again.
-1. **The stand-in can change a password.** `test/fixtures/wp-standin.ts:155`: `users` read at each request
+1. **The stand-in can change a password.** `test/fixtures/wp-standin.ts:167`: `users` read at each request
    (`o.users ?? []`), so `configure({ users })` is "the Application Password was revoked and a new one made"
    (WordPress answers the old one 401 `incorrect_password`, as the stand-in already does). No test changes outcome.
 2. **The store.** `tools/lib/site-upload/saved-login.ts` as in `proto/saved-login.ts`, with
@@ -320,7 +321,7 @@ writes the copy).
 - **internal-links (in review):** adds a pages read after the login (`findPages` beside `findForms`). It reads with
   `login.wp`, wherever the password came from: nothing to join but lines. Shared: `tools/site-upload.ts`,
   `tools/lib/site-upload/flow.ts`, `tools/lib/importer-app/commands.ts`, `routes.ts`, `chains.ts`,
-  `test/fixtures/wp-standin.ts` (this job: line 155 only), `test/unit/site-upload-cli.test.ts`,
+  `test/fixtures/wp-standin.ts` (this job: line 167 only), `test/unit/site-upload-cli.test.ts`,
   `test/web/importer-app-upload.test.ts`.
 - **tier-spacing (in review):** `tools/lib/site-write.ts` and `src/core/site` only. No shared file.
 - **Paused:** short-class-names edits `tools/lib/site-upload/args.ts`, `flow.ts`, `tools/site-upload.ts`,
