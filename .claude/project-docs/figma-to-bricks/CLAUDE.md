@@ -7,8 +7,19 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-16)
 
-- **Current build `2026-11-16.6`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.7`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.7 photo-image-all (website importer):** a box whose only content is its own library photo is a Bricks
+    Image in two more cases: the site draws the photo at a size of its own (`383px auto`, `50% auto`, `120px 90px`…)
+    placed at a side's start, centre or end, or places it in three or four words or with `calc()` on a fit
+    photo-box-image took; B-Dry's Tri-State map (home, `383px auto` from 767 px down) is an Image now (home 3 Images,
+    none left); it draws exactly as the box did (every element and the picture's rectangle within 0.5 px), the picture's
+    size on the Image's class Custom CSS at ` > img` (named in the Bricks Images note: a Width typed on the Image sizes
+    the box, not the photo); a repeat at a size of its own, another `%` or `calc()` place, a `calc()` size and a padding
+    written by two names stay Blocks, named; pastes without such a box byte for byte as before. Q1–Q3 ⭐ A and the
+    builder's R1–R5 not yet confirmed; AC7 amended with Justin's go ("Swap it": the map's pixels printed, geometry
+    asserted). Paste check **3fd** (AC8, live: importer app → home scan → Make pastes again → paste on B-Dry staging;
+    click the map: Content → Image shows `bdry-map-1-image.avif`; looks as before at 1440 and 390).
   - **2026-11-16.6 bw-colours (website importer):** a scan records the size each background picture came at
     (`web.natural`: a file fetched as written by its own size, a resized copy such as Jetpack's `?fit=768,1024` measured
     as the page loads it, an SVG or a picture it can't measure none, named); with a media map a background the site drew
@@ -600,7 +611,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   from clipping it.
 - **A box that only shows its own library photo is a Bricks Image (`tag: figure`)** (photo-box-image,
   `src/core/site/photo-box.ts`); looks, palette and names around it are decided with the photo step off, so nothing
-  else in a paste moves.
+  else in a paste moves. A photo drawn at a size of its own keeps that size on the class's ` > img`
+  (photo-image-all, `photo-place.ts`), placed by `place-self` and four physical margins, never a `margin` shorthand
+  (one width's shorthand would undo another's sides).
 - **Sign pasted code once** (wave-code): Bricks 2.4.2's editor window of unsigned code writes each answer into
   whichever element is active, and Sign all stays pressable while it works; the importer's steps say press it once and
   wait, or save and use Settings → Custom code → Regenerate code signatures.
