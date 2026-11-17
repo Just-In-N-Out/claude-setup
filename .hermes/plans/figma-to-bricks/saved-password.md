@@ -1,7 +1,8 @@
 # saved-password: the WordPress Application Password is saved, so it isn't typed again
 
-Planner: Fable 5.2 high, 2026-11-16. Base: `main` = c8f73363 (Build 2026-11-16.7 soon). Full pipeline, website
-importer. Plan only: nothing in the repo was changed. Evidence:
+Planner: Fable 5.2 high, 2026-11-16. Base: `main` = c8f73363; checked again on 22d71de4 (Build 2026-11-16.7, one
+commit later: none of the files this job touches changed). Full pipeline, website importer. Plan only: nothing in
+the repo was changed. The builder's copy of this plan goes in `docs/plans/2026-11-16-saved-password.md`. Evidence:
 `~/.hermes/plans/figma-to-bricks/evidence/saved-password/planner/` (list at the end).
 
 ## Questions for Justin (⭐ = what the builder takes unless you say otherwise)
@@ -59,28 +60,28 @@ asked (paste check **3fk**).
 
 ## How the password is handled today (c8f73363)
 
-- **The prompt.** `tools/lib/site-upload/flow.ts:132-155` `logIn`: reads the site's public index with no password
+- **The prompt.** `tools/lib/site-upload/flow.ts:129-150` `logIn`: reads the site's public index with no password
   (`guard.ts` `readIndex`), asks the user name (`--user` skips that), asks the password at the hidden prompt
-  (`ask.ts:86-112` `hidden`: raw mode, nothing echoed; "Nothing is stored", `ask.ts:4`), adds it to the run's
+  (`ask.ts:84-112` `hidden`: raw mode, nothing echoed; "Nothing is stored", `ask.ts:4`), adds it to the run's
   scrubber (`scrub.ts` `Scrubber.add`: as typed, without spaces, the Basic base64 forms, URL-encoded), and tests it
   with one read (`src/ui/wordpress.ts:86` `testConnection`, `GET wp/v2/users/me`). A refusal is one line, exit 2. The
-  password lives only in the `wp` object in that process's memory (`flow.ts:142`).
+  password lives only in the `wp` object in that process's memory (`flow.ts:135-136`).
 - **Only the typed site.** `guard.ts` `guardFetch`: every request goes to the typed site's origin, no redirect
   followed. `siteOf`: https only (plain http for 127.0.0.1 alone), no login inside the address.
-- **site:upload** (`tools/site-upload.ts:67`) and **site:import** (`tools/site-import.ts:58`, before the scan) call
+- **site:upload** (`tools/site-upload.ts:61`) and **site:import** (`tools/site-import.ts:51`, before the scan) call
   that one `logIn`. A dry run asks nothing. With no terminal only 127.0.0.1 is accepted (`person.ts` `personAsks`).
-  The typed yes follows (`site-upload.ts:81-83`, `site-import/after-scan.ts:53-55`).
+  The typed yes follows (`site-upload.ts:76-77`, `site-import/after-scan.ts:50-51`).
 - **The app.** The page's password box (`page/index.html:81-82`) is sent once in the body of
-  `POST /api/scans/<id>/upload` and emptied (`page/upload.ts:42-45`); `routes.ts:139-144` requires it;
-  `jobs.ts:59-62` `Job.login` holds it and adds it to the job's scrubber; `jobs.ts:118-123` writes it once when the
+  `POST /api/scans/<id>/upload` and emptied (`page/upload.ts:42-45`, `:56`); `routes.ts:139-143` requires it;
+  `jobs.ts:58-61` `Job.login` holds it and adds it to the job's scrubber; `jobs.ts:118-122` writes it once when the
   command shows `PASSWORD_PROMPT` and clears the field in the same tick. The app has no uploader of its own.
 - **What is saved today, and how.** The alttext.ai key: `ai-key.ts` `readKey`/`saveKey`
   (`~/.config/figma-to-bricks/alttext-key`, 0600, a plain file only, made 0600 if others could read it, a new file
   renamed over the old), saved only after alttext.ai accepts it (`ai-key.ts:84-87`, the app's `key.ts` `saveTested`),
-  shown by its last four (`key.ts:21-25` `keyView`), Remove deletes the file. The upload record
+  shown by its last four (`key.ts:21-26` `keyView`), Remove deletes the file. The upload record
   (`record.ts`, `site-uploads.json`, 0600) holds no password.
 - **Tests that prove "nowhere".** `test/unit/site-upload-cli.test.ts` AC8, `test/unit/site-upload-scrub.test.ts`,
-  `test/web/site-upload-secrets.test.ts` (which already lets the key's own file hold the key: line 102-106),
+  `test/web/site-upload-secrets.test.ts` (which already lets the key's own file hold the key: lines 102 and 106),
   `test/web/site-import-secret.test.ts`, `test/web/importer-app-secret.test.ts`.
 
 ## What each computer has for a keyring (Q1)
