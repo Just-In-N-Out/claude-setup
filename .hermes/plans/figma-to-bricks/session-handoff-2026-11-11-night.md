@@ -524,3 +524,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 01:38: reviews 1 dispatched: multi-page-scan (b381eac), saved-password (7d97aba), mobile-fit (51db417; B3 AC6 amendment asked of Justin). clean-values-2 builder started on c92cf00 (Q1 B). Lessons saved (mutation, TDD, testing-pitfalls).
 - 2026-11-17 01:39: Justin: mobile-fit AC6 B3 amendment yes (amend-ac6/justin.json); line to be written by next fixer.
 - 2026-11-17 01:40: Build 2026-11-16.9 (tier-spacing) 9fbc7a99 pushed; CLAUDE.md status + rule written.
+- 2026-11-17 01:50: mobile-fit review 1 REVIEW AGAIN (R1-1 wrapper picture filled, R1-2 site:check fails home); fixer 1 dispatched with rebase onto 9fbc7a99 + AC6 line.
