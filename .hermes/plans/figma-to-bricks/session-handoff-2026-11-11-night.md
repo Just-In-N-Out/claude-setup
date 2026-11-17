@@ -551,3 +551,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 07:27: session restart killed the clean-values-2 builder in its close (head d266f4e6); close-only builder dispatched (brief clean-values-2-builder-close.md).
 - 2026-11-17 07:39: clean-values-2 ready-for-review b4505e27 (base c92cf009); AC15 not built (M5 proof failed). Reviewer-1 Fable dispatched; asked Justin about AC15.
 - 2026-11-17 07:40: Justin: clean-values-2 Buttons 'Keep as today' → Q1 A, AC15 skipped with a note per its own words (recorded questions/justin.json Q1-2).
+- 2026-11-17 07:55: clean-values-2 review-1 REVIEW AGAIN (R1-1 P2 tidy T2 button inherit; R1-2 AC15 → Justin's Keep as today). Fixer-1 dispatched (also writes AC15 amendment). Saved 2 code-review-practice lessons.

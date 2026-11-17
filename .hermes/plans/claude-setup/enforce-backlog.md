@@ -394,3 +394,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | multi-page-scan | test-driven-development | script: evidence-step check greps the job's evidence folder for the fixture PASS constant (test/fixtures/site-import.ts) and fails on a match | offered
 - 2026-11-17 | multi-page-scan | figma-to-bricks | test: story-pin helpers compare JSON state files (site-uploads.json) parsed with sorted keys, never raw bytes (AC17 pin flaky 4 of 16) | offered
 - 2026-11-17 | mobile-fit | figma-to-bricks | test: npm run check fails when a merge adds a src/core or src/web module missing from media-avif-untouched / site-import-figma-unchanged file lists | offered
+- 2026-11-17 | clean-values-2 | code-review-practice | test: a tidy unit case per STYLED form tag asserting font-style/letter-spacing inherit stay (test/unit/site-clean-tidy.test.ts) | offered

@@ -33,7 +33,7 @@ index d8e25dc..545b2f9 100644
  ## Mandatory Validation and Agent Defect Loop
  
 diff --git a/skills/code-review-practice/SKILL.md b/skills/code-review-practice/SKILL.md
-index d6a2493..53944d4 100644
+index d6a2493..be70c85 100644
 --- a/skills/code-review-practice/SKILL.md
 +++ b/skills/code-review-practice/SKILL.md
 @@ -60,30 +60,44 @@ Read `references/code-review-practice.md` for detailed checklists, comment templ
@@ -89,7 +89,7 @@ index d6a2493..53944d4 100644
  - Readiness budgets: reject nonfinite and negative numeric timeouts before resource or persistent-state claims, including direct API callers. Preserve zero only when it is the documented immediate-timeout control; use bounded fake-clock regressions rather than launching an infinite wait.
  - Maintainability: simple design, local conventions, names, duplication, abstraction fit.
  - Docs and rollout: README, changelog, feature flags, migration notes, operator impact.
-@@ -95,7 +109,18 @@ Use this as a scan order, not a rigid form:
+@@ -95,7 +109,19 @@ Use this as a scan order, not a rigid form:
  - Safety metadata: compare explicit canonical status/date/approval fields across human-readable docs and machine manifests. Keyword presence is not agreement; retain full-entrypoint negative fixtures where one field contradicts the manifest while unrelated caveats remain, and reject missing/duplicate/conflicting fields without treating the checker as release authorization.
  - Execution provenance: require contemporaneous complete consumed-source hashes or a dirty patch before and after dirty-tree runs. HEAD plus a dirty flag or one wrapper hash does not bind every helper, test or workflow; inherit only demonstrated unchanged bytes/consumed fields rather than fabricating retrospective attestation.
  - Scanner coverage: inspect the exact resolved packaged implementation and its actual revision-range, pagination and merge filtering. Full checkout depth only supplies history; it does not prove all relevant commits were scanned, and a mutable-tag source snapshot does not authenticate the future packaged runtime.
@@ -103,12 +103,13 @@ index d6a2493..53944d4 100644
  - Scanner target containment: prove the exact Git repository root before history traversal. A nonrepository directory can discover an ancestor repository through `git -C`; use initialized, wholly owned synthetic repos for error controls and an explicit discovery ceiling for raw nonrepo probes. Preserve any escaped execution as an excluded scope incident, and do not infer no sensitive exposure merely from zero findings. Distinguish reachable graph size from patch-bearing scanner commit counts and verify expected canary commit identities.
 +- A name or id that gains a part read from content (its elements' words) must stay the same wherever the same rules hold: probe a second input where those rules hold other content too. A "same on two pages" test built from two pages of the same content passes while one site ends with two classes of equal settings (look-grouping review 1).
 +- A fix that drops values as stale because something beside them equals a reference (a reset kept whole next to lighter longhands) can't tell a lower-weight loser from a heavier winner: probe it with the site's own heavier values, or a `var()` shorthand the capture keeps as longhands; the fix's own test, built from the lighter rule, passes while a real line is dropped (forms-wpforms review 2).
-+- A fix that raises a class's weight so a site theme can't repaint an element: probe the element's other classes that write the same properties (a text-style class on a Button) under the same theme, and its hover and focus looks via `CSS.forcePseudoState`; a rest-state parity test stays green while the other class still loses (plugin-parity review 6: text-style Buttons kept the theme's font; state probe 0 vs 5,612 differences).
++- A fix that raises a class's weight so a site theme can't repaint an element: probe the element's other classes that write the same properties (a text-style class on a Button) under the same theme, and its hover and focus looks via `CSS.forcePseudoState`; a rest-state parity test stays green while the other class still loses (plugin-parity review 6: text-style Buttons kept the theme's font; state probe 0 vs 5,612 differences). A forced-state probe across two tabs of one headless Chrome reads synchronously after `forcePseudoState` (inject `transition: none !important`): in the tab not in front `requestAnimationFrame` never fires and timers run once a second (clean-values-2 review 1).
++- A rule that drops a declaration because "the reset gives it anyway" (`inherit`, `unset`): probe every tag the browser's own sheet styles for that property (form controls get `font: -webkit-small-control`, `letter-spacing: normal`) and check every drop path shares one styled-tag guard (clean-values-2 R1-1: tidy T2 lacked T1's `STYLED`; a button 52 px narrower).
 +- A fix that writes a measured border-box size (getBoundingClientRect) as a CSS width or height: test it with the site's global `* { box-sizing: border-box }` removed. Form fields default to content-box, and a reset reverting the host's border-box rule leaves them so, making the size too large by padding plus border (importer-parity review 6: +21.98 px). A fix that then writes `box-sizing: border-box` changes both axes: probe a declared size, min or max on the other axis too, which now shrinks by padding plus border (review 7: −26 px).
  
  ## Output Format
  
-@@ -124,3 +149,9 @@ No blocking issues found.
+@@ -124,3 +150,9 @@ No blocking issues found.
  - Tests inspected/run:
  - Residual risk:
  ```
