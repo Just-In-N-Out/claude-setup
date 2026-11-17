@@ -7,8 +7,24 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-17)
 
-- **Current build `2026-11-17.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-17.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-17.3 saved-password (website importer):** the first time WordPress accepts a login, `site:upload`,
+    `site:import` and the importer app's Pictures to WordPress save the Application Password on this computer in
+    `~/.config/figma-to-bricks/site-passwords.json` (0600, the folder 0700, only your own user can read it; one entry
+    per site and user name), said in one line; later runs to that site ask no user name and no password, only the typed
+    `yes`, naming the saved one by its last four; `--new-password` (the app's **Replace**) asks again and saves the
+    typed one once accepted, `--forget-password <site> [--user <name>]` (the app's **Forget**) removes it, sending
+    nothing; a refused saved one is asked for again once; one saved login covers an Upload together run of up to three
+    ticked scans (one login, one yes); with one saved the app's upload request holds no password and the command reads
+    the file itself; the password never goes in an argument, an environment variable, the record, the capture, a
+    paste, a log or a printed line; a link, another user's or an unreadable file is named and left as it is;
+    `--dry-run` reads no saved file; pastes and `media.json` byte for byte as a typed login's. Q1–Q6 ⭐ A (a 0600 file,
+    not the keyring; one entry per site and user; saved after the first accepted login; Forget plus
+    `--forget-password`; a saved user name used without asking; a refused one kept until a typed one is accepted) not
+    yet confirmed. Paste check **3fk** (AC17, live: `npm run importer`, Pictures to WordPress on B-Dry staging, type
+    the password once and `yes`; Log in and check again asks only the `yes`, step 3 shows "saved on this computer
+    (ends in …)"; Forget brings the password box back).
   - **2026-11-17.2 mobile-fit (website importer and Figma plugin):** an importer paste fills a box the old site types
     short of a column it fills on wider screens (B-Dry's home FAQ, `width: 349px` from 767 down: Width 100% in that
     Bricks tab on its class, max/min-width kept, named in the part's notes), unless its only-child chain ends in one
@@ -825,17 +841,25 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   `wpforms/v1/forms`) to put a form's number in the paste and, after the login, its page list and homepage setting (GET
   `wp/v2/pages`, internal-links) to write `pages.json`), only on the site whose address was typed, after reading that site and
   a typed `yes` asked after everything it found is shown (no flag skips it; `site:import` takes only a yes typed after
-  that question). The Application Password is typed at the hidden prompt (`site:import` asks it before the scan and
-  keeps it only in its own memory through it), or in the app's password box, which sends it once in a request body to
-  the app on 127.0.0.1, which writes it once to the upload command's input and holds it only in its own memory, never
-  on disk; it never goes in an argument, a shell or environment variable, an address, a file, the record, the capture,
-  the paste, a log, a printed line, the page's storage or the scan's Chrome. The alttext.ai key is asked once (at the
+  that question). The Application Password is typed once for each site and user name, at the hidden prompt (`site:import` asks it
+  before the scan) or in the app's password box, which sends it once in a request body to the app on 127.0.0.1, which
+  writes it once to the upload command's input. Once WordPress accepts the login the upload command saves it in
+  `~/.config/figma-to-bricks/site-passwords.json` (0600, its folder 0700, one entry per site and user name; Justin,
+  2026-11-16: "saved and doesn't need to be re-entered"; saved-password), the one place a password is kept, and later
+  runs of all three read it from there, for that site and user name only (`tools/lib/site-upload/saved-login.ts`, read
+  by the upload command itself, never sent by the app; shown only by its last four characters; `--new-password` or the
+  app's Replace replaces it, `--forget-password` or the app's Forget removes it, one WordPress refuses is asked for
+  again once). Besides that one file it never goes in an argument, a shell or environment variable, an address,
+  another file, the record, the capture, the paste, a log, a printed line, the page's storage or the scan's Chrome, and
+  a saved password never skips the typed `yes`. The alttext.ai key is asked once (at the
   prompt or in the app's key section, which shows a saved key only as its last four characters) and saved only in
   `~/.config/figma-to-bricks/alttext-key` (0600); it never goes in an argument, a shell or environment variable, an
   address, the record, the capture, the paste, a log, a printed line, a Chrome the tools start, or the page's storage,
   and is sent only to alttext.ai. Only Justin runs any of them against his own site: the commands in his own terminal,
   the app started from his own terminal and used in his own browser. Agents never run them against his site or any
-  live site, never ask for, hold or type his password, and test them only against `test/fixtures/wp-standin.ts`, the
+  live site, never ask for, hold or type his password,
+  never read, copy or print `~/.config/figma-to-bricks/site-passwords.json` or `alttext-key` (names, modes and sizes
+  only), and test them only against `test/fixtures/wp-standin.ts`, the
   alttext.ai stand-in and local fixture sites. Every other tool (capture, the helper, site,
   site:check, site:live, compare, replay) stays read-only; the helper still binds 127.0.0.1 only and never writes to a
   site.
@@ -1222,7 +1246,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   library"): its own command `site:upload` (Q1 A), and one command `site:import` that asks for WordPress first, then
   scans, uploads and writes the pastes (Justin, 2026-11-10, "One command, Mini"; after the scan it stops only for real
   failures and warns of the rest, Justin's Q5 "Only real failures"; site-one-command Q1–Q4 ⭐ not yet confirmed); the
-  password at a hidden prompt each run, never saved (Q2 A); every
+  password typed once for each site and user name, then saved on this computer in a file only he can read (Q2 A
+  reversed by saved-password, Justin, 2026-11-16: "saved and doesn't need to be re-entered"; Q1–Q6 ⭐ not yet
+  confirmed); every
   picture the site's own markup shows, each file once, script-made ones and `data:` left, **except the site's own
   pictures inside a box the capture opened** (every script-made step made by the site's own files; Justin, 2026-11-10,
   "Upload them too"); an address that goes up is never also listed as staying (Q3 A); no file in the
