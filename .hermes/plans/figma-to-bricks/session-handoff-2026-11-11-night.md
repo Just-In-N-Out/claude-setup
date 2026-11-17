@@ -533,3 +533,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 02:59: mobile-fit auditor READY (10/11; P3 test gaps to follow-ups). Verifier (whole test:web) still running.
 - 2026-11-17 03:04: multi-page-scan fixer 1 → 2fb3a40 on 9fbc7a99 (R1-1, R1-2 fixed); delta review 2 dispatched.
 - 2026-11-17 03:11: multi-page-scan delta review 2 MOVE ON; verifier mpsv1 + auditor mpsa1 on 2fb3a40.
+- 2026-11-17 03:50: multi-page-scan auditor READY 17/18; AC17 pin raw-JSON key-order flake to follow-ups. Verifier running.

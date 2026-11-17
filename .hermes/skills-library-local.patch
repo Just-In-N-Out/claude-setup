@@ -259,7 +259,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..8c5a49d 100644
+index f2d882d..705162e 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -380,7 +380,7 @@ index f2d882d..8c5a49d 100644
  
  ## Procedure
  
-@@ -82,15 +164,83 @@ itself prove that the entire test is worthless.
+@@ -82,31 +164,118 @@ itself prove that the entire test is worthless.
     unaffected controls.
     Before registering a mutation, grep every call site of the guarded helper
     and list every other mechanism that yields the same observable, such as a
@@ -468,9 +468,11 @@ index f2d882d..8c5a49d 100644
 +3. **Apply → run → restore, one at a time.** Give mutation runs an exclusive scratch copy; never run a green gate concurrently against that copy (it can read a transient mutant and report false regressions). Derive concrete mutation hunks and paths from the preserved proposal and actual source, and require a unique complete match before any edit; do not reconstruct variable/function names or guard boilerplate from a design summary. Preserve a pre-launch hunk/reader mismatch as setup evidence, not a mutation kill. Save the exact candidate bytes
 +   and hashes, including uncommitted edits, and restore them in a `finally`. Create the save folder before the first mutant and end every restore with `cmp saved file`, exiting non-zero on a difference: a failed save stacked 12 mutants in one file (mobile-fit builder). A `finally` dies with its process group: when the agent's session can end mid-run, run the harness detached (`setsid nohup`) and keep a marker file naming the mutated file while a mutant is applied; the next session checks the marker or `git diff` before testing or committing.
     Preserve the complete launch tool return before collecting payload artifacts, including pre-ledger admission refusals; a missing payload must not erase the actual launch outcome or become permission to replay. Bind each run to its production and test hashes; keep the test oracle
-    unchanged across its green baseline, mutation and restored run. A changed
+-   unchanged across its green baseline, mutation and restored run. A changed
++   unchanged across its green baseline, mutation and restored run. Run a byte-for-byte pin's control twice before its mutants: a JSON file whose key order follows when async work finishes (an upload record) fails the raw compare by itself; grade the mutants on a parsed, key-sorted copy and report the pin's flake (multi-page-scan auditor: control 2 of 3 red on base vs base). A changed
     assertion needs its own contract review and cannot inherit an earlier RED.
-@@ -99,14 +249,33 @@ itself prove that the entire test is worthless.
+    Save the green bytes separately BEFORE the first mutation and wrap each
+    apply→run→restore in try/finally, because a harness exception can otherwise
     leave mutated source behind. After a mid-cycle crash, compare the working
     file with the saved green bytes and restore before launching another probe.
  4. **Require the intended failure for every mutation.** A nonzero exit from
