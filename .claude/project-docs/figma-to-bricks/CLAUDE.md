@@ -7,8 +7,19 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-17)
 
-- **Current build `2026-11-16.9`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-17.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-17.1 multi-page-scan (website importer):** `npm run capture -- <a> [<b> [<c>]] [--folders]` and the
+    importer app's Scan (one address per line) read up to three pages of one site in one run, one after another, the
+    person check pressed once, each page in a folder of its own with its pastes; a failed page is named ("scan it again
+    by itself") and the rest kept; `site:upload … --also <capture> <outDir>` (at most two) and the app's Saved scans
+    "Upload together" ticks (up to three; a 4th refused) upload them with one login, one alttext.ai key question and
+    one typed yes counting each file once, each folder getting its own media.json, forms.json and pastes, each page
+    remade with its own scan's options; `site:import` stays one page; one page byte for byte as before. Q1–Q4 ⭐ A and
+    the builder's B1–B7 not yet confirmed. Paste check **3fj** (AC18, live: `npm run importer` from his terminal, type
+    three B-Dry pages not yet done, Elementor and "This is my client's site" ticked, Scan, pass "I am human" once,
+    Pictures to WordPress → Log in and check → yes once, paste each page into its Bricks page on B-Dry staging; each
+    looks as on bdryswi.com at 1440 and 390, Media shows no picture twice).
   - **2026-11-16.9 tier-spacing (website importer and Figma plugin):** an importer paste writes padding, margin, gaps,
     font size, width, direction, position and every other value a Bricks setting takes in Bricks' Desktop, Tablet,
     Phone sideways and Phone tabs (each tab what its breakpoint draws: 991, 767, 478), a logical side renamed physical
@@ -790,7 +801,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   library like how it is in the plugin", run "From the command line"; then "One command, Mini": WordPress asked first,
   then the scan, the upload and the paste; Justin, 2026-11-13: "a simple UI for the importer … plus a section where we
   can put the API for alt text"). All three run the same code (`tools/lib/site-upload/`): the app starts `site:upload`
-  itself and has no uploader of its own. It only adds media items and fills the empty alt text of an
+  itself and has no uploader of its own (`site:upload … --also <capture> <outDir>` and the app's "Upload together"
+  ticks upload up to three scans of one site in one run: one login, one typed yes; multi-page-scan). It only adds media items and fills the empty alt text of an
   item it uploaded itself whose file still matches (never changes, moves or deletes one; never touches pages, posts or settings; besides the media routes it reads only the site's WPForms form list (GET
   `wpforms/v1/forms`) to put a form's number in the paste and, after the login, its page list and homepage setting (GET
   `wp/v2/pages`, internal-links) to write `pages.json`), only on the site whose address was typed, after reading that site and
