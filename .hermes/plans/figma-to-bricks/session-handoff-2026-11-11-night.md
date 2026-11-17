@@ -501,3 +501,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 19:48: photo-image-all verifier-2 clean on c8f7336 (READY, AC8 live). Waiting auditor-2.
 - 2026-11-16 20:35: session restarted again; resumed photo-image-all auditor-2, tier-spacing review-2, internal-links review-1.
 - 2026-11-16 20:36: Justin accepted GRO phone _widthMin ×4 (AC13 amendment; amend-ac13/justin.json). Next tier-spacing fixer writes AC13's amended line + test; re-issue plan-approved.
+- 2026-11-16 21:00: photo-image-all READY on c8f7336, merged into main c8f73363; finisher (Build .7, 3fd). multi-page-scan planned (18 ACs, auto-go), builder dispatched on c8f7336. saved-password planner (Full). internal-links fixer 1 (R1-1). tier-spacing review 2 clean; fixer 2 (AC13 amended + R2-1).
