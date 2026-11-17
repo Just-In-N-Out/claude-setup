@@ -556,3 +556,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 08:31: clean-values-2 review-2 ASK JUSTIN (R2-1 copy own value tidied) → Justin 'Fix it now'; fixer-2 dispatched; then delta review 3.
 - 2026-11-17 08:42: clean-values-2 fixer-2 → 8792745a (R2-1 fixed, 4 mutants killed). Delta review 3 dispatched.
 - 2026-11-17 08:45: clean-values-2 review-3 MOVE ON at 8792745 (after fixing my justin.json to {words,continue}); rebaser onto main 8ed77094 dispatched before verifier/auditor.
+- 2026-11-17 09:04: clean-values-2 rebased → affaec8 on 8ed77094 (HANDOFF-only conflict; 2 golden remakes; receipt EXIT=0). Delta review 4 of joins dispatched; then verifier+auditor on affaec8.
