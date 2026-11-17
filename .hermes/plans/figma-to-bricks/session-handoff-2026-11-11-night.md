@@ -544,3 +544,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 05:00: saved-password rebased → 81c064d on ab5e375d (code conflicts joined, uploadManyChain newPassword fix, 2 test commits; receipt EXIT=0). Review 2 dispatched; then verifier/auditor; then notes-only rebase onto 01c71fcf.
 - 2026-11-17 05:12: saved-password review 2 MOVE ON (joins clean; R2-1/R2-2 P3). Verifier-2 spv2 + auditor-2 spa2 on 81c064d.
 - 2026-11-17 05:29: saved-password verifier-2 READY 16/17 on 81c064d (AC12 Replace test gap P3, already R-A2). Auditor-2 running.
+- 2026-11-17 05:35: saved-password auditor-2 READY; ac-check on 81c064d run; rebase-2 onto 01c71fcf + HANDOFF wording dispatched.
