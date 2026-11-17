@@ -5,10 +5,23 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-16)
+## Status (2026-11-17)
 
-- **Current build `2026-11-16.8`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-16.9`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-16.9 tier-spacing (website importer and Figma plugin):** an importer paste writes padding, margin, gaps,
+    font size, width, direction, position and every other value a Bricks setting takes in Bricks' Desktop, Tablet,
+    Phone sideways and Phone tabs (each tab what its breakpoint draws: 991, 767, 478), a logical side renamed physical
+    only where the writing direction is proven and the side then is a setting (a formula, a range leaving it out or a
+    negative side keeps the site's name in Custom CSS); where the old site changes between Bricks' breakpoints (1024,
+    921, 1366) one short `html:root .<class>` band on the class holds it, named in a `Breakpoints:` note and in
+    `styles.txt`; the plugin's generated tablet spacing lands on whole 4s (R5, at most 2 px), so GRO's four "Row" rows
+    stay on one line at tablets, their Phone minimum widths and row gaps as Justin approved (AC13 amended twice); every
+    paste draws as before, `ConvertOptions.tiers: false` byte for byte as before; a Figma look class holding a tablet
+    step arrives under a new name on a re-paste. Q1–Q8 ⭐ A and the builder's rulings not yet confirmed. Paste check
+    **3fh** (AC14, live: remake B-Dry's home pastes, paste on B-Dry staging and one converted Figma page on darksalmon;
+    press Desktop → Tablet → Phone sideways → Phone: the spacing looks right at each, a Section's Padding shows in Style
+    → Layout at each tab, a typed value changes the canvas).
   - **2026-11-16.8 internal-links (website importer and Figma plugin):** a Button, Text link, Heading (a whole-link
     Heading carries it in Link to) or linked box whose link goes to one of the new site's pages pastes as Link to →
     **Internal** → that page, so it follows the page when its address changes; the importer reads the site's page list
@@ -609,6 +622,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A site paste's value at a breakpoint is that tab's setting** (tier-spacing, `src/core/site/tiers.ts` `tierPlan`):
+  only a change between Bricks' breakpoints is a bounded `@media (min-width:X) and (max-width:Y)` band printed
+  `html:root .<class>` (never holding 991, 767 or 478), named in the notes; a logical side is renamed physical only
+  where the side then is a setting.
 - **A site paste never leans on a library file's own size** (bw-colours, `src/core/site/natural-size.ts`): a
   background the site drew at its file's own size takes the size the scan recorded (`web.natural`,
   `src/web/read/natural.ts`), since a resized copy, the uploader's 2560 px limit and WordPress' scaling all make
