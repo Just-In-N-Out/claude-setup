@@ -538,3 +538,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 03:55: mobile-fit READY on da42437 (verifier + auditor 10/11). Rebase briefs written for mobile-fit (rebase-2) and saved-password, dispatch after multi-page-scan finisher.
 - 2026-11-17 03:58: Build 2026-11-17.1 (multi-page-scan) ab5e375d pushed; dispatching mobile-fit rebase-2 + saved-password rebase onto it.
 - 2026-11-17 04:07: mobile-fit rebased → 221b150 on ab5e375d (HANDOFF-only conflict; receipt EXIT=0); notes-only delta review 3 dispatched.
+- 2026-11-17 04:09: saved-password verifier READY 16/17 on 7d97aba (pre-rebase); rebase onto ab5e375d running (code conflict → full path after).
