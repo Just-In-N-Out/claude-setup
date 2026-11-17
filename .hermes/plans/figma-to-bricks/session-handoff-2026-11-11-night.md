@@ -566,3 +566,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 12:23: clean-values-2 review-6 MOVE ON at ea82f81. Verifier-3 cvv3 + auditor-3 cva3 dispatched.
 - 2026-11-17 13:47: clean-values-2 verifier-3 READY 17/18 on ea82f81 (0 new web reds; 3 P3 to follow-ups). Waiting auditor-3.
 - 2026-11-17 14:35: clean-values-2 ac-check READY 17/18 on ea82f81; MERGED main ea82f81 (ff, lock); finisher dispatched (Build 2026-11-17.4).
+- 2026-11-17 14:40: clean-values-2 RELEASED Build 2026-11-17.4 (034c5d0d, pushed). Live check 3fm owed. No agents running.

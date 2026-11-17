@@ -7,8 +7,29 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-17)
 
-- **Current build `2026-11-17.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-17.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-17.4 clean-values-2 (website importer and Figma plugin):** a value a Bricks control holds is that control
+    at its tab and state, not Custom CSS: on importer pastes Typography (font style, letter spacing, decoration, one
+    text shadow), Layout (visibility, pointer events, isolation, blend mode, aspect ratio, the grid keys), Transform and
+    its origin, a box shadow's inset, a library picture's position, repeat and attachment, one linear gradient as
+    Background → Gradient, the four transition longhands as one Transition per tab, and the element's own `:hover` and
+    `:focus` looks (colour, background, opacity, cursor, border colour, shadow, transform) as Bricks' state settings; on
+    Figma pastes a tier shape as the tab's Aspect ratio, an overlay's Isolation, a Button's icon Gap, a picture's fit
+    and place, a whole-degree gradient (a drawn shape's too) as Gradient; every length a setting holds is its shortest
+    equal formula (`calc(calc(100vw - 32px) - 0px)` → `calc(100vw - 32px)`, `25.999923px` → `26px`); clicks answered by a
+    control on his five scans 77.7% → 91% (0 of 63,893 readings differ, both Bricks versions), Custom CSS share
+    hydraulics 26% → 23%, GRO 63% → 50%, nothing draws differently; no property is both a setting and Custom CSS or
+    held by two classes of one element, states included (a shared look's own state sits on the look class only); a
+    keyword that says nothing leaves, but a copy's own value stays on the copy and a form control's `inherit` stays; a
+    Figma Button's look stays in its class's Custom CSS (Q1 A, Justin's "Keep as today": with Style empty the Theme
+    Style repaints it); each part's notes and `styles.txt` name the Custom CSS that stays by kind;
+    `ConvertOptions.clean: false` (`asBefore.clean`) byte for byte as before; a `:focus` state key shows only while the
+    site's Bricks pseudo-class list holds `:focus`. Q2–Q8 ⭐ A and the builder's and fixers' rulings not yet confirmed.
+    Paste check **3fm** (AC18, live: `npm run importer` → home scan → Make pastes again → paste on B-Dry staging, and a
+    Figma page converted onto darksalmon; click a Heading, Button, Section and card: Typography, Layout, Border,
+    Background, Transition show the numbers at Desktop, Tablet and Phone; `:hover` shows the Button's hover colour;
+    looks as before at 1440 and 390; Custom CSS holds only the leftovers the notes name).
   - **2026-11-17.3 saved-password (website importer):** the first time WordPress accepts a login, `site:upload`,
     `site:import` and the importer app's Pictures to WordPress save the Application Password on this computer in
     `~/.config/figma-to-bricks/site-passwords.json` (0600, the folder 0700, only your own user can read it; one entry
@@ -663,6 +684,13 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A value with a Bricks control is that control, at its tab and state, with one writer** (clean-values-2,
+  `ConvertOptions.clean`): no property is both a setting and Custom CSS or held by two classes of one element, states
+  included (a shared look's own state, `took(state)` in `class-source.ts`, sits on the look class only;
+  `test/unit/site-clean-one-writer.test.ts`); a copy's own value is never tidied away; a top element's position and an
+  opened box's pointer events stay CSS; a Figma Button's look stays in its class's Custom CSS. With the switch off a
+  paste is the base's byte for byte (`test/fixtures/site-clean-pins.json`, `figma-clean-pins.json`, remade only by
+  their own recorders on the base tree).
 - **A site paste fills a box the old site holds short of its column only through `src/core/site/fit-width.ts`**
   (mobile-fit), on the capture's declarations before any step reads them, never a box whose only-child chain ends in
   one self-sized thing (a page builder types a widget's width on its wrapper); a checker that excuses a filled box
