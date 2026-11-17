@@ -546,3 +546,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 05:29: saved-password verifier-2 READY 16/17 on 81c064d (AC12 Replace test gap P3, already R-A2). Auditor-2 running.
 - 2026-11-17 05:35: saved-password auditor-2 READY; ac-check on 81c064d run; rebase-2 onto 01c71fcf + HANDOFF wording dispatched.
 - 2026-11-17 05:43: saved-password rebase-2 → 8e03e10 on 01c71fcf (HANDOFF-only + notes commit; receipt EXIT=0); notes-only delta review 3 dispatched.
+- 2026-11-17 05:46: saved-password review 3 MOVE ON; merged main 8e03e107 (notes-only rule); finisher dispatched (Build 2026-11-17.3).
