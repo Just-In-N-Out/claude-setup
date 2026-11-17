@@ -561,3 +561,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 10:48: clean-values-2 verifier: 17/18 READY but 2 P2 (F1 two classes hold one state setting on home scan; stale site-cli palette test). Fixer-3 dispatched on clean-values-2-on-main; auditor still running.
 - 2026-11-17 11:09: clean-values-2 fixer-3 → 415585a (F1 state twice fixed via took(state), site-cli test); delta review 5 dispatched. Auditor (old head affaec8) still running.
 - 2026-11-17 11:13: clean-values-2 review-5 MOVE ON at 415585a (no findings). Verifier-2 cvv2 + auditor-2 cva2 dispatched.
+- 2026-11-17 11:45: clean-values-2 auditor (affaec8) NOT ACCEPTED AC10/AC12/AC16 (shape gradient path; styles.txt switch-off). Stopped verifier-2/auditor-2 on 415585a (same bugs). Fixer-4 dispatched.

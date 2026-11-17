@@ -397,3 +397,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | clean-values-2 | code-review-practice | test: a tidy unit case per STYLED form tag asserting font-style/letter-spacing inherit stay (test/unit/site-clean-tidy.test.ts) | offered
 - 2026-11-17 | clean-values-2 | code-review-practice | test: a site-clean-tidy case running every drop rule with copy: true expecting the input back unchanged (npm run check) | offered
 - 2026-11-17 | clean-values-2 | code-review-practice | test: site-clean-one-writer also counts state keys (:hover/:focus/:active) held by two classes of one element, on a look-class + placement-class fixture | offered
+- 2026-11-17 | clean-values-2 | testing | test: unit over the five real files with clean on, count elements whose own #brxe rule holds a single linear-gradient background-image with no _gradient setting; expect 0 | offered
+- 2026-11-17 | clean-values-2 | testing | test: site-cli writePastes with sitePage(..., clean:false) compares styles.txt with a base golden | offered
