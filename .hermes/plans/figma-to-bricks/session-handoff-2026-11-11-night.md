@@ -514,3 +514,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-16 21:58: mobile-fit planned (11 ACs): FAQ is the site's own 349px; paragraphs not reproduced on B-Dry; plugin brainstorm overlap bug. Builder dispatched on 2c570217 for Q1-free parts; Q1 (fill FAQ wider than site) asked.
 - 2026-11-16 22:02: saved-password planned (17 ACs, 0600 file per site+user), auto-go, builder dispatched on 2c570217.
 - 2026-11-16 22:04: tier-spacing rebase-2 → 2abf119 on 2c570217 (HANDOFF only + 3fh line). Delta review 4 + verifier + auditor dispatched side by side.
+- 2026-11-16 22:10: multi-page-scan built (a31be34, base c8f7336, 12 mutants killed). Rebase onto 2c570217 dispatched before review 1 (4 conflicts; findPages into beforeYes).
