@@ -422,3 +422,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-18 | short-class-names | testing | test: blindText maps page-named or prefixed font families by first sight | offered
 - 2026-11-18 | short-class-names | code-review-practice | script for rename jobs: list every test line matching the old naming marker and fail until each is updated or exempted | offered
 - 2026-11-18 | short-class-names | ac-verification | receipt validation refuses an AC line marked '# SKIP' | offered
+- 2026-11-18 | menu-arrow | figma-to-bricks | test: a list-to-Accordion browser test asserts which title children show closed vs open | offered
