@@ -598,3 +598,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-18 01:49: fkb AC12: Justin 'Merge as built (Recommended)' → fixer 10 (amendment + 3 browser pins asBefore wrappers).
 - 2026-11-18 01:51: standin-drift after-merge done: main fbd28935 pushed (no build), CLAUDE.md Status + standing rule written.
 - 2026-11-18 02:03: scn fixer-2 → d75e8b5d (prefixed carried fonts: 7/8,7/14,7/9,8/12 looks shared; app --keep-class-names). Review 3 delta (Opus high) dispatched.
+- 2026-11-18 02:12: fkb auditor NOT ACCEPTED 3/16 (AC8 fixture lacks staying-reason sections; AC11 clause 2 ordinal class names shift with moves on (real bug); AC12 + M34 tier padding). Sent to fixer 10 (running).
