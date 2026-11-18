@@ -596,3 +596,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-18 01:16: media-reuse builder ready ea9e98b5 (AC1–21 pass, AC22 live 3fn). Review 1 (Fable high, Full) dispatched.
 - 2026-11-18 01:47: media-reuse review-1 REVIEW AGAIN (R1-1 P2 AC22 steps). Justin: 'Check what this PC shows', 'Fill it from the old site', 'Don't clear shared alt' (all Recommended). Fixer 1 dispatched (amends plan → fix-1/plan-amended.md; I install after checking). standin-drift ALL ACCEPTED 3/3, merged ff to 8cc1a5af, after-merge finisher running. fkb verifier NOT ACCEPTED AC12 (margin/item kinds deferred) + 3 browser pins (test-only) → asking Justin.
 - 2026-11-18 01:49: fkb AC12: Justin 'Merge as built (Recommended)' → fixer 10 (amendment + 3 browser pins asBefore wrappers).
+- 2026-11-18 01:51: standin-drift after-merge done: main fbd28935 pushed (no build), CLAUDE.md Status + standing rule written.
