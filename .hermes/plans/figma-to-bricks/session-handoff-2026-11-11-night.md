@@ -585,3 +585,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 21:34: fkb review-3 ASK JUSTIN (R3-1, R3-2 P2 only: moved box values land in Custom CSS). Justin asleep: fixer-9 PREPARES the fix on fewer-kept-boxes-fix9 (not recorded as his answer; justin.json waits for his words). If he says follow-up: merge 1cb96456 instead.
 - 2026-11-17 21:47: media-reuse plan done (AC1–AC22, AC22 live 3fn; Q1–Q7 ⭐A; mark = slug f2b-<hash>-image, GET ?slug=). plan-approved installed; builder (Opus xhigh) dispatched on 7cd47756.
 - 2026-11-17 22:08: standin-drift: NOT REAL (fonts: mover ran offline without Google fonts; main better than 7b7501bd in same setup). Checker fix (Mini, AC1–3, Q1–4 ⭐A) builder dispatched on 7cd47756.
+- 2026-11-17 23:12: standin-drift builder ready 8cc1a5af (AC1–3 met, src/ untouched). Review 1 (Fable high) dispatched.
