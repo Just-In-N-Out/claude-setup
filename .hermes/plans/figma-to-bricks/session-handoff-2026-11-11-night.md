@@ -601,3 +601,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-18 02:12: fkb auditor NOT ACCEPTED 3/16 (AC8 fixture lacks staying-reason sections; AC11 clause 2 ordinal class names shift with moves on (real bug); AC12 + M34 tier padding). Sent to fixer 10 (running).
 - 2026-11-18 02:14: scn review-3 MOVE ON at d75e8b5 (P3s). R3-1 breaks the temp-HOME rule (test wrote real ~/.config/.../class-names/site.test.json) → fixer 3 (test+words), then a tiny delta review, then verifier+auditor.
 - 2026-11-18 02:40: media-reuse fixer-1 → 0bd4951c. Justin: Decorative 'Yes, keep Media's words', amendment 'Go' → plan-approved.md re-installed (AC22 reworded, AC23–25). Review 2 (full, Opus high) dispatched.
+- 2026-11-18 02:50: fkb fixer-10 → 9f24b84a (AC11 stable names via a moves-off pass; AC8 band; M34; pins). AC12 amendment installed. Receipt + test:browser still running in fixer's copy. Review 5 delta dispatched.
