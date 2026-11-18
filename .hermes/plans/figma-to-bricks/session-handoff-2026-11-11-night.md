@@ -612,3 +612,10 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-18 05:28: media-reuse verifier + auditor clean; ac-check READY FOR THE USER 24/25 (AC22 live 3fn) on 7ca8e41. Finisher-rebase onto main fbd28935 dispatched.
 - 2026-11-18 05:30: scn auditor: AC1–16 accepted on 4f1e0bf, READY FOR THE USER; but 2 test:web reds this job's (stale: capture-fonts R1-2, importer-app-scan AC3) → fixer 4 tests only. Verifier still running.
 - 2026-11-18 05:38: media-reuse rebased → 4439dca4 (HANDOFF-only conflict; receipt 24/24 EXIT=0; check green). Notes-only rule: rebase review dispatched.
+
+## 2026-11-18 05:57 — computer restarted ~05:50; four agents resumed
+- media-reuse rebase reviewer (a1e5c9b): nothing written yet; resumed.
+- fkb fixer 11 (ae0128e): commits a7665996, f5ae7a2d, 1ec36e26 on fewer-kept-boxes-fix11; receipt cut at AC9; resumed to finish it.
+- scn verifier (a8fb3b3): ac.json written, verdict not clean (capture-fonts R1-2 pin, site-palette.test.ts:94 '__' guard runs on 0 classes, site-fonts-import tests look only for __Family); AC1–AC16 accepted; resumed to finish its report.
+- scn fixer 4 (a596e61): tests-only commit on short-class-names-fix4; resumed with the verifier's two extra test gaps added.
+- earlyoom: Chrome renderers killed 04:35–04:38 (fkv2, scv, sca); agents told.
