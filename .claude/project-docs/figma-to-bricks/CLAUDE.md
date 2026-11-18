@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-18.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-18.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-18.2 phone-paragraph (website importer):** every importer Rich Text of 60+ characters carries the shared
+    class `site-pretty` (`text-wrap: pretty` from 991 px down; rule P, `src/core/site/pretty.ts`), so B-Dry's "This
+    exciting…" paragraph no longer ends on a lone "limitless." on phones (same height); a box in a flex row the site
+    typed a px or % width with `min-width: 0`, holding only words, takes Min. width `min-content` (rule W,
+    `src/core/site/word-floor.ts`, one notes line per part), so "Why [logo] Works" no longer splits "Wh / y" where a
+    device draws a wider font; `ConvertOptions.pretty`/`floor: false` byte for byte as before. Q1–Q5 ⭐ A and builder
+    ruling B1 (Min. width takes `min-content` as a setting) not yet confirmed. Paste check **3fo** (AC5, live: remake
+    the home pastes, paste on B-Dry staging; on a phone the "This exciting" paragraph has no lone last word; at Tablet
+    portrait and phone "Why BDry Works" keeps its words whole).
   - **2026-11-18.1 media-reuse (website importer and Figma plugin):** a picture either tool is about to upload that the
     site's Media already holds (put there for another page, by either tool, from this computer or another) is used
     from there: no second upload, alttext.ai not asked, Media's alt text kept; every upload carries its mark as its
