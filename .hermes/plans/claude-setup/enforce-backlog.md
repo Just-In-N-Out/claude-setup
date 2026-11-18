@@ -413,3 +413,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-18 | fewer-kept-boxes | testing | test: list every asBefore literal in test/browser pins, fail when a Figma-changing asBefore key is missing from an 'as before' pin | offered
 - 2026-11-18 | short-class-names | mutation-testing-discipline | script: the mutant runner refuses to start while a node --test process runs inside the same worktree, and runs on a git archive copy by default | offered
 - 2026-11-18 | fewer-kept-boxes | testing | test: for each ConvertOptions.asBefore key, fail when a test/browser or test/unit file comparing two convert() calls or pinning a Figma conversion sha256 lacks the key (in npm run check) | offered
+- 2026-11-18 | short-class-names | testing | test: unit-gate wrapper runs node --test with HOME an empty temp folder and fails if anything but .cache appears (in npm run check) | offered
