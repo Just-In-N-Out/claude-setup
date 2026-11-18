@@ -619,3 +619,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - scn verifier (a8fb3b3): ac.json written, verdict not clean (capture-fonts R1-2 pin, site-palette.test.ts:94 '__' guard runs on 0 classes, site-fonts-import tests look only for __Family); AC1–AC16 accepted; resumed to finish its report.
 - scn fixer 4 (a596e61): tests-only commit on short-class-names-fix4; resumed with the verifier's two extra test gaps added.
 - earlyoom: Chrome renderers killed 04:35–04:38 (fkv2, scv, sca); agents told.
+- 06:0x media-reuse: rebase review-4 clean (MOVE ON); notes-only rule logged in follow-ups; merged ff-only fbd28935→4439dca4 under lock (released). After-merge finisher dispatched (brief after-merge-media-reuse.md; Build 2026-11-18.1 expected).
