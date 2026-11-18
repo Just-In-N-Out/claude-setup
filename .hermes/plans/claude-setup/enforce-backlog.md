@@ -418,3 +418,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-18 | short-class-names | testing | test: tests-own-home spawns each unit file naming Job( or env: process.env under an empty HOME, fails if anything but .cache is left (npm run check) | offered
 - 2026-11-18 | fewer-kept-boxes | testing | script: the no-network namespace wrapper exits non-zero naming the families when any css2 request is answered other than 200 | offered
 - 2026-11-18 | media-reuse | testing | test: panel.test.ts asserts the Picture descriptions row tag reads Media for a reused picture | offered
+- 2026-11-18 | short-class-names | testing | test: a unit guard requiring every runTool({script: tools/site.ts}) in test/web/importer-app-*.test.ts to carry every flag siteArgs adds | offered
+- 2026-11-18 | short-class-names | testing | test: blindText maps page-named or prefixed font families by first sight | offered
