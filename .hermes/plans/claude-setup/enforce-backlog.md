@@ -417,3 +417,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-18 | fewer-kept-boxes | mutation-testing-discipline | script: mutant harness refuses to start when <file>.orig exists and names its backup <file>.orig.<pid> | offered
 - 2026-11-18 | short-class-names | testing | test: tests-own-home spawns each unit file naming Job( or env: process.env under an empty HOME, fails if anything but .cache is left (npm run check) | offered
 - 2026-11-18 | fewer-kept-boxes | testing | script: the no-network namespace wrapper exits non-zero naming the families when any css2 request is answered other than 200 | offered
+- 2026-11-18 | media-reuse | testing | test: panel.test.ts asserts the Picture descriptions row tag reads Media for a reused picture | offered
