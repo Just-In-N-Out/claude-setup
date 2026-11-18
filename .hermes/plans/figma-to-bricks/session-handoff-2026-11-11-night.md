@@ -576,3 +576,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 18:05: Justin AC9: 'Use Bricks' box (Recommended)' → fkb fixer-8 dispatched (moved value into child's own setting). Then full review of move+fix, verifier+auditor.
 - 2026-11-17 18:08: link-keeps-name ac-check ALL ACCEPTED 6/6; MERGED main 7dcf358d (ff, lock); finisher dispatched (Build 2026-11-17.5).
 - 2026-11-17 18:12: link-keeps-name RELEASED Build 2026-11-17.5 (7cd47756, pushed). No paste check. Running: fkb fixer-8 (base 034c5d0d; needs rebase onto 7cd47756 after).
+- 2026-11-17 19:10: Justin: 'Run short names' -> scn mover onto 7cd47756 from 63648bb0 (branch short-class-names-on-main8; R1-1/R1-2 fixer after).
