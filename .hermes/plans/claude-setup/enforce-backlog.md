@@ -408,3 +408,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | standin-drift | reviewer-common | script: base-archive step names <job>-base-<sha7> and refuses a folder whose file count differs from git ls-tree | offered
 - 2026-11-17 | short-class-names | testing | test: diff git diff --name-only <merge-base> under src/ against the job's later-jobs lists, in npm run check | offered
 - 2026-11-18 | short-class-names | code-review-practice | test: a fixture site serving its own font, two pages, asserting their shared looks have one name, id and settings | offered
+- 2026-11-18 | media-reuse | testing | unit lint: fail a test file asserting a password/key is absent without importing namedSecretForms | offered
+- 2026-11-18 | media-reuse | planning-checks | script: planner pin runner setting every F2B_* env incl. F2B_BASE_TREE, failing on any skipped pin or prototype-only red | offered
