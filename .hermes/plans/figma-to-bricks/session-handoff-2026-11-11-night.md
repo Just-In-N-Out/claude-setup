@@ -636,3 +636,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - phone-paragraph released Build 2026-11-18.2 (72f95492), pushed; 3fo owed.
 - Justin: phone text blocks too close to screen edges (general rule). Small job phone-gutter: planner dispatched. Also told him his home paste files are from 08:57 (not remade): restart app, Make pastes again.
 - phone-gutter plan 13fc77ac (rule G, 5 ACs, AC5 live; Q1–Q6 ⭐ A); builder dispatched.
+- phone-gutter builder 235725b1 (4/4, check green); Justin 'Merge as built' on AC2/AC4 wordings; merged ff 72f95492→235725b1; finisher dispatched (Build 2026-11-18.3, 3fp).
