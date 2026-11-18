@@ -1,0 +1,16 @@
+# Finisher brief: after-merge steps for phone-paragraph (website importer; small job: planner + builder only)
+
+**Role:** after-merge finisher (Opus 5.5, high), in the **main folder** `/home/justin/Documents/FigmaToBricksV2` (not a worktree). The session fast-forwarded local `main` from `81cce19f` to `cfae29328e4c32b2bb28577594a9a86ba42f6121` (`phone-paragraph`; builder's AC receipt 4/4 EXIT=0, `npm run check` green; Justin's small-job rule: no review rounds). Never stop to ask. Never load any live site; no logins; never write to WordPress; never read `~/.config/figma-to-bricks/site-passwords.json` or `alttext-key`; touch nothing under `~/Downloads`. Start no agents; touch no other agent's processes, worktrees or branches, nor the merge lock. Files only with Write/Edit (no heredocs, no `sed -i`); plain `git`, each command alone. Leave the untracked `site-check-out/` alone. Quick: 20 minutes. TMPDIR ~/.cache/ppmf/t1.
+
+**Skills:** load `git-commit-rules`; read the repo `CLAUDE.md` "Finish" step 3.
+
+## Steps
+1. Confirm `git rev-parse HEAD` = `cfae29328e4c32b2bb28577594a9a86ba42f6121`, branch `main`, clean but for `site-check-out/`.
+2. `src/shared/build.ts` is `2026-11-18.1`: set `2026-11-18.2` (or the next free N). `npm run build`.
+3. Same commit (docs and `build.ts` only): `git mv .superpowers/sdd/2026-11-18-phone-paragraph/progress.md docs/plans/2026-11-18-phone-paragraph-ledger.md` plus a closing "Merged" line (build, paste check 3fo); in HANDOFF's phone-paragraph section put the BUILD in its heading as neighbours do, replace any `<… id at merge>` with `3fo` and check 3fo sits once in "End-of-run check list".
+4. Commit `Build <BUILD>: long paragraphs wrap evenly on phones and words never split in narrow boxes (phone-paragraph)` (no author override, no AI or Co-Authored-By lines; `git diff --cached --name-only` without CLAUDE.md). Run `npm run check` under `systemd-run --user --scope -p MemoryMax=9G -p MemorySwapMax=0 --working-directory=<repo> /bin/bash -c 'export PATH="/home/justin/.local/node-v22.23.3/bin:$PATH"; npm run check'`; on a real failure stop before pushing and report. Then `git push` (`main` only).
+5. Repo `CLAUDE.md` (not in git): the build line `**Current build `<BUILD>`**` and one compact line at the top of the feature list from HANDOFF's section (rule P: Rich Text of 60+ characters carries `site-pretty`, `text-wrap: pretty` from 991 px down; rule W: a box in a row with a typed width holding only words gets Min. width `min-content`, so a word never splits when a device draws a wider font; one notes line; `ConvertOptions.pretty`/`floor: false` byte for byte as before; Q1–Q5 ⭐ A and builder ruling B1 not yet confirmed), paste check **3fo** (AC5, live: remake the home pastes, paste on B-Dry staging; on a phone the "This exciting" paragraph has no lone last word; at Tablet portrait and phone "Why BDry Works" keeps its words whole). If writing is refused, leave the lines in `~/.hermes/plans/figma-to-bricks/phone-paragraph-claude-md-pending.md`.
+6. Verify `git log --oneline -2 main`, author `Justin <issajustin04@gmail.com>`, `origin/main` = `main`.
+
+## Report (as text)
+Build SHA and BUILD; push; check; CLAUDE.md written or pending; `skill_lessons[{skill, lesson, evidence, enforce}]` (empty is normal), ending with: `MAIN SESSION: check and save these skill_lessons now.`
