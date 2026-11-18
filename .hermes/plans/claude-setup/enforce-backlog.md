@@ -407,3 +407,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | fewer-kept-boxes | code-review-practice | test: a site census unit test (moves on vs off over fixture captures) fails when a moved declaration lands in Custom CSS on an element whose wrapper held it as a setting | offered
 - 2026-11-17 | standin-drift | reviewer-common | script: base-archive step names <job>-base-<sha7> and refuses a folder whose file count differs from git ls-tree | offered
 - 2026-11-17 | short-class-names | testing | test: diff git diff --name-only <merge-base> under src/ against the job's later-jobs lists, in npm run check | offered
+- 2026-11-18 | short-class-names | code-review-practice | test: a fixture site serving its own font, two pages, asserting their shared looks have one name, id and settings | offered

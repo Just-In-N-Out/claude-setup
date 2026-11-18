@@ -590,3 +590,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 23:44: fkb fixer-9 → 82a8a4a2 (R3-1 boxed Rich Text, R3-2 0 fill, R3-3; census 0 on six scans; Blocks unchanged). Delta review 4 dispatched pending Justin's fix/follow-up answer.
 - 2026-11-17 23:55: scn fixer-1 → e9e28928 (R1-1 key by file bytes, R1-2 look classes named, marker/slide named; app flags follow-up). Review 2 (full, Opus high) dispatched.
 - 2026-11-17 23:56: fkb review-4 MOVE ON at 82a8a4a. Verifier + auditor dispatched on 82a8a4a (merge HELD until Justin answers fix/follow-up on review-3).
+- 2026-11-18 00:23: scn review-2 ASK JUSTIN (2 P2, no fewer than review-1): R2-1 importer app passes no class-names list; R2-2 carried font named after the page splits looks. Justin asleep: fixer-2 PREPARES the fix (justin.json waits for his words).
