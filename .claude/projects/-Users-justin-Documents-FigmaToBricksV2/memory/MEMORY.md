@@ -39,3 +39,4 @@
 - [Plan amendments need his go](plan-amendments-need-go.md) — a fixer's AC amendment is re-issued into plan-approved.md only after Justin approves it (guard refused it 2026-11-15)
 - [Page list format](page-list-format.md) — asked for pages to scan: ALL pages, home first, one table # | Page | full address (2026-11-16)
 - [Mobile looks](mobile-looks.md) — 'spacing for mobile' = how pastes LOOK on tablet/phone in Bricks, not just editable tabs; job mobile-fit (2026-11-16)
+- [Bricks Sign all bug](bricks-sign-all-bug.md) — pasted Code element shows another's content (reviews slider gone, stray ×): Bricks 2.4.2 Sign all; fix + sign from Settings only (2026-11-18)
