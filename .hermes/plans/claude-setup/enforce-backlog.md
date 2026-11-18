@@ -421,3 +421,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-18 | short-class-names | testing | test: a unit guard requiring every runTool({script: tools/site.ts}) in test/web/importer-app-*.test.ts to carry every flag siteArgs adds | offered
 - 2026-11-18 | short-class-names | testing | test: blindText maps page-named or prefixed font families by first sight | offered
 - 2026-11-18 | short-class-names | code-review-practice | script for rename jobs: list every test line matching the old naming marker and fail until each is updated or exempted | offered
+- 2026-11-18 | short-class-names | ac-verification | receipt validation refuses an AC line marked '# SKIP' | offered
