@@ -623,3 +623,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 06:1x scn verifier done: AC1–AC16 accepted, verdict not clean (stale tests: capture-fonts, importer-app-scan; vacuous: site-palette:94, site-fonts-import x2) — all in fixer 4's scope; test:web partial (54 files cut by restart, web-not-run.txt). Lesson saved to code-review-practice (rename marker); enforce offered.
 - media-reuse merged: Build 2026-11-18.1 = 81cce19f pushed; CLAUDE.md written. 3fn owed.
 - scn fixer 4 done: head db3da27b (tests only), receipt 16/16 EXIT=0, check green. Lessons folded (code-review-practice count assert; testing-pitfalls story-pins in receipts). Review 5 delta dispatched.
+- scn review 5 clean (MOVE ON at db3da27). Verifier-2 + auditor-2 dispatched side by side on db3da27 (briefs *-2.md, folders verifier-2/ auditor-2/). Then rebase onto main 81cce19f + receipt (notes-only rule if HANDOFF-only).
