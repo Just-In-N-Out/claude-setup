@@ -7,8 +7,15 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-18.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-18.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-18.3 phone-gutter (website importer):** on phones (767 px and down) the box holding words gets Phone-tab
+    Padding by what its words lack to keep 16 px from each screen edge, never Custom CSS (rule G,
+    `src/core/site/gutter.ts`); a column with a picture or painted box to the edge, a non-px padding, right to left or
+    a range across 767 stays as the site's, named; drawers and pop-ups not read; `ConvertOptions.gutter: false` byte
+    for byte as before. Q1–Q6 ⭐ A and the builder's rulings B1–B4 not yet confirmed; AC2/AC4 test wordings Justin's
+    "Merge as built". Paste check **3fp** (AC5, live: remake the home pastes, paste the body on B-Dry staging; on a
+    phone every block of words keeps at least 16 px from both edges).
   - **2026-11-18.2 phone-paragraph (website importer):** every importer Rich Text of 60+ characters carries the shared
     class `site-pretty` (`text-wrap: pretty` from 991 px down; rule P, `src/core/site/pretty.ts`), so B-Dry's "This
     exciting…" paragraph no longer ends on a lone "limitless." on phones (same height); a box in a flex row the site
@@ -731,6 +738,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   opened box's pointer events stay CSS; a Figma Button's look stays in its class's Custom CSS. With the switch off a
   paste is the base's byte for byte (`test/fixtures/site-clean-pins.json`, `figma-clean-pins.json`, remade only by
   their own recorders on the base tree).
+- **A site paste's words keep the phone gutter only through `src/core/site/gutter.ts`** (phone-gutter): the room is
+  the holder's Padding in the Phone tabs, never Custom CSS, never on a box holding a picture or painted box to the edge.
 - **A site paste fills a box the old site holds short of its column only through `src/core/site/fit-width.ts`**
   (mobile-fit), on the capture's declarations before any step reads them, never a box whose only-child chain ends in
   one self-sized thing (a page builder types a widget's width on its wrapper); a checker that excuses a filled box
