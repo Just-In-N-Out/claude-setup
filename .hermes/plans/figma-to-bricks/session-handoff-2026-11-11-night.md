@@ -611,3 +611,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-18 04:48: fkb verifier-2 NOT ACCEPTED AC11 (cited test blind to clause 2; --elementor without markers still renames, site-elementor-cli red head-only). Auditor-2 also refuses AC11. Fixer 11 dispatched.
 - 2026-11-18 05:28: media-reuse verifier + auditor clean; ac-check READY FOR THE USER 24/25 (AC22 live 3fn) on 7ca8e41. Finisher-rebase onto main fbd28935 dispatched.
 - 2026-11-18 05:30: scn auditor: AC1–16 accepted on 4f1e0bf, READY FOR THE USER; but 2 test:web reds this job's (stale: capture-fonts R1-2, importer-app-scan AC3) → fixer 4 tests only. Verifier still running.
+- 2026-11-18 05:38: media-reuse rebased → 4439dca4 (HANDOFF-only conflict; receipt 24/24 EXIT=0; check green). Notes-only rule: rebase review dispatched.
