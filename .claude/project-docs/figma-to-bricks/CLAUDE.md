@@ -275,6 +275,13 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
     mapping every non-loopback name to nothing) and every Node fetch through `offlineFetch`, so test runs never reach
     the internet; `test/unit/site-tests-offline.test.ts` refuses a drawing file that names a plain launcher;
     `site:live`'s own Chrome is the named exception.
+  - **standin-drift (tests and site:check only, no build):** main didn't get worse at drawing B-Dry's stand-in: since
+    2026-11-15 agents draw offline, where Google Fonts can't be reached, so its Roboto words fell to a fallback font
+    (both trees alike: 0 of 114 rows worse, main within 0.11 px with Google's fonts from a local mirror); `site:check`
+    now prints `Fonts not loaded here: …` before OK/FAIL and writes `fontsNotLoaded` in `report.json` when a face it
+    asked the font source for didn't load (a weight the source lacks too, Justin's "No still warn about it"), the exit
+    code unchanged; `F2B_FONT_SOURCE` names the source asked instead of Google; HANDOFF names the local-mirror recipe;
+    nothing under `src/` changed, every paste byte for byte as before. Q1–Q4 ⭐ A not yet confirmed. No paste check.
   - **2026-11-15.1 shared-palette (both tools):** a colour Figma doesn't name is one palette colour `--color-<hex>`
     (id from the hex) from the plugin and the importer alike, so one colour is one id and one variable across pages and
     both tools; given the site's own palette exports (Style Manager → Colors → Export, or the `palette.json` imported
@@ -760,6 +767,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **Test runs never reach the internet** (site-tests-offline): a test that draws a site capture or paste launches
   Chrome through `test/web/lib/offline-chrome.ts` `launchOffline` and fetches through `offlineFetch`; the guard test
   fails on a plain `launchChrome` in a drawing file.
+- **A `site:check` run that prints `Fonts not loaded here:` (report.json `fontsNotLoaded`) drew those words with a
+  fallback font: never compare its rows with the capture or with another run (standin-drift); offline, give it
+  Google's fonts from a local mirror.**
 - **A size change made after Figma must reach the layout plan as a planned width.** Shares and row shapes read
   drawn widths unless the earlier pass records growth (`IRNode.giveWay`, `grownAlong`, `plannedWidth`, `rowGapAt`).
   Counting grown words only in `least()` can make laptops wrap rows tablets keep (label-floor, GRO's hero).
