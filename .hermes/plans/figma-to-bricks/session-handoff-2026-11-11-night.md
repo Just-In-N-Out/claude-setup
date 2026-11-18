@@ -591,3 +591,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 23:55: scn fixer-1 → e9e28928 (R1-1 key by file bytes, R1-2 look classes named, marker/slide named; app flags follow-up). Review 2 (full, Opus high) dispatched.
 - 2026-11-17 23:56: fkb review-4 MOVE ON at 82a8a4a. Verifier + auditor dispatched on 82a8a4a (merge HELD until Justin answers fix/follow-up on review-3).
 - 2026-11-18 00:23: scn review-2 ASK JUSTIN (2 P2, no fewer than review-1): R2-1 importer app passes no class-names list; R2-2 carried font named after the page splits looks. Justin asleep: fixer-2 PREPARES the fix (justin.json waits for his words).
+- 2026-11-18 00:59: Justin back. fkb: 'Merge with the fix (Recommended)' → review-3/justin.json continue. scn: 'Fix both (Recommended)' → review-2/justin.json continue. Font check: 'I didn't get this' → re-explaining.
