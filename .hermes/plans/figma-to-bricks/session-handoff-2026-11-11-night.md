@@ -631,3 +631,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - Justin: header in Header template, Services arrow in ☰ drawer doesn't turn and sits wrong. Small job menu-arrow: planner dispatched (brief menu-arrow-planner.md). Asked him to check the live page.
 - menu-arrow plan 54e367a2 (5 ACs, AC5 live; Q1–Q4 ⭐ A), plan-approved installed; builder dispatched (brief menu-arrow-builder.md). Lessons folded into testing-pitfalls (heredoc refusal; accordion title children test).
 - phone-paragraph plan 44ab3d3f (rule P site-pretty text-wrap pretty ≤991, rule W min-content floor; 5 ACs, AC5 live 3fo); builder dispatched. menu-arrow builder told: Justin says the arrow works when the header is pasted in the page (check page vs #brx-header first).
+- menu-arrow PARKED by Justin ('arrow looks good, animation doesn't work, figure out later; low on tokens'). Plan bb53c683 on menu-arrow-plan, evidence/menu-arrow/. Waiting only on phone-paragraph builder.
