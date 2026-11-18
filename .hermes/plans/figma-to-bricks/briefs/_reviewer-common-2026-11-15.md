@@ -27,7 +27,7 @@ Machine: Node `/home/justin/.local/node-v22.23.3/bin` first on PATH; `TMPDIR` ab
 share the machine; above ~40 read first); memory scopes `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 …` outside the
 namespace (B-Dry files 8G). An archive tree has no `node_modules/.bin` (a `tsc` wrapper first on PATH) and no repo (set `GIT_DIR`,
 `F2B_SERVICES_FILE`); check a base run's file list lacks the job's new test files. Use `tail -n 3`. Foreground Bash moves to the background
-after about 180 s: wait in bounded steps of 160 s or less from a script file. SIGTERM/143/137/"Killed": check
+after about 180 s: wait in bounded steps of 160 s or less from a script file (never end your turn to wait on a background run: that reads as your final report). SIGTERM/143/137/"Killed": check
 `journalctl -u earlyoom --since "-30 min" -o short-iso | grep -E 'sending SIG[A-Z]* to process'` first. Write summaries as .txt/.json.
 
 Report (as text; only review.json is written): findings one line each (id, P0–P3, file:line, scenario, measured) or "none"; `verdict`;

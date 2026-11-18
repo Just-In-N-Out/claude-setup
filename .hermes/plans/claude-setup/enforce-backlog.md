@@ -402,3 +402,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | link-keeps-name | testing | script: before a pin gate, list each pin file's process.env.F2B_* reads and fail if any file reports skipped or a named-only skip reason in its TAP | offered
 - 2026-11-17 | fewer-kept-boxes | testing | script: receipt-runlist builder dry-runs each name pattern and fails a row matching 0 tests | offered
 - 2026-11-17 | fewer-kept-boxes | testing | test: multi-page-scan AC17 compares the upload record with sorted keys | offered
+- 2026-11-17 | fewer-kept-boxes | testing | test: a unit test asserts a goldens recorder's convert options equal its pin tests' siteParts options | offered
