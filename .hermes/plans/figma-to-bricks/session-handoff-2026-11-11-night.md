@@ -626,3 +626,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - scn review 5 clean (MOVE ON at db3da27). Verifier-2 + auditor-2 dispatched side by side on db3da27 (briefs *-2.md, folders verifier-2/ auditor-2/). Then rebase onto main 81cce19f + receipt (notes-only rule if HANDOFF-only).
 - fkb fixer 11 done: head 1ec36e26, receipts AC1–AC8 + from-ac9 EXIT=0. Lesson folded (testing-pitfalls load flakes line). Review 6 delta dispatched.
 - fkb review 6 clean (MOVE ON at 1ec36e26; R6-1/R6-2 P3 to follow-ups). Verifier-3 + auditor-3 dispatched side by side (briefs *-3.md). Lesson from reviewer 6 skipped (narrow: guard-removal mutant; covered by measure-before-finding practice).
+- 07:09 Justin: 'Pause everything'. Stopped scn verifier-2 (a138420f), scn auditor-2 (af47ab93), fkb verifier-3 (a1cef5e3), fkb auditor-3 (a7620f42) and all their test processes (0 node/chrome left). Resume each with SendMessage when he says.
