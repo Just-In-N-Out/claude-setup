@@ -78,3 +78,5 @@ The `bdry-source/tree-*.json` captures recorded lazy Elementor images unloaded a
 ADLaM Display files point at `growithgro1.wpcomstaging.com` (HTTP 403), so its headings, buttons and menu show the system sans-serif
 (Arial/Helvetica); Roboto 400/500/700 come from the accessibility-onetap plugin's files. A paste with real Google Roboto therefore
 looks "different" from the official page (Justin noticed it). site-fonts-match ⭐ A copies what visitors see (with a note).
+
+**After a paste on B-Dry staging (proven 2026-11-18):** save, close Bricks' "Sign all" window WITHOUT pressing it (Bricks 2.4.2 wrote the drawer's × SVG and its class into the footer's Trustindex reviews Code element), then Bricks → Settings → Custom code → Regenerate code signatures once; staging has no LiteSpeed (only Object Cache): check in a private window with `?f2b=<n>`. Justin confirmed the reviews slider works this way. Related: [[site-and-team]].
