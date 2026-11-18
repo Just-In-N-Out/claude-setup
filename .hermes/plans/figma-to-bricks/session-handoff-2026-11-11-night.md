@@ -608,3 +608,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-18 03:56: media-reuse fixer-2 → 7ca8e41a (24/24 ACs). AC24 amendment installed. Review 3 delta dispatched.
 - 2026-11-18 04:06: media-reuse review-3 MOVE ON at 7ca8e41 (fixed my review-2/justin.json format: continue true). Verifier + auditor dispatched.
 - 2026-11-18 04:08: scn review-4 MOVE ON at 4f1e0bf (section-paste test stale, P3 R4-1/R4-2). Verifier + auditor dispatched.
+- 2026-11-18 04:48: fkb verifier-2 NOT ACCEPTED AC11 (cited test blind to clause 2; --elementor without markers still renames, site-elementor-cli red head-only). Auditor-2 also refuses AC11. Fixer 11 dispatched.
