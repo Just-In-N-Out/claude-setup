@@ -581,3 +581,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 20:44: Justin new job media-reuse (Full): a picture already in Media from another page is reused (no upload, no new alt), both tools. Planner (Fable high) dispatched, base 7cd47756.
 - 2026-11-17 20:45: Justin asleep ('keep it running'): run straight through (auto-go, ⭐ answers, recommended options); merge when ac-check accepts; report in the morning.
 - 2026-11-17 21:10: fkb mover 9 → 1cb96456 on 7cd47756 (conflicts with lkn resolved, all fkb+lkn ACs green). Review 3 (full, last round, Opus high) dispatched.
+- 2026-11-17 21:29: scn mover 8 → a06bb029 on 7cd47756. scn fixer-1 (R1-1, R1-2, AC15 rows, page-named classes, app flags) dispatched. Mover's side note: main draws B-Dry stand-in worse than 7b7501bd (header link 10.5-11.3 px; Elementor worst 907 vs 64) -> investigation job standin-drift (planner Fable high).
