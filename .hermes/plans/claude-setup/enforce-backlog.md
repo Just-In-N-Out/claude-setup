@@ -411,3 +411,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-18 | media-reuse | testing | unit lint: fail a test file asserting a password/key is absent without importing namedSecretForms | offered
 - 2026-11-18 | media-reuse | planning-checks | script: planner pin runner setting every F2B_* env incl. F2B_BASE_TREE, failing on any skipped pin or prototype-only red | offered
 - 2026-11-18 | fewer-kept-boxes | testing | test: list every asBefore literal in test/browser pins, fail when a Figma-changing asBefore key is missing from an 'as before' pin | offered
+- 2026-11-18 | short-class-names | mutation-testing-discipline | script: the mutant runner refuses to start while a node --test process runs inside the same worktree, and runs on a git archive copy by default | offered
