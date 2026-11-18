@@ -260,7 +260,7 @@ index df130e1..ea9d1f8 100644
  ## Core Workflow
  
 diff --git a/skills/mutation-testing-discipline/SKILL.md b/skills/mutation-testing-discipline/SKILL.md
-index f2d882d..840ce49 100644
+index f2d882d..ece4f9a 100644
 --- a/skills/mutation-testing-discipline/SKILL.md
 +++ b/skills/mutation-testing-discipline/SKILL.md
 @@ -22,7 +22,7 @@ A green suite is evidence for its observed cases, not proof it detects a specifi
@@ -847,7 +847,7 @@ index f2d882d..840ce49 100644
    do not extend execution to make the selected mutation list green.
 +- **Two-tree comparisons (site-check on head vs base):** a load timeout on one side shows as a difference and looks like a kill; assert each side drew its full width count before grading the mutant (about-form M4).
 +- **Renaming/regrouping mutants** survive when the changed element sits in another section from the names it could shift: put both in one section, two alike, so a shared and a split class give different answers (photo-box-image fixer 1, F2).
-+- **Grade node TAP kills by each failing test's YAML `code:`**, never a crash pattern holding `ERR_`: node writes every assertion failure as `code: 'ERR_ASSERTION'`, so `/TypeError|ERR_/` calls real kills crashes (link-keeps-name builder: M1 graded CRASH, then 26/26 killed by assertion).
++- **Grade node TAP kills by each failing test's YAML `code:`**, never a crash pattern holding `ERR_`: node writes every assertion failure as `code: 'ERR_ASSERTION'`, so `/TypeError|ERR_/` calls real kills crashes (link-keeps-name builder: M1 graded CRASH, then 26/26 killed by assertion). In a browser test, a step that waits (`until(...)`) on the very effect a mutant removes kills it by the wait's time limit, not an assertion: wait for the action's own completion signal, then assert the effect (media-reuse fixer 2).
 diff --git a/skills/mutation-testing-discipline/references/blind-test-patterns.md b/skills/mutation-testing-discipline/references/blind-test-patterns.md
 index a536548..d4c804f 100644
 --- a/skills/mutation-testing-discipline/references/blind-test-patterns.md
