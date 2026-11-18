@@ -420,3 +420,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-18 | media-reuse | testing | test: panel.test.ts asserts the Picture descriptions row tag reads Media for a reused picture | offered
 - 2026-11-18 | short-class-names | testing | test: a unit guard requiring every runTool({script: tools/site.ts}) in test/web/importer-app-*.test.ts to carry every flag siteArgs adds | offered
 - 2026-11-18 | short-class-names | testing | test: blindText maps page-named or prefixed font families by first sight | offered
+- 2026-11-18 | short-class-names | code-review-practice | script for rename jobs: list every test line matching the old naming marker and fail until each is updated or exempted | offered

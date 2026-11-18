@@ -5,10 +5,26 @@ follow-ups) and `docs/plans/<date>-<name>.md` with its `-ledger.md`. This file k
 standing rules. **Don't add build narratives here:** a feature's details go in HANDOFF and its ledger. Only the build
 line, one line per new feature, a new standing rule, a user decision or a gotcha every agent needs comes here.
 
-## Status (2026-11-17)
+## Status (2026-11-18)
 
-- **Current build `2026-11-17.5`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-18.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-18.1 media-reuse (website importer and Figma plugin):** a picture either tool is about to upload that the
+    site's Media already holds (put there for another page, by either tool, from this computer or another) is used
+    from there: no second upload, alttext.ai not asked, Media's alt text kept; every upload carries its mark as its
+    media item's slug (`f2b-<the file's SHA-256, 32 hex>[-<how>]-image`; the command line's AVIF by its source file's,
+    the panel's mark for "Photos as: AVIF"), found by `GET wp/v2/media?slug=` (50 marks a read, the typed site only,
+    before the typed yes); the panel's notes count "found in your media library" (a read that fails is one notes
+    line), its Picture descriptions row is tagged Media; `site:upload`/`site:import`/the app list "N pictures already
+    in Media, used as is" with Media's alt before the yes, and fill an empty Media alt with the old site's words after
+    it, only on an item the tool put there whose file still matches; words a person typed still replace Media's, AI
+    words go only where Media has none; Decorative empties Media's alt only for a picture this conversion uploaded; a
+    run that reuses nothing byte for byte as before; uploads from before this build carry no mark (sent once more).
+    Q1–Q7 ⭐ A not yet confirmed (Q3/Q4 narrowed by Justin's "Fill it from the old site" and "Yes, clear new ones").
+    Paste check **3fn** (AC22, live: `npm run importer`, a B-Dry page sharing the logo and badges with one imported
+    with this build → Pictures to WordPress → Log in and check: on the computer that imported the first page: the
+    question counts the shared pictures 'already in your library' and Media holds them once; from the Mac: the
+    'already in Media, used as is' list; in Figma another file's row tagged Media).
   - **2026-11-17.5 link-keeps-name (website importer):** when the importer folds a wrapper box into the one element it
     holds (rule N, the Elementor fold), a link, button, heading, role named by its words or picture with an alt that has
     a name of its own at every width it shows in keeps it: the wrapper's `aria-label` lands only where the element has
@@ -876,6 +892,12 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   2026-11-10, "Block sockets"): it adds the socket gate (`src/web/socket-gate.ts`) the press guard shuts while the
   capture presses a page's menu and pop-up buttons. `launchChrome` alone starts a Chrome with no gate: its sockets
   during a press are only named as not stopped.
+- **A picture is looked for in the site's Media by its mark before it goes up** (media-reuse, `src/ui/media-mark.ts`,
+  both tools): never matched by name, by a same-named file or by WordPress's `-2` copy; a picture already in Media
+  keeps Media's alt text (a person's typed words still replace it), and alttext.ai is asked only where Media has none.
+  Decorative empties Media's alt text only for a picture this conversion uploaded; one already in Media keeps its words
+  (a per-page decorative can't be pasted: Bricks prints an empty Custom alt text as none); the importer fills an empty
+  Media alt with the old site's words after the yes, only on an item it put there whose file still matches.
 - **One uploader writes to WordPress, reached by two commands and the importer app: `npm run site:upload`, `npm run
   site:import` and `npm run importer`** (Justin, 2026-11-10: a scanned page's pictures "upload to my Wordpress media
   library like how it is in the plugin", run "From the command line"; then "One command, Mini": WordPress asked first,
@@ -883,7 +905,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   can put the API for alt text"). All three run the same code (`tools/lib/site-upload/`): the app starts `site:upload`
   itself and has no uploader of its own (`site:upload … --also <capture> <outDir>` and the app's "Upload together"
   ticks upload up to three scans of one site in one run: one login, one typed yes; multi-page-scan). It only adds media items and fills the empty alt text of an
-  item it uploaded itself whose file still matches (never changes, moves or deletes one; never touches pages, posts or settings; besides the media routes it reads only the site's WPForms form list (GET
+  item it uploaded itself (in its record, or carrying its mark) whose file still matches (never changes, moves or deletes one; never touches pages, posts or settings; besides the media routes (the media list
+  read by mark included, GET `wp/v2/media?slug=`; media-reuse) it reads only the site's WPForms form list (GET
   `wpforms/v1/forms`) to put a form's number in the paste and, after the login, its page list and homepage setting (GET
   `wp/v2/pages`, internal-links) to write `pages.json`), only on the site whose address was typed, after reading that site and
   a typed `yes` asked after everything it found is shown (no flag skips it; `site:import` takes only a yes typed after
@@ -1203,6 +1226,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - Bricks shows the media library's alt (verified on the live site), so the paste carries no `altText`.
 - **AI picture descriptions with alttext.ai** (user, 2026-10-14):
   - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → "AI picture descriptions with alttext.ai".
+  - The AI's words replace whatever WordPress had only for new uploads and empty Media items; a picture found in Media
+    by its mark keeps Media's words (media-reuse Q2/Q3 ⭐ A, not yet confirmed).
 - **Figma colours in Bricks** (user and their manager, 2026-10-14):
   - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → "Figma colours in Bricks".
 - **Forms** (user, 2026-10-16: "make the contact form and the Yes/No interactive"): a drawn form becomes Bricks' Form.
@@ -1299,7 +1324,7 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   pictures inside a box the capture opened** (every script-made step made by the site's own files; Justin, 2026-11-10,
   "Upload them too"); an address that goes up is never also listed as staying (Q3 A); no file in the
   capture: its old address (Q4 A); SVG only with `--svg` (Q5 A); files as served, never re-encoded (Q6 A; reversed by media-avif-alt, Justin, 2026-11-11: AVIF for photos and PNGs); the old
-  site's first alt with words in Media, an alt in WordPress never changed by a re-run (Q7 A); no alttext.ai (Q8 A; reversed by media-avif-alt, Justin, 2026-11-11: AI alt text for pictures with none); a
+  site's first alt with words in Media, an alt in WordPress never changed by a re-run (Q7 A); no alttext.ai (Q8 A; reversed by media-avif-alt, Justin, 2026-11-11: AI alt text for pictures with none; a picture found in Media by its mark keeps Media's alt (media-reuse)); a
   record per computer at `~/.config/figma-to-bricks/site-uploads.json` (Q9 A); https, the site read first, a typed yes
   (Q10 A); a stopped run keeps what went up, the next sends the rest (Q11 A).
 - **Lists a visitor searches and filters** (user, 2026-10-19): "In the page" (the plugin pastes every row and a small
