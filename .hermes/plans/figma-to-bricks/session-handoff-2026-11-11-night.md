@@ -578,3 +578,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 18:12: link-keeps-name RELEASED Build 2026-11-17.5 (7cd47756, pushed). No paste check. Running: fkb fixer-8 (base 034c5d0d; needs rebase onto 7cd47756 after).
 - 2026-11-17 19:10: Justin: 'Run short names' -> scn mover onto 7cd47756 from 63648bb0 (branch short-class-names-on-main8; R1-1/R1-2 fixer after).
 - 2026-11-17 19:44: fkb fixer-8 → adeb4bf1 (AC9 green, lift to Typography). fkb mover 9 onto 7cd47756 dispatched.
+- 2026-11-17 20:44: Justin new job media-reuse (Full): a picture already in Media from another page is reused (no upload, no new alt), both tools. Planner (Fable high) dispatched, base 7cd47756.
