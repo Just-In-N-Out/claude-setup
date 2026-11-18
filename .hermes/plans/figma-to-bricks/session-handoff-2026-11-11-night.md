@@ -634,3 +634,5 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - menu-arrow PARKED by Justin ('arrow looks good, animation doesn't work, figure out later; low on tokens'). Plan bb53c683 on menu-arrow-plan, evidence/menu-arrow/. Waiting only on phone-paragraph builder.
 - phone-paragraph builder done (cfae2932, 4/4, check green); merged ff-only 81cce19f→cfae2932; finisher dispatched (Build 2026-11-18.2, 3fo). Brief briefly held wrong text (Write refused, template draft) — corrected and agent told.
 - phone-paragraph released Build 2026-11-18.2 (72f95492), pushed; 3fo owed.
+- Justin: phone text blocks too close to screen edges (general rule). Small job phone-gutter: planner dispatched. Also told him his home paste files are from 08:57 (not remade): restart app, Make pastes again.
+- phone-gutter plan 13fc77ac (rule G, 5 ACs, AC5 live; Q1–Q6 ⭐ A); builder dispatched.
