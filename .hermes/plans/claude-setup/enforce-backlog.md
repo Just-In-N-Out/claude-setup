@@ -405,3 +405,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-17 | fewer-kept-boxes | testing | test: a unit test asserts a goldens recorder's convert options equal its pin tests' siteParts options | offered
 - 2026-11-17 | short-class-names | testing | test: no site paste class under the prefix ends in a 4-letter random segment, over every fixture | offered
 - 2026-11-17 | fewer-kept-boxes | code-review-practice | test: a site census unit test (moves on vs off over fixture captures) fails when a moved declaration lands in Custom CSS on an element whose wrapper held it as a setting | offered
+- 2026-11-17 | standin-drift | reviewer-common | script: base-archive step names <job>-base-<sha7> and refuses a folder whose file count differs from git ls-tree | offered

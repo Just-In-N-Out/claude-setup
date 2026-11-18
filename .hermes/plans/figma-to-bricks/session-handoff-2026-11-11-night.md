@@ -586,3 +586,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-17 21:47: media-reuse plan done (AC1–AC22, AC22 live 3fn; Q1–Q7 ⭐A; mark = slug f2b-<hash>-image, GET ?slug=). plan-approved installed; builder (Opus xhigh) dispatched on 7cd47756.
 - 2026-11-17 22:08: standin-drift: NOT REAL (fonts: mover ran offline without Google fonts; main better than 7b7501bd in same setup). Checker fix (Mini, AC1–3, Q1–4 ⭐A) builder dispatched on 7cd47756.
 - 2026-11-17 23:12: standin-drift builder ready 8cc1a5af (AC1–3 met, src/ untouched). Review 1 (Fable high) dispatched.
+- 2026-11-17 23:24: standin-drift review-1 REVIEW AGAIN: R1-1 P2 (a weight Google's family lacks named as not loaded, though drawn by the family) needs an AC1 amendment -> Justin's go (morning). Parked.
