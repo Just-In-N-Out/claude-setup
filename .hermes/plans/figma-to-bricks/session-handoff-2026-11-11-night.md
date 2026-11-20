@@ -640,3 +640,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - phone-gutter released Build 2026-11-18.3 (a9c6bfad), pushed; 3fp owed.
 - 2026-11-20: reviews-show planner dispatched (Opus high, worktree, brief briefs/reviews-show-planner.md); builder next on auto-go
 - 2026-11-20: reviews-show plan 7173125a (auto-go), plan-approved installed; builder dispatched (Opus high); lesson saved to figma-to-bricks/references/pitfalls.md
+- 2026-11-20: reviews-show builder 8253672b; ff-merged main a9c6bfad→8253672b (lock held); finisher dispatched (Build 2026-11-20.1, 3fq). Lessons: WSL PATH → testing-pitfalls; shownIn folded into pitfalls
