@@ -7,8 +7,17 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-20.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-20.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-20.3 tablet-photo (website importer):** a flex row of words + one library-photo box whose photo shows
+    under a third of its picture at every measured width 768–991 stacks in Bricks' Tablet portrait tab (rule T,
+    `src/core/site/tablet-photo.ts`: Direction column, the photo full width at its picture's Aspect ratio, cover), so
+    B-Dry's Basement Waterproofing "Installation Process" and "Materials Used by BDry®" cards show the whole photo
+    under the words; the logo card stays; desktop and phones unchanged; the rows' shared class moves to each row's own
+    class; `site:check`/`site:live` name a stacked row "stacked at Tablet on purpose"; `ConvertOptions.tablet: false`
+    byte for byte as before. Q1–Q5 ⭐ A and builder rulings B1–B3 not yet confirmed. Paste check **3fs** (AC5, live:
+    remake the Basement Waterproofing pastes, paste the body on B-Dry staging; at Tablet portrait both cards show their
+    words full width with the whole photo under them, Desktop unchanged).
   - **2026-11-20.2 photo-repeat (website importer):** a box whose only content is its own library photo, drawn at a
     size of its own and repeating, is a Bricks Image when one tile placed as the site places it covers the box at every
     measured width within 0.5 px (`photo-place.ts` `oneTile`, `photo-box.ts` `rangeWhy`): B-Dry's Basement
@@ -758,6 +767,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   their own recorders on the base tree).
 - **A site paste's words keep the phone gutter only through `src/core/site/gutter.ts`** (phone-gutter): the room is
   the holder's Padding in the Phone tabs, never Custom CSS, never on a box holding a picture or painted box to the edge.
+- **A site paste changes a row's shape at tablets only through `src/core/site/tablet-photo.ts`** (tablet-photo, rule
+  T): Tablet-tab settings, never on a row whose photo isn't cut; a checker names a stacked row instead of comparing it.
 - **A site paste fills a box the old site holds short of its column only through `src/core/site/fit-width.ts`**
   (mobile-fit), on the capture's declarations before any step reads them, never a box whose only-child chain ends in
   one self-sized thing (a page builder types a widget's width on its wrapper); a checker that excuses a filled box
