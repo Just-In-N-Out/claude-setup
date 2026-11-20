@@ -7,8 +7,16 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-20.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-20.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-20.2 photo-repeat (website importer):** a box whose only content is its own library photo, drawn at a
+    size of its own and repeating, is a Bricks Image when one tile placed as the site places it covers the box at every
+    measured width within 0.5 px (`photo-place.ts` `oneTile`, `photo-box.ts` `rangeWhy`): B-Dry's Basement
+    Waterproofing "Photo"s (Media 301, 302) are Images with Media's alt; a repeat that shows, `space`/`round`, auto/em
+    sizes, a painted border or no measured box stay Blocks with today's notes words; every other paste byte for byte
+    as before. Q1–Q3 ⭐ A and builder ruling B1 (all-or-nothing across ranges) not yet confirmed. Paste check **3fr**
+    (AC5, live: remake the Basement Waterproofing pastes, paste the body on B-Dry staging; both "Photo"s are Images
+    with Media's alt, looks as before at 1440 and 991).
   - **2026-11-20.1 reviews-show (website importer):** a live third-party widget the importer pastes as a Code element
     (B-Dry's Trustindex reviews) now has Bricks' Hide in builder on, followed by one Block "`<host>` widget: editor copy
     (not on the live page)" with Hide on frontend holding the scan's still copy, so the widget shows in the Bricks

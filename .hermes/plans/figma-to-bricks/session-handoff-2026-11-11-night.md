@@ -645,3 +645,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-20: Justin rescanned basement-waterproofing (09:53, Build 20.1, uploaded 10:23); two 'Photo' Blocks kept as background (notes: 'its photo repeats at a size of its own'); photo-repeat planner dispatched
 - 2026-11-20: photo-repeat plan 124fc896 (auto-go, plan-approved installed); builder dispatched (Opus high), paste check 3fr
 - 2026-11-20: photo-repeat builder 9ebee81d; ff-merged main b9a44aa6→9ebee81d (lock held); finisher dispatched (Build 2026-11-20.2, 3fr)
+- 2026-11-20: Build 2026-11-20.2 65ae979b pushed (photo-repeat, 3fr owed); lock released
