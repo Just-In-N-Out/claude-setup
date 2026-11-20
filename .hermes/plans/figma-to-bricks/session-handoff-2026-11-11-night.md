@@ -647,3 +647,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-20: photo-repeat builder 9ebee81d; ff-merged main b9a44aa6→9ebee81d (lock held); finisher dispatched (Build 2026-11-20.2, 3fr)
 - 2026-11-20: Build 2026-11-20.2 65ae979b pushed (photo-repeat, 3fr owed); lock released
 - 2026-11-20: Justin's paste shows the two Photos as Images (photo-repeat works); tablet-photo planner dispatched (cards' photos cropped at 990)
+- 2026-11-20: tablet-photo plan 2024da72 (auto-go; not a copy bug: old site crops the same), builder dispatched, 3fs
