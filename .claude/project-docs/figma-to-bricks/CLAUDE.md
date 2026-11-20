@@ -7,8 +7,15 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-18.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-20.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-20.1 reviews-show (website importer):** a live third-party widget the importer pastes as a Code element
+    (B-Dry's Trustindex reviews) now has Bricks' Hide in builder on, followed by one Block "`<host>` widget: editor copy
+    (not on the live page)" with Hide on frontend holding the scan's still copy, so the widget shows in the Bricks
+    editor and only the live widget on the live page (`src/core/site/editor-copy.ts`); B-Dry's footer +404 elements,
+    ~136 KB; `ConvertOptions.editorCopy: false` byte for byte as before. Q1–Q4 ⭐ A and builder rulings B1–B5 not yet
+    confirmed. Paste check **3fq** (AC5, live: remake the home pastes, paste the footer on B-Dry staging, Regenerate
+    code signatures once; the reviews show in the editor, the live page shows only the sliding widget).
   - **2026-11-18.3 phone-gutter (website importer):** on phones (767 px and down) the box holding words gets Phone-tab
     Padding by what its words lack to keep 16 px from each screen edge, never Custom CSS (rule G,
     `src/core/site/gutter.ts`); a column with a picture or painted box to the edge, a non-px padding, right to left or
@@ -731,6 +738,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A site paste shows something only in the Bricks editor or only live through Bricks' own `_hideElementFrontend` /
+  `_hideElementBuilder`** (reviews-show, `src/core/site/editor-copy.ts`); a tool that compares a paste with the live
+  page reads it through `test/browser/render.ts` `shownIn`.
 - **A value with a Bricks control is that control, at its tab and state, with one writer** (clean-values-2,
   `ConvertOptions.clean`): no property is both a setting and Custom CSS or held by two classes of one element, states
   included (a shared look's own state, `took(state)` in `class-source.ts`, sits on the look class only;
