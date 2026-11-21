@@ -45,7 +45,7 @@ When Justin decides something mid-build that changes an approved AC, a planner a
   # one AC at a time: repeat these four lines for each AC
   git -C <scratch>/base-<base7> reset -q --hard && git -C <scratch>/base-<base7> clean -fdq
   git -C <scratch>/base-<base7> checkout <head sha> -- <this AC's test files>
-  ln -sfn <worktree>/node_modules <scratch>/base-<base7>/node_modules    # JS repos only; -sfn because clean -fd keeps the link when node_modules is gitignored
+  ln -sfn <worktree>/node_modules <scratch>/base-<base7>/node_modules    # JS repos only; -sfn because clean -fd keeps the link when node_modules is gitignored. Next.js 16/Turbopack refuses a linked node_modules ("points out of the filesystem root"), so there use `rm -rf` + `cp -a` instead (personal-website planner, 2026-11-21)
   ( set -o pipefail; cd <scratch>/base-<base7> && echo "HEAD=$(git rev-parse HEAD)"; <command>; echo "EXIT=$?" ) > <folder>/ac<n>-base-<base7>.log 2>&1
   git -C <worktree> worktree remove --force <scratch>/base-<base7>
   ```
