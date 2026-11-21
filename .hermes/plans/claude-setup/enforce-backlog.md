@@ -424,3 +424,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-18 | short-class-names | ac-verification | receipt validation refuses an AC line marked '# SKIP' | offered
 - 2026-11-18 | menu-arrow | figma-to-bricks | test: a list-to-Accordion browser test asserts which title children show closed vs open | offered
 - 2026-11-21 | tennis-booking | implementation-planning | lint in plan validation: flag `node --test` followed by an argument ending in `/` (Node 22 treats it as a file, MODULE_NOT_FOUND) | offered
+- 2026-11-21 | tennis-booking | code-review-practice | lint: ESLint no-useless-escape over lib/, public/, test/, e2e/ in the project's npm run check | offered
