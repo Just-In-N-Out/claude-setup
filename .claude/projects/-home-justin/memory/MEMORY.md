@@ -10,3 +10,4 @@
 - [Bash grep is ugrep](bash-grep-is-ugrep.md) — grep is ugrep, find is bfs (relative -newermt dates fail silently); use /usr/bin/grep, /usr/bin/find
 - [jq regex is quadratic](jq-regex-quadratic.md) — scan/splits/gsub O(n²) on big strings; --arg caps at 128 KB, use --rawfile
 - [Desktop disk fills C:](desktop-disk-fills-c.md) — 2026-11-13 C: full; worktrees/job caches/go-build grow; Linux deletes need vhdx compact to free C:
+- [Career profiles](career-profiles.md) — Leorna SWE intern + Gro web infra dev, Aug–Dec 2026; resume docs lead with built work + impact metrics
