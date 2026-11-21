@@ -1,18 +1,41 @@
 # tennis-booking: a small site where she books the next game and gets it by email
 
-Plan written 2026-11-21 10:49 EST by the planner. Plan only: nothing is built, no repo exists yet.
+Plan written 2026-11-21 10:49 EST by the planner. Amended 2026-11-21 by the planner (revise mode) for Justin's answer Q1 = C, no domain. Plan only: nothing is built, no repo exists yet.
 New repo (the builder creates it): `/home/justin/tennis-booking`. Personal identity, not Leorna.
 Evidence folder: `~/.hermes/plans/tennis-booking/evidence/tennis-booking/`.
 
-## Questions for Justin (the plan below assumes every recommended answer)
+## Amendments (2026-11-21, for Q1 = C: no domain)
 
-**Q1. The sender address. This one decides whether she can get the email at all.**
+In one line: the site now emails **you** (the Resend account's own address) with her address and the booking in it, and you forward it to her. Everything else is as approved.
+
+1. **Questions:** the heading and Q1 are marked answered (C); the note under Q1 is rewritten.
+2. **Playback:** one paragraph added, "As answered (Q1 = C)".
+3. **Acceptance criteria:** five changed, ids kept, all still proposed.
+   - Changed AC2: the confirmation says the invite will follow, and never that an email was sent to her. Test name unchanged.
+   - Changed AC5: `to` is `OWNER_EMAIL` alone, no `cc` or `bcc`, `reply_to` is her address, both bodies name her address. Test renamed to `AC5 a valid booking sends one email to the owner naming her address`.
+   - Changed AC12: Resend's public test sender `onboarding@resend.dev` is allowed in tracked files (it is `EMAIL_FROM`'s value in `.env.example`). The five variable names are unchanged. Test name unchanged.
+   - Changed AC13 (live): the email lands in your inbox and reaches her address when forwarded.
+   - Changed AC14 (live): the calendar file is opened from the forwarded email.
+   - Unchanged: AC1, AC3, AC4, AC6, AC7, AC8, AC9, AC10, AC11.
+4. **Approach:** the tree's `lib/email.js` line; in "The endpoint", the Resend call and the "server-made text" paragraph; new paragraph "A domain later"; in "The page", the confirmation sentence.
+5. **The words:** the email label, the Confirmation row and the Email body row (a desk note with her address); one line added under the table.
+6. **What you do yourself:** steps 2, 4 and 5 rewritten (no DNS step); step 6 added (forward each booking).
+7. **Tasks:** 2, 4, 5, 10 and 13 each gained a clause.
+8. **Tests and gates:** the last bullet names the forward.
+9. **Choices made:** the `cc` bullet is replaced; "One mode, not two" added.
+10. **Risks:** the first two bullets are replaced by four; the leaked-link and "her address" bullets are reworded.
+11. **Docs & records:** the README bullet and the last bullet.
+
+
+## Questions for Justin (all answered 2026-11-21: every recommended answer, except Q1 = C; the plan below is written for those answers)
+
+**Q1. The sender address. This one decides whether she can get the email at all.** Answered: **C**.
 Checked in Resend's docs today: the test sender `onboarding@resend.dev` only delivers to the address the Resend account was made with. Any other recipient gets a 403 ("You can only send testing emails to your own email address"). To mail her, Resend needs a domain you own, verified with DNS records. A `*.vercel.app` address can't be verified (you don't control its DNS).
 - A. I own a domain: verify it in Resend **(recommended)**
 - B. I don't: buy a cheap one (about $10 a year), verify it
-- C. No domain: emails go only to me and I forward them
+- C. No domain: emails go only to me and I forward them **(chosen)**
 
-With C the site still works, but she never gets an email from it directly, AC13 can't pass as written, and the plan needs a small amendment (the email goes to you, with her address in it).
+With C the site still works, but she never gets an email from it directly. The plan below is amended for that: the email goes to you with her address in it, you forward it, and the two live checks follow that path.
 
 **Q2. Framework**
 - A. Static page plus one Vercel function, no framework **(recommended)**
@@ -62,24 +85,26 @@ By the Mini rules this is not a Mini job: it is a new project of about 20 files 
 
 A small website for the friend you play tennis with. She picks a day and a time for the next game, types her email, and gets the booked game by email. Choosing should be a little funny: dry, understated lines, nothing loud or cheesy. Hosting on Vercel, email through Resend. Deploying and the Resend account are your steps.
 
+**As answered (Q1 = C):** with no domain the site can't email her directly. It emails you, with her address and the booking in it, and you forward it to her. The page tells her the invite will follow; it never says an email has reached her.
+
 ## Acceptance criteria (all proposed: none were given; "go" approves them)
 
 Each AC has one test, named whole on its line. `e2e/` tests run in a real browser against the local server with Resend faked; `test/` tests call the endpoint's handler directly with Resend faked. No test sends a real email.
 
 - AC1 (proposed): Given the page opened with a valid invite link, when she picks a day and then a time, then the summary line shows that day and time, and at most one aside from the copy file is shown, in a polite live region. Test: `AC1 choosing a day and a time shows the summary and one aside` in `e2e/booking.spec.js`.
-- AC2 (proposed): Given a day, a time and a valid email, when she presses "Book it", then the button is disabled while sending, exactly one request reaches `/api/book` even on a double click, and the confirmation shows the day, the time and her email, with focus on its heading. Test: `AC2 booking shows the confirmation and sends one request` in `e2e/booking.spec.js`.
+- AC2 (proposed): Given a day, a time and a valid email, when she presses "Book it", then the button is disabled while sending, exactly one request reaches `/api/book` even on a double click, and the confirmation shows the day, the time, her email and the copy file's "the invite will follow" line (it never says an email was sent to her), with focus on its heading. Test: `AC2 booking shows the confirmation and sends one request` in `e2e/booking.spec.js`.
 - AC3 (proposed): Given the send fails, when she presses "Book it", then a plain error message shows, her day, time and email are still filled in, and pressing again after the fault clears books it. Test: `AC3 a failed send keeps her choices and a retry works` in `e2e/booking.spec.js`.
 - AC4 (proposed): Given the page opened without a key in the link, then it shows the invitation-only notice, shows no booking form, and makes no request to `/api/book`. Test: `AC4 without the invite key the page shows the notice and no form` in `e2e/booking.spec.js`.
-- AC5 (proposed): Given a valid request with the right key, then the endpoint answers 200 `{ok:true}` and makes exactly one Resend request: `from` is `EMAIL_FROM`, `to` is her address alone, `cc` and `reply_to` are `OWNER_EMAIL`, the subject and both bodies carry the day and time, the Bearer key is `RESEND_API_KEY`, and the `Idempotency-Key` is the same for the same email, day and time and differs when any of the three differs. Test: `AC5 a valid booking sends one email to her with the owner copied` in `test/api.test.js`.
+- AC5 (proposed): Given a valid request with the right key, then the endpoint answers 200 `{ok:true}` and makes exactly one Resend request: `from` is `EMAIL_FROM`, `to` is `OWNER_EMAIL` alone, there is no `cc` and no `bcc`, `reply_to` is her address, the subject carries the day and time, both bodies carry the day, the time and her address, the Bearer key is `RESEND_API_KEY`, and the `Idempotency-Key` is the same for the same email, day and time and differs when any of the three differs. Test: `AC5 a valid booking sends one email to the owner naming her address` in `test/api.test.js`.
 - AC6 (proposed): The email carries one attachment `tennis.ics` whose event starts at the chosen day and time in the configured timezone, written in UTC, and ends one game length later; this holds on a summer date and a winter date in a timezone with daylight saving, and lines end in CRLF. Test: `AC6 the calendar file has the right start and end in UTC` in `test/api.test.js`.
 - AC7 (proposed): Every invalid request is refused with its 4xx status and stable error code, and no Resend request is made: a non-POST method (405), a non-JSON content type (415), a body over 2 KB (413), broken JSON, a missing, extra or non-string field, a malformed email (each listed shape), a date that is not a real day, a day before today, a day past the 14-day window, a time not in the slot list, and a slot today that has already passed (400 each). Test: `AC7 every invalid request is refused and nothing is sent` in `test/api.test.js`.
 - AC8 (proposed): Given a wrong key or an empty key, then the answer is 403 `bad_key`; given the server's `BOOKING_KEY` is unset or shorter than 16 characters, then every request gets 500 `not_configured`; in all four cases no Resend request is made. Test: `AC8 a wrong key or an unset server key sends nothing` in `test/api.test.js`.
 - AC9 (proposed): Every way the send can fail (Resend answers 403, 429 or 500, the network call throws, the call passes its 8-second limit) returns 502 `send_failed`, and neither the response nor anything logged holds the API key, the Resend error text or her address. Test: `AC9 every send failure returns send_failed without leaking` in `test/api.test.js`.
 - AC10 (proposed): Within one running instance, the sixth accepted booking inside ten minutes gets 429 `rate_limited` with a `Retry-After` header and no Resend request, and a booking after the ten minutes pass is accepted again. Test: `AC10 the sixth booking inside ten minutes is refused` in `test/api.test.js`.
 - AC11 (proposed): At a 375-pixel-wide screen the page has no sideways scroll, the whole booking can be done with the keyboard alone, the response carries the security headers from `vercel.json` with no CSP error in the console, and an axe scan of the form and of the confirmation finds no serious or critical issue. Test: `AC11 keyboard-only booking at phone width passes axe` in `e2e/booking.spec.js`.
-- AC12 (proposed): No tracked file and no file served from `public/` holds a Resend-shaped key or an email address other than an `example.com` placeholder; `.env.example` names exactly `RESEND_API_KEY`, `EMAIL_FROM`, `OWNER_EMAIL`, `BOOKING_KEY`, `COURT_LOCATION` with placeholder values; `.gitignore` ignores `.env` files. Test: `AC12 no key or address is in tracked or served files` in `test/repo.test.js`.
-- AC13 (proposed) (live): On the deployed Vercel site, a booking made through the invite link, to an address that is not the Resend account's own, arrives in that inbox with you copied. Check: you book once with a second address of yours (or hers) and both inboxes get it; look in spam too.
-- AC14 (proposed) (live): The attached calendar file opens on her phone or in Gmail and adds the game at the right local time and length. Check: open the attachment from the AC13 email and compare the calendar entry with the booking.
+- AC12 (proposed): No tracked file and no file served from `public/` holds a Resend-shaped key or an email address other than an `example.com` placeholder or Resend's public test sender `onboarding@resend.dev`; `.env.example` names exactly `RESEND_API_KEY`, `EMAIL_FROM`, `OWNER_EMAIL`, `BOOKING_KEY`, `COURT_LOCATION` with placeholder values (`EMAIL_FROM` is the test sender); `.gitignore` ignores `.env` files. Test: `AC12 no key or address is in tracked or served files` in `test/repo.test.js`.
+- AC13 (proposed) (live): On the deployed Vercel site, a booking made through the invite link with an address that is not the Resend account's own arrives in the Resend account's inbox (yours), names that address, the day and the time, and carries `tennis.ics`; forwarded from there, it reaches that address with the calendar file still attached. Check: you book once with a second address of yours (or hers), find the email in your inbox (look in spam too), see that Reply addresses the second address, then forward it and see it arrive there with the attachment.
+- AC14 (proposed) (live): The calendar file from the forwarded email opens on her phone or in Gmail and adds the game at the right local time and length. Check: open the attachment from the forwarded AC13 email and compare the calendar entry with the booking.
 
 ## Approach
 
@@ -96,7 +121,7 @@ One static page and one server function. No framework, no build step, no databas
   api/book.js            the Vercel function: wires real env + fetch into the handler
   lib/handler.js         request -> response, every check in order
   lib/validate.js        body shape, email, day and time rules
-  lib/email.js           subject, text and HTML bodies (values escaped)
+  lib/email.js           subject, text and HTML bodies (values escaped), and who the email goes to
   lib/ics.js             the calendar file
   lib/resend.js          the one call to Resend
   lib/throttle.js        the per-instance send limit
@@ -146,15 +171,17 @@ Checks, in this order:
 | Fewer than 5 sends in the last 10 minutes in this instance | 429 `rate_limited`, `Retry-After` |
 | Resend answers 2xx within 8 seconds | 502 `send_failed` |
 
-The Resend call (`lib/resend.js`): `POST https://api.resend.com/emails`, `Authorization: Bearer <RESEND_API_KEY>`, `Idempotency-Key: booking-<first 32 hex of SHA-256(email|date|time)>` (Resend keeps keys 24 hours, so the same booking sent twice is one email), body `{ from, to: [email], cc: [OWNER_EMAIL], reply_to: OWNER_EMAIL, subject, text, html, attachments: [{ filename: "tennis.ics", content: <base64> }] }`. The builder confirms the exact spelling of `reply_to` and the attachment's content-type field in Resend's API reference before writing the test (today's fetch of that page lost those two names). On failure it logs the status and Resend's error `name` only: never the key, the error text or her address.
+The Resend call (`lib/resend.js`): `POST https://api.resend.com/emails`, `Authorization: Bearer <RESEND_API_KEY>`, `Idempotency-Key: booking-<first 32 hex of SHA-256(email|date|time)>` (Resend keeps keys 24 hours, so the same booking sent twice is one email), body `{ from, to: [OWNER_EMAIL], reply_to: <her address>, subject, text, html, attachments: [{ filename: "tennis.ics", content: <base64> }] }`, with no `cc` and no `bcc`. `from` is whatever `EMAIL_FROM` holds; with no domain that is Resend's test sender, `Court Desk <onboarding@resend.dev>`, which delivers only to the Resend account's own address, so `OWNER_EMAIL` must be that address. `recipientsFor(herEmail, ownerEmail)` in `lib/email.js` is the one place that decides `to` and `reply_to`. The builder confirms the exact spelling of `reply_to` and the attachment's content-type field in Resend's API reference before writing the test (two fetches of that page today lost those names; `filename`, `content` as Base64, `cc`, `bcc` and the 24-hour `Idempotency-Key` were confirmed). On failure it logs the status and Resend's error `name` only: never the key, the error text or her address.
 
-The email holds only server-made text: the day and time come from the validated values, the place from `COURT_LOCATION`. There is no free-text note field, so the site can't be used to send someone else's words.
+The email holds only server-made text: the day and time come from the validated values, the place from `COURT_LOCATION`, and her address is the validated one (escaped in the HTML body). There is no free-text note field, so the site can't be used to send someone else's words.
+
+**A domain later (not built now).** If you verify a domain in Resend one day, the site can email her directly. That is a small job of its own, not just a setting: `EMAIL_FROM` changes to an address on the domain (env var only), `recipientsFor` returns `{ to: [her], cc: [owner], reply_to: owner }` instead of `{ to: [owner], reply_to: her }`, the Confirmation line and the desk note in the copy file change, and AC5 and AC13 go back to the direct wording. About ten lines of code plus the tests. There is no switch for it today: a second mode would need its own setting, tests and words for something that may never happen.
 
 The calendar file (`lib/ics.js`): `VERSION:2.0`, `METHOD:PUBLISH`, one `VEVENT` with a stable `UID` (hash of the booking), `DTSTAMP`, `DTSTART` and `DTEND` in UTC (`…Z`), `SUMMARY:Tennis`, `LOCATION` when set (commas, semicolons, backslashes and line breaks escaped), CRLF line ends, lines folded at 75 bytes. The local-to-UTC step is `zonedToUtc(date, time, timezone)` in `public/shared/rules.js`, done with `Intl.DateTimeFormat` (no date library).
 
 ### The page
 
-One screen, phone first (she will open it from a message). A real `<form>`: a "Day" group of 14 radio buttons, a "Time" group of slot radio buttons, an email field with a visible label, one button. Below the choices, a summary line and at most one aside, in an `aria-live="polite"` region. On success the form is replaced by the confirmation, focus moves to its heading, and "Book another" brings the form back with the email kept. Errors are shown next to the button in plain words and announced. The key is read from the link's fragment (`https://<site>/#k=<key>`): a fragment is never sent to the server when the page loads, so it stays out of Vercel's request logs; the page sends it only in the booking request's body. With no key the page shows the invitation-only notice and no form. A `<noscript>` line says the page needs JavaScript.
+One screen, phone first (she will open it from a message). A real `<form>`: a "Day" group of 14 radio buttons, a "Time" group of slot radio buttons, an email field with a visible label, one button. Below the choices, a summary line and at most one aside, in an `aria-live="polite"` region. On success the form is replaced by the confirmation (which says the invite will follow, not that it has been sent to her), focus moves to its heading, and "Book another" brings the form back with the email kept. Errors are shown next to the button in plain words and announced. The key is read from the link's fragment (`https://<site>/#k=<key>`): a fragment is never sent to the server when the page loads, so it stays out of Vercel's request logs; the page sends it only in the booking request's body. With no key the page shows the invitation-only notice and no form. A `<noscript>` line says the page needs JavaScript.
 
 Look: clean and quiet. Chalk-white background, deep court green for text and the button, optic yellow only as a fill behind dark text for the chosen day and time (never yellow text on white), thin court-line rules as dividers, system fonts (the CSP allows nothing from other sites). The chosen state is also marked by border weight and a tick, not colour alone. Targets are at least 44 px. One short transition, off under reduced motion. Light theme only.
 
@@ -168,7 +195,7 @@ Rules: at most one aside on screen; many choices get no aside at all; error mess
 | Title | Book the next match |
 | Under the title | Pick a day and a time. The rest is paperwork. |
 | Group labels | Day / Time |
-| Email label | Where should the schedule go? |
+| Email label | Where should the invite go? |
 | Email hint | Only used to send this booking. |
 | Summary, nothing chosen | Nothing chosen yet. The court is patient. |
 | Summary, chosen | Sat, Nov 28 at 10:00 AM. |
@@ -181,7 +208,7 @@ Rules: at most one aside on screen; many choices get no aside at all; error mess
 | Aside: 5:00 to 6:59 | After work. A reasonable way to end a day. |
 | Aside: 7:00 or later | Under the lights. They forgive a lot. |
 | Button / while sending | Book it / Sending… |
-| Confirmation | Booked. / Sat, Nov 28 at 10:00 AM. The schedule is on its way to (her email). / It's in writing now. / Book another |
+| Confirmation | Booked. / Sat, Nov 28 at 10:00 AM. / The invite will follow at (her email). It is sent by hand, so allow a little time. / It's in writing now. / Book another |
 | Footer | To change a booking, reply to the email. |
 | Error: nothing chosen | Pick a day and a time first. |
 | Error: email | That email doesn't look right. Check it and try again. |
@@ -190,41 +217,44 @@ Rules: at most one aside on screen; many choices get no aside at all; error mess
 | Error: too many | Too many bookings in a row. Give it a few minutes. |
 | No key or wrong key | This court is invitation-only. Ask for the link. |
 | Email subject | Tennis: Sat, Nov 28 at 10:00 AM |
-| Email body | It's official. / When: Saturday, November 28 at 10:00 AM (90 minutes) / Where: (the place, when set) / The calendar file is attached, so forgetting is off the table. / To change it, reply to this email. |
+| Email body | It's official. / When: Saturday, November 28 at 10:00 AM (90 minutes) / Where: (the place, when set) / The calendar file is attached, so forgetting is off the table. / To change it, reply to this email. / Desk note: booked by (her email). Forward this to that address and the calendar file goes with it. |
 
 Once a time is chosen its aside replaces the day's aside.
+
+The email is written to read well forwarded as it is: the desk note sits last, and "reply to this email" works both ways (your Reply on the original goes to her, her Reply on the forward comes to you).
 
 ## What you do yourself
 
 1. **Before the build, once, in the Ubuntu window** (the test browser on this PC can't start: see "Other things found"):
    `sudo apt-get update && sudo apt-get install -y libnss3 libnspr4 libasound2t64`
-2. **Resend:** make the account, add your domain under Domains, add the DNS records it shows at your domain's provider, wait for "Verified", then make an API key with sending access only.
+2. **Resend:** make the account with the address you want bookings to land in. That address becomes `OWNER_EMAIL`: the test sender delivers to it and to no other. Add no domain (so there is no DNS step). Make an API key with sending access only.
 3. **The invite key**, in the Ubuntu window: `openssl rand -hex 16`. Keep the output.
 4. **Vercel:** either say "push" so the repo goes to a private GitHub repo and import it in Vercel (preset "Other", no build command), or install the CLI (`npm i -g vercel`, `vercel login`, then `vercel --prod` in the folder). Set these for Production:
    - `RESEND_API_KEY`: the key from step 2
-   - `EMAIL_FROM`: for example `Court Desk <court@yourdomain>` (must be on the verified domain)
-   - `OWNER_EMAIL`: your address (you are copied, and her replies come to you)
+   - `EMAIL_FROM`: `Court Desk <onboarding@resend.dev>` (Resend's test sender; no other sender works without a domain)
+   - `OWNER_EMAIL`: the exact address your Resend account was made with (with any other address every booking fails with "The email didn't go out")
    - `BOOKING_KEY`: the output of step 3
    - `COURT_LOCATION`: optional, the place shown in the email
-5. **The two live checks** (AC13, AC14): open `https://<your-site>.vercel.app/#k=<key>`, book once to a second address of yours, check both inboxes (and spam) and open the calendar file. Then send her the link.
+5. **The two live checks** (the criteria numbered 13 and 14): open `https://<your-site>.vercel.app/#k=<key>`, book once with a second address of yours, find the email in your Resend-account inbox (and spam), forward it to the second address, check it arrives with `tennis.ics`, and open the calendar file there. Then send her the link.
+6. **For each booking after that:** forward the email to the address in its desk note. Use Forward, not Reply: a reply drops the calendar file.
 
 ## Tasks (test first, one commit each on `feat/tennis-booking`, no `Co-Authored-By` lines, no push)
 
 Forecast for the build: 60 to 90 minutes of agent work, medium confidence; the browser setup is the main unknown.
 
 1. **Start the repo.** `git init -b main /home/justin/tennis-booking`; check `git -C /home/justin/tennis-booking config user.email` shows the personal identity (never set it). Commit only `.gitignore` on `main`: this is the base commit every AC test must fail against. Then `git -C … switch -c feat/tennis-booking`.
-2. **Tooling and the repo check (the test for AC12).** `package.json` (`"type": "module"`, `"engines": {"node": "22.x"}`, scripts `test`, `test:e2e`, `dev`, `check`), dev packages `@playwright/test` and `@axe-core/playwright` at exact versions, `npx playwright install chromium`, `playwright.config.js` (screenshots go to `process.env.EVIDENCE_DIR`, default `test-results/`, so later roles never overwrite the builder's receipts). Prove first that a browser launches; if it can't, stop and report the `ldd` output and the one-line fix. Write `test/repo.test.js` red, then `.env.example` and the rest until green. The test builds its key-shaped sample from parts, never as one literal, so `gitleaks` stays clean.
+2. **Tooling and the repo check (the test for AC12).** `package.json` (`"type": "module"`, `"engines": {"node": "22.x"}`, scripts `test`, `test:e2e`, `dev`, `check`), dev packages `@playwright/test` and `@axe-core/playwright` at exact versions, `npx playwright install chromium`, `playwright.config.js` (screenshots go to `process.env.EVIDENCE_DIR`, default `test-results/`, so later roles never overwrite the builder's receipts). Prove first that a browser launches; if it can't, stop and report the `ldd` output and the one-line fix. Write `test/repo.test.js` red, then `.env.example` and the rest until green. The test builds its key-shaped sample from parts, never as one literal, so `gitleaks` stays clean. Its address check allows `example.com` placeholders and `onboarding@resend.dev`, nothing else.
 3. **Shared rules and config.** `public/shared/config.js` (timezone from `timedatectl show -p Timezone --value` unless Justin answered Q7 otherwise) and `public/shared/rules.js`: `todayInZone`, `listDays`, `zonedToUtc`, `slotHasPassed`. Unit tests in `test/rules.test.js` (supporting, not AC tests), with a summer and a winter date in `Europe/Paris` and `America/New_York`.
-4. **The calendar file** (`lib/ics.js`) and the email text (`lib/email.js`, `public/shared/copy.js`): the test for AC6 red, then green.
-5. **The handler's happy path** (`lib/handler.js`, `lib/resend.js`, `api/book.js`): the test for AC5 red, then green.
+4. **The calendar file** (`lib/ics.js`) and the email text (`lib/email.js`, `public/shared/copy.js`), including the desk note with her address: the test for AC6 red, then green.
+5. **The handler's happy path** (`lib/handler.js`, `lib/resend.js`, `api/book.js`, and `recipientsFor` in `lib/email.js`): the test for AC5 red, then green. It checks that `to` deep-equals `[OWNER_EMAIL]`, that the request body has no `cc` or `bcc` key, and that `reply_to` is her address.
 6. **Refusals** (`lib/validate.js`): the test for AC7, written as one top-level test that loops over every case and checks the fake Resend saw nothing.
 7. **The key guard:** the test for AC8.
 8. **Send failures:** the test for AC9, with a fake logger whose captured lines are searched for the key, the error text and the address.
 9. **The throttle** (`lib/throttle.js`): the test for AC10, with an injected clock.
-10. **Guard sensitivity.** With `mutation-testing-discipline`, break each guard by hand in turn (key compare, the fail-closed config check, each validation rule, the throttle count) and confirm its AC test goes red; record the table in the evidence folder. Run anything heavy under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`.
+10. **Guard sensitivity.** With `mutation-testing-discipline`, break each guard by hand in turn (key compare, the fail-closed config check, each validation rule, the throttle count, and the recipient rule: putting her address in `to` must turn the AC5 test red) and confirm its AC test goes red; record the table in the evidence folder. Run anything heavy under `systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0`.
 11. **The local server and headers:** `scripts/dev-server.mjs`, `e2e/app-server.js`, `vercel.json` with `Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `X-Robots-Tag: noindex`.
 12. **The page, choosing:** `public/index.html`, `styles.css`, `app.js` up to the summary and aside: the test for AC1.
-13. **The page, booking:** submit, pending state, confirmation, "Book another": the test for AC2.
+13. **The page, booking:** submit, pending state, confirmation, "Book another": the test for AC2. It compares the confirmation with the copy file's line with the values filled in, and checks the text holds neither "sent to" nor "on its way to".
 14. **The page, failure and no key:** the tests for AC3 and AC4.
 15. **Phone width, keyboard, axe, visual pass:** the test for AC11; look at the 375 px and 1280 px screenshots with your own eyes and fix what looks off.
 16. **Docs & records** (below), then the full gate, then stop at `ready-for-review`.
@@ -239,13 +269,14 @@ Every AC test is one top-level `test(...)` whose name starts with its id, so its
 - Secrets: `gitleaks git --no-banner /home/justin/tennis-booking` exits 0.
 - Old-code check: each AC test fails (or can't load) on the base commit, which holds only `.gitignore`.
 - A command that dies with SIGTERM, exit 143 or 137, or "Killed" may be an earlyoom kill: check `journalctl -u earlyoom --since "-30 min" -o short-iso | grep -E 'sending SIG[A-Z]* to process'` before reading it as a result.
-- Not run by agents: the Vercel deploy and any real email. Those are the two live checks.
+- Not run by agents: the Vercel deploy, any real email and the forward. Those are the two live checks.
 
 ## Choices made (and why)
 
 - **No framework.** The smallest thing that does the job; Next.js would add a build, a dependency tree and updates for one form.
 - **Resend through plain `fetch`, no SDK.** Zero runtime packages, and the call is trivial to fake in tests.
-- **You are on `cc`, not `bcc`, with `reply_to` set to you.** She sees you got it too, and her reply reaches a real inbox instead of the sending address.
+- **The email goes to you alone, with `reply_to` set to her address.** Without a domain Resend delivers to the account's own address and no other, so `to` is `OWNER_EMAIL` and there is no `cc`. Forward is how she gets it, because a forward keeps the calendar file. `reply_to` is for the quick word back: the sender is Resend's shared test address, so without it your Reply would go to an inbox nobody reads; with it, Reply reaches her and you retype nothing.
+- **One mode, not two.** Emailing her directly needs a domain and is written up as a later step ("A domain later"). No switch for it is built now.
 - **The key lives in the link's fragment**, so it never reaches server logs on page load.
 - **Calendar times are written in UTC**, converted from the configured timezone, so the file is right in any calendar app. Times on the page are the court's local time.
 - **The throttle is honest about its limit:** it counts inside one running instance. On Vercel several instances can run, so the real fences are the invite key and Resend's own daily cap on the free plan.
@@ -255,13 +286,15 @@ Every AC test is one top-level `test(...)` whose name starts with its id, so its
 
 ## Risks
 
-- **No verified domain means she gets nothing** (Q1). This is the one real blocker, and only you can clear it.
-- **A new sending domain can land in spam** the first time. AC13 says to look there; adding the DMARC record Resend suggests helps.
-- **Vercel differs from the local server.** The local adapter stands in for Vercel's runtime, so the import of `public/shared/*.js` from the function and the `fetch` export are only proven on the real deploy (AC13). If the shared files don't get bundled, the fix is one `includeFiles` line in `vercel.json`.
-- **A leaked invite link** lets its holder send the fixed booking email to any address, up to the throttle and Resend's daily cap. The cure is a new `BOOKING_KEY` in Vercel and a new link.
-- **Calendar files show differently per mail app** (Gmail, Apple Mail, Outlook). AC14 checks hers.
+- **She gets nothing until you forward it.** A booking you miss in your inbox is one she never hears back about. The page tells her the invite is sent by hand. A Gmail filter that stars mail from the test sender helps (auto-forwarding by filter may also work, but it needs her to confirm the forwarding address; not checked here).
+- **`OWNER_EMAIL` must be the Resend account's own address.** With any other value Resend answers 403 and every booking shows "The email didn't go out". The first live check proves the real setting.
+- **`reply_to` with the test sender is expected to work, but is only proven live.** Resend words its limit as one on recipients ("You can only send testing emails to your own email address"); `reply_to` is a header, not a recipient. If the first live booking is refused because of it, the fix is removing that one field: her address is still in the body.
+- **The test sender can land in your spam.** `onboarding@resend.dev` is a shared address. The first live check says to look there; mark that email "not spam" once.
+- **Vercel differs from the local server.** The local adapter stands in for Vercel's runtime, so the import of `public/shared/*.js` from the function and the `fetch` export are only proven on the real deploy (the first live check). If the shared files don't get bundled, the fix is one `includeFiles` line in `vercel.json`.
+- **A leaked invite link** lets its holder put booking emails in your inbox (never anyone else's: `to` is always you), each with a reply-to address of their choosing, up to the throttle and Resend's daily cap. The cure is a new `BOOKING_KEY` in Vercel and a new link.
+- **Calendar files show differently per mail app** (Gmail, Apple Mail, Outlook). The second live check covers hers.
 - **Humour is a matter of taste.** Every line is in `public/shared/copy.js` and listed above; strike or change any before "go" or after.
-- **Her address goes to Resend** (their logs keep it) and into the copy you receive. The site itself stores nothing and logs no addresses.
+- **Her address goes to Resend** (their logs keep it) and into the email you receive. The site itself stores nothing and logs no addresses.
 - **Browser tests need system libraries this PC lacks** (step 1 of your list). Without them the builder stops at task 2.
 
 ## Skills
@@ -277,12 +310,12 @@ Only new files, all inside the new repo `/home/justin/tennis-booking` (the tree 
 
 ## Docs & records (last task)
 
-- `README.md`: what the site is, the five environment variables, how to run it locally (`npm run dev`), how to run the tests, the Resend domain steps, the Vercel deploy steps, how to make the invite link, how to change the slots, the timezone and the words, and the honest limits (throttle per instance, no stored bookings).
+- `README.md`: what the site is, the five environment variables and what each is set to, how to run it locally (`npm run dev`), how to run the tests, the Resend steps with no domain (the test sender, and why `OWNER_EMAIL` must be the account's own address), the forward step (Forward, not Reply), the Vercel deploy steps, how to make the invite link, how to change the slots, the timezone and the words, "Adding a domain later" (what changes, from the paragraph above), and the honest limits (she gets the invite only when you forward it, throttle per instance, no stored bookings).
 - `.env.example`: the five names with placeholder values (checked by the AC12 test).
 - `.gitignore`: `node_modules/`, `.env*` with `!.env.example`, `test-results/`, `playwright-report/`, `.vercel/`.
 - `.git/info/exclude`: add `CLAUDE.md` if anyone creates one in this repo. None is planned; never commit it.
 - `~/.hermes/plans/tennis-booking/evidence/tennis-booking/`: one log and one screenshot per agent-checked AC, the guard-sensitivity table from task 10, and `follow-ups.md` if the review leaves any.
-- After "go", if an answer differs from a recommended one (above all Q1 option C or Q4 option C), a planner amends this plan before the builder starts.
+- Done 2026-11-21: Justin chose Q1 = C and this plan was amended for it (see "Amendments" at the top). The builder builds this version. Any later change of answer (above all Q4 option C) goes back to a planner first.
 
 ## Other things found (not fixed, not part of this job)
 
@@ -293,3 +326,4 @@ Only new files, all inside the new repo `/home/justin/tennis-booking` (the tree 
 - Q1: **C, no domain.** Emails only reach the Resend account owner (Justin), and he forwards them to her. Her-inbox AC13 must be amended to fit this.
 - Q2 A, Q3 A, Q4 A, Q5 A, Q6 A, Q7 A.
 - Q8: **A, Full pipeline.**
+- Amended for Q1 = C on 2026-11-21 by the planner: see "Amendments" at the top.
