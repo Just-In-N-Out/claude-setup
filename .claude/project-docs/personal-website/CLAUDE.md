@@ -199,14 +199,54 @@ export const metadata = {
 
 ---
 
+## Blog
+
+The site has a blog at `/blog` with three categories: **Projects**, **Security**, and **DSA** (Data Structures & Algorithms). The homepage shows a preview of the 3 most recent posts.
+
+### How to Add a Blog Post
+
+1. Create a new `.mdx` file in `content/blog/` (e.g. `content/blog/my-post-slug.mdx`)
+2. The filename becomes the URL slug: `my-post-slug` → `/blog/my-post-slug`
+3. Add frontmatter at the top of the file:
+
+```mdx
+---
+title: "Your Post Title"
+date: "2026-03-22"
+category: "security"
+description: "A one-line summary shown on cards and meta tags."
+tags: ["Tag1", "Tag2"]
+---
+
+Your markdown content here. Supports all standard markdown:
+headings, code blocks, lists, links, bold, italic, etc.
+```
+
+### Frontmatter Fields
+
+| Field | Required | Description |
+|---|---|---|
+| `title` | Yes | Post title displayed on cards and the post page |
+| `date` | Yes | ISO date string (`YYYY-MM-DD`). Posts sort newest-first |
+| `category` | Yes | One of: `"projects"`, `"security"`, `"dsa"` |
+| `description` | Yes | Short summary for cards and SEO |
+| `tags` | No | Array of tag strings shown as pills (default: `[]`) |
+
+### Blog Architecture
+
+- `lib/blog.ts` — reads MDX files from `content/blog/`, parses frontmatter with `gray-matter`
+- `app/blog/page.tsx` — blog listing, grouped by category (Projects, Security, DSA)
+- `app/blog/[slug]/page.tsx` — individual post page, renders MDX via `next-mdx-remote`
+- `components/BlogCard.tsx` — card component used on listing page and homepage preview
+- `components/BlogPreview.tsx` — homepage section showing 3 most recent posts
+- `components/BlogNavbar.tsx` — floating navbar for blog pages (category links)
+
+---
+
 ## What NOT to Do
 
 - No hero image or avatar photo (keep it text-forward)
 - No skill percentage bars or rating stars
 - No testimonials section
-- No blog section (add later if needed)
 - No animations that delay content visibility
 - No dark/light toggle for now
-- No unnecessary pages — keep it single-page
-
-# Ask Question when needed 
