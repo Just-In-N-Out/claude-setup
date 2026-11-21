@@ -287,3 +287,9 @@ Only new files, all inside the new repo `/home/justin/tennis-booking` (the tree 
 ## Other things found (not fixed, not part of this job)
 
 - **The Chrome for Testing on this PC can't start.** `/home/justin/.cache/chrome-for-testing/chrome-linux64/chrome --version` fails with `libnspr4.so: cannot open shared object file`; `ldd` lists `libnspr4.so`, `libnss3.so`, `libnssutil3.so`, `libsmime3.so` and `libasound.so.2` as not found (Ubuntu 26.04; the packages `libnss3`, `libnspr4`, `libasound2t64` are available). Severity: medium. It blocks browser tests here, and may affect any other project on this desktop that launches that browser without its own library path (not checked).
+
+## Justin's answers (2026-11-21)
+- Go, with every recommended answer except Q1.
+- Q1: **C, no domain.** Emails only reach the Resend account owner (Justin), and he forwards them to her. Her-inbox AC13 must be amended to fit this.
+- Q2 A, Q3 A, Q4 A, Q5 A, Q6 A, Q7 A.
+- Q8: **A, Full pipeline.**
