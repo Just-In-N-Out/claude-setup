@@ -5,10 +5,10 @@ metadata:
   node_type: memory
   type: user
   originSessionId: 5080910a-9445-46fa-ad7e-bf7e748286b6
-  modified: 2026-11-21T12:46:20.451Z
+  modified: 2026-11-21T12:52:50.780Z
 ---
 
-Roles (Justin, 2026-11-21): Software Engineer Intern at Leorna, Aug 2026 – Dec 2026; Web Infrastructure Developer at Gro, Aug 2026 – Dec 2026 (FigmaToBricksV2 assumed to be the Gro work — he hadn't confirmed yet).
+Roles (Justin, 2026-11-21): Software Engineer Intern at Leorna, Aug 2026 – Dec 2026; Web Infrastructure Developer at Gro, Aug 2026 – Dec 2026 FigmaToBricksV2 was the Gro work, used to build 5 websites in 2 weeks. Leorna: pre-release, no customers; Aug–mid-Sep spent setting up the project; PRs reviewed by a teammate plus his agent loop; product description, AI authorship and cloud provider are OK to share publicly.
 
 Resume source docs live in `/home/justin/career/` (`figma-to-bricks-profile.md`, `leorna-work-profile.md`) and get uploaded to a Claude Project he pastes job descriptions into.
 
