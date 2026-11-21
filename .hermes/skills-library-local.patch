@@ -157,6 +157,31 @@ index 8d8968a..f0855d3 100644
  - Accessibility: run lint plus axe on meaningful interactive states after they
    appear. Inspect incomplete axe results rather than treating them as passes.
    Add keyboard task completion, focus order/visibility/return, dialog escape,
+diff --git a/skills/frontend-testing-workflow/SKILL.md b/skills/frontend-testing-workflow/SKILL.md
+index 09f5d6e..f1dd0fe 100644
+--- a/skills/frontend-testing-workflow/SKILL.md
++++ b/skills/frontend-testing-workflow/SKILL.md
+@@ -38,7 +38,9 @@ contract cannot be declared proven solely by mocked component tests.
+ ## Selector rule
+ 
+ Prefer accessible roles/names and observable user interactions over brittle
+-implementation selectors.
++implementation selectors. A native input hidden with `opacity: 0` under a styled
++face must sit above it (`z-index`), or the face intercepts the pointer and
++Playwright's `check()` times out (tennis-booking, 2026-11-21).
+ 
+ ## Framework migration checks (only when applicable)
+ 
+@@ -53,7 +55,8 @@ implementation selectors.
+ 2. Run focused component/browser checks, then affected integration and configured
+    required gates. Preserve console/network errors and first failure traces.
+ 3. Capture visual evidence for affected rendered states at relevant viewport
+-   boundaries, with pinned browser/fonts/data; do not capture every possible state
++   boundaries, with pinned browser/fonts/data and `animations: 'disabled'` (a shot
++   right after a click otherwise catches a transition half-way); do not capture every possible state
+    indiscriminately. Review intentional visual baseline changes; never auto-update
+    snapshots merely to get green. A newly created baseline is not comparison PASS.
+ 4. For changed motion, inspect a short recording or selected frames around the
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
 index c509c64..f208ea9 100644
 --- a/skills/implementation-planning/SKILL.md
