@@ -12,3 +12,4 @@
 - [Desktop disk fills C:](desktop-disk-fills-c.md) — 2026-11-13 C: full; worktrees/job caches/go-build grow; Linux deletes need vhdx compact to free C:
 - [Career profiles](career-profiles.md) — Leorna SWE intern + Gro web infra dev, Aug–Dec 2026; resume docs lead with built work + impact metrics
 - [Desktop test browser libs](desktop-test-browser-libs.md) — Chrome/Playwright miss libnss3 etc.; LD_LIBRARY_PATH=~/.cache/chrome-libs/... fixes it, no sudo; node --test dir/ gotcha
+- [gh hides personal private repos](gh-personal-repos-hidden.md) — Justin-Leorna is active; list with GH_TOKEN=$(gh auth token --user Just-In-N-Out), never auth switch
