@@ -1,0 +1,1 @@
+- [Leorna local Postgres on Mac](leorna-local-postgres-mac.md) — leorna-test-pg uses port 5432 and its own password, not the guide's
