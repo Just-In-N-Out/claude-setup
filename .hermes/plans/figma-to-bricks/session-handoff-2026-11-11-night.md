@@ -652,3 +652,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-20: Build 2026-11-20.3 8d952f17 pushed (tablet-photo, 3fs owed); lock released
 - 2026-11-23: header-template planner dispatched (header-only scan + header sticky in a Bricks Header template)
 - 2026-11-23: header-template plan 62fce2f4 (auto-go), builder dispatched, 3ft; lesson saved to pitfalls.md
+- 2026-11-23: header-template builder 1d2e7b13; ff-merged main 8d952f17→1d2e7b13 (lock held); finisher dispatched (Build 2026-11-23.1, 3ft); enforce offer chrome-f2b absolute paths

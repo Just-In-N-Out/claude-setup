@@ -427,3 +427,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-21 | tennis-booking | code-review-practice | lint: ESLint no-useless-escape over lib/, public/, test/, e2e/ in the project's npm run check | offered
 - 2026-11-21 | tennis-booking | feature-dispatch | test: add a Playwright list-reporter failure fixture (✘ U+2718) to scripts/ac-check.test.sh and ✘ to fail_re/start_re, so a Playwright base run failing on its own assertion counts | offered
 - 2026-11-21 | site-career-update | feature-dispatch | script: ac-check.sh adds 'points out of the filesystem root' to never_re, so a base log that died on a linked node_modules isn't read as the test failing on old code | offered
+- 2026-11-23 | header-template | figma-to-bricks | script: make ~/.cache/chrome-for-testing/chrome-f2b use absolute paths instead of $HOME so it works under a test's private HOME (Chrome exit 127, hit by 3+ agents) | offered
