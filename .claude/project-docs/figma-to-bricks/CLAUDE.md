@@ -7,8 +7,18 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-20.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-23.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-23.1 header-template (website importer):** besides the capture's fixed mark, a header box gets the stay
+    class when Elementor's `sticky: "top"` (no `sticky_parent`) is set or a script wrote its `position` and `top` in
+    any range, and the site's own CSS fixes none (`src/core/site/stay.ts` `headerStays`), so B-Dry's home and About
+    headers stay at the top too; `#brx-header:has(.stay)` at z-index 998 so the ☰ drawer in a Header template opens
+    above the page; the note names the template steps; the importer app's "Header only (for a Header template)" tick
+    passes `--part header` (only `header.json`, Copy header only, only the header's pictures uploaded); Make pastes
+    again on saved scans, no rescan; pastes that already had the stay class get a renamed class. Q1–Q5 ⭐ A not yet
+    confirmed. Paste check **3ft** (AC5, live: tick Header only, Make pastes again or scan, Copy header, paste into a
+    new Header template on B-Dry staging, Conditions: Entire website, Sticky header off; on a live page in a private
+    window it stays at the top at desktop and phone, ☰ opens the drawer over the page).
   - **2026-11-20.3 tablet-photo (website importer):** a flex row of words + one library-photo box whose photo shows
     under a third of its picture at every measured width 768–991 stacks in Bricks' Tablet portrait tab (rule T,
     `src/core/site/tablet-photo.ts`: Direction column, the photo full width at its picture's Aspect ratio, cover), so
