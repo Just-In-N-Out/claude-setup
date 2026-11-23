@@ -30,7 +30,7 @@ Recording rules (list description): 45–55 s, portrait 1080×1920, browser zoom
 ## Blocker: one pack per team
 
 migration 000016: unique index `pack_assignments_team_default ON pack_assignments (team_id) WHERE project_id IS NULL`, so a second team assignment replaces the first. The 26–40 s beat as written cannot show two packs per team.
-Options: (a, recommended) build three combined team packs in /admin/library (Best Practices items + the team's extra pack items); (b) drop "Best Practices to every team" from the script. **Decision open — Justin/Christian.**
+Options: (a, recommended) build three combined team packs in /admin/library (Best Practices items + the team's extra pack items); (b) drop "Best Practices to every team" from the script. **Decided 2026-11-23 (Justin): (a)** — three combined packs: Control Plane Pack (Best Practices + Go Skills), Desktop Client Pack (Best Practices + Code Review Agent), Release Pack (Best Practices + Release Checklist).
 
 ## Plan
 
