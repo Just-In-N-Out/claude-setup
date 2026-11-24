@@ -7,8 +7,18 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-23.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-24.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-24.1 legal-pages (website importer):** the scan keeps an `ol`'s `start`/`reversed`/`type` and an `li`'s
+    `value` (`web.code.keeps`) and the paste writes them as `_attributes` on the List and List item Blocks (unverified
+    in Bricks); an older scan holding a shown `ol` gets one notes line to scan again; rule F (`src/core/site/frame.ts`):
+    a part's root moves up to the theme's frame (the page title as a Heading h1, the theme's column as the Section's
+    Container), `WebPart.frame`, Make pastes again brings it with no rescan; B-Dry's Terms & Conditions and Privacy
+    Policy show their title in the old site's 1200 px column; builder ruling B1: B-Dry's home footer notes gain the
+    numbered-lists line; `ConvertOptions.listNumbers`/`frame: false` byte for byte as before. Q1–Q4 ⭐ A not yet
+    confirmed. Paste check **3fw** (AC5, live: rescan Terms & Conditions and Privacy Policy, Upload together, paste the
+    bodies on B-Dry staging: numbers 1, 2, 3…, the page title with the gap under the header, the weight bdryswi.com
+    shows in a private window).
   - **2026-11-23.3 fonts-class-size (website importer):** a family a paste carries is named by the old site's host
     (`bdryswi-com__Roboto`) and its faces sit in one class `<host>__font-<family>-<4>` with the same name and id on
     every page of the site, so Bricks keeps one copy (`src/core/site/fonts.ts`, `parts.ts`, new `class-size.ts`); a
@@ -780,6 +790,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A site part's root is the theme's frame around the builder's document when the part holds extras or a wrapper that
+  draws** (legal-pages, rule F, `src/core/site/frame.ts`, `WebPart.frame`): never read a part's root from `partRoot`
+  without it.
 - **A site paste never repeats a font file per page: a carried family's faces sit in one host-named class shared by
   every page of the site** (fonts-class-size; Bricks writes the whole global-class list as one database row on Save
   and ignores a failed write, so anything in a class counts against that one row summed over every page).
