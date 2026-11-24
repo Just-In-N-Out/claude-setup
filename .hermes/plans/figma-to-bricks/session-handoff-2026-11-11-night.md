@@ -656,3 +656,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-23: Build 2026-11-23.1 19e41e86 pushed (header-template, 3ft owed); lock released
 - 2026-11-23: all 13 pages scanned+uploaded (home banner left); photo-repeat-2 planner dispatched (Exterior Drainage downspout photo stays Block: repeat not proven covered)
 - 2026-11-23: photo-repeat-2 plan 6489fb9a (auto-go; only 2 such boxes in 13 scans), builder dispatched, 3fu; lesson saved
+- 2026-11-23: photo-repeat-2 builder d938f98e; ff-merged main 19e41e86→d938f98e (lock held); finisher dispatched (Build 2026-11-23.2, 3fu); follow-up: Crawlspace stacked tablet photo shows file's white right third (rule T)
