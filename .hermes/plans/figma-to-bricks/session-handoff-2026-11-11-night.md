@@ -664,3 +664,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-23: fonts-class-size builder c1129948 (13 pastes 15.24MB→4.49MB, 4 shared font classes); ff-merged main 16ddd9a0→c1129948 (lock held); finisher dispatched Build 2026-11-23.3, 3fv. Justin already deleted the 11 page site-fonts classes + trash on staging (4917 classes). Lesson (chrome-f2b HOME) already saved: skipped.
 - 2026-11-23: Build 2026-11-23.3 1f694934 pushed (fonts-class-size, 3fv owed); lock released; Justin to Make pastes again ×13 + re-paste one tab
 - 2026-11-24: legal-pages planner dispatched (Terms/Privacy: list numbers all 1., bold titles, page title missing)
+- 2026-11-24: legal-pages plan 804f84fc (auto-go Q1-4 A; numbers need a RESCAN of terms+privacy; bold = what the scan saw), builder dispatched, 3fw; 2 lessons saved
