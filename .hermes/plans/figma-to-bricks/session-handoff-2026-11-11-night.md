@@ -665,3 +665,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-23: Build 2026-11-23.3 1f694934 pushed (fonts-class-size, 3fv owed); lock released; Justin to Make pastes again ×13 + re-paste one tab
 - 2026-11-24: legal-pages planner dispatched (Terms/Privacy: list numbers all 1., bold titles, page title missing)
 - 2026-11-24: legal-pages plan 804f84fc (auto-go Q1-4 A; numbers need a RESCAN of terms+privacy; bold = what the scan saw), builder dispatched, 3fw; 2 lessons saved
+- 2026-11-24: legal-pages builder f8f22652 ff-merged (lock held), finisher dispatched Build 2026-11-24.1, 3fw; chrome-f2b lesson already saved (3rd time; enforce backlog item stands)
