@@ -660,3 +660,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-23: Build 2026-11-23.2 16ddd9a0 pushed (photo-repeat-2, 3fu owed); lock released
 - 2026-11-23: B-Dry pages bare in Bricks: classes don't persist; 13 pastes = 3970 classes 15.4MB, 11.7MB = per-page site-fonts classes (~896KB data: fonts each). fonts-class-size planner dispatched. Earlier: Justin closed tabs, re-pasted Basement Windows, saved; fresh tab bare again.
 - 2026-11-23: fonts-class-size plan dc4786c7 (auto-go Q1-4 A), builder dispatched, 3fv; recovery steps in plan; lesson folded
+- 2026-11-23: Justin's B-Dry staging max_allowed_packet = 16777216 (MariaDB 10.11.14) — confirms fonts-class-size cause
