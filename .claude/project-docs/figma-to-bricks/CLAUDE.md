@@ -7,8 +7,16 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-23.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-23.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-23.3 fonts-class-size (website importer):** a family a paste carries is named by the old site's host
+    (`bdryswi-com__Roboto`) and its faces sit in one class `<host>__font-<family>-<4>` with the same name and id on
+    every page of the site, so Bricks keeps one copy (`src/core/site/fonts.ts`, `parts.ts`, new `class-size.ts`); a
+    part whose classes pass 1 MB gets one "Classes:" notes line; B-Dry's 13 pastes' distinct classes 15.24 MB → 4.49 MB
+    (Bricks saves the whole class list as one row and ignores a failed write; B-Dry staging's max_allowed_packet
+    16 MiB); `ConvertOptions.fontClasses: false` byte for byte as before. Q1–Q4 ⭐ A not yet confirmed. Paste check
+    **3fv** (AC5, live: after the recovery steps in HANDOFF, all 13 pages stay styled in a fresh Bricks tab and on the
+    live page).
   - **2026-11-23.2 photo-repeat-2 (website importer):** the repeat proof (`photo-place.ts` `secondTile`, `photo-box.ts`
     `repeatProof`) reads measured widths up to 1920 px (`MATCHED_WIDTH`), a second tile only wider than that named in
     one notes line; a repeating `cover` photo placed at px offsets is an Image when the cover tile from `web.natural`
@@ -772,6 +780,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **A site paste never repeats a font file per page: a carried family's faces sit in one host-named class shared by
+  every page of the site** (fonts-class-size; Bricks writes the whole global-class list as one database row on Save
+  and ignores a failed write, so anything in a class counts against that one row summed over every page).
 - **A site paste shows something only in the Bricks editor or only live through Bricks' own `_hideElementFrontend` /
   `_hideElementBuilder`** (reviews-show, `src/core/site/editor-copy.ts`); a tool that compares a paste with the live
   page reads it through `test/browser/render.ts` `shownIn`.
