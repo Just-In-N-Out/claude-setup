@@ -654,3 +654,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-23: header-template plan 62fce2f4 (auto-go), builder dispatched, 3ft; lesson saved to pitfalls.md
 - 2026-11-23: header-template builder 1d2e7b13; ff-merged main 8d952f17→1d2e7b13 (lock held); finisher dispatched (Build 2026-11-23.1, 3ft); enforce offer chrome-f2b absolute paths
 - 2026-11-23: Build 2026-11-23.1 19e41e86 pushed (header-template, 3ft owed); lock released
+- 2026-11-23: all 13 pages scanned+uploaded (home banner left); photo-repeat-2 planner dispatched (Exterior Drainage downspout photo stays Block: repeat not proven covered)
