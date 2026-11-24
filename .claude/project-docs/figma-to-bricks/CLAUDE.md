@@ -7,8 +7,15 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-23.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-23.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-23.2 photo-repeat-2 (website importer):** the repeat proof (`photo-place.ts` `secondTile`, `photo-box.ts`
+    `repeatProof`) reads measured widths up to 1920 px (`MATCHED_WIDTH`), a second tile only wider than that named in
+    one notes line; a repeating `cover` photo placed at px offsets is an Image when the cover tile from `web.natural`
+    covers the box at every measured width; B-Dry's Exterior Drainage downspout (Media 381) and Crawlspace Repair
+    dehumidifier (Media 386) are Images; the other 11 scans byte for byte as before. Q1–Q3 ⭐ A not yet confirmed.
+    Paste check **3fu** (AC5, live: Make pastes again on Exterior Drainage and Crawlspace Repair, paste the body on
+    B-Dry staging; both "Photo"s are Images with Media's alt, looks as before at 1440, 991 and 390).
   - **2026-11-23.1 header-template (website importer):** besides the capture's fixed mark, a header box gets the stay
     class when Elementor's `sticky: "top"` (no `sticky_parent`) is set or a script wrote its `position` and `top` in
     any range, and the site's own CSS fixes none (`src/core/site/stay.ts` `headerStays`), so B-Dry's home and About
