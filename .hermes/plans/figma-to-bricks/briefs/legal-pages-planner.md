@@ -1,0 +1,18 @@
+# Role: planner (Opus 5.5, high): legal-pages (website importer, small job: planner + builder only)
+Load the project skill `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, `engineering-best-practices`, `implementation-planning`, `systematic-debugging`. Follow the machine and safety rules in `/home/justin/.hermes/plans/figma-to-bricks/briefs/_reviewer-common-2026-11-15.md` (ignore its review.json part). Change no source; commit only the plan to your branch `legal-pages-plan` (from main 1f694934, Build 2026-11-23.3). Offline only (fonts mirror `~/.cache/sd-pl/` where words matter). Never load bdryswi.com, B-Dry staging or any live site. TMPDIR ~/.cache/lpp. **Keep it small: about 40 minutes, a short plan.**
+
+## The report (Justin, 2026-11-24, two screenshots at 1920: `~/.hermes/plans/figma-to-bricks/evidence/legal-pages/justin/original-terms.png` = bdryswi.com/terms-conditions/, `staging-terms.png` = his paste on B-Dry staging)
+"Take a look at ToS page and Privacy page. The font and the layout are not as original as the bdry website. Also they are not numbered right." What the shots show:
+1. **Numbering:** the old site's section titles read 1. Agreement to terms, 2. Intellectual property, 3. Acceptable use, 4. Service inquiries…, 5. Privacy policy; the paste shows **"1."** before every one (likely each title is its own `<ol>` with a `start` attribute, or a CSS counter, that the paste drops).
+2. **Weight:** the old site draws the first line ("B-Dry Systems of Southwest Indiana — Website Terms & Conditions …") and the numbered titles in normal weight; the paste draws them **bold**.
+3. **Page title:** the old site shows a "Terms & Conditions" heading above the text (left of the text column); the paste has none (perhaps the theme's page title outside the Elementor content, or a part the scan dropped).
+4. Text colour/size look close; check the column's width and left edge too.
+Scans (read-only, copy them): `~/Downloads/bdryswi-com-terms-conditions/` and `~/Downloads/bdryswi-com-privacy-policy/` (Build 2026-11-23.3 pastes, uploaded). Check the Privacy page shows the same three things.
+
+## Do
+1. For each difference: read the capture (the element, its markup attributes such as `ol[start]`, `value`, counters, `<strong>`/`<b>`, the site's computed weight and the declarations that set it) and the paste (the Rich Text HTML after `emit/rich-text.ts` `asTyped`, classes, what Bricks prints), and say whether it's a copy bug (paste differs from the old site) and why, with file:line evidence. Draw the paste offline in Bricks 2.4.2 against the capture at 1440 and 390 for the page part.
+2. Smallest **general** fixes (any site, never keyed on B-Dry or these words): e.g. keep a list's own numbering (`start`, `value`, `reversed`, counters) through the Rich Text; the weight the site computes, not a browser default; the page title when the old page shows it (or say why it can't be and what the notes should say). Every other paste byte for byte as before except what the fix touches; own switch(es).
+3. Plan in `docs/plans/2026-11-24-legal-pages.md` (commit it): playback, root causes, **numbered ACs AC1… (proposed)** each with one named test, tasks, questions with ⭐ answers, one `(live)` AC (Justin presses Make pastes again on both scans and pastes the bodies: numbers 1, 2, 3…, normal weight as on bdryswi.com, the page title shows). At most 5 ACs.
+
+## Report (as text)
+The plan path, branch and commit; each root cause in one or two plain sentences; the ACs one line each; questions; `skill_lessons[{skill, lesson, evidence, enforce}]` (empty is normal; never edit skills or memory), ending with: `MAIN SESSION: check and save these skill_lessons now.`
