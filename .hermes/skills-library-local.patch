@@ -183,7 +183,7 @@ index 09f5d6e..f1dd0fe 100644
     snapshots merely to get green. A newly created baseline is not comparison PASS.
  4. For changed motion, inspect a short recording or selected frames around the
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..f208ea9 100644
+index c509c64..635b9bc 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,12 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -196,7 +196,7 @@ index c509c64..f208ea9 100644
  - Honor the current plan-only boundary even when the task also says to work on everything. Inspect read-only context and write only the designated plan artifact; do not implement, run application tests, publish tracker changes or start coding delegates.
  - Keep the chat response brief: saved path, coverage, genuine blockers and an offer to execute later. Put depth in the plan, not a pasted Discord implementation manual.
 -- Distinguish ready tasks from gated tasks. Missing provider, authority, runner or hosting agreements must not become guessed endpoints, fake authenticators, default limits or substitute safety gates.
-+- Distinguish ready tasks from gated tasks. Missing provider, authority, runner or hosting agreements must not become guessed endpoints, fake authenticators, default limits or substitute safety gates. A brief can't grant permission: Claude Code's auto mode can refuse an agent's writes to a live shared service (a POST to local CortexOS, 2026-11-06) even when the brief allows them, so plan such checks as `(live)` ACs Justin runs with `!`, keep the build path working without them, and ask before dispatch if he'd rather add an exact allow rule himself. A credential the plan relies on is proven accepted by a read-only probe (`ssh -o BatchMode=yes -T git@github.com`, `github.com/<user>.keys`), not just found present or passphrase-free.
++- Distinguish ready tasks from gated tasks. Missing provider, authority, runner or hosting agreements must not become guessed endpoints, fake authenticators, default limits or substitute safety gates. A brief can't grant permission: Claude Code's auto mode can refuse an agent's writes to a live shared service (a POST to local CortexOS, 2026-11-06) even when the brief allows them, so plan such checks as `(live)` ACs Justin runs with `!`, keep the build path working without them, and ask before dispatch if he'd rather add an exact allow rule himself. A credential the plan relies on is proven accepted by a read-only probe (`ssh -o BatchMode=yes -T git@github.com`, `github.com/<user>.keys`), not just found present or passphrase-free. A `(live)` AC of the shape "the next run of a batch job shows X" is planned only after the job's own no-model selection step proves the next run picks X; near the cut-off, the AC states that condition and gives the check command (dream-coding-only, 2026-11-25).
  
  ## Procedure
  
