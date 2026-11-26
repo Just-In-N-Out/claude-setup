@@ -431,3 +431,5 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-23 | fonts-class-size | figma-to-bricks | test: fail when a website paste's global classes repeat byte-identical data: font files across two pages of one host under different class names | offered
 - 2026-11-26 | avif-size | figma-to-bricks | test: in test/unit/media-mark.test.ts assert the AVIF how string contains AVIF_OPTIONS.quality, so a quality change without a new mark fails | offered
 - 2026-11-26 | trustindex-reviews | figma-to-bricks | script: the standin-drift font-mirror recipe (nsf-sdpl.sh and copies) checks after the run that no gfont-sdpl.mjs naming its own log is left and kills it by PID | offered
+- 2026-11-26 | heading-text-link | figma-to-bricks | test: move Chrome-free renderPage string checks (render-site-text-link's first test) into test/unit so npm run check runs them | offered
+- 2026-11-26 | heading-text-link | figma-to-bricks | script: a corpus-local gate wrapper that refuses to rewrite corpus/corpus.json in a worktree or the main folder and makes a scratch git-archive copy instead | offered
