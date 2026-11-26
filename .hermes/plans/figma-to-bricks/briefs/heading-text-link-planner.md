@@ -1,0 +1,15 @@
+# Role: planner (Fable 5.2, high): heading-text-link (Mini pipeline, both tools)
+Load the project skill `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, `engineering-best-practices`, `implementation-planning`. Follow the machine and safety rules in `/home/justin/.hermes/plans/figma-to-bricks/briefs/_reviewer-common-2026-11-15.md` (ignore its review.json part). Read the repo CLAUDE.md's standing rules and the Bricks pro standard (Decisions, top). Change no source; commit only the plan to your branch `heading-text-link-plan` (from main 83a05a2b, Build 2026-11-24.1). Offline only: never load bdryswi.com, B-Dry staging, darksalmon, cdn.trustindex.io or any live site. Saved scans in `~/Downloads/bdryswi-com-*/` are read-only: copy what you need. TMPDIR ~/.cache/heading-text-link-p.
+**Mini mode:** load the project skill and only the code/docs sections this touches; skip the full context load; finish within about 15 steps. If this is bigger or riskier than a Mini job, say so and recommend Full.
+
+## The request (designer Niklas via Justin, 2026-11-24/26)
+"Heading to be converted to a text link in Bricks instead of a href." Justin chose (2026-11-26): **a heading that is all one link pastes as Bricks' Text link element** (`text-link`: words in Text, link in Link to, Internal where the page is matched per internal-links) in **both tools** (Figma plugin and website importer). Today a whole-link Heading carries the link in Link to (`understand/text-link.ts` `elementLink`, importer `emit/link-shape.ts`), and some importer headings may hold an `<a>` in their words.
+## Do
+1. Find every path that makes a linked heading (both tools; whole-link and an `<a>` inside the words), with file:line, and what a Bricks pro gets today.
+2. Read the Text link shape from `reference/bricks/` (README "text-link", nav samples) and Bricks' GPL source: its settings (text, link, typography, icon), what tag it prints, whether a heading level can be kept (a `tag` setting? `_attributes` role/aria-level? an `<hN>` wrapper Block?). The heading's look must stay (its typography class moves to the Text link). Raise the SEO/accessibility trade-off (losing `<hN>`) as a ⭐ question with your recommendation.
+3. A link inside a sentence stays inline (CLAUDE.md "A text that is all one link"); only a heading that is all one link changes.
+
+3. Plan in `docs/plans/2026-11-26-heading-text-link.md` (commit it): playback, root cause with file:line evidence, the fix, **numbered ACs AC1… (proposed)** each with one named test, touched files, a one-line Docs & records task, questions with ⭐ answers at the top, one `(live)` AC Justin checks on B-Dry staging (and darksalmon for a Figma half). Every other paste byte for byte as before except what the fix touches, with its own `ConvertOptions` switch.
+
+## Report (as text)
+The plan path, branch and commit; the root cause in two plain sentences; the ACs one line each (mark `(live)`); questions with ⭐; `skill_lessons[{skill, lesson, evidence, enforce}]` (empty is normal; never edit skills or memory), ending with: `MAIN SESSION: check and save these skill_lessons now.`

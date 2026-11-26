@@ -1,14 +1,12 @@
 ---
 name: all-opus-high
-description: From 2026-11-18 every pipeline agent runs on Opus 5.5 high — no Fable, no xhigh; small fixes = planner + builder only
+description: REVERSED 2026-11-26 — back to the original role table with Fable (planner/round-1 reviewer Fable high, builder/auditor Opus xhigh, rest Opus high); the 2026-11-18 all-Opus-high rule ended
 metadata:
   type: feedback
 ---
 
-Every agent (planner, builder, reviewer, fixer, verifier, auditor, finisher) runs `model: "opus"`, `effort: "high"`. Never Fable, never xhigh. This replaces the global role table's Fable planner/reviewer and the xhigh builder/auditor for this project.
+From 2026-11-26 the pipeline uses the global role table again: planner Fable 5.2 high; builder Opus 5.5 xhigh; reviewer round 1 Fable 5.2 high, later rounds Opus 5.5 high; fixer, verifier, finisher Opus 5.5 high; AC auditor Opus 5.5 xhigh. Mini and Full both run their full steps again (no more planner + builder only).
 
-A small fix Justin asks for runs as **planner + builder only**, with no review or verify rounds, unless he asks for more.
+**Why:** Justin, 2026-11-26: "full for classes and mini for rest but use the original pipline with fabkle" ("we have tokens now"). This replaces his 2026-11-18 "everything opus 5.5 high, no fable no xhigh; planner + builder only".
 
-**Why:** Justin, 2026-11-18: "we are running out of tokens … no need for a mini job just to a planner and a builder. Going forward use everything opus 5.5 high ok no fable no xhigh".
-
-**How to apply:** set model/effort on every Agent call this way. For a small fix, merge after the builder's own tests pass. Related: [[review-round-cap]], [[run-without-stopping]].
+**How to apply:** set model/effort per role from the global table on every Agent call. Related: [[review-round-cap]], [[run-without-stopping]].

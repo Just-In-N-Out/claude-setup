@@ -1,0 +1,15 @@
+# Role: planner (Fable 5.2, high): avif-size (Mini pipeline, both tools)
+Load the project skill `~/.hermes/skills/software-development/figma-to-bricks/SKILL.md`, `engineering-best-practices`, `implementation-planning`. Follow the machine and safety rules in `/home/justin/.hermes/plans/figma-to-bricks/briefs/_reviewer-common-2026-11-15.md` (ignore its review.json part). Read the repo CLAUDE.md's standing rules and the Bricks pro standard (Decisions, top). Change no source; commit only the plan to your branch `avif-size-plan` (from main 83a05a2b, Build 2026-11-24.1). Offline only: never load bdryswi.com, B-Dry staging, darksalmon, cdn.trustindex.io or any live site. Saved scans in `~/Downloads/bdryswi-com-*/` are read-only: copy what you need. TMPDIR ~/.cache/avif-size-p.
+**Mini mode:** load the project skill and only the code/docs sections this touches; skip the full context load; finish within about 15 steps. If this is bigger or riskier than a Mini job, say so and recommend Full.
+
+## The request (Justin, 2026-11-26)
+"AVIF size is still too big; make them a lot smaller. They are like 600 KB when they should be like 50." Target: a typical photo **about 50 KB** (today ~600 KB).
+## Do
+1. Measure today: the importer's AVIF step (`site:upload`/`site:import`, media-avif-alt, Build 2026-11-11.10: own size up to 2560 px, the panel's pinned encoder in an offline Chrome; `tools/lib/site-upload/`) and the Figma panel's "Photos as: AVIF" (shrunk to 2x the size shown). Use the B-Dry scans' pictures (copied) and their record/media.json: list each picture's source size, the AVIF bytes, its pixel size and the biggest size the page shows it at (the capture's measured boxes at every width, `web.natural`).
+2. Propose general settings that land a typical photo near 50 KB without visible loss at the size shown: resize to 2x the largest shown size (both tools alike; a background photo by its box; cap e.g. 1920), the encoder's quality/speed, and a byte budget check if useful. Show a size table (before/after) and side-by-side crops at 1x and 2x for 3–4 B-Dry photos in your evidence folder.
+3. Re-upload: a new size makes a new media mark (media-reuse `f2b-<sha>[-<how>]`), so Justin's next upload sends new smaller copies; say what Media then holds and whether old items need cleaning (a step for Justin, never a tool deleting).
+
+3. Plan in `docs/plans/2026-11-26-avif-size.md` (commit it): playback, root cause with file:line evidence, the fix, **numbered ACs AC1… (proposed)** each with one named test, touched files, a one-line Docs & records task, questions with ⭐ answers at the top, one `(live)` AC Justin checks on B-Dry staging (and darksalmon for a Figma half). Every other paste byte for byte as before except what the fix touches, with its own `ConvertOptions` switch.
+
+## Report (as text)
+The plan path, branch and commit; the root cause in two plain sentences; the ACs one line each (mark `(live)`); questions with ⭐; `skill_lessons[{skill, lesson, evidence, enforce}]` (empty is normal; never edit skills or memory), ending with: `MAIN SESSION: check and save these skill_lessons now.`
