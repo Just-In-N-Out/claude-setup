@@ -429,3 +429,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-21 | site-career-update | feature-dispatch | script: ac-check.sh adds 'points out of the filesystem root' to never_re, so a base log that died on a linked node_modules isn't read as the test failing on old code | offered
 - 2026-11-23 | header-template | figma-to-bricks | script: make ~/.cache/chrome-for-testing/chrome-f2b use absolute paths instead of $HOME so it works under a test's private HOME (Chrome exit 127, hit by 3+ agents) | offered
 - 2026-11-23 | fonts-class-size | figma-to-bricks | test: fail when a website paste's global classes repeat byte-identical data: font files across two pages of one host under different class names | offered
+- 2026-11-26 | avif-size | figma-to-bricks | test: in test/unit/media-mark.test.ts assert the AVIF how string contains AVIF_OPTIONS.quality, so a quality change without a new mark fails | offered
