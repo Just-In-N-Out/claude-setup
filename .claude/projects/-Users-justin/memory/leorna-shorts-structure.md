@@ -1,24 +1,24 @@
 ---
 name: leorna-shorts-structure
-description: "How Justin wants Leorna demo shorts structured and styled (from a senior's reference short)"
+description: "How Justin wants Leorna demo shorts structured; use a senior's short as inspiration, never a template copy"
 metadata:
   node_type: memory
   type: feedback
   originSessionId: 51bd1f8e-43d3-4a53-a378-0bbfa5b778bc
-  modified: 2026-11-26T14:56:19.198Z
+  modified: 2026-11-26T15:15:02.592Z
 ---
 
-Leorna shorts open with the problem, implied rather than stated, then show the product. Reference: a senior's `~/Downloads/short4-one-tile-two-thousand-laptops.mp4` (60 s), given 2026-11-26.
+Leorna shorts open with the problem, implied rather than stated, then show the product.
 
-The structure, in order:
-1. Cold open, about 5 s. A day and time ("MONDAY · 9:02 AM"), a big counter climbing in salmon, and chat bubbles popping in with real complaints.
-2. "THE OLD WAY". A red pill, a spinning clock, "× N" and step cards dropping in, ending with a stamp ("LEAKED" / "OUT OF DATE").
-3. "...or". The old way dims and blurs, a big teal "...or" appears, and the music goes silent for about 1 s.
-4. Product clips. A fake browser bar shows `leorna.example.com/...`, and a boxed caption (white, bold, teal border, dark fill, near y≈1390) changes with each voice phrase.
-5. An illustrated payoff (a grid filling with checks), then a callback to the opening counter dropping to zero (😎☕), then the end card (teal "L" tile, "Leorna.", tagline).
+Inspiration is a senior's `~/Downloads/short4-one-tile-two-thousand-laptops.mp4`, given 2026-11-26. It has:
+- a "MONDAY · 9:02 AM" ticket counter with complaint bubbles
+- "THE OLD WAY" step cards with a stamp
+- a teal "...or" pivot
+- boxed teal captions and a fake browser bar
+- a laptop grid, then a callback to zero, then a teal "L" end card
 
-Palette: teal #6fe0bf, salmon #f4a383, red #e04664.
+**Don't copy that template.** Justin's verdict on a version built that way (Short 2 v4): "It's like copy-paste as the short that I linked to you. I need to be a bit more different." Each short needs its own concept and our own look:
+- the earlier gradient pill captions (#3ad6f0 → #9b8cff)
+- **the original Leorna end card**: the gradient logo square plus a gradient "Leorna." (the `card-end.png` style from `cards2.mjs`). He explicitly wants that logo kept, not the senior's teal "L".
 
-**Why:** Justin asked to redo Short 1 and Short 2 this way after reviewing them ("start off with the problem ... but not in a direct way").
-
-**How to apply:** use this shape for every new Leorna short. Keep clips at 1× with dissolves (see [[demo-video-toolchain-mac]]). The senior's footage used admin screens that aren't in the control-plane code (likely mock-ups), so film the real UI zoomed in instead.
+**How to apply:** take only the idea of a problem-first cold open, and invent visuals that fit the feature (e.g. three AI terminals giving conflicting answers). Avoid that short's signature elements. Keep clips at 1× with dissolves ([[demo-video-toolchain-mac]]).
