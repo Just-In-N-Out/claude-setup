@@ -678,3 +678,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: trustindex-reviews review-1 MOVE ON, ac-check READY FOR THE USER (AC7 live 3fy); follow-ups.md written; ff-merged e212f882 (lock held); finisher dispatched -> Build 2026-11-26.1
 - 2026-11-26: Build 2026-11-26.1 8d681407 pushed (trustindex-reviews, 3fy owed); lock released
 - 2026-11-26: Justin 'Yes, both': amended heading-text-link AC7 (B5 count lines) and trustindex-reviews AC5 (margins) in plan-approved.md; heading-text-link auditor 6/7 (AC7 was the wording)
+- 2026-11-26: heading-text-link review-1 REVIEW AGAIN (R1-1 P2: coloured span in a Figma Text link goes inline-flex, 9.47 px); fixer-1 (Opus high) dispatched (also R1-4 test names, R1-5 HANDOFF line); lesson -> pitfalls
