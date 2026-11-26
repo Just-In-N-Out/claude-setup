@@ -1,0 +1,11 @@
+# Role: reviewer round 1 (Fable 5.2, high) + verifier AC work: <NAME> (Mini pipeline; report only)
+Read and follow `/home/justin/.hermes/plans/figma-to-bricks/briefs/_reviewer-common-2026-11-15.md` (ignore its deadline line). Also read `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/ac-verification.md` (the VERIFIER part) and `review-loop.md`. You never saw the build. TMPDIR ~/.cache/<NAME>-r1.
+
+## What to review
+Repo FigmaToBricksV2. In your own worktree: `git checkout --detach <HEAD>` (branch `<NAME>`). Base: `<BASE>` (main). The whole story: `git diff <BASE>...<HEAD>`. Approved plan (read-only): `/home/justin/.hermes/plans/figma-to-bricks/evidence/<NAME>/plan-approved.md`. Don't read the builder's report or `evidence/<NAME>/builder/` as proof.
+
+## Do
+1. One full review (correctness, the plan's rules, the repo CLAUDE.md standing rules, the Bricks pro standard, safety rules: offline, never writing a site). Website importer jobs: P0–P2 only for bugs a real paste or normal use hits, with a scenario and a measured number; edge cases P3.
+2. Verifier AC work: re-run the gates you need (`npm run check` 9G scope) and every agent-run AC's named test on HEAD and on the base, write `/home/justin/.hermes/plans/figma-to-bricks/evidence/<NAME>/verifier/ac.json` and its receipts there in the format `ac-check.sh` reads (`(live)` ACs as owed to the user).
+3. Write `/home/justin/.hermes/plans/figma-to-bricks/evidence/<NAME>/review-1/review.json` and self-check with `review-check.sh --repo <your worktree> --base <BASE> /home/justin/.hermes/plans/figma-to-bricks/evidence/<NAME>`; quote its last line.
+<EXTRA>
