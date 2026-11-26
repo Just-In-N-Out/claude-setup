@@ -7,8 +7,19 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-26.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-26.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-26.3 avif-size (website importer and Figma plugin):** both tools (the importer's uploader
+    `tools/lib/site-upload/`, the panel's `src/ui/`) make AVIF photos at quality 50, speed 6, sized to 2× the largest
+    size the page shows a photo at, rounded up to a 160 px step, at most 1920 px wide and 2560 on the long side
+    (Justin's "Cap the width instead"; `src/ui/avif-size.ts`), about five times smaller; marks and record keys
+    `avif-max<step>q50` / panel `avif<width>q50`; a bigger copy already in Media is reused, an older quality-80
+    `avif-max2560` copy never; `older-copies.txt` lists the old copies (the tool never deletes them). AC wording
+    amended with Justin's go; Q1–Q4 ⭐ A and the builder's rulings not yet confirmed. Paste check **3fz** (AC11, live:
+    `npm run importer` → B-Dry home scan → Pictures to WordPress → Log in and check: "Made N AVIF files (… → …)" at a
+    third of the old total or less; after `yes` Media's new `.avif` photos are typically 40–110 KB; the re-pasted body
+    on B-Dry staging looks as before at 1440 and 390; `older-copies.txt` lists the old ones; and a Figma page with
+    Photos as AVIF onto darksalmon puts photos of at most 1920 px wide in Media, a fraction of their earlier size).
   - **2026-11-26.2 heading-text-link (website importer and Figma plugin):** a heading that is all one link pastes as a
     Block keeping its heading tag (Custom tag `h2`…, label Heading, the heading's id, classes and settings) holding one
     Bricks Text link (words in Text, link in Link to, Internal where the page is matched; rule H in both tools,
@@ -812,6 +823,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 
 ## Working in this repo
 
+- **An AVIF upload is sized by how big the page shows it (`src/ui/avif-size.ts`, both tools); its mark names the width
+  step and quality, so an older quality-80 copy is never reused; the tools never delete old copies, they list them in
+  `older-copies.txt`.** (avif-size)
 - **A site part's root is the theme's frame around the builder's document when the part holds extras or a wrapper that
   draws** (legal-pages, rule F, `src/core/site/frame.ts`, `WebPart.frame`): never read a part's root from `partRoot`
   without it.
@@ -1447,7 +1461,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
       with the pills under it from the left;
     - "Compact card" on phones: no titles; the first column with the last at its right, the others under them with a
       dot between.
-- **Photos as AVIF (when chosen):** never fall back silently to WebP or the original; stop and explain.
+- **Photos as AVIF (when chosen):** never fall back silently to WebP or the original; stop and explain. Quality 50,
+  sized to 2× the largest size the page shows the photo at, at most 1920 px wide and 2560 on the long side, in both
+  tools (avif-size; Justin, 2026-11-26: "like 600 KB when they should be like 50", then "Cap the width instead").
 - **Phone slider:** `height: "auto"`, never Bricks' `autoHeight`; a hidden slider measures 0px.
 - **Output style (2026-10-06): editable structure first.** `ExampleBricks` (repo root, one Bricks 2.3.9 copy per line)
   is the user's hand-built version of a real page, and the target for what v2 emits:

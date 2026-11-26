@@ -691,3 +691,11 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: avif-size fixer-1 9b7f7016 (width cap); plan amended with Justin's go (Q2, AC2, AC4, AC9, R3, R6); Full round-2 review (Opus high) dispatched
 - 2026-11-26: heading-text-link review-4 MOVE ON (notes-only rebase), ff-merged 803129ee (lock held), follow-ups.md written, finisher dispatched -> Build 2026-11-26.2 (3fx); lesson -> notes-only-rebase memory
 - 2026-11-26: Build 2026-11-26.2 20cc5ca4 pushed (heading-text-link, 3fx owed); lock released
+- 2026-11-26: avif-size review-2 MOVE ON at 9b7f7016 (2 P3: repo plan copy stale; AC9's named test lacks portrait); quick fixer-2 for both before verifier/auditor
+- 2026-11-26: avif-size fixer-2 6682cc65 (test + plan only); delta review 3 + verifier + auditor dispatched side by side
+- 2026-11-26: avif-size review-3 delta MOVE ON at 6682cc65; verifier + auditor running
+- 2026-11-26: avif-size blind auditor clean (10/11, AC11 live 3fz); waiting on verifier
+- 2026-11-26: avif-size verifier clean; ac-check --reviews READY FOR THE USER (10/11, AC11 live 3fz) at 6682cc65; only HANDOFF overlaps main; rebase finisher onto 20cc5ca4 dispatched
+- 2026-11-26: avif-size rebased 113aa9df (HANDOFF-only conflict), receipt EXIT=0; rebase delta review 4 dispatched (notes-only rule); lesson already in testing-pitfalls:200, enforce already in backlog
+- 2026-11-26: avif-size review-4 MOVE ON (notes-only rebase), ff-merged 113aa9df (lock held); after-merge finisher -> Build 2026-11-26.3 (3fz)
+- 2026-11-26: Build 2026-11-26.3 7b6f1a89 pushed (avif-size, 3fz owed); lock released
