@@ -683,3 +683,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: heading-text-link fixer-1 7ccaa5ea on branch heading-text-link-fixer-1 (R1-1 span inline, sameNotes counts, R1-4/R1-5); delta reviewer round 2 (Opus high) dispatched
 - 2026-11-26: heading-text-link review-2 ASK JUSTIN (R2-1 P2: the span reset splits the plugin's phone-number span inside a linked heading on phones); asking Justin fix vs follow-up
 - 2026-11-26: heading-text-link review-2 justin.json continue (Fix it now) -> REVIEW AGAIN, fixer-2 dispatched. avif-size review-1 MOVE ON (8 P3 -> follow-ups.md); asking Justin on R1-1 (cap by width)
+- 2026-11-26: heading-text-link fixer-2 b4189f6c (span:not([class])), delta review round 3 dispatched. avif-size: Justin 'Cap the width instead' + 'OK, I'll use this one' (upload from the desktop that did the first uploads); fixer-1 dispatched for the width cap, AC amendment to follow with his go
