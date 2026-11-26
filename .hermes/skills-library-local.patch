@@ -183,7 +183,7 @@ index 09f5d6e..f1dd0fe 100644
     snapshots merely to get green. A newly created baseline is not comparison PASS.
  4. For changed motion, inspect a short recording or selected frames around the
 diff --git a/skills/implementation-planning/SKILL.md b/skills/implementation-planning/SKILL.md
-index c509c64..14406a1 100644
+index c509c64..fb4c1a8 100644
 --- a/skills/implementation-planning/SKILL.md
 +++ b/skills/implementation-planning/SKILL.md
 @@ -25,10 +25,12 @@ Produce a saved, finite software plan that a context-free implementer can follow
@@ -214,7 +214,7 @@ index c509c64..14406a1 100644
  Use `read_file` and `search_files` for project rules, real source paths, manifests and tests. For GitHub work, inspect current main, full owning threads, open PRs and affected file sets with read-only `terminal` commands such as `gh issue view N --json title,body,comments,assignees,state`, `gh pr list` and `git status --short --branch`; `--comments` alone is not a body read.
  
 -Inspect changes since the proposal's immutable base, not just its old CI result. Separate stale/shared checkout state from remote main, and account for newly merged checkers, changed fixture requirements, reservations and newer owner-held documentation work. Do not promise to merge or replace a draft that a newer work item intentionally preserves as reference.
-+Inspect changes since the proposal's immutable base, not just its old CI result. Separate stale/shared checkout state from remote main, and account for newly merged checkers, changed fixture requirements, reservations and newer owner-held documentation work. Do not promise to merge or replace a draft that a newer work item intentionally preserves as reference. A ruling whose premise was measured on an older head of work still in flight ("stays as it is: base shows 43.5 px off") is re-measured on the real base before the plan relies on it, and the builder runs the base's own behaviour for each "stays as it is" rule before removing coverage (page-faq-slide review 1: the base had since become a working Accordion).
++Inspect changes since the proposal's immutable base, not just its old CI result. Separate stale/shared checkout state from remote main, and account for newly merged checkers, changed fixture requirements, reservations and newer owner-held documentation work. Do not promise to merge or replace a draft that a newer work item intentionally preserves as reference. Before starring one of two measured alternatives, measure the number the user's own goal names ("change once, every page follows": settings a class change moves), not only the first number at hand (heading-classes-plugin planner: the two counts favoured opposite answers). A ruling whose premise was measured on an older head of work still in flight ("stays as it is: base shows 43.5 px off") is re-measured on the real base before the plan relies on it, and the builder runs the base's own behaviour for each "stays as it is" rule before removing coverage (page-faq-slide review 1: the base had since become a working Accordion).
  
  **Done:** current source identity, instruction placement, ownership and conflicts are explicit; facts unavailable through failed reads remain unknown.
  
