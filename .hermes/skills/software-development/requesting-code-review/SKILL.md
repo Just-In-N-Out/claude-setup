@@ -88,7 +88,7 @@ tracker, automatic publication or a competing agent lifecycle.
 1. Resolve commands from the repository and actual task workspace. An executing
    review runs its required gates; a static-only review inspects source and
    existing receipts and must not be presented as full execution acceptance.
-2. Run canonical checks **directly**, retaining complete output and each tested
+2. Run canonical checks **directly**, in the plain environment (no job variable such as `F2B_*` exported: a new guard can break untouched tests that a builder's exported variable hid; heading-classes review 1), retaining complete output and each tested
    process's real exit code, cwd and revision. Capture the original process status
    before any filtering, truncation or log-copying pipeline; a final success marker
    or successful receipt writer cannot establish a passing test. Inspect saved
