@@ -680,3 +680,6 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: Justin 'Yes, both': amended heading-text-link AC7 (B5 count lines) and trustindex-reviews AC5 (margins) in plan-approved.md; heading-text-link auditor 6/7 (AC7 was the wording)
 - 2026-11-26: heading-text-link review-1 REVIEW AGAIN (R1-1 P2: coloured span in a Figma Text link goes inline-flex, 9.47 px); fixer-1 (Opus high) dispatched (also R1-4 test names, R1-5 HANDOFF line); lesson -> pitfalls
 - 2026-11-26: avif-size builder 33522301 ready-for-review (AC1-10 green, AC11 live 3fz); Full review round 1 (Fable high) dispatched; lessons -> testing-pitfalls, enforce offered
+- 2026-11-26: heading-text-link fixer-1 7ccaa5ea on branch heading-text-link-fixer-1 (R1-1 span inline, sameNotes counts, R1-4/R1-5); delta reviewer round 2 (Opus high) dispatched
+- 2026-11-26: heading-text-link review-2 ASK JUSTIN (R2-1 P2: the span reset splits the plugin's phone-number span inside a linked heading on phones); asking Justin fix vs follow-up
+- 2026-11-26: heading-text-link review-2 justin.json continue (Fix it now) -> REVIEW AGAIN, fixer-2 dispatched. avif-size review-1 MOVE ON (8 P3 -> follow-ups.md); asking Justin on R1-1 (cap by width)
