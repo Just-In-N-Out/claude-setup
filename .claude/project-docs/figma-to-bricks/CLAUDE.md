@@ -7,8 +7,20 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-26.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-26.2`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-26.2 heading-text-link (website importer and Figma plugin):** a heading that is all one link pastes as a
+    Block keeping its heading tag (Custom tag `h2`…, label Heading, the heading's id, classes and settings) holding one
+    Bricks Text link (words in Text, link in Link to, Internal where the page is matched; rule H in both tools,
+    `src/core/site/heading-link.ts`, plugin `emit/elements.ts`), printed `<h2><a>` as before; the importer's `tel:`,
+    `mailto:`, other sites and unmatched pages too; a link carrying anything but new tab, rel, title or aria-label
+    stays a Heading, counted in one `Headings:` notes line; the plugin's Text link carries
+    `#brxe-<id> span:not([class]){display:inline}` when its words hold a span (review rounds 1–2); B-Dry's header 12;
+    the corpus none; `ConvertOptions.headingLinks: false` / `asBefore.headingLinks` byte for byte as before. AC7
+    amended with Justin's go; Q1–Q4 ⭐ A and builder rulings B1–B5 not yet confirmed. Paste check **3fx** (AC8, live:
+    importer app → home scan → Make pastes again → Copy header → paste into B-Dry staging's Header template: each menu
+    word and "Call Us At…" is a "Heading" Block holding a Text link, Link to the page (Internal) or `tel:`; looks as
+    before at 1440 and 390; and on darksalmon a Figma heading that is all one link shows "Heading" › Text link).
   - **2026-11-26.1 trustindex-reviews (website importer):** a live widget in Elementor's HTML widget (a full Elementor
     element of widget type `html`, builder ruling B1) pastes as exactly the code typed there in its Code element
     "Widget" (rule I, `src/core/site/install-code.ts` via `live.ts`; B-Dry's footer reviews: the one Trustindex
@@ -1288,7 +1300,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   Div.
   - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → "Native Buttons by shape alone".
 - **Every text is Rich Text except headings** (Justin, 2026-11-04, on the designer's "rich text for paragraphs": "I do
-  not want it for paragraph i want it for everything"; chose in a question): Bricks Heading stays, with its tag; a text
+  not want it for paragraph i want it for everything"; chose in a question): Bricks Heading stays, with its tag, except a
+  heading that is all one link: a Block with its tag holding a Text link (heading-text-link); a text
   that is all one link is Rich Text inside a Block that carries the link in Link to (both designer notes hold); no
   Basic Text is emitted.
 - **Pictures inside the paste (2026-10-07, v1's embed mode back):** the panel's "Pictures go: inside the copied JSON
@@ -1335,7 +1348,8 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - Details: `~/.hermes/skills/software-development/figma-to-bricks/references/project-decisions.md` → "Call and email links".
 - **A text that is all one link carries it in Link to** (the designer Niklas, through Justin, 2026-11-04; ⭐ answers
   not yet confirmed): email `mailto:`, phone `tel:`, a whole Figma link or page link go in the element's Link to
-  (External URL), never as an `<a>` in its words; a link inside a sentence stays inline; headings too
+  (External URL), never as an `<a>` in its words; a link inside a sentence stays inline; headings too, as a Block
+  keeping the heading's tag holding one Text link (heading-text-link Q1 A, not yet confirmed)
   (`understand/text-link.ts`, `elementLink(ir)`).
 - **Links to pages** (user, 2026-10-19: "whenever there's a hyperlink icon … or 'take me to this' … it will
   automatically implement the hyperlink … to that page", named after "the sentence before it"; build `2026-10-19.17`).
@@ -1452,4 +1466,6 @@ wrong") as one example of a whole class of designs, and change the logic so the 
   - Also unverified:
     - `_flexDirection` and `_gap` on non-layout elements;
     - the Colors import of the panel's palette file;
-    - a palette reference whose `raw` carries a fallback (`var(--x, #HEX)`).
+    - a palette reference whose `raw` carries a fallback (`var(--x, #HEX)`);
+    - a Block with a heading custom tag (`customTag: h2`) and the plugin's Text link (heading-text-link, until paste
+      check 3fx).

@@ -690,3 +690,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: heading-text-link rebased 803129ee (HANDOFF-only conflict; convert.ts auto-merged); receipt EXIT=0; notes-only rule -> rebase delta review 4 dispatched
 - 2026-11-26: avif-size fixer-1 9b7f7016 (width cap); plan amended with Justin's go (Q2, AC2, AC4, AC9, R3, R6); Full round-2 review (Opus high) dispatched
 - 2026-11-26: heading-text-link review-4 MOVE ON (notes-only rebase), ff-merged 803129ee (lock held), follow-ups.md written, finisher dispatched -> Build 2026-11-26.2 (3fx); lesson -> notes-only-rebase memory
+- 2026-11-26: Build 2026-11-26.2 20cc5ca4 pushed (heading-text-link, 3fx owed); lock released
