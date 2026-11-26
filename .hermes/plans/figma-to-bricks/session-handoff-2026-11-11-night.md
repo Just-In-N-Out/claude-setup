@@ -676,3 +676,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: heading-text-link builder af434fa4 ready-for-review (AC1-7 green, B1-B5), Mini reviewer (Fable) + auditor (Opus xhigh) dispatched; lessons saved (testing-pitfalls, corpus memory), 2 enforce offered
 - 2026-11-26: trustindex-reviews auditor clean (6/7, AC7 live), 3 P3 follow-ups (untested proof clauses, liveStandIn fallback); waiting on reviewer
 - 2026-11-26: trustindex-reviews review-1 MOVE ON, ac-check READY FOR THE USER (AC7 live 3fy); follow-ups.md written; ff-merged e212f882 (lock held); finisher dispatched -> Build 2026-11-26.1
+- 2026-11-26: Build 2026-11-26.1 8d681407 pushed (trustindex-reviews, 3fy owed); lock released

@@ -7,8 +7,18 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-24.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-26.1`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-26.1 trustindex-reviews (website importer):** a live widget in Elementor's HTML widget (a full Elementor
+    element of widget type `html`, builder ruling B1) pastes as exactly the code typed there in its Code element
+    "Widget" (rule I, `src/core/site/install-code.ts` via `live.ts`; B-Dry's footer reviews: the one Trustindex
+    `loader.js` line), the builder's two boxes as Blocks "HTML" › "Box", the editor copy kept; the notes' live line
+    names the install code and what to do if it stays empty; `site:check` stands the widget in at the innermost Block;
+    every other slot byte for byte; `ConvertOptions.installCode: false` byte for byte as before. Q1–Q4 ⭐ A not yet
+    confirmed; AC5's wording amendment (a margin, not a padding; B2) pending Justin. Paste check **3fy** (AC7, live:
+    Make pastes again on the home scan, paste the footer on B-Dry staging, Regenerate code signatures once (never Sign
+    all); "Widget" shows the one Trustindex line, the editor the still reviews, a private window the reviews sliding as
+    on bdryswi.com).
   - **2026-11-24.1 legal-pages (website importer):** the scan keeps an `ol`'s `start`/`reversed`/`type` and an `li`'s
     `value` (`web.code.keeps`) and the paste writes them as `_attributes` on the List and List item Blocks (unverified
     in Bricks); an older scan holding a shown `ol` gets one notes line to scan again; rule F (`src/core/site/frame.ts`):
