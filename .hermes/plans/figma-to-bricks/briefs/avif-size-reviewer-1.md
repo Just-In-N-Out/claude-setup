@@ -1,0 +1,11 @@
+# Role: reviewer round 1 (Fable 5.2, high): avif-size (Full pipeline; report only)
+Read and follow `/home/justin/.hermes/plans/figma-to-bricks/briefs/_reviewer-common-2026-11-15.md` (ignore its deadline line). Also read `~/.hermes/skills/autonomous-ai-agents/feature-dispatch/references/review-loop.md`. You never saw the build. TMPDIR ~/.cache/asr1.
+
+## What to review
+Repo FigmaToBricksV2. In your own worktree: `git checkout --detach 33522301f3af0607d98ee78c8fda5bca9b158c37` (branch `avif-size`). Base: `83a05a2b` (main). The whole story: `git diff 83a05a2b...33522301f3af0607d98ee78c8fda5bca9b158c37`. Approved plan (read-only): `/home/justin/.hermes/plans/figma-to-bricks/evidence/avif-size/plan-approved.md`. Don't read the builder's report or `evidence/avif-size/builder/` as proof.
+
+## Do
+1. One full review (correctness, the plan's rules, the repo CLAUDE.md standing rules, the Bricks pro standard, safety rules: offline, never writing a site). Website importer jobs: P0–P2 only for bugs a real paste or normal use hits, with a scenario and a measured number; edge cases P3.
+2. Run the gates and AC tests you need to prove findings (`npm run check` 9G scope); judge whether each AC's test really tests its words. No verifier `ac.json` in this round.
+3. Write `/home/justin/.hermes/plans/figma-to-bricks/evidence/avif-size/review-1/review.json` and self-check with `review-check.sh --repo <your worktree> --base 83a05a2b /home/justin/.hermes/plans/figma-to-bricks/evidence/avif-size`; quote its last line.
+Both tools: the importer's uploader (`tools/lib/site-upload/`) and the Figma panel's AVIF (`src/ui/`). Highest risk: Media marks and record keys (a wrong mark means duplicate uploads on Justin's real site, or old big copies reused); test only against `test/fixtures/wp-standin.ts`. The tool must never delete or change an old media item. Builder rulings to judge: "up to 11 marks" (byMark asks the picture's step and every bigger one plus 2560), B1–B4 in HANDOFF/ledger (B4: a failed older-copies read lists them but asks alttext.ai as before). Keep TMPDIR at 40 characters or fewer (Chrome socket path). Never read or print `~/.config/figma-to-bricks/site-passwords.json` or `alttext-key`.

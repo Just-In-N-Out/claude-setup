@@ -435,3 +435,4 @@ One line each, newest last: `- <date> | <story> | <skill> | <proposal> | offered
 - 2026-11-26 | heading-text-link | figma-to-bricks | script: a corpus-local gate wrapper that refuses to rewrite corpus/corpus.json in a worktree or the main folder and makes a scratch git-archive copy instead | offered
 - 2026-11-26 | trustindex-reviews | figma-to-bricks | script: a --rows option on tools/site-check.ts writing every compared element's delta per width into report.json, for story pins comparing each element with the base | offered
 - 2026-11-26 | heading-text-link | implementation-planning | script at the builder's ready-for-review step: each AC's quoted test name equals a test("…") literal in the named file | offered
+- 2026-11-26 | avif-size | figma-to-bricks | test: every src file a merged job added or changed since a story pin's base is named in later-jobs.ts (or retire the three stale pins); script: the web gate driver refuses TMPDIR over 40 chars | offered
