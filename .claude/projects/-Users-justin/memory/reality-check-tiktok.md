@@ -1,15 +1,18 @@
 ---
 name: reality-check-tiktok
-description: "Justin's TikTok page for young men (\"Reality Check\"): agreed angle, episode files and the frame-by-frame render method"
+description: "Justin's TikTok page for young men: agreed angle, the story style he asked for, episode files and the frame-by-frame render method"
 metadata:
   node_type: memory
   type: project
   originSessionId: 6cad5e62-bb6a-4880-9fd5-21c8949ef0b6
-  modified: 2026-11-26T16:32:26.345Z
+  modified: 2026-11-26T16:55:05.885Z
 ---
 
-Started 2026-11-26. Justin asked for a TikTok page "influencing young men" with black pill content. Claude declined to promote the ideology; Justin picked the **reality-check angle** in the question that followed: take a black pill claim young men see online, show where it comes from, check it against the research, end on what the evidence says. Format he picked: vertical short, 45-60 s. "Reality Check" is Claude's working title, not a name Justin chose. Personal project, not Leorna: no Leorna logo or end card.
+Started 2026-11-26. Justin asked for a TikTok page "influencing young men" with black pill content. Claude declined to promote the ideology; Justin picked the **reality-check angle** in the question that followed (the videos push back on "it's over"). Format he picked: vertical short, 45-60 s. Personal project, not Leorna: no Leorna logo or end card. The page has no name yet.
 
-Episode 1 (the 80/20 rule): `~/Movies/RealityCheck/ep01-80-20-rule-v1.mp4`; source, script and checked citations in `~/Movies/RealityCheck/ep01/` (`script.md` lists each claim with the quoted source line and ideas held back for later episodes).
+**Style Justin asked for after seeing v1 (2026-11-26), in his words:** "more flashy", "more engaging", voice "a bit more enthusiastic because someone's watching this on TikTok", "remove the episode 1 at the top and all that", "more animations, like people", "try to write a story", and "it should be like a story that you're telling it, like, bro, I don't want facts and shit". v1 was a dark fact-check with on-screen sources and stats, and that is what he rejected.
+**How to apply:** tell a story about a character in a friend's voice ("Bro! Let me tell you about a guy"), with animated people, bright scenes, hard cuts, shakes and big word-by-word captions; no stats, citations, source lines, episode labels or progress bars on screen. The message still runs against the black pill (my reading of the agreed angle, which he did not withdraw). Voice: Kokoro `am_fenrir` (measured widest pitch range of the local male voices, with `am_puck`); `am_michael` was the flat one.
 
-**How to apply:** a new episode reuses `ep01/` (copy the folder, change `lines.json` and the scenes in `video.html`). Kinetic-text shorts need no screen recording: `tts.py` makes one Kokoro clip per line plus `timeline.json`, `segs.py` finds the pauses, and `render.js` seeks paused Web Animations to each frame time, screenshots at 30 fps and pipes JPEGs into ffmpeg, so text lands exactly on the voice. Check every number against the source text before it goes on screen (PDFs: PDFKit through `osascript -l JavaScript`, since `pdftoppm` isn't installed). Toolchain gotchas: [[demo-video-toolchain-mac]].
+Files in `~/Movies/RealityCheck/`: `ep01-marcus-story-v2.mp4` with its source in `ep01-story/` (the template to copy for the next story); `ep01-80-20-rule-v1.mp4` with `ep01/` is the rejected fact version (its `script.md` still holds checked sources).
+
+**Build method:** `tts.py` makes the voice plus `timeline.json` with a time for every word (Kokoro's `result.tokens` carry `start_ts`/`end_ts`); `video.html` builds each scene from that file, so scenes, characters (`P()` draws an SVG person with movable arms, legs, head and mouth) and captions follow the words and a new voice or speed needs no retiming; `render.js` seeks paused Web Animations to each frame time, screenshots at 30 fps and pipes JPEGs into ffmpeg. One animation per element and property: put a second move on a wrapper, and use `fill: 'none'` for shakes and flashes. Toolchain gotchas: [[demo-video-toolchain-mac]].
