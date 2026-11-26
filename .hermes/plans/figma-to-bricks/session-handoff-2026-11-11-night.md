@@ -705,3 +705,5 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: heading-classes review-2 MOVE ON at 0737d20d (R2-1 P3); follow-ups written; verifier + auditor dispatched side by side
 - 2026-11-26: heading-classes auditor clean (9/10, AC14 live 3ga); waiting on verifier
 - 2026-11-26: heading-classes ac-check READY FOR THE USER (9/10, AC14 live 3ga); ff-merged 0737d20d (no rebase needed); finisher -> Build 2026-11-26.4
+- 2026-11-26: heading-classes-plugin planner (Fable high) dispatched from main 0737d20d (paste check 3gb)
+- 2026-11-26: Build 2026-11-26.4 d60f7dec pushed (heading-classes importer half, 3ga owed); lock released; CLAUDE.md date fixed

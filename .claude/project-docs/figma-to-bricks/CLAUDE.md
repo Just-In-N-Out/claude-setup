@@ -7,8 +7,21 @@ line, one line per new feature, a new standing rule, a user decision or a gotcha
 
 ## Status (2026-11-18)
 
-- **Current build `2026-11-26.3`** (read `src/shared/build.ts`; another session may have bumped it). The latest
+- **Current build `2026-11-26.4`** (read `src/shared/build.ts`; another session may have bumped it). The latest
   features, each with its HANDOFF section:
+  - **2026-11-26.4 heading-classes (website importer only; the Figma plugin half is its own job,
+    heading-classes-plugin, Justin's "Importer first"):** every heading h1–h6 (a heading-text-link Block too) carries
+    `<prefix>-h<N>` first and body Rich Texts drawing the body look `<prefix>-text` (B-Dry: `bd-h1`, `bd-h2`, `bd-h3`,
+    `bd-h6`, `bd-text`), one name, id (the hash of the name) and settings on every page of a site
+    (`src/core/site/level-classes.ts`); the class holds the font only, a heading that differs keeps its difference on
+    itself ("Keep the looks exact"); the per-site list `~/.config/figma-to-bricks/site-classes/<host>.json` (all saved
+    scans of a site vote; `--site-classes`/`--site-scans` on `npm run site`; delete the file to start again);
+    `site-classes.json` beside the pastes; `ConvertOptions.headingClasses: false` byte for byte as before; B-Dry's 14
+    pastes 4,207 → 4,105 distinct classes, JSON +0.044% (AC8 amended with Justin's go: at most 0.1%); Q2–Q11 ⭐ A and
+    builder rulings B1–B6 not yet confirmed. Paste check **3ga** (AC14, live: in the importer app Make pastes again on
+    home and one service page of B-Dry, paste both on B-Dry staging: Bricks asks nothing about `bd-h1`…`bd-h6` on the
+    second page; each page's H1 shows `bd-h1`, an H2 `bd-h2`; change `bd-h2`'s font family in Bricks and the H2s of
+    both pages change, change it back; both pages look as before at 1440 and 390).
   - **2026-11-26.3 avif-size (website importer and Figma plugin):** both tools (the importer's uploader
     `tools/lib/site-upload/`, the panel's `src/ui/`) make AVIF photos at quality 50, speed 6, sized to 2× the largest
     size the page shows a photo at, rounded up to a 160 px step, at most 1920 px wide and 2560 on the long side
@@ -826,6 +839,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **An AVIF upload is sized by how big the page shows it (`src/ui/avif-size.ts`, both tools); its mark names the width
   step and quality, so an older quality-80 copy is never reused; the tools never delete old copies, they list them in
   `older-copies.txt`.** (avif-size)
+- **A site paste's headings and body text carry the site's level classes only through `src/core/site/level-classes.ts`,
+  one name and id per site read from `~/.config/figma-to-bricks/site-classes/<host>.json`; a test run never writes that
+  real folder (`F2B_SITE_CLASSES_DIR`), and the gate runs with no `F2B_*` variable exported.** (heading-classes)
 - **A site part's root is the theme's frame around the builder's document when the part holds extras or a wrapper that
   draws** (legal-pages, rule F, `src/core/site/frame.ts`, `WebPart.frame`): never read a part's root from `partRoot`
   without it.
@@ -1242,9 +1258,10 @@ wrong") as one example of a whole class of designs, and change the logic so the 
      never a Div; no wrapper that does nothing; every Section and Block labelled by its purpose or first words.
   2. **Classes:** looks that repeat live in shared purpose-named classes (text styles, buttons, cards and boxes,
      spacing and layout); same-looking elements share one, different-looking ones get their own; a one-off tweak sits on
-     the element; names read by purpose with a short site prefix (`bd-heading-1`, `bd-button-primary`, `bd-card`; Justin
-     asked for "easy for a Bricks pro", 2026-11-13, replacing the `<page>__` names), the same name and id on every page
-     of a site; never two classes writing one property; no class per element where a shared one fits.
+     the element; names read by purpose with a short site prefix (`bd-h1`, `bd-button-primary`, `bd-card`; Justin
+     asked for "easy for a Bricks pro", 2026-11-13, replacing the `<page>__` names; one class per heading level and one
+     for body text, `bd-h1` … `bd-h6` and `bd-text`, Justin 2026-11-26, heading-classes, importer only so far), the same
+     name and id on every page of a site; never two classes writing one property; no class per element where a shared one fits.
      **The same button shares one class** (Justin, 2026-11-13: "all call me buttons should change … identify them by name"):
      copies of one button, heading or card (the same Figma component, the site's own class names, or the same words and link)
      share one class even if a copy differs a little; that copy's real difference stays on the element itself (its own
@@ -1436,8 +1453,9 @@ wrong") as one example of a whole class of designs, and change the logic so the 
 - **Code-method class names start with the page's name** (Justin, 2026-11-07, "Never use bare names", then "Prefix
   every name"): `<page>__<name>`, only `site-reset-<4>`, `site-scroll-lock-<4>`, `site-fonts`, `site-text`, `site-flat` keep
   theirs; a static slider keeps all its slides ("Keep all its slides"). **Being replaced (2026-11-13)** by a short site
-  prefix read by purpose (`bd-heading-1`), shared across a site's pages: the standard at the top of this section; the
-  job short-class-names carries it out, and `<page>__` stays until it merges.
+  prefix read by purpose, shared across a site's pages: the standard at the top of this section; heading-classes
+  (Build 2026-11-26.4) does it for headings and body text (`bd-h1` … `bd-h6`, `bd-text`), the job short-class-names
+  for the rest, and `<page>__` stays elsewhere until it merges.
 - **A scanned page's pictures go to WordPress from the command line** (Justin, 2026-11-10, "From the command
   line", Full pipeline; ⭐ not yet confirmed, Q12 open, HANDOFF "A scanned page's pictures go to WordPress's media
   library"): its own command `site:upload` (Q1 A), and one command `site:import` that asks for WordPress first, then
@@ -1484,4 +1502,6 @@ wrong") as one example of a whole class of designs, and change the logic so the 
     - the Colors import of the panel's palette file;
     - a palette reference whose `raw` carries a fallback (`var(--x, #HEX)`);
     - a Block with a heading custom tag (`customTag: h2`) and the plugin's Text link (heading-text-link, until paste
-      check 3fx).
+      check 3fx);
+    - one global class (a level class `bd-h2`) pasted from two pages with the same name, id and settings, Bricks
+      asking nothing on the second paste (heading-classes, until paste check 3ga).
