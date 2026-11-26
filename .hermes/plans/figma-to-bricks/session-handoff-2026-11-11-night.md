@@ -671,3 +671,4 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: heading-text-link plan 3490f6e1 (8 ACs, AC8 live 3fx; Q1-Q4 A), builder (Opus xhigh) dispatched; lesson folded into implementation-planning (distinct test names)
 - 2026-11-26: trustindex-reviews plan 756e2b27 (7 ACs, AC7 live -> check 3fy; Q1-Q4 A; Q5 his: are reviews missing on staging now?), builder Opus xhigh dispatched; 2 lessons -> testing-pitfalls
 - 2026-11-26: avif-size plan 52d90485 (11 ACs, AC11 live 3fz; 18.8 MB -> 4.2 MB, median 250 -> 53 KB; planner recommends Full, asked Justin), builder Opus xhigh dispatched; lesson -> pitfalls, enforce offered
+- 2026-11-26: heading-classes plan 6719f20d (14 ACs, AC14 live -> 3ga; Justin confirmed Q1 'Keep the looks exact'), builder Opus xhigh dispatched. avif-size -> Full (Justin). Paste checks: 3fx heading-text-link, 3fy trustindex, 3fz avif-size, 3ga heading-classes.
