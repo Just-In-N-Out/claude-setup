@@ -685,3 +685,8 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: heading-text-link review-2 justin.json continue (Fix it now) -> REVIEW AGAIN, fixer-2 dispatched. avif-size review-1 MOVE ON (8 P3 -> follow-ups.md); asking Justin on R1-1 (cap by width)
 - 2026-11-26: heading-text-link fixer-2 b4189f6c (span:not([class])), delta review round 3 dispatched. avif-size: Justin 'Cap the width instead' + 'OK, I'll use this one' (upload from the desktop that did the first uploads); fixer-1 dispatched for the width cap, AC amendment to follow with his go
 - 2026-11-26: heading-text-link review-3 MOVE ON at b4189f6c; verifier (Opus high) + blind auditor 2 (Opus xhigh) dispatched side by side
+- 2026-11-26: heading-text-link verifier clean at b4189f6c (7/8, AC8 live); waiting on auditor 2
+- 2026-11-26: heading-text-link auditor 2 clean; ac-check --reviews READY FOR THE USER (7/8, AC8 live 3fx) at b4189f6c; finisher step 1 (rebase onto 8d681407; convert.ts + HANDOFF overlap) dispatched
+- 2026-11-26: heading-text-link rebased 803129ee (HANDOFF-only conflict; convert.ts auto-merged); receipt EXIT=0; notes-only rule -> rebase delta review 4 dispatched
+- 2026-11-26: avif-size fixer-1 9b7f7016 (width cap); plan amended with Justin's go (Q2, AC2, AC4, AC9, R3, R6); Full round-2 review (Opus high) dispatched
+- 2026-11-26: heading-text-link review-4 MOVE ON (notes-only rebase), ff-merged 803129ee (lock held), follow-ups.md written, finisher dispatched -> Build 2026-11-26.2 (3fx); lesson -> notes-only-rebase memory
