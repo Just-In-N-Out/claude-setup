@@ -701,3 +701,7 @@ site-scroll-lock (3ed), 11.6 site-menu-motion (3ec). Live checks owed to Justin:
 - 2026-11-26: Build 2026-11-26.3 7b6f1a89 pushed (avif-size, 3fz owed); lock released
 - 2026-11-26: heading-classes builder 2c32bea4: importer half ready (AC8 bytes +0.09% fails; plugin half AC10–13 not built); lessons saved (testing-pitfalls, pitfalls), enforce offered; review round 1 (Fable high) dispatched; asking Justin: split + AC8 amendment
 - 2026-11-26: heading-classes review-1 REVIEW AGAIN (R1-1 P1 plain-env check fails 4 tests; R1-2 P2 font-style inherit); Justin: 'Importer first', 'Accept +0.09%' -> plan-approved amended (AC10-13, AC14b moved to heading-classes-plugin; AC8 <=0.1%; 3ga); fixer-1 dispatched (fix + rebase onto 7b6f1a89 + heading-text-link Blocks get level class); lessons saved
+- 2026-11-26: heading-classes fixer-1 0737d20d (rebased on 7b6f1a89; R1-1, R1-2 fixed; rule H Blocks carry level class; AC8 +0.044%); lesson -> pitfalls; Full round-2 review (Opus high) dispatched
+- 2026-11-26: heading-classes review-2 MOVE ON at 0737d20d (R2-1 P3); follow-ups written; verifier + auditor dispatched side by side
+- 2026-11-26: heading-classes auditor clean (9/10, AC14 live 3ga); waiting on verifier
+- 2026-11-26: heading-classes ac-check READY FOR THE USER (9/10, AC14 live 3ga); ff-merged 0737d20d (no rebase needed); finisher -> Build 2026-11-26.4
