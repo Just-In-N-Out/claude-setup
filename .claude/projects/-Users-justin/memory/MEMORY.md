@@ -1,4 +1,4 @@
 - [Leorna local Postgres on Mac](leorna-local-postgres-mac.md) — leorna-test-pg uses port 5432 and its own password, not the guide's
 - [Demo video toolchain (Mac)](demo-video-toolchain-mac.md) — Playwright+ffmpeg+Kokoro setup and gotchas for Leorna shorts
 - [Leorna shorts structure](leorna-shorts-structure.md) — problem-first cold open, but never copy the senior's template; keep our gradient logo end card
-- [TikTok page for young men](reality-check-tiktok.md) — story-style shorts against "it's over"; the flashy style Justin asked for, files and render method
+- [TikTok page for young men](reality-check-tiktok.md) — story-style shorts (against "it's over", and gospel stories); the flashy style Justin asked for, files and render method
